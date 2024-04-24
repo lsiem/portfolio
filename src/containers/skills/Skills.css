@@ -1,6 +1,7 @@
 .skills-main-div {
   display: flex;
   overflow: hidden;
+  margin-bottom: 50px; /* Increased spacing between each skill section */
 }
 
 .skills-header {
@@ -12,6 +13,7 @@
 
 .skills-text {
   font-size: 20px;
+  margin-bottom: 10px; /* Space below each skill description */
 }
 
 .skills-text-div {
@@ -27,7 +29,7 @@
 .skills-image-div > * {
   max-width: 100%;
   height: auto;
-  margin-top: 100px;
+  margin-top: 50px; /* Adjusted top margin for better visual separation */
 }
 
 .skills-heading {
@@ -35,6 +37,13 @@
   font-weight: 400;
   font-family: "Google Sans Regular";
   line-height: normal;
+  margin-bottom: 20px; /* Space below the heading */
+}
+
+.skills-subheading {
+  font-size: 24px;
+  margin-top: 100px;
+  margin-bottom: 10px; /* Space below the subheading */
 }
 
 /* Media Query */
@@ -80,6 +89,33 @@
     order: 2;
   }
   .skills-image-div > * {
-    margin-top: 0px;
+    margin-top: 20px; /* Reduced top margin for images on mobile */
+  }
+}
+
+.skills-category {
+  margin-bottom: 60px; /* Increased space between categories */
+}
+
+.skills-category-title {
+  margin-bottom: 30px; /* Increased space between category title and its content */
+}
+
+.skills-subcategory {
+  margin-bottom: 30px; /* Increased space between subcategories */
+}
+
+/* Adjustments for mobile views */
+@media (max-width: 768px) {
+  .skills-category {
+    margin-bottom: 45px; /* Smaller space between categories for mobile */
+  }
+
+  .skills-category-title {
+    margin-bottom: 22px; /* Smaller space between category title and its content for mobile */
+  }
+
+  .skills-subcategory {
+    margin-bottom: 22px; /* Smaller space between subcategories for mobile */
   }
 }
