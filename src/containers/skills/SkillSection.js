@@ -48,19 +48,27 @@ class SkillSection extends Component {
                         <SoftwareSkill logos={category.softwareSkills} />
                       </Fade>
                     </div>
-                    <Fade right duration={2000}>
-                      <div>
-                        {category.skills.map((skillSentence, idx) => (
-                          <p
-                            key={idx}
-                            className="subTitle skills-text"
-                            style={{ color: theme.secondaryText }}
-                          >
-                            {skillSentence}
-                          </p>
-                        ))}
-                      </div>
-                    </Fade>
+                    <div className="skills-subcategory-container">
+                      <Fade right duration={1500}>
+                        <h2 className="skills-subheading" style={{ color: theme.text }}>
+                          {category.categoryTitle}
+                        </h2>
+                        <SoftwareSkill logos={category.softwareSkills} />
+                      </Fade>
+                      <Fade right duration={2000}>
+                        <div>
+                          {category.skills.map((skillSentence, idx) => (
+                            <p
+                              key={idx}
+                              className="subTitle skills-text"
+                              style={{ color: theme.secondaryText }}
+                            >
+                              {skillSentence}
+                            </p>
+                          ))}
+                        </div>
+                      </Fade>
+                    </div>
                   </div>
                 )) : null}
               </div>
