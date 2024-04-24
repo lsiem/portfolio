@@ -40,12 +40,14 @@ class SkillSection extends Component {
                 </Fade>
                 {skill.categories ? skill.categories.map((category, index) => (
                   <div key={index}>
-                    <Fade right duration={1500}>
-                      <h2 className="skills-subheading" style={{ color: theme.text }}>
-                        {category.categoryTitle}
-                      </h2>
-                      <SoftwareSkill logos={category.softwareSkills} />
-                    </Fade>
+                    <div className="skills-subcategory-container">
+                      <Fade right duration={1500}>
+                        <h2 className="skills-subheading" style={{ color: theme.text }}>
+                          {category.categoryTitle}
+                        </h2>
+                        <SoftwareSkill logos={category.softwareSkills} />
+                      </Fade>
+                    </div>
                     <Fade right duration={2000}>
                       <div>
                         {category.skills.map((skillSentence, idx) => (
