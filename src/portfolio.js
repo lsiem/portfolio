@@ -7,78 +7,51 @@ const settings = {
 
 //SEO Related settings
 const seo = {
-  title: "Ashutosh's Portfolio",
+  title: "Lasse Siemoneit | Portfolio",
   description:
-    "A passionate individual who always thrives to work on end to end products which develop sustainable and scalable social and technical systems to create impact.",
+    "Ich bin ein selbsterlerneter und passionierter Full-Stack Software Entwickler mit einem Fokus auf die Entwicklung von Web- und Hybrid-Apps.",
   og: {
-    title: "Ashutosh Hathidara Portfolio",
+    title: "Lasse Siemoneit | Portfolio",
     type: "website",
-    url: "http://ashutoshhathidara.com/",
+    url: "https://lsiem.github.io",
   },
 };
 
 //Home Page
 const greeting = {
-  title: "Ashutosh Hathidara",
+  title: "Hi, ich bin Lasse",
   logo_name: "AshutoshHathidara",
-  nickname: "layman_brother",
   subTitle:
-    "A passionate individual who always thrives to work on end to end products which develop sustainable and scalable social and technical systems to create impact.",
+    "Ich bin ein selbsterlerneter und passionierter Full-Stack Software Entwickler mit einem Fokus auf die Entwicklung von Web- und Hybrid-Apps.",
   resumeLink:
     "https://drive.google.com/file/d/1bXRknv_h-XI_3CQ3SGPteGODtvEb7YvI/view?usp=sharing",
-  portfolio_repository: "https://github.com/ashutosh1919/masterPortfolio",
-  githubProfile: "https://github.com/ashutosh1919",
+  portfolio_repository: "https://github.com/lsiem/portfolio",
+  githubProfile: "https://github.com/lsiem",
 };
 
 const socialMediaLinks = [
-  /* Your Social Media Link */
-  // github: "https://github.com/ashutosh1919",
-  // linkedin: "https://www.linkedin.com/in/ashutosh-hathidara-88710b138/",
-  // gmail: "ashutoshhathidara98@gmail.com",
-  // gitlab: "https://gitlab.com/ashutoshhathidara98",
-  // facebook: "https://www.facebook.com/laymanbrother.19/",
-  // twitter: "https://twitter.com/ashutosh_1919",
-  // instagram: "https://www.instagram.com/layman_brother/"
-
+  /* Social Media Link */
   {
     name: "Github",
-    link: "https://github.com/ashutosh1919",
+    link: "https://github.com/lsiem",
     fontAwesomeIcon: "fa-github", // Reference https://fontawesome.com/icons/github?style=brands
     backgroundColor: "#181717", // Reference https://simpleicons.org/?q=github
   },
   {
     name: "LinkedIn",
-    link: "https://www.linkedin.com/in/ashutosh1919/",
+    link: "https://www.linkedin.com/in/lasse-siemoneit-170ab7195/",
     fontAwesomeIcon: "fa-linkedin-in", // Reference https://fontawesome.com/icons/linkedin-in?style=brands
     backgroundColor: "#0077B5", // Reference https://simpleicons.org/?q=linkedin
   },
   {
-    name: "YouTube",
-    link: "https://youtube.com/c/DevSense19",
-    fontAwesomeIcon: "fa-youtube", // Reference https://fontawesome.com/icons/youtube?style=brands
-    backgroundColor: "#FF0000", // Reference https://simpleicons.org/?q=youtube
-  },
-  {
     name: "Gmail",
-    link: "mailto:ashutoshhathidara98@gmail.com",
+    link: "mailto:lasse.siemoneit@gmail.com",
     fontAwesomeIcon: "fa-google", // Reference https://fontawesome.com/icons/google?style=brands
     backgroundColor: "#D14836", // Reference https://simpleicons.org/?q=gmail
   },
   {
-    name: "X-Twitter",
-    link: "https://twitter.com/ashutosh_1919",
-    fontAwesomeIcon: "fa-x-twitter", // Reference https://fontawesome.com/icons/x-twitter?f=brands&s=solid
-    backgroundColor: "#000000", // Reference https://simpleicons.org/?q=x
-  },
-  {
-    name: "Facebook",
-    link: "https://www.facebook.com/laymanbrother.19/",
-    fontAwesomeIcon: "fa-facebook-f", // Reference https://fontawesome.com/icons/facebook-f?style=brands
-    backgroundColor: "#1877F2", // Reference https://simpleicons.org/?q=facebook
-  },
-  {
     name: "Instagram",
-    link: "https://www.instagram.com/layman_brother/",
+    link: "https://www.instagram.com/lsiem0927/",
     fontAwesomeIcon: "fa-instagram", // Reference https://fontawesome.com/icons/instagram?style=brands
     backgroundColor: "#E4405F", // Reference https://simpleicons.org/?q=instagram
   },
@@ -87,235 +60,231 @@ const socialMediaLinks = [
 const skills = {
   data: [
     {
-      title: "Data Science & AI",
-      fileName: "DataScienceImg",
-      skills: [
-        "⚡ Developing highly scalable production ready models for various deeplearning and statistical use cases",
-        "⚡ Experience of working with Computer Vision and NLP projects",
-        "⚡ Complex quantitative modelling for dynamic forecasting and time series analysis",
-      ],
-      softwareSkills: [
-        {
-          skillName: "Tensorflow",
-          fontAwesomeClassname: "logos-tensorflow",
-          style: {
-            backgroundColor: "transparent",
-          },
-        },
-        {
-          skillName: "Keras",
-          fontAwesomeClassname: "simple-icons:keras",
-          style: {
-            backgroundColor: "white",
-            color: "#D00000",
-          },
-        },
-        {
-          skillName: "PyTorch",
-          fontAwesomeClassname: "logos-pytorch",
-          style: {
-            backgroundColor: "transparent",
-          },
-        },
-        {
-          skillName: "Python",
-          fontAwesomeClassname: "ion-logo-python",
-          style: {
-            backgroundColor: "transparent",
-            color: "#3776AB",
-          },
-        },
-        {
-          skillName: "Deeplearning",
-          imageSrc: "deeplearning_ai_logo.png",
-        },
-      ],
-    },
-    {
-      title: "Full Stack Development",
+      title: "Webentwicklung",
       fileName: "FullStackImg",
-      skills: [
-        "⚡ Building responsive website front end using React-Redux",
-        "⚡ Developing mobile applications using Flutter, React Native and solo android apps using Kotlin",
-        "⚡ Creating application backend in Node, Express & Flask",
-      ],
-      softwareSkills: [
+      categories: [
         {
-          skillName: "HTML5",
-          fontAwesomeClassname: "simple-icons:html5",
-          style: {
-            color: "#E34F26",
-          },
+          categoryTitle: "Frontend-Entwicklung",
+          skills: [
+            "⚡ Erstellung von responsiven Benutzeroberflächen mit HTML5, CSS3 und modernem JavaScript.",
+            "⚡ Einsatz von Vaadin für Rich Internet Applications.",
+          ],
+          softwareSkills: [
+            {
+              skillName: "HTML5",
+              fontAwesomeClassname: "simple-icons:html5",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "CSS3",
+              fontAwesomeClassname: "simple-icons:css3",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "JavaScript",
+              fontAwesomeClassname: "simple-icons:javascript",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Vaadin",
+              fontAwesomeClassname: "simple-icons:vaadin",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
         {
-          skillName: "CSS3",
-          fontAwesomeClassname: "fa-css3",
-          style: {
-            color: "#1572B6",
-          },
+          categoryTitle: "Backend-Entwicklung",
+          skills: [
+            "⚡ Entwicklung robuster Server-Anwendungen in Java mit Spring Boot.",
+            "⚡ Nutzung von Python für leichte bis mittelschwere Server- und Client-Anwendungen.",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Java",
+              fontAwesomeClassname: "simple-icons:java",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Spring Boot",
+              fontAwesomeClassname: "simple-icons:spring",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Python",
+              fontAwesomeClassname: "simple-icons:python",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
         {
-          skillName: "Sass",
-          fontAwesomeClassname: "simple-icons:sass",
-          style: {
-            color: "#CC6699",
-          },
+          categoryTitle: "API-Entwicklung",
+          skills: [
+            "⚡ Design und Implementierung von RESTful APIs mit Python-Frameworks wie Django, Flask und FastAPI zur Unterstützung von Web- und Hybrid-Apps.",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Django",
+              fontAwesomeClassname: "simple-icons:django",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Flask",
+              fontAwesomeClassname: "simple-icons:flask",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "FastAPI",
+              fontAwesomeClassname: "simple-icons:fastapi",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
         {
-          skillName: "JavaScript",
-          fontAwesomeClassname: "simple-icons:javascript",
-          style: {
-            backgroundColor: "#000000",
-            color: "#F7DF1E",
-          },
-        },
-        {
-          skillName: "ReactJS",
-          fontAwesomeClassname: "simple-icons:react",
-          style: {
-            color: "#61DAFB",
-          },
-        },
-        {
-          skillName: "NodeJS",
-          fontAwesomeClassname: "devicon-plain:nodejs-wordmark",
-          style: {
-            color: "#339933",
-          },
-        },
-        {
-          skillName: "NPM",
-          fontAwesomeClassname: "simple-icons:npm",
-          style: {
-            color: "#CB3837",
-          },
-        },
-        {
-          skillName: "Yarn",
-          fontAwesomeClassname: "simple-icons:yarn",
-          style: {
-            color: "#2C8EBB",
-          },
-        },
-        {
-          skillName: "Gatsby",
-          fontAwesomeClassname: "simple-icons:gatsby",
-          style: {
-            color: "#663399",
-          },
-        },
-        {
-          skillName: "Flutter",
-          fontAwesomeClassname: "simple-icons:flutter",
-          style: {
-            color: "#02569B",
-          },
+          categoryTitle: "Single Page Applications (SPA)",
+          skills: [
+            "⚡ Entwicklung von dynamischen One-Page-Apps unter Verwendung von Content-Management-Systemen (CMS)",
+            "⚡ Anpassung bestehender CMS an individuelle Kundenanforderungen",
+          ],
+          softwareSkills: [
+            {
+              skillName: "WordPress",
+              fontAwesomeClassname: "simple-icons:wordpress",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Customizing (CRM)",
+              fontAwesomeClassname:
+                "material-symbols-light:dashboard-customize",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
       ],
     },
     {
-      title: "Cloud Infra-Architecture",
-      fileName: "CloudInfraImg",
+      title: "Datenbankverwaltung",
+      fileName: "DatabaseManagementImg",
       skills: [
-        "⚡ Experience working on multiple cloud platforms",
-        "⚡ Hosting and maintaining websites on virtual machine instances along with integration of databases",
-        "⚡ Deploying deep learning models on cloud to use on mobile devices",
-        "⚡ Setting up streaming jobs from DB to Server or vice-versa on GCP and AWS",
+        "⚡ Management und Optimierung von relationalen Datenbanken wie MySQL und PostgreSQL.",
+        "⚡ Einsatz von MongoDB für dokumentenorientierte Datenmodelle, die Flexibilität und Skalierbarkeit in modernen Webanwendungen bieten.",
       ],
       softwareSkills: [
         {
-          skillName: "GCP",
-          fontAwesomeClassname: "simple-icons:googlecloud",
+          skillName: "MySQL",
+          fontAwesomeClassname: "simple-icons:mysql",
           style: {
-            color: "#4285F4",
-          },
-        },
-        {
-          skillName: "AWS",
-          fontAwesomeClassname: "simple-icons:amazonaws",
-          style: {
-            color: "#FF9900",
-          },
-        },
-        {
-          skillName: "Azure",
-          fontAwesomeClassname: "simple-icons:microsoftazure",
-          style: {
-            color: "#0089D6",
-          },
-        },
-        {
-          skillName: "Firebase",
-          fontAwesomeClassname: "simple-icons:firebase",
-          style: {
-            color: "#FFCA28",
+            color: "#3776AB",
           },
         },
         {
           skillName: "PostgreSQL",
           fontAwesomeClassname: "simple-icons:postgresql",
           style: {
-            color: "#336791",
+            color: "#3776AB",
           },
         },
         {
           skillName: "MongoDB",
           fontAwesomeClassname: "simple-icons:mongodb",
           style: {
-            color: "#47A248",
+            color: "#3776AB",
+          },
+        },
+      ],
+    },
+    {
+      title: "Serverkonfiguration und -management",
+      fileName: "ServerManagementImg",
+      skills: [
+        "⚡ Aufbau und Konfiguration von Linux-Servern und Clustern.",
+        "⚡ Automatisierung von Routinetasks mittels Shell-Skripting.",
+        "⚡ Nutzung von Docker zur Containerisierung von Anwendungen.",
+        "⚡ Einsatz von Kubernetes für die Orchestrierung, falls Skalierung und Management von Container-Deployments benötigt werden.",
+      ],
+      softwareSkills: [
+        {
+          skillName: "Linux",
+          fontAwesomeClassname: "simple-icons:linux",
+          style: {
+            color: "#3776AB",
           },
         },
         {
           skillName: "Docker",
           fontAwesomeClassname: "simple-icons:docker",
           style: {
-            color: "#1488C6",
+            color: "#3776AB",
           },
         },
         {
           skillName: "Kubernetes",
           fontAwesomeClassname: "simple-icons:kubernetes",
           style: {
-            color: "#326CE5",
+            color: "#3776AB",
           },
         },
       ],
     },
     {
-      title: "UI/UX Design",
-      fileName: "DesignImg",
+      title: "DevOps",
+      fileName: "DevOpsImg",
       skills: [
-        "⚡ Designing highly attractive user interface for mobile and web applications",
-        "⚡ Customizing logo designs and building logos from scratch",
-        "⚡ Creating the flow of application functionalities to optimize user experience",
+        "⚡ Implementierung von CI/CD-Pipelines mit Tools wie Jenkins oder GitHub Actions",
+        "⚡ Einsatz von Git für die Quellcodeverwaltung und zur Förderung der Zusammenarbeit im Team",
+        "⚡ Nutzung von Azure für Hosting, Datenbankdienste, maschinelles Lernen und andere Cloud-basierte Lösungen",
+        "⚡ Einführung von Monitoring- und Logging-Tools zur Überwachung der Systemleistung und zur schnellen Fehlerbehebung",
       ],
       softwareSkills: [
         {
-          skillName: "Adobe XD",
-          fontAwesomeClassname: "simple-icons:adobexd",
+          skillName: "Jenkins",
+          fontAwesomeClassname: "simple-icons:jenkins",
           style: {
-            color: "#FF2BC2",
+            color: "#3776AB",
           },
         },
         {
-          skillName: "Figma",
-          fontAwesomeClassname: "simple-icons:figma",
+          skillName: "GitHub Actions",
+          fontAwesomeClassname: "simple-icons:githubactions",
           style: {
-            color: "#F24E1E",
+            color: "#3776AB",
           },
         },
         {
-          skillName: "Adobe Illustrator",
-          fontAwesomeClassname: "simple-icons:adobeillustrator",
+          skillName: "Azure",
+          fontAwesomeClassname: "simple-icons:microsoftazure",
           style: {
-            color: "#FF7C00",
+            color: "#3776AB",
           },
         },
         {
-          skillName: "Inkscape",
-          fontAwesomeClassname: "simple-icons:inkscape",
+          skillName: "Git",
+          fontAwesomeClassname: "simple-icons:git",
           style: {
-            color: "#000000",
+            color: "#3776AB",
           },
         },
       ],

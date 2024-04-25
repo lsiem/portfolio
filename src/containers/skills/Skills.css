@@ -1,5 +1,7 @@
 .skills-main-div {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   overflow: hidden;
   margin-bottom: 50px; /* Increased spacing between each skill section */
 }
@@ -17,13 +19,10 @@
 }
 
 .skills-text-div {
-  margin-left: 50px;
-  font-family: "Google Sans Regular";
-}
-
-.skills-main-div > * {
-  flex: 1;
-  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px; /* Space below each skill category */
 }
 
 .skills-image-div > * {
@@ -38,12 +37,14 @@
   font-family: "Google Sans Regular";
   line-height: normal;
   margin-bottom: 20px; /* Space below the heading */
+  text-align: center;
 }
 
 .skills-subheading {
   font-size: 24px;
   margin-top: 100px;
   margin-bottom: 10px; /* Space below the subheading */
+  text-align: center;
 }
 
 /* Media Query */
@@ -74,11 +75,11 @@
     flex-direction: column;
   }
   .skills-text-div {
-    margin-left: 0px;
-    margin: 20px;
+    align-items: center;
   }
   .skills-text {
     font-size: 16px;
+    text-align: center;
   }
   .skills-text-subtitle {
     font-size: 16px;
@@ -90,6 +91,13 @@
   }
   .skills-image-div > * {
     margin-top: 20px; /* Reduced top margin for images on mobile */
+  }
+  .skills-subcategory-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .skills-subcategory-container {
+    width: 100%;
   }
 }
 
@@ -126,9 +134,17 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   margin-bottom: 20px;
+  width: 45%; /* Set width to 45% to accommodate two containers per row */
 }
 
 .skills-subcategory-container:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.skills-subcategory-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Add gap between containers */
 }
