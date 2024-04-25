@@ -134,8 +134,9 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   margin-bottom: 20px;
-  width: calc(50% - 20px); /* Set width to 50% minus the gap size to accommodate two containers per row */
-  margin-right: 20px; /* Add right margin to create a gap between grid items */
+  width: calc(50% - 10px); /* Set width to 50% minus half the gap size to accommodate two containers per row */
+  margin-right: 10px; /* Add right margin to create a gap between grid items */
+  margin-left: 10px; /* Add left margin to create a gap between grid items */
 }
 
 .skills-subcategory-container:hover {
