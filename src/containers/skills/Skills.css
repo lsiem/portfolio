@@ -143,9 +143,8 @@
 }
 
 .skills-subcategory-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px; /* Add gap between containers */
 }
 .skills-subcategory-wrapper {
