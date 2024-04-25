@@ -1,7 +1,4 @@
-.skills-main-div {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+.skills-div {
   overflow: hidden;
   margin-bottom: 50px; /* Increased spacing between each skill section */
 }
@@ -16,19 +13,6 @@
 .skills-text {
   font-size: 20px;
   margin-bottom: 10px; /* Space below each skill description */
-}
-
-.skills-text-div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px; /* Space below each skill category */
-}
-
-.skills-image-div > * {
-  max-width: 100%;
-  height: auto;
-  margin-top: 50px; /* Adjusted top margin for better visual separation */
 }
 
 .skills-heading {
@@ -85,19 +69,22 @@
     font-size: 16px;
     text-align: center;
   }
-  .skills-image-div {
-    /* display: none; */
-    order: 2;
-  }
-  .skills-image-div > * {
-    margin-top: 20px; /* Reduced top margin for images on mobile */
-  }
+
   .skills-subcategory-wrapper {
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; /* Add gap between containers */
+    justify-items: center;
+  }
+  @media (max-width: 768px) {
+    .skills-subcategory-wrapper {
+      grid-template-columns: 1fr;
+    }
   }
   .skills-subcategory-container {
-    width: 100%;
+    width: 45%;
+    margin-right: 0;
+    margin-left: 0;
   }
 }
 
@@ -134,7 +121,9 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   margin-bottom: 20px;
-  width: calc(50% - 10px); /* Set width to 50% minus half the gap size to accommodate two containers per row */
+  width: calc(
+    50% - 10px
+  ); /* Set width to 50% minus half the gap size to accommodate two containers per row */
   margin-right: 10px; /* Add right margin to create a gap between grid items */
   margin-left: 10px; /* Add left margin to create a gap between grid items */
 }
