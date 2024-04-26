@@ -14,6 +14,11 @@ const onMouseOut = (event, color, bgColor) => {
 };
 
 export default function Button({ text, className, href, newTab, theme }) {
+  if (!theme || !theme.body || !theme.text) {
+    console.error("Theme prop is missing or incomplete");
+    theme = { body: "defaultBodyColor", text: "defaultTextColor" }; // Default values
+  }
+
   return (
     <div className={className}>
       <a

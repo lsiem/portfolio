@@ -61,13 +61,12 @@ const skills = {
   data: [
     {
       title: "Webentwicklung",
-      fileName: "FullStackImg",
       categories: [
         {
           categoryTitle: "Frontend-Entwicklung",
           skills: [
-            "⚡ Erstellung von responsiven Benutzeroberflächen mit HTML5, CSS3 und modernem JavaScript.",
-            "⚡ Einsatz von Vaadin für Rich Internet Applications.",
+            "⚡ Erstellung von responsiven Benutzeroberflächen mit HTML5, CSS3 und modernem JavaScript",
+            "⚡ Einsatz von Vaadin für Rich Internet Applications",
           ],
           softwareSkills: [
             {
@@ -103,13 +102,13 @@ const skills = {
         {
           categoryTitle: "Backend-Entwicklung",
           skills: [
-            "⚡ Entwicklung robuster Server-Anwendungen in Java mit Spring Boot.",
-            "⚡ Nutzung von Python für leichte bis mittelschwere Server- und Client-Anwendungen.",
+            "⚡ Entwicklung robuster Server-Anwendungen in Java mit Spring Boot",
+            "⚡ Nutzung von Python für leichte bis mittelschwere Server- und Client-Anwendungen",
           ],
           softwareSkills: [
             {
               skillName: "Java",
-              fontAwesomeClassname: "simple-icons:java",
+              fontAwesomeClassname: "fa-brands:java",
               style: {
                 color: "#3776AB",
               },
@@ -133,12 +132,13 @@ const skills = {
         {
           categoryTitle: "API-Entwicklung",
           skills: [
-            "⚡ Design und Implementierung von RESTful APIs mit Python-Frameworks wie Django, Flask und FastAPI zur Unterstützung von Web- und Hybrid-Apps.",
+            "⚡ Entwurf und Design von RESTful APIs mit Postman",
+            "⚡ Realisierung von RESTful APIs unter Verwendung von Spring oder Flask und FastAPI",
           ],
           softwareSkills: [
             {
-              skillName: "Django",
-              fontAwesomeClassname: "simple-icons:django",
+              skillName: "Postman",
+              fontAwesomeClassname: "simple-icons:postman",
               style: {
                 color: "#3776AB",
               },
@@ -159,333 +159,292 @@ const skills = {
             },
           ],
         },
-        {
-          categoryTitle: "Single Page Applications (SPA)",
-          skills: [
-            "⚡ Entwicklung von dynamischen One-Page-Apps unter Verwendung von Content-Management-Systemen (CMS)",
-            "⚡ Anpassung bestehender CMS an individuelle Kundenanforderungen",
-          ],
-          softwareSkills: [
-            {
-              skillName: "WordPress",
-              fontAwesomeClassname: "simple-icons:wordpress",
-              style: {
-                color: "#3776AB",
-              },
-            },
-            {
-              skillName: "Customizing (CRM)",
-              fontAwesomeClassname:
-                "material-symbols-light:dashboard-customize",
-              style: {
-                color: "#3776AB",
-              },
-            },
-          ],
-        },
       ],
     },
     {
       title: "Datenbankverwaltung",
-      fileName: "DatabaseManagementImg",
-      skills: [
-        "⚡ Management und Optimierung von relationalen Datenbanken wie MySQL und PostgreSQL.",
-        "⚡ Einsatz von MongoDB für dokumentenorientierte Datenmodelle, die Flexibilität und Skalierbarkeit in modernen Webanwendungen bieten.",
-      ],
-      softwareSkills: [
+      categories: [
         {
-          skillName: "MySQL",
-          fontAwesomeClassname: "simple-icons:mysql",
-          style: {
-            color: "#3776AB",
-          },
-        },
-        {
-          skillName: "PostgreSQL",
-          fontAwesomeClassname: "simple-icons:postgresql",
-          style: {
-            color: "#3776AB",
-          },
-        },
-        {
-          skillName: "MongoDB",
-          fontAwesomeClassname: "simple-icons:mongodb",
-          style: {
-            color: "#3776AB",
-          },
-        },
-      ],
-    },
-    {
-      title: "Serverkonfiguration und -management",
-      fileName: "ServerManagementImg",
-      skills: [
-        "⚡ Aufbau und Konfiguration von Linux-Servern und Clustern.",
-        "⚡ Automatisierung von Routinetasks mittels Shell-Skripting.",
-        "⚡ Nutzung von Docker zur Containerisierung von Anwendungen.",
-        "⚡ Einsatz von Kubernetes für die Orchestrierung, falls Skalierung und Management von Container-Deployments benötigt werden.",
-      ],
-      softwareSkills: [
-        {
-          skillName: "Linux",
-          fontAwesomeClassname: "simple-icons:linux",
-          style: {
-            color: "#3776AB",
-          },
-        },
-        {
-          skillName: "Docker",
-          fontAwesomeClassname: "simple-icons:docker",
-          style: {
-            color: "#3776AB",
-          },
-        },
-        {
-          skillName: "Kubernetes",
-          fontAwesomeClassname: "simple-icons:kubernetes",
-          style: {
-            color: "#3776AB",
-          },
+          categoryTitle: "SQL-Datenbanken",
+          skills: [
+            "⚡ Entwurf und Design von relationalen Datenbanken wie MySQL und PostgreSQL",
+            "⚡ Entwicklung von Datenmodellen und Durchführung komplexer Abfragen",
+          ],
+          softwareSkills: [
+            {
+              skillName: "MySQL",
+              fontAwesomeClassname: "fontisto:mysql",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "PostgreSQL",
+              fontAwesomeClassname: "simple-icons:postgresql",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
       ],
     },
     {
       title: "DevOps",
-      fileName: "DevOpsImg",
-      skills: [
-        "⚡ Implementierung von CI/CD-Pipelines mit Tools wie Jenkins oder GitHub Actions",
-        "⚡ Einsatz von Git für die Quellcodeverwaltung und zur Förderung der Zusammenarbeit im Team",
-        "⚡ Nutzung von Azure für Hosting, Datenbankdienste, maschinelles Lernen und andere Cloud-basierte Lösungen",
-        "⚡ Einführung von Monitoring- und Logging-Tools zur Überwachung der Systemleistung und zur schnellen Fehlerbehebung",
-      ],
-      softwareSkills: [
+      categories: [
         {
-          skillName: "Jenkins",
-          fontAwesomeClassname: "simple-icons:jenkins",
-          style: {
-            color: "#3776AB",
-          },
+          categoryTitle: "Continuous Integration / Continuous Deployment",
+          skills: [
+            "⚡ Versionsverwaltung mit Git und GitHub",
+            "⚡ Einsatz von GitHub Actions, Azure DevOps oder Jenkins für CI/CD Pipelines",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Git",
+              fontAwesomeClassname: "simple-icons:git",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "GitHub",
+              fontAwesomeClassname: "simple-icons:github",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Azure DevOps",
+              fontAwesomeClassname: "simple-icons:azuredevops",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
         {
-          skillName: "GitHub Actions",
-          fontAwesomeClassname: "simple-icons:githubactions",
-          style: {
-            color: "#3776AB",
-          },
+          categoryTitle: "Cloud Dienste",
+          skills: [
+            "⚡ Konfiguration und Verwalten von Azure Cloud Diensten",
+            "⚡ Migration von On-Premise Diensten auf Cloud Dienste",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Azure",
+              fontAwesomeClassname: "simple-icons:microsoftazure",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Azure Functions",
+              fontAwesomeClassname: "simple-icons:azurefunctions",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Azure Pipelines",
+              fontAwesomeClassname: "simple-icons:azurepipelines",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Azure Artifacts",
+              fontAwesomeClassname: "simple-icons:azureartifacts",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Cloud Migration",
+              fontAwesomeClassname: "carbon:ibm-cloud-mass-data-migration",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
         {
-          skillName: "Azure",
-          fontAwesomeClassname: "simple-icons:microsoftazure",
-          style: {
-            color: "#3776AB",
-          },
+          categoryTitle: "Überwachung und Sicherheit",
+          skills: [
+            "⚡ Integration von Sicherheitsprotokollen und - tools mit OWASP ZAP oder Nessus",
+            "⚡ Nutzung von Tools wie Grafana oder Datadog zur Überwachung der Systemleistung",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Prometheus",
+              fontAwesomeClassname: "simple-icons:prometheus",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Grafana",
+              fontAwesomeClassname: "simple-icons:grafana",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Datadog",
+              fontAwesomeClassname: "simple-icons:datadog",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "OWASP ZAP",
+              fontAwesomeClassname: "simple-icons:owasp",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Serverkonfiguration und -management",
+      categories: [
+        {
+          categoryTitle: "Linux Server",
+          skills: [
+            "⚡ Aufbau und Konfiguration von Linux-Servern und Clustern",
+            "⚡ Automatisierung von Routinetasks mittels Shell-Skripting",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Linux",
+              fontAwesomeClassname: "simple-icons:linux",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Shell-Scripting",
+              fontAwesomeClassname: "simple-icons:gnubash",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
         {
-          skillName: "Git",
-          fontAwesomeClassname: "simple-icons:git",
-          style: {
-            color: "#3776AB",
-          },
+          categoryTitle: "Windows Server",
+          skills: [
+            "⚡ Bereitstellen und Konfigurieren von Windows-Servern und Clustern",
+            "⚡ Domain-Management und Active Directory Administration",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Windows Server",
+              fontAwesomeClassname: "simple-icons:windows",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "PowerShell",
+              fontAwesomeClassname: "simple-icons:powershell",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Active Directory",
+              fontAwesomeClassname: "carbon:directory-domain",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
+        },
+        {
+          categoryTitle: "Containerisierung und Orchestrierung",
+          skills: [
+            "⚡ Nutzung von Docker zur Containerisierung von Anwendungen",
+            "⚡ Einsatz von Kubernetes für die Orchestrierung von Container-Deployments",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Docker",
+              fontAwesomeClassname: "simple-icons:docker",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Kubernetes",
+              fontAwesomeClassname: "simple-icons:kubernetes",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
         },
       ],
     },
-  ],
-};
-
-// Education Page
-const competitiveSites = {
-  competitiveSites: [
     {
-      siteName: "LeetCode",
-      iconifyClassname: "simple-icons:leetcode",
-      style: {
-        color: "#F79F1B",
-      },
-      profileLink: "https://leetcode.com/layman_brother/",
-    },
-    {
-      siteName: "HackerRank",
-      iconifyClassname: "simple-icons:hackerrank",
-      style: {
-        color: "#2EC866",
-      },
-      profileLink: "https://www.hackerrank.com/layman_brother",
-    },
-    {
-      siteName: "Codechef",
-      iconifyClassname: "simple-icons:codechef",
-      style: {
-        color: "#5B4638",
-      },
-      profileLink: "https://www.codechef.com/users/ashutosh_1919",
-    },
-    {
-      siteName: "Codeforces",
-      iconifyClassname: "simple-icons:codeforces",
-      style: {
-        color: "#1F8ACB",
-      },
-      profileLink: "http://codeforces.com/profile/layman_brother",
-    },
-    {
-      siteName: "Hackerearth",
-      iconifyClassname: "simple-icons:hackerearth",
-      style: {
-        color: "#323754",
-      },
-      profileLink: "https://www.hackerearth.com/@ashutosh391",
-    },
-    {
-      siteName: "Kaggle",
-      iconifyClassname: "simple-icons:kaggle",
-      style: {
-        color: "#20BEFF",
-      },
-      profileLink: "https://www.kaggle.com/laymanbrother",
-    },
-  ],
-};
-
-const degrees = {
-  degrees: [
-    {
-      title: "Indian Institute of Information Technology Kurnool",
-      subtitle: "B.Tech. in Computer Engineering",
-      logo_path: "iiitk_logo.png",
-      alt_name: "IIITDM Kurnool",
-      duration: "2016 - 2020",
-      descriptions: [
-        "⚡ I have studied basic software engineering subjects like DS, Algorithms, DBMS, OS, CA, AI etc.",
-        "⚡ Apart from this, I have done courses on Deep Learning, Data Science, Cloud Computing and Full Stack Development.",
-        "⚡ I was selected for Merit cum Means Scholarship which is given to top 10% of students in college. I have received award from respected director for consistently best performance in academics.",
+      title: "Consulting",
+      categories: [
+        {
+          categoryTitle: "Technologieberatung",
+          skills: [
+            "⚡ Analyse und Optimierung von IT-Infrastrukturen",
+            "⚡ Beratung zur digitalen Transformation und Cloud-Migration",
+            "⚡ Implementierungsstrategien für moderne Technologielösungen",
+          ],
+          softwareSkills: [
+            {
+              skillName: "IT-Consulting",
+              fontAwesomeClassname: "game-icons:teacher",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Digital Transformation",
+              fontAwesomeClassname: "carbon:ibm-cloud-mass-data-migration",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
+        },
+        {
+          categoryTitle: "Sicherheitsberatung",
+          skills: [
+            "⚡ Entwicklung und Implementierung von Sicherheitsstrategien",
+            "⚡ Risikobewertung und Compliance-Prüfungen",
+            "⚡ Beratung zu Datenintegration und Informationssicherheit",
+          ],
+          softwareSkills: [
+            {
+              skillName: "Sicherheit",
+              fontAwesomeClassname: "material-symbols:security",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Compliance",
+              fontAwesomeClassname: "fluent-mdl2:compliance-audit",
+              style: {
+                color: "#3776AB",
+              },
+            },
+            {
+              skillName: "Data Integration",
+              fontAwesomeClassname: "mingcute:file-security-fill",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
+        },
       ],
-      website_link: "http://iiitk.ac.in",
-    },
-    {
-      title: "Indiana University Bloomington",
-      subtitle: "M.S. in Computer Science",
-      logo_path: "iu_logo.png",
-      alt_name: "Indiana University Bloomington",
-      duration: "2021 - 2023",
-      descriptions: [
-        "⚡ I have taken varity of courses related to Artificial Intelligence which correspond to Explainable AI, Graph Machine Learning, Computer Vision etc.",
-        "⚡ Apart from this, I have also done research assistantship. As part of it, I have worked on creating new algorithms in Graph ML and Network Science.",
-        "⚡ During my time at university, I was also associated with multimedia department. As part of it, I have worked on some documentry films and interviews.",
-      ],
-      website_link: "https://www.indiana.edu/",
-    },
-  ],
-};
-
-const certifications = {
-  certifications: [
-    {
-      title: "Machine Learning",
-      subtitle: "- Andrew Ng",
-      logo_path: "stanford_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/verify/22MTSSC5WDTM",
-      alt_name: "Stanford University",
-      color_code: "#8C151599",
-    },
-    {
-      title: "Deep Learning",
-      subtitle: "- Andrew Ng",
-      logo_path: "deeplearning_ai_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/specialization/H8CPSFXAJD2G",
-      alt_name: "deeplearning.ai",
-      color_code: "#00000099",
-    },
-    {
-      title: "ML on GCP",
-      subtitle: "- GCP Training",
-      logo_path: "google_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/specialization/EB4VJARK8647",
-      alt_name: "Google",
-      color_code: "#0C9D5899",
-    },
-    {
-      title: "Data Science",
-      subtitle: "- Alex Aklson",
-      logo_path: "ibm_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/specialization/PLEAPCSJBZT5",
-      alt_name: "IBM",
-      color_code: "#1F70C199",
-    },
-    {
-      title: "Big Data",
-      subtitle: "- Kim Akers",
-      logo_path: "microsoft_logo.png",
-      certificate_link:
-        "https://drive.google.com/file/d/164zKCFOsI4vGqokc-Qj-e_D00kLDHIrG/view",
-      alt_name: "Microsoft",
-      color_code: "#D83B0199",
-    },
-    {
-      title: "Advanced Data Science",
-      subtitle: "- Romeo Kienzler",
-      logo_path: "ibm_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/verify/BH2T9BRU87BH",
-      alt_name: "IBM",
-      color_code: "#1F70C199",
-    },
-    {
-      title: "Advanced ML on GCP",
-      subtitle: "- GCP Training",
-      logo_path: "google_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/verify/5JZZM7TNQ2AV",
-      alt_name: "Google",
-      color_code: "#0C9D5899",
-    },
-    {
-      title: "DL on Tensorflow",
-      subtitle: "- Laurence Moroney",
-      logo_path: "deeplearning_ai_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/verify/6T4DCUGNK8J8",
-      alt_name: "deeplearning.ai",
-      color_code: "#00000099",
-    },
-    {
-      title: "Fullstack Development",
-      subtitle: "- Jogesh Muppala",
-      logo_path: "coursera_logo.png",
-      certificate_link:
-        "https://www.coursera.org/account/accomplishments/certificate/NRANJA66Y2YA",
-      alt_name: "Coursera",
-      color_code: "#2A73CC",
-    },
-    {
-      title: "Kuberenetes on GCP",
-      subtitle: "- Qwiklabs",
-      logo_path: "gcp_logo.png",
-      certificate_link:
-        "https://google.qwiklabs.com/public_profiles/e4d5a92b-faf6-4679-a70b-a9047c0cd750",
-      alt_name: "GCP",
-      color_code: "#4285F499",
-    },
-    {
-      title: "Cryptography",
-      subtitle: "- Saurabh Mukhopadhyay",
-      logo_path: "nptel_logo.png",
-      certificate_link:
-        "https://drive.google.com/open?id=1z5ExD_QJVdU0slLkp8CBqSF3-C3g-ro_",
-      alt_name: "NPTEL",
-      color_code: "#FFBB0099",
-    },
-    {
-      title: "Cloud Architecture",
-      subtitle: "- Qwiklabs",
-      logo_path: "gcp_logo.png",
-      certificate_link:
-        "https://google.qwiklabs.com/public_profiles/5fab4b2d-be6f-408c-8dcb-6d3b58ecb4a2",
-      alt_name: "GCP",
-      color_code: "#4285F499",
     },
   ],
 };
@@ -651,46 +610,6 @@ const experience = {
   ],
 };
 
-// Projects Page
-const projectsHeader = {
-  title: "Projects",
-  description:
-    "My projects makes use of vast variety of latest technology tools. My best experience is to create Data Science projects and deploy them to web applications using cloud infrastructure.",
-  avatar_image_path: "projects_image.svg",
-};
-
-const publicationsHeader = {
-  title: "Publications",
-  description: "Some of my published Articles, Blogs and Research.",
-  avatar_image_path: "projects_image.svg",
-};
-
-const publications = {
-  data: [
-    {
-      id: "neuro-symbolic-sudoku-solver",
-      name: "Neuro-Symbolic Sudoku Solver",
-      createdAt: "2023-07-02T00:00:00Z",
-      description: "Paper published in KDD KiML 2023",
-      url: "https://arxiv.org/abs/2307.00653",
-    },
-    {
-      id: "mdp-diffusion",
-      name: "MDP-Diffusion",
-      createdAt: "2023-09-19T00:00:00Z",
-      description: "Blog published in Paperspace",
-      url: "https://blog.paperspace.com/mdp-diffusion/",
-    },
-    {
-      id: "consistency-models",
-      name: "Consistency Models",
-      createdAt: "2023-10-12T00:00:00Z",
-      description: "Blog published in Paperspace",
-      url: "https://blog.paperspace.com/consistency-models/",
-    },
-  ],
-};
-
 // Contact Page
 const contactPageData = {
   contactSection: {
@@ -729,12 +648,6 @@ export {
   greeting,
   socialMediaLinks,
   skills,
-  competitiveSites,
-  degrees,
-  certifications,
   experience,
-  projectsHeader,
-  publicationsHeader,
-  publications,
   contactPageData,
 };
