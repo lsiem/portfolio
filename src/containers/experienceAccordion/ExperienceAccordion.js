@@ -14,6 +14,7 @@ const ExperienceAccordion = ({ sections, theme }) => {
             key={section.title}
             section={section}
             theme={theme}
+            expanded={expanded}
             setExpanded={setExpanded}
           />
         ))}
