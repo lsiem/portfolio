@@ -20,11 +20,11 @@ const seo = {
 //Home Page
 const greeting = {
   title: "Hi, ich bin Lasse",
-  logo_name: "AshutoshHathidara",
+  logo_name: "Lasse Siemoneit",
   subTitle:
     "Ich bin ein selbsterlerneter und passionierter Full-Stack Software Entwickler mit einem Fokus auf die Entwicklung von Web- und Hybrid-Apps.",
   resumeLink:
-    "https://drive.google.com/file/d/1bXRknv_h-XI_3CQ3SGPteGODtvEb7YvI/view?usp=sharing",
+    "https://drive.google.com/file/d/1ZvSjgNAqE6I3TBNOjo_ZfMYI7zyhhfy3/view?usp=sharing",
   portfolio_repository: "https://github.com/lsiem/portfolio",
   githubProfile: "https://github.com/lsiem",
 };
@@ -613,17 +613,21 @@ const experience = {
 // Contact Page
 const contactPageData = {
   contactSection: {
-    title: "Contact Me",
-    profile_image_path: "animated_ashutosh.png",
+    title: "Kontaktiere mich",
+    profile_image_path: "lasse_profile.png",
     description:
-      "I am available on almost every social media. You can message me, I will reply within 24 hours. I can help you with ML, AI, React, Android, Cloud and Opensource Development.",
+      "Interessiert an meiner Arbeit? Ich freue mich auf deine Kontaktaufnahme für einen persönlichen Austausch.",
   },
   blogSection: {
-    title: "Blogs",
+    title: "Blog",
     subtitle:
-      "I like to document some of my experiences in professional career journey as well as some technical knowledge sharing.",
-    link: "https://blogs.ashutoshhathidara.com/",
+      "Ich dokumentiere gerne einige meiner Erfahrungen auf meinem beruflichen Werdegang und teile mein technisches Wissen.",
+    link: "https://blog.lsiem.de/",
     avatar_image_path: "blogs_image.svg",
+  },
+  phoneSection: {
+    title: "",
+    subtitle: "",
   },
   addressSection: {
     title: "Address",
@@ -635,10 +639,6 @@ const contactPageData = {
     streetAddress: "Saratoga Avenue",
     avatar_image_path: "address_image.svg",
     location_map_link: "https://maps.app.goo.gl/NvYZqa34Wye4tpS17",
-  },
-  phoneSection: {
-    title: "",
-    subtitle: "",
   },
 };
 
