@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import ExperienceCard from "../../components/experienceCard/ExperienceCard.js";
+import MainProjectCard from "../../components/mainProjectCard/MainProjectCard.js";
+import SideProjectCard from "../../components/sideProjectCard/SideProjectCard.js";
 import ExperienceSectionCard from "../../components/experienceSectionCard/ExperienceSectionCard.js";
 import "./ExperienceAccordion.css";
 
@@ -23,20 +25,35 @@ const ExperienceAccordion = ({ sections, theme }) => {
         <div className="experience-details-container">
           {sections
             .find((section) => section.title === expanded)
-            .experiences.map((experience, index) => (
+            .experiences?.map((experience, index) => (
               <ExperienceCard
-                key={`${expanded}-${index}`}
+                key={`experience-${index}`}
                 index={index}
-                totalCards={
-                  sections.find((section) => section.title === expanded)
-                    .experiences.length
-                }
                 experience={experience}
                 theme={theme}
               />
             ))}
+          {sections
+            .find((section) => section.title === expanded)  
+            .projects?.map((project, index) => 
+              section.mainProjects ? (
+                <MainProjectCard
+                  key={`main-project-${index}`}
+                  index={index}
+                  project={project}
+                  theme={theme}
+                />
+              ) : (
+                <SideProjectCard
+                  key={`side-project-${index}`}  
+                  index={index}
+                  project={project}
+                  theme={theme}
+                />
+              )
+            )}
         </div>
-      )}
+      )}  
     </div>
   );
 };

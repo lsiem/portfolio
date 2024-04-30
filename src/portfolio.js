@@ -462,29 +462,69 @@ const experience = {
       work: true,
       experiences: [
         {
-          title: "",
-          company: "",
-          company_url: "",
-          logo_path: "",
-          duration: "",
-          location: "",
+          title: "Software Engineer",
+          company: "ABC Company",
+          company_url: "https://www.abc.com",
+          logo_path: "abc_logo.png",
+          duration: "Jan 2020 - Present",
+          location: "City, Country",
           description:
-            "",
-          color: "#000000",
+            "Worked on developing and maintaining web applications using modern technologies.",
+          color: "#0071C5",
         },
         {
-          title: "",
-          company: "",
-          company_url: "",
-          logo_path: "",
-          duration: "",
-          location: "",
+          title: "Software Developer",
+          company: "XYZ Corp",
+          company_url: "https://www.xyz.com",
+          logo_path: "xyz_logo.png",
+          duration: "Jun 2018 - Dec 2019", 
+          location: "City, Country",
           description:
-            "",
-          color: "#000000",
-        },
+            "Developed and maintained software solutions for clients.",
+          color: "#ee3c26",
+        }
       ],
     },
+    {
+      title: "Main Projects",
+      mainProjects: true,
+      projects: [
+        {
+          title: "Project 1",
+          description: "A web app for doing X using Y and Z.",
+          technologies: ["React", "Node.js", "MongoDB"],
+          link: "https://project1.com",
+          image_path: "project1.png"
+        },
+        {
+          title: "Project 2", 
+          description: "An iOS app that does X using Y.",
+          technologies: ["Swift", "Firebase"],
+          link: "https://project2.com",
+          image_path: "project2.png"
+        }
+      ]
+    },
+    {
+      title: "Side Projects",
+      sideProjects: true,
+      projects: [
+        {
+          title: "Side Project 1",
+          description: "A CLI tool for doing X.",
+          technologies: ["Python"],
+          link: "https://sideproject1.com",
+          image_path: "sideproject1.png"
+        },
+        {
+          title: "Side Project 2",
+          description: "A web app for doing Y.",
+          technologies: ["Vue.js", "Flask"],  
+          link: "https://sideproject2.com",
+          image_path: "sideproject2.png"
+        }
+      ]
+    }
   ],
 };
 
