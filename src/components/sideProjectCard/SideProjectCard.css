@@ -36,7 +36,7 @@
   text-decoration: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .side-project-card {
     flex-direction: column;
   }
@@ -44,6 +44,28 @@
   .side-project-image {
     margin-right: 0;
     margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .side-project-card {
+    padding: 15px;
+  }
+
+  .side-project-image img {
+    border-radius: 5px;
+  }
+
+  .side-project-details h3 {
+    font-size: 20px;
+  }
+
+  .side-project-description {
+    font-size: 14px;
+  }
+
+  .side-project-tech {
+    font-size: 12px;
   }
 }
 .side-project-card {

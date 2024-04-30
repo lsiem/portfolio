@@ -36,7 +36,7 @@
   text-decoration: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .main-project-card {
     flex-direction: column;
   }
@@ -44,6 +44,28 @@
   .main-project-image {
     margin-right: 0;
     margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-project-card {
+    padding: 15px;
+  }
+
+  .main-project-image img {
+    border-radius: 5px;
+  }
+
+  .main-project-details h3 {
+    font-size: 20px;
+  }
+
+  .main-project-description {
+    font-size: 14px;
+  }
+
+  .main-project-tech {
+    font-size: 12px;
   }
 }
 .main-project-card {
