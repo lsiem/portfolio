@@ -8,12 +8,12 @@ const MainProjectCard = ({ project, theme }) => {
         <img src={project.image_path} alt={project.title} />
       </div>
       <div className="main-project-details">
-        <h3 style={{ color: theme.text }}>{project.title}</h3>
-        <p className="main-project-description" style={{ color: theme.secondaryText }}>
+        <h3>{project.title}</h3>
+        <p className="main-project-description">
           {project.description}
         </p>
         <div className="main-project-footer">
-          <p className="main-project-tech" style={{ color: theme.secondaryText }}>
+          <p className="main-project-tech">
             {project.technologies.join(" | ")}  
           </p>
           <a href={project.link} target="_blank" rel="noopener noreferrer">
