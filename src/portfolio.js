@@ -451,10 +451,10 @@ const skills = {
 
 // Experience Page
 const experience = {
-  title: "Experience",
-  subtitle: "Work, Internship and Volunteership",
+  title: "Beruflicher Werdegang",
+  subtitle: "Berufliche Tätigkeiten",
   description:
-    "I have worked with many evolving startups as ML and DL Developer, Designer and Software Architect. I have also worked with some well established companies mostly as AI Developer. I love organising events and that is why I am also involved with many opensource communities as a representative.",
+    "Mit 16 startete mein Weg als Consultant in einem Start-Up-Unternehmen. Hier beriet und betreute ich Firmen bei der Digitalisierung und Migration in die Cloud. Seit 5 Jahren bin ich als Full-Stack-Entwickler und DevOps Engineer tätig und habe viel Erfahrung gesammelt. Meine Expertise ist die Planung und Realisierung von Softwareprojekten und digitalen Infrastrukturen.",
   header_image_path: "experience.svg",
   sections: [
     {
@@ -614,7 +614,7 @@ const experience = {
 const contactPageData = {
   contactSection: {
     title: "Kontaktiere mich",
-    profile_image_path: "lasse_profile.png",
+    profile_image_path: "lasse_profile.webp",
     description:
       "Interessiert an meiner Arbeit? Ich freue mich auf deine Kontaktaufnahme für einen persönlichen Austausch.",
   },
@@ -624,21 +624,6 @@ const contactPageData = {
       "Ich dokumentiere gerne einige meiner Erfahrungen auf meinem beruflichen Werdegang und teile mein technisches Wissen.",
     link: "https://blog.lsiem.de/",
     avatar_image_path: "blogs_image.svg",
-  },
-  phoneSection: {
-    title: "",
-    subtitle: "",
-  },
-  addressSection: {
-    title: "Address",
-    subtitle: "Saratoga Ave, San Jose, CA, USA 95129",
-    locality: "San Jose",
-    country: "USA",
-    region: "California",
-    postalCode: "95129",
-    streetAddress: "Saratoga Avenue",
-    avatar_image_path: "address_image.svg",
-    location_map_link: "https://maps.app.goo.gl/NvYZqa34Wye4tpS17",
   },
 };
 
