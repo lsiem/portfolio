@@ -55,9 +55,17 @@
   text-align: center;
 }
 
-.contact-heading-img-div > * {
+.contact-heading-img-div > img {
   max-width: 100%;
   height: auto;
+  border-radius: 50%;
+  border: 0.5rem solid #a1a1a1;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
+  transition: border-color 0.3s ease-in-out;
+}
+
+.contact-heading-img-div > img:hover {
+  border-color: #007bff;
 }
 
 .blog-heading-img-div > * {
