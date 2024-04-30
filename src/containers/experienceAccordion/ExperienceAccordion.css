@@ -13,6 +13,16 @@
 .experience-details-container {
   margin-top: 30px;
   animation: fadeIn 0.5s ease-in-out;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.experience-details-container.collapsed {
+  max-height: 0;
+}
+
+.experience-details-container.expanded {
+  max-height: 1000px; /* Adjust this value based on your content */
 }
 
 @keyframes fadeIn {

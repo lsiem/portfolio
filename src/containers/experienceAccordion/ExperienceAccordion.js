@@ -22,8 +22,11 @@ const ExperienceAccordion = ({ sections, theme }) => {
                     />
                 ))}
             </div>
-            {expanded && (
-                <div className="experience-details-container">
+            <div
+                className={`experience-details-container ${
+                    expanded ? "expanded" : "collapsed"
+                }`}
+            >
                     {sections
                         .find((section) => section.title === expanded)
                         .experiences?.map((experience, index) => (
