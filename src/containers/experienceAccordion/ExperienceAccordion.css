@@ -1,9 +1,17 @@
 .experience-accord {
   margin: 50px;
+  display: flex;
+  flex-direction: column;
 }
 
-.accord-panel {
-  font-family: "Google Sans Regular";
+.experience-section-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.experience-details-container {
+  margin-top: 30px;
 }
 
 @media (max-width: 768px) {

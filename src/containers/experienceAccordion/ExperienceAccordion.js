@@ -1,59 +1,43 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import ExperienceCard from "../../components/experienceCard/ExperienceCard.js";
+import ExperienceSectionCard from "../../components/experienceSectionCard/ExperienceSectionCard.js";
 import "./ExperienceAccordion.css";
-import { Accordion, Panel } from "baseui/accordion";
 
-class ExperienceAccordion extends Component {
-  render() {
-    const theme = this.props.theme;
-    return (
-      <div className="experience-accord">
-        <Accordion>
-          {this.props.sections.map((section) => {
-            return (
-              <Panel
-                className="accord-panel"
-                title={section["title"]}
-                key={section["title"]}
-                overrides={{
-                  Header: {
-                    style: () => ({
-                      backgroundColor: `${theme.body}`,
-                      border: `1px solid`,
-                      borderRadius: `5px`,
-                      borderColor: `${theme.headerColor}`,
-                      marginBottom: `3px`,
-                      fontFamily: "Google Sans Regular",
-                      color: `${theme.text}`,
-                      ":hover": {
-                        color: `${theme.secondaryText}`,
-                      },
-                    }),
-                  },
-                  Content: {
-                    style: () => ({
-                      backgroundColor: `${theme.body}`,
-                    }),
-                  },
-                }}
-              >
-                {section["experiences"].map((experience, index) => {
-                  return (
-                    <ExperienceCard
-                      index={index}
-                      totalCards={section["experiences"].length}
-                      experience={experience}
-                      theme={theme}
-                    />
-                  );
-                })}
-              </Panel>
-            );
-          })}
-        </Accordion>
+const ExperienceAccordion = ({ sections, theme }) => {
+  const [expanded, setExpanded] = useState(null);
+
+  return (
+    <div className="experience-accord">
+      <div className="experience-section-container">
+        {sections.map((section) => (
+          <ExperienceSectionCard
+            key={section.title}
+            section={section}
+            theme={theme}
+            setExpanded={setExpanded}
+          />
+        ))}
       </div>
-    );
-  }
-}
+      {expanded && (
+        <div className="experience-details-container">
+          {sections
+            .find((section) => section.title === expanded)
+            .experiences.map((experience, index) => (
+              <ExperienceCard
+                key={`${expanded}-${index}`}
+                index={index}
+                totalCards={
+                  sections.find((section) => section.title === expanded)
+                    .experiences.length
+                }
+                experience={experience}
+                theme={theme}
+              />
+            ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default ExperienceAccordion;
