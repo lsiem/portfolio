@@ -26,45 +26,25 @@
   }
 }
 
+.experience-section-card {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.experience-section-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.experience-section-card.active {
+  background-color: #f0f0f0;
+}
+
 @media (max-width: 768px) {
   .experience-accord {
     margin: 20px;
   }
-}
-.main-project-card, .side-project-card {
-  display: flex;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.main-project-image, .side-project-image {
-  flex: 1;
-  margin-right: 20px;
-}
-
-.main-project-image img, .side-project-image img {
-  width: 100%;
-  border-radius: 5px;
-}
-
-.main-project-details, .side-project-details {
-  flex: 2;
-}
-
-.main-project-footer, .side-project-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.main-project-tech, .side-project-tech {
-  font-size: 14px;
-}
-
-.main-project-footer a, .side-project-footer a {
-  color: #0366d6;
-  text-decoration: none;
 }

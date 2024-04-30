@@ -18,6 +18,7 @@ const ExperienceAccordion = ({ sections, theme }) => {
                         theme={theme}
                         expanded={expanded}
                         setExpanded={setExpanded}
+                        isActive={expanded === section.title}
                     />
                 ))}
             </div>
