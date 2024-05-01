@@ -1,27 +1,36 @@
 import React from "react";
 import "./SideProjectCard.css";
+import { Fade } from "react-reveal";
+import { Icon } from "@iconify/react";
 
-const SideProjectCard = ({ project, theme }) => {
+const SideProjectCard = ({ project }) => {
   return (
-    <div className="side-project-card">
-      <div className="side-project-image">
-        <img src={project.image_path} alt={project.title} />
-      </div>
-      <div className="side-project-details">  
-        <h3>{project.title}</h3>
-        <p className="side-project-description">
-          {project.description}
-        </p>
-        <div className="side-project-footer">
-          <p className="side-project-tech">
-            {project.technologies.join(" | ")}
-          </p>
-          <a href={project.link} target="_blank" rel="noopener noreferrer">
-            View Project  
+    <Fade bottom duration={1000} distance="20px">
+      <div className="side-project-card">
+        <div className="side-project-header">
+          <h3 className="side-project-title">{project.title}</h3>
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="side-project-link"
+          >
+            <Icon icon="akar-icons:link-chain" />
           </a>
         </div>
+        <p className="side-project-description">{project.description}</p>
+        <div className="side-project-tech-list">
+          {project.technologies.map((tech, index) => (
+            <Icon
+              key={index}
+              icon={tech.fontAwesomeClassname}
+              style={tech.style}
+              className="side-project-tech-icon"
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </Fade>
   );
 };
 

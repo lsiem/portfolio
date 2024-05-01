@@ -560,16 +560,37 @@ const experience = {
         {
           title: "Side Project 1",
           description: "A CLI tool for doing X.",
-          technologies: ["Python"],
+          technologies: [
+            {
+              skillName: "Python",
+              fontAwesomeClassname: "logos:python",
+              style: {
+                color: "#3776AB",
+              },
+            },
+          ],
           link: "https://sideproject1.com",
-          image_path: "sideproject1.png",
         },
         {
           title: "Side Project 2",
           description: "A web app for doing Y.",
-          technologies: ["Vue.js", "Flask"],
+          technologies: [
+            {
+              skillName: "Vue.js",
+              fontAwesomeClassname: "logos:vue",
+              style: {
+                color: "#4FC08D",
+              },
+            },
+            {
+              skillName: "Flask",
+              fontAwesomeClassname: "logos:flask",
+              style: {
+                color: "#000000",
+              },
+            },
+          ],
           link: "https://sideproject2.com",
-          image_path: "sideproject2.png",
         },
       ],
     },
