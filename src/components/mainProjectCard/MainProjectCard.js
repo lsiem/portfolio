@@ -9,15 +9,13 @@ const MainProjectCard = ({ project, theme }) => {
       </div>
       <div className="main-project-details">
         <h3>{project.title}</h3>
-        <p className="main-project-description">
-          {project.description}
-        </p>
+        <p className="main-project-description">{project.description}</p>
         <div className="main-project-footer">
           <p className="main-project-tech">
-            {project.technologies.join(" | ")}  
+            {project.technologies.join(" | ")}
           </p>
           <a href={project.link} target="_blank" rel="noopener noreferrer">
-            View Project
+            Mehr erfahren
           </a>
         </div>
       </div>

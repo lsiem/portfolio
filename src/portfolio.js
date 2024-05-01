@@ -458,31 +458,79 @@ const experience = {
   header_image_path: "experience.png",
   sections: [
     {
-      title: "Work",
+      title: "Berufliche Tätigkeiten",
       work: true,
       experiences: [
         {
           title: "Software Engineer",
-          company: "ABC Company",
-          company_url: "https://www.abc.com",
-          logo_path: "abc_logo.png",
-          duration: "Jan 2020 - Present",
-          location: "City, Country",
+          company: "Just Relate Group GmbH",
+          company_url: "https://www.justrelate.de",
+          logo_path: "justrelate_logo.webp",
+          duration: "Januar 2024 - Heute",
+          location: "Berlin, Remote",
           description:
-            "Worked on developing and maintaining web applications using modern technologies.",
+            "In meiner Rolle als Software Engineer bei der JustRelate Group GmbH bin ich für das Customizing des Pisa Sales CRM zuständig, um es präzise auf die individuellen Anforderungen unserer Kunden zuzuschneiden. " +
+            "Diese maßgeschneiderte Anpassung ermöglicht eine optimale Unterstützung der spezifischen Geschäftsprozesse unserer Kunden durch das CRM-System. " +
+            "Zudem habe ich die Entwicklung und Implementierung einer K.I. Integration in das Pisa Sales CRM initiiert. Diese Innovation zielt darauf ab, die Funktionalität und Effizienz des CRM-Systems durch den Einsatz" +
+            "von künstlicher Intelligenz signifikant zu steigern. Die K.I. Integration ist nicht nur ein bedeutender Schritt zur Verbesserung der aktuellen CRM-Lösung, sondern legt auch das Fundament für zukünftige Anbindungen an" +
+            "andere Produkte der JustRelate Group GmbH, um ein kohärentes und fortschrittliches digitales Lösungsportfolio anzubieten.",
           color: "#0071C5",
         },
         {
-          title: "Software Developer",
-          company: "XYZ Corp",
-          company_url: "https://www.xyz.com",
-          logo_path: "xyz_logo.png",
-          duration: "Jun 2018 - Dec 2019", 
-          location: "City, Country",
+          title: "Chief Technology Officer",
+          company: "Vidama GmbH",
+          company_url: "https://www.vidama.de",
+          logo_path: "vidama_logo.png",
+          duration: "Dezember 2021 - Januar 2024",
+          location: "Oldenburg, Remote",
           description:
-            "Developed and maintained software solutions for clients.",
+            "Bei der Vidama GmbH war ich als einziger Entwickler für die gesamte " +
+            "Bandbreite der individuellen Softwareentwicklung verantwortlich - von" +
+            "der initialen Planung über die Umsetzung bis hin zur Wartung der " +
+            "Projekte. Diese Rolle erforderte ein tiefgreifendes technisches " +
+            "Verständnis und die Fähigkeit, komplexe Softwarelösungen selbstständig " +
+            "zu konzipieren und zu realisieren. Durch die Übernahme des gesamten " +
+            "Entwicklungszyklus konnte ich umfassende Erfahrungen in allen Phasen " +
+            "der Softwareerstellung sammeln und sicherstellen, dass die entwickelten " +
+            "Anwendungen den Anforderungen und Erwartungen der Kunden in vollem " +
+            "Umfang entsprechen.",
           color: "#ee3c26",
-        }
+        },
+        {
+          title: "Inhaber",
+          company: "Lasse Siemoneit",
+          company_url: "https://lsiem.de",
+          logo_path: "lsiem_logo.png",
+          duration: "April 2021 - Heute",
+          location: "Hatten, Remote",
+          description:
+            "In meiner Selbständigkeit konzentriere ich mich auf die Entwicklung " +
+            "Softwarelösungen für Unternehmen. Diese " +
+            "Lösungen sind auf die spezifischen " +
+            "Anforderungen und Herausforderungen meiner Kunden " +
+            "um deren Effizienz und Produktivität zu steigern. " +
+            "Darüber hinaus biete ich Beratungsleistungen zur digitalen " +
+            "Transformation und Optimierung von Geschäftsprozessen. Dabei " +
+            "Unternehmen dabei, digitale Technologien strategisch einzusetzen " +
+            "einzusetzen, um ihre Prozesse zu verbessern und langfristig " +
+            "wettbewerbsfähig zu bleiben. " +
+            "Durch meine freiberufliche Tätigkeit helfe ich Unternehmen, ihre digitale " +
+            "digitalen Landschaft zu navigieren und maßgeschneiderte " +
+            "Bedürfnisse zu implementieren",
+          color: "#ee3c26",
+        },
+        {
+          title: "Consultant / Software Engineer",
+          company: "Heinsohn IT Solutions GmbH",
+          company_url: "https://www.heinsohn-it.com/",
+          logo_path: "heinsohn_logo.png",
+          duration: "Mai 2021 - Dezember 2021",
+          location: "Westerstede, Remote",
+          description:
+            "Bei der Heinsohn IT Solutions GmbH war ich als Consultant / Software Engineer tätig. Als Microsoft Partner habe ich einige Unternehmen bei der Digitalisierung mit Microsoft 365 beraten und betreut." +
+            "Dazu gehörte das Erstellen und Halten von Präsentationen, über die verschiedenen Microsoft 365 Produkte wie z.B. Microsoft Teams und deren optimale Nutzung, sowie die Entwicklung von kundenspezifischen Softwareprojekten mit Microsoft 365 / Azure Schnittstelle.",
+          color: "#ee3c26",
+        },
       ],
     },
     {
@@ -494,16 +542,16 @@ const experience = {
           description: "A web app for doing X using Y and Z.",
           technologies: ["React", "Node.js", "MongoDB"],
           link: "https://project1.com",
-          image_path: "project1.png"
+          image_path: "project1.png",
         },
         {
-          title: "Project 2", 
+          title: "Project 2",
           description: "An iOS app that does X using Y.",
           technologies: ["Swift", "Firebase"],
           link: "https://project2.com",
-          image_path: "project2.png"
-        }
-      ]
+          image_path: "project2.png",
+        },
+      ],
     },
     {
       title: "Side Projects",
@@ -514,17 +562,17 @@ const experience = {
           description: "A CLI tool for doing X.",
           technologies: ["Python"],
           link: "https://sideproject1.com",
-          image_path: "sideproject1.png"
+          image_path: "sideproject1.png",
         },
         {
           title: "Side Project 2",
           description: "A web app for doing Y.",
-          technologies: ["Vue.js", "Flask"],  
+          technologies: ["Vue.js", "Flask"],
           link: "https://sideproject2.com",
-          image_path: "sideproject2.png"
-        }
-      ]
-    }
+          image_path: "sideproject2.png",
+        },
+      ],
+    },
   ],
 };
 
