@@ -25,6 +25,17 @@
 
 .main-project-details {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.main-project-title {
+  margin-bottom: 20px;
+}
+
+.main-project-description {
+  margin-bottom: 20px;
 }
 
 .main-project-footer {
