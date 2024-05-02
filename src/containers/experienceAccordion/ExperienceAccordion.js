@@ -19,6 +19,7 @@ const ExperienceAccordion = ({ sections, theme }) => {
             expanded={expanded}
             setExpanded={setExpanded}
             isActive={expanded === section.title}
+            className={expanded === section.title ? "active" : ""}
           />
         ))}
       </div>

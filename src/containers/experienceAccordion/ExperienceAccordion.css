@@ -50,7 +50,10 @@
 }
 
 .experience-section-card.active {
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
