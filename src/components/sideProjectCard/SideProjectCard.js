@@ -15,7 +15,6 @@ const SideProjectCard = ({ project }) => {
             rel="noopener noreferrer"
             className="side-project-link"
           >
-            <Icon icon="akar-icons:link-chain" />
           </a>
         </div>
         <p className="side-project-description">{project.description}</p>
