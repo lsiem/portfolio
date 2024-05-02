@@ -1,53 +1,57 @@
 .side-project-card {
-  padding: 1.5rem;
+  display: flex;
+  padding: 20px;
+  margin-bottom: 20px;
   border-radius: 10px;
-  background-color: #1d1d1d;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
-  transition: all 0.3s ease;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  background: linear-gradient(135deg, #37474f 0%, #455a64 100%);
 }
 
 .side-project-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.side-project-header {
+.side-project-image {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.side-project-image img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.side-project-details {
+  flex: 2;
+}
+
+.side-project-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-top: 20px;
 }
 
-.side-project-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin: 0;
+@media (max-width: 768px) {
+  .side-project-card {
+    flex-direction: column;
+  }
+
+  .side-project-image {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
 }
 
-.side-project-link {
-  color: #ffffff;
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
-}
-
-.side-project-link:hover {
-  color: #61dafb;
-}
-
-.side-project-description {
-  font-size: 1rem;
-  color: #c7c7c7;
-  margin-bottom: 1.5rem;
-}
-
-.side-project-tech-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.side-project-tech-icon {
-  font-size: 1.5rem;
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
