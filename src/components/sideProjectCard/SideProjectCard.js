@@ -1,7 +1,7 @@
 import React from "react";
 import "./SideProjectCard.css";
 import { Fade } from "react-reveal";
-import { Icon } from "@iconify/react";
+import ProjectLanguages from "../projectLanguages/ProjectLanguages";
 
 const SideProjectCard = ({ project }) => {
   return (
@@ -19,16 +19,7 @@ const SideProjectCard = ({ project }) => {
           </a>
         </div>
         <p className="side-project-description">{project.description}</p>
-        <div className="side-project-tech-list">
-          {project.technologies.map((tech, index) => (
-            <Icon
-              key={index}
-              icon={tech.fontAwesomeClassname}
-              style={tech.style}
-              className="side-project-tech-icon"
-            />
-          ))}
-        </div>
+        <ProjectLanguages logos={project.technologies} />
       </div>
     </Fade>
   );
