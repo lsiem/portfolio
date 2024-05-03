@@ -196,7 +196,7 @@ const skills = {
           categoryTitle: "Continuous Integration / Continuous Deployment",
           skills: [
             "⚡ Versionsverwaltung mit Git und GitHub",
-            "⚡ Einsatz von GitHub Actions, Azure DevOps oder Jenkins für CI/CD Pipelines",
+            "⚡ Einsatz von CI/CD Pipelines, Azure DevOps oder Jenkins für CI/CD Pipelines",
           ],
           softwareSkills: [
             {
@@ -534,63 +534,142 @@ const experience = {
       ],
     },
     {
-      title: "Main Projects",
+      title: "Hauptprojekte",
       mainProjects: true,
       projects: [
         {
-          title: "Project 1",
-          description: "A web app for doing X using Y and Z.",
-          technologies: ["React", "Node.js", "MongoDB"],
-          link: "https://project1.com",
-          image_path: "project1.png",
+          title: "EWE/osnatel Vertriebspartner Mediathek",
+          description:
+            "Entwicklung einer Vertriebspartnermediathek für die EWE " +
+            "Aktiengesellschaft und osnatel. Administratoren können entsprechende " +
+            "Kampagnenfilme verwalten, organisieren und zuweisen. " +
+            "Vertriebspartner haben die Möglichkeit sich diese anzuschauen, bei sich " +
+            "im Shop wiederzugeben und eigene Inhalte anhand von Templates zu erstellen " +
+            "Vertriebsbeauftragte haben dabei stets die Kontrolle über alle " +
+            "Vertriebspartner in ihrem Vertriebsgebiet",
+          technologies: [
+            "Java",
+            "Spring Boot",
+            "Gradle",
+            "Vaadin",
+            "CSS",
+            "HTML",
+            "JavaScript",
+            "PostgreSQL",
+            "REST",
+            "Docker",
+            "CI/CD Pipelines",
+            "JUnit",
+            "Mockito",
+            "Selenium",
+          ],
+          link: "https://bpp.ewe.de/login",
         },
         {
-          title: "Project 2",
-          description: "An iOS app that does X using Y.",
-          technologies: ["Swift", "Firebase"],
-          link: "https://project2.com",
-          image_path: "project2.png",
+          title: "Disy-One",
+          description:
+            "Projekt für die Vidama GmbH, welches das Verwalten und " +
+            "konfigurierbares Abspielen von Medien für Unternehmen, wie " +
+            "EWE/osnatel, Olantis, Famila, Öffentliche Versicherungen in deren Stehlen, TVs oder Banden ermglicht. ",
+          technologies: [
+            "Python",
+            "Flask",
+            "FastAPI",
+            "REST",
+            "Bash",
+            "Unix",
+            "Docker",
+            "CI/CD Pipelines",
+            "Grafana",
+            "Prometheus",
+          ],
+          link: "https://vidama.de",
+        },
+        {
+          title: "Sport Event Controller",
+          description:
+            "Der Sport Event Controller bietet eine Lösung für die Steuerung der " +
+            "Medienwiedergabe während eines Sport-Events. Ursprünglich für den VFL " +
+            "Oldenburg Handball Frauen entwickelt, um eine einfache Lösung zur " +
+            "Steuerung der Einlaufshow, sowie die Verwaltung der Wiedergabe von " +
+            "Sponsoreninhalten zu ermöglichen. Mittlerweile bei weiteren Vereinen, wie " +
+            "dem Buxtehuder SV Handball Frauen und zukünftig für weitere Vereine der " +
+            "Handball Bundesliga fr Frauen.",
+          technologies: [
+            "Python",
+            "Flask",
+            "FastAPI",
+            "REST",
+            "Bash",
+            "Unix",
+            "Docker",
+            "CI/CD Pipelines",
+            "WebSocket",
+            "Orchestration",
+            "CI/CD Pipelines",
+            "HTML",
+            "CSS",
+            "JavaScript",
+          ],
+          link: "https://www.handball-bundesliga-frauen.de/",
+        },
+        {
+          title: "Imke Folkerts Kundenportal",
+          description:
+            "Kundenportal für Imke Folkerts Fotografin für die Verwaltung von Kundendaten, sowie die Mglichkeit der digitalen Registrierung für Kunden.",
+          technologies: [
+            "Java",
+            "Spring Boot",
+            "Vaadin",
+            "Gradle",
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "PostgreSQL",
+            "Docker",
+            "CI/CD Pipelines",
+          ],
+          link: "https://www.imkefolkerts-fotografin.de/",
+        },
+        {
+          title: "Immobilienbaukasten",
+          description:
+            "Der Immobilienbaukasten ist eine Webanwendung, welche ursprünglich für die Schlüssel Gruppe GmbH entwickelt wurde und anhand einer benutzerfreundlichen und intuitiven Weboberfläche " +
+            "das erstellen von One-Page Webseiten für Immobilienprojekte ohne Programmierkenntnisse ermöglicht. In einer dynamischen Maske können alle relevanten Daten zur Immobilie eingegeben " +
+            "werden, Bilder hochgeladen und das generelle Aussehen anhand von Vorlagen definiert werden.",
+          technologies: [
+            "Java",
+            "Spring Boot",
+            "Thymeleaf",
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "PostgreSQL",
+            "Docker",
+            "CI/CD Pipelines",
+          ],
+          link: "https://www.schluessel-gruppe.de/",
         },
       ],
     },
     {
-      title: "Side Projects",
+      title: "Nebenprojekte",
       sideProjects: true,
       projects: [
         {
-          title: "Side Project 1",
-          description: "A CLI tool for doing X.",
+          title: "Website Entwicklung JR PurTec",
+          description:
+            "Für JR PurTec habe ich eine moderne und benutzerfreundliche Website entwickelt, die das Fachwissen des Unternehmens im Bereich der Polyurethan-Technologie und seine breite Palette von Anwendungen - von der Automobilindustrie über den öffentlichen Nahverkehr bis hin zur Medizintechnik - vorstellt. Die Website fungiert als digitale Visitenkarte, mit einem klaren Design und einer intuitiven Navigation für einen einfachen Zugang zu Unternehmensinformationen, Produktdetails und Kontaktmöglichkeiten. Ziel war es, die Markenidentität von JR PurTec stark zu repräsentieren und gleichzeitig die Nutzererfahrung zu verbessern, um Kunden und Interessenten ein umfassendes Verständnis der hochwertigen Lösungen und des Engagements für Nachhaltigkeit zu vermitteln.",
           technologies: [
-            {
-              skillName: "Python",
-              fontAwesomeClassname: "logos:python",
-              style: {
-                color: "#3776AB",
-              },
-            },
+            "WordPress",
+            "JetPack",
+            "Elementor",
+            "HTML",
+            "CSS",
+            "JavaScrpt",
+            "PHP",
           ],
-          link: "https://sideproject1.com",
-        },
-        {
-          title: "Side Project 2",
-          description: "A web app for doing Y.",
-          technologies: [
-            {
-              skillName: "Vue.js",
-              fontAwesomeClassname: "logos:vue",
-              style: {
-                color: "#4FC08D",
-              },
-            },
-            {
-              skillName: "Flask",
-              fontAwesomeClassname: "logos:flask",
-              style: {
-                color: "#000000",
-              },
-            },
-          ],
-          link: "https://sideproject2.com",
+          link: "https://www.jrpurtec.com/",
         },
       ],
     },
