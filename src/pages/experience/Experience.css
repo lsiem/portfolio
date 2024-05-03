@@ -87,11 +87,13 @@
   }
 }
 @media (max-width: 768px) {
-  .main-project-card, .side-project-card {
+  .main-project-card,
+  .side-project-card {
     flex-direction: column;
   }
 
-  .main-project-image, .side-project-image {
+  .main-project-image,
+  .side-project-image {
     margin-right: 0;
     margin-bottom: 20px;
   }
