@@ -73,6 +73,17 @@
     gap: 20px; /* Add gap between containers */
     justify-items: center;
   }
+
+  @media (min-width: 769px) {
+    .skills-subcategory-wrapper {
+      grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    }
+
+    .skills-subcategory-wrapper:only-child {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
   @media (max-width: 768px) {
     .skills-subcategory-wrapper {
       grid-template-columns: 1fr;
