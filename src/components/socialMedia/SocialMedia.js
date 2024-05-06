@@ -2,6 +2,11 @@ import React from "react";
 import "./SocialMedia.css";
 import { socialMediaLinks } from "../../portfolio";
 import styled from "styled-components";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+library.add(fab);
 
 const IconWrapper = styled.span`
   i {
@@ -26,7 +31,7 @@ export default function socialMedia(props) {
             rel="noopener noreferrer"
           >
             <IconWrapper {...media} {...props}>
-              <i className={`fab ${media.fontAwesomeIcon}`}></i>
+              <FontAwesomeIcon icon={media.fontAwesomeIcon} />
             </IconWrapper>
             {/* <span></span> */}
           </a>

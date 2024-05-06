@@ -34,25 +34,25 @@ const socialMediaLinks = [
   {
     name: "Github",
     link: "https://github.com/lsiem",
-    fontAwesomeIcon: "fa-github", // Reference https://fontawesome.com/icons/github?style=brands
+    fontAwesomeIcon: ["fab", "github"], // Reference https://fontawesome.com/icons/github?style=brands
     backgroundColor: "#181717", // Reference https://simpleicons.org/?q=github
   },
   {
     name: "LinkedIn",
     link: "https://www.linkedin.com/in/lasse-siemoneit-170ab7195/",
-    fontAwesomeIcon: "fa-linkedin-in", // Reference https://fontawesome.com/icons/linkedin-in?style=brands
+    fontAwesomeIcon: ["fab", "linkedin-in"], // Reference https://fontawesome.com/icons/linkedin-in?style=brands  
     backgroundColor: "#0077B5", // Reference https://simpleicons.org/?q=linkedin
   },
   {
     name: "Gmail",
     link: "mailto:lasse.siemoneit@gmail.com",
-    fontAwesomeIcon: "fa-google", // Reference https://fontawesome.com/icons/google?style=brands
+    fontAwesomeIcon: ["fab", "google"], // Reference https://fontawesome.com/icons/google?style=brands
     backgroundColor: "#D14836", // Reference https://simpleicons.org/?q=gmail
   },
   {
     name: "Instagram",
     link: "https://www.instagram.com/lsiem0927/",
-    fontAwesomeIcon: "fa-instagram", // Reference https://fontawesome.com/icons/instagram?style=brands
+    fontAwesomeIcon: ["fab", "instagram"], // Reference https://fontawesome.com/icons/instagram?style=brands
     backgroundColor: "#E4405F", // Reference https://simpleicons.org/?q=instagram
   },
 ];
