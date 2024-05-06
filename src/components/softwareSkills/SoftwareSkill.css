@@ -1,16 +1,19 @@
 .dev-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   padding-left: 0;
   list-style: none;
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 0px;
   margin-top: 0px;
-  text-align: center;
 }
 
 .software-skill-inline {
-  display: inline-block;
-  margin-right: 20px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
   font-family: "Google Sans Regular";
 }
 
@@ -23,5 +26,19 @@
 }
 
 .skill-image {
-  height: 48px;
+  height: 40px;
+}
+
+@media (max-width: 768px) {
+  .dev-icons {
+    font-size: 2rem;
+  }
+
+  .software-skill-inline {
+    margin: 8px;
+  }
+
+  .skill-image {
+    height: 32px;
+  }
 }

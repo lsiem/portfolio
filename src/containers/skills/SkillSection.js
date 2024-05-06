@@ -18,10 +18,10 @@ class SkillSection extends Component {
                 {skill.title}
               </h1>
             </Fade>
-            <div className="skills-subcategory-wrapper">
+            <div className="skills-subcategory-wrapper skills-subcategory-wrapper-responsive">
               {skill.categories &&
                 skill.categories.map((category, index) => (
-                  <div key={index} className="skills-subcategory-container">
+                  <div key={index} className="skills-subcategory-container skills-subcategory-container-responsive">
                     <Fade right duration={1500}>
                       <h2
                         className="skills-subheading"
