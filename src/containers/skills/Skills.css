@@ -79,9 +79,8 @@
       grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
     }
 
-    .skills-subcategory-wrapper:only-child {
-      grid-template-columns: 1fr;
-      justify-items: center;
+    .skills-subcategory-container:only-child {
+      justify-self: center;
     }
   }
   @media (max-width: 768px) {
