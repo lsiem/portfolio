@@ -67,25 +67,19 @@
     text-align: center;
   }
 
-  .skills-subcategory-wrapper {
+  .skills-subcategory-wrapper,
+  .skills-subcategory-wrapper-responsive {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px; /* Add gap between containers */
-    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    gap: 20px;
+    justify-content: center; /* This will center the grid items if there's only one or the space doesn't allow for two */
   }
 
-  @media (min-width: 769px) {
-    .skills-subcategory-wrapper {
-      grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
-    }
-
-    .skills-subcategory-container:only-child {
-      justify-self: center;
-    }
-  }
   @media (max-width: 768px) {
-    .skills-subcategory-wrapper {
-      grid-template-columns: 1fr;
+    .skills-subcategory-wrapper,
+    .skills-subcategory-wrapper-responsive {
+      grid-template-columns: 1fr; /* Only one column on smaller screens */
+      justify-items: center; /* Center the items in the grid */
     }
   }
   .skills-subcategory-container {
@@ -140,11 +134,6 @@
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.skills-subcategory-wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px; /* Add gap between containers */
-}
 .skills-subcategory-wrapper {
   display: flex;
   flex-wrap: wrap;

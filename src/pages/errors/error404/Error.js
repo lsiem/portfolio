@@ -16,7 +16,10 @@ export default class Error extends Component {
           <Fade bottom duration={2000} distance="40px">
             <h1>Woops</h1>
             <h1 className="error-404">404</h1>
-            <p>The requested page is unavailable at the moment!</p>
+            <p>
+              Die angeforderte Seite ist nicht verfügbar... Klicke auf den
+              Button um auf die Startseite zu gelangen!
+            </p>
             <Link
               className="main-button"
               to="/home"
@@ -27,7 +30,7 @@ export default class Error extends Component {
                 display: "inline-flex",
               }}
             >
-              Go Home
+              Zur Startseite
             </Link>
           </Fade>
         </div>
