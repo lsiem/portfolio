@@ -31,7 +31,7 @@ export default function socialMedia(props) {
             rel="noopener noreferrer"
           >
             <IconWrapper {...media} {...props}>
-              <FontAwesomeIcon icon={media.fontAwesomeIcon} />
+              <FontAwesomeIcon icon={media.fontAwesomeIcon} size="2x" />
             </IconWrapper>
             {/* <span></span> */}
           </a>
