@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import "./ExperienceCard.css";
 import { Fade } from "react-reveal";
-import "../../assets/font-awesome/css/fontawesome.css"; // Ensure the path is correct
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
+library.add(fas);
 
 class ExperienceCard extends Component {
   render() {
@@ -16,10 +20,7 @@ class ExperienceCard extends Component {
       >
         <Fade left duration={2000} distance="40px">
           <div className="experience-card-logo-div">
-            <i
-              className={`fa ${experience["fontAwesomeClassname"]}`} // Use the class from the experience data
-              aria-hidden="true"
-            ></i>
+            <FontAwesomeIcon icon={experience["fontAwesomeClassname"]} size="2x" />
           </div>
         </Fade>
         <div className="experience-card-stepper">
