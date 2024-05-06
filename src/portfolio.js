@@ -614,6 +614,36 @@ const experience = {
           link: "https://www.handball-bundesliga-frauen.de/",
         },
         {
+          title: "Ferrero Foto-Aktion",
+          description:
+            "Die Ferrero Fotoaktion ist eine Marketingkampagne der Ferrero Gruppe, die im letzten Jahr von der Teamwork GmbH und mir durchgeführt wurde. " +
+            "Dabei fuhr Teamwork mit einer riesigen Weihnachtskugel durch deutsche Großstädte, in der sich Menschen fotografieren lassen konnten, um einen Gruß an Freunde und Familie zu senden. " +
+            "Ich entwickelte eine Automatisierung, die die Fotos speicherte, auf eine von mir entwickelte Website mit einem vorgefertigten Template hochlud und automatisch einen QR-Code druckte, der auf diese Website verwies. " +
+            "Auf diese Weise konnten die Menschen ihr Foto direkt auf ihrem Handy betrachten und, wenn sie wollten, auch direkt über die Website in sozialen Netzwerken oder per E-Mail teilen. Die Marketingkampagne war mit über 1.200 Teilnehmern ein großer Erfolg mit positivem Feedback der Ferrero Gruppe.",
+          technologies: ["Python", "AWS", "HTML", "CSS", "JavaScript"],
+        },
+      ],
+    },
+    {
+      title: "Nebenprojekte",
+      sideProjects: true,
+      projects: [
+        {
+          title: "Website Entwicklung JR PurTec",
+          description:
+            "Für JR PurTec habe ich eine moderne und benutzerfreundliche Website entwickelt, die das Fachwissen des Unternehmens im Bereich der Polyurethan-Technologie und seine breite Palette von Anwendungen - von der Automobilindustrie über den öffentlichen Nahverkehr bis hin zur Medizintechnik - vorstellt. Die Website fungiert als digitale Visitenkarte, mit einem klaren Design und einer intuitiven Navigation für einen einfachen Zugang zu Unternehmensinformationen, Produktdetails und Kontaktmöglichkeiten. Ziel war es, die Markenidentität von JR PurTec stark zu repräsentieren und gleichzeitig die Nutzererfahrung zu verbessern, um Kunden und Interessenten ein umfassendes Verständnis der hochwertigen Lösungen und des Engagements für Nachhaltigkeit zu vermitteln.",
+          technologies: [
+            "WordPress",
+            "JetPack",
+            "Elementor",
+            "HTML",
+            "CSS",
+            "JavaScrpt",
+            "PHP",
+          ],
+          link: "https://www.jrpurtec.com/",
+        },
+        {
           title: "Imke Folkerts Kundenportal",
           description:
             "Kundenportal für Imke Folkerts Fotografin für die Verwaltung von Kundendaten, sowie die Mglichkeit der digitalen Registrierung für Kunden.",
@@ -649,27 +679,6 @@ const experience = {
             "CI/CD Pipelines",
           ],
           link: "https://www.schluessel-gruppe.de/",
-        },
-      ],
-    },
-    {
-      title: "Nebenprojekte",
-      sideProjects: true,
-      projects: [
-        {
-          title: "Website Entwicklung JR PurTec",
-          description:
-            "Für JR PurTec habe ich eine moderne und benutzerfreundliche Website entwickelt, die das Fachwissen des Unternehmens im Bereich der Polyurethan-Technologie und seine breite Palette von Anwendungen - von der Automobilindustrie über den öffentlichen Nahverkehr bis hin zur Medizintechnik - vorstellt. Die Website fungiert als digitale Visitenkarte, mit einem klaren Design und einer intuitiven Navigation für einen einfachen Zugang zu Unternehmensinformationen, Produktdetails und Kontaktmöglichkeiten. Ziel war es, die Markenidentität von JR PurTec stark zu repräsentieren und gleichzeitig die Nutzererfahrung zu verbessern, um Kunden und Interessenten ein umfassendes Verständnis der hochwertigen Lösungen und des Engagements für Nachhaltigkeit zu vermitteln.",
-          technologies: [
-            "WordPress",
-            "JetPack",
-            "Elementor",
-            "HTML",
-            "CSS",
-            "JavaScrpt",
-            "PHP",
-          ],
-          link: "https://www.jrpurtec.com/",
         },
       ],
     },
