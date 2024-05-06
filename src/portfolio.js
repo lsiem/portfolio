@@ -40,14 +40,14 @@ const socialMediaLinks = [
   {
     name: "LinkedIn",
     link: "https://www.linkedin.com/in/lasse-siemoneit-170ab7195/",
-    fontAwesomeIcon: ["fab", "linkedin-in"], // Reference https://fontawesome.com/icons/linkedin-in?style=brands  
-    backgroundColor: "#0077B5", // Reference https://simpleicons.org/?q=linkedin
+    fontAwesomeIcon: ["fab", "linkedin-in"], // Reference https://fontawesome.com/icons/linkedin-in?style=brands
+    backgroundColor: "#0A66C2", // Reference https://simpleicons.org/?q=linkedin
   },
   {
     name: "Gmail",
     link: "mailto:lasse.siemoneit@gmail.com",
     fontAwesomeIcon: ["fab", "google"], // Reference https://fontawesome.com/icons/google?style=brands
-    backgroundColor: "#D14836", // Reference https://simpleicons.org/?q=gmail
+    backgroundColor: "#EA4335", // Reference https://simpleicons.org/?q=gmail
   },
   {
     name: "Instagram",
