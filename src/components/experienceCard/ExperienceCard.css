@@ -41,7 +41,7 @@
 
 .experience-heading-sub-text {
   font-size: 30px;
-  font-family: "Google Sans Regular";
+  font-family: var(--primary-font);
   text-align: center;
   margin-bottom: 10px;
 }
@@ -55,17 +55,15 @@
   font-family: "Google Sans Medium";
 }
 
-@media (max-width: 1380px) {
-  .experience-heading-text {
-    font-size: 50px;
-    margin-top: 80px;
-  }
-  .experience-heading-sub-text {
-    font-size: 25px;
-  }
-}
-
 @media (max-width: 768px) {
+  .experience-heading-text {
+    font-size: 30px;
+    margin-top: 20px;
+  }
+
+  .experience-heading-sub-text {
+    font-size: 20px;
+  }
   .experience-heading-text {
     font-size: 30px;
     margin-top: 20px;
@@ -96,9 +94,7 @@
   flex-direction: column;
   padding: 10px;
   margin-left: 10px;
-  -webkit-box-shadow: 4px 3px 20px -2px grey;
-  -moz-box-shadow: 4px 3px 20px -2px grey;
-  box-shadow: 4px 3px 20px -2px grey;
+  box-shadow: var(--card-shadow);
 }
 
 .arrow-left {
@@ -166,7 +162,7 @@
   margin-left: 0;
   margin-right: 0;
   text-align: right;
-  color: #868e96;
+  color: var(--secondary-color);
 }
 
 .experience-card-heading-left {
@@ -197,34 +193,14 @@
 }
 
 .experience-card-company > a {
-  position: relative;
-  color: #000;
+  color: var(--primary-color);
   text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease-in-out;
 }
 
 .experience-card-company > a:hover {
-  color: #000;
-}
-
-.experience-card-company > a:hover:before {
-  visibility: visible;
-  -webkit-transform: scaleX(1);
-  transform: scaleX(1);
-}
-
-.experience-card-company > a:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  background-color: #000;
-  visibility: hidden;
-  -webkit-transform: scaleX(0);
-  transform: scaleX(0);
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  transition: all 0.3s ease-in-out 0s;
+  border-color: var(--primary-color);
 }
 
 .experience-list-item {
@@ -308,4 +284,10 @@
     margin-right: 14px;
     text-align: justify;
   }
+}
+:root {
+  --primary-font: "Google Sans Regular", sans-serif;
+  --primary-color: #000;
+  --secondary-color: #868e96;
+  --card-shadow: 4px 3px 20px -2px grey;
 }
