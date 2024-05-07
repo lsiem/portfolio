@@ -28,6 +28,16 @@
   justify-content: center;
   margin-top: 20px;
 }
+.top-button {
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
+  border: solid 1px var(--secondary-color);
+  visibility: hidden;
+}
+
+.top-button.visible {
+  visibility: visible;
+}
 /* Media Query */
 @media (max-width: 768px) {
   .main-button {
