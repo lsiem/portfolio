@@ -1,9 +1,9 @@
 :root {
   --primary-font: "Google Sans Regular", sans-serif;
+  --heading-font: "Google Sans Medium", sans-serif;
   --primary-color: #000;
   --secondary-color: #868e96;
   --card-shadow: 4px 3px 20px -2px grey;
-  --heading-font: "Google Sans Medium", sans-serif;
 }
 
 .experience-main {
@@ -202,4 +202,3 @@
   align-items: center;
   flex-direction: row;
 }
-

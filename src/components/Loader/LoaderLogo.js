@@ -1,7 +1,7 @@
 import React from "react";
-import "./LoaderLogo.css";
 import bannerAnimation from "../../assets/images/banner_animation.gif";
 
+// noinspection JSValidateTypes
 class LogoLoader extends React.Component {
   render() {
     return (

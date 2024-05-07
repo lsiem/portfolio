@@ -1,53 +1,60 @@
-.main {
+/* Base styles for main containers */
+.main,
+.greet-main,
+.greeting-main {
   width: 90%;
   padding: 20px 10px;
-  margin: 0px auto;
-  margin-top: 4rem;
+  margin: auto;
 }
+
 .greet-main {
-  width: 90%;
-  padding: 20px 10px;
-  margin: 0px auto;
   margin-top: 2rem;
 }
 
-.gretting-main {
-  width: 90%;
-  padding: 20px 10px;
-  margin: 0px auto;
+.main {
+  margin-top: 4rem;
 }
 
 .greeting-main {
   display: flex;
+  flex-wrap: wrap; /* Ensures flexibility */
 }
 
-.greeting-main > * {
+.greeting-main > *,
+.button-greeting-div {
   flex: 1;
   margin-bottom: 30px;
 }
+
 .button-greeting-div {
   display: flex;
   margin-top: 20px;
+  justify-content: flex-start; /* Default alignment */
+}
+
+/* Text styles */
+.greeting-text,
+.greeting-nickname,
+.greeting-text-p {
+  font-family: "Google Sans", sans-serif; /* Fallback to sans-serif */
+  line-height: 1.1;
+  margin-top: 80px;
 }
 
 .greeting-text {
-  margin-top: 80px;
   font-size: 70px;
-  line-height: 1.1;
-  font-family: "Google Sans Bold";
 }
 
 .greeting-nickname {
   font-size: 30px;
-  line-height: 0px;
-  font-family: "Google Sans Bold Italic";
+  line-height: 0;
+  font-style: italic;
 }
 
 .greeting-text-p {
   font-size: 40px;
   line-height: 40px;
   margin-right: 40px;
-  font-family: "Google Sans Medium";
 }
 
 .greeting-image-div > * {
@@ -55,7 +62,7 @@
   height: auto;
 }
 
-/* Media Query */
+/* Media Queries */
 @media (max-width: 1380px) {
   .greeting-text {
     font-size: 50px;
@@ -64,29 +71,35 @@
     font-size: 20px;
   }
 }
+
 @media (max-width: 768px) {
   .button-greeting-div {
     justify-content: space-around;
   }
   .greeting-text {
     font-size: 30px;
-    margin-top: 0px;
+    margin-top: 0;
+    margin-right: 0;
+    line-height: normal;
     text-align: center;
   }
   .greeting-nickname {
     font-size: 25px;
+    margin-top: 0;
+    margin-right: 0;
+    line-height: normal;
     text-align: center;
   }
   .greeting-text-p {
     font-size: 16px;
-    margin-right: 0px;
+    margin-top: 0;
+    margin-right: 0;
     line-height: normal;
     text-align: center;
   }
   .greeting-main {
     display: block;
   }
-
   .portfolio-repo-btn-div {
     width: 100%;
     display: flex;

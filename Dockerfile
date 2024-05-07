@@ -1,20 +1,29 @@
-FROM node:13.12.0-alpine
+# Use an official Node.js LTS runtime as a parent image, using the Alpine Linux version for smaller size
+FROM node:lts-alpine
 
-# set working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
+# Add `/app/node_modules/.bin` to $PATH for easier command execution
 ENV PATH /app/node_modules/.bin:$PATH
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
+# Copy package.json and package-lock.json to leverage Docker cache
+COPY package.json package-lock.json ./
+
+# Install dependencies in a silent mode to reduce log output
 RUN npm install --silent
-RUN npm install 
-#react-scripts@3.4.1 -g --silent
 
-# add app
-COPY . ./
+# Copy the rest of the application code
+COPY . .
 
-# start app
+# Create a non-root user to run the application securely
+RUN adduser -D myuser
+USER myuser
+
+# Define the command to run the app
 CMD ["npm", "start"]
+
+# Health check to ensure the application is running
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD node healthcheck.js
+

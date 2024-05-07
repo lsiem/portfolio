@@ -105,7 +105,7 @@
 .contact-header-detail-text {
   font-size: 20px;
   line-height: 30px;
-  margin-top: 0px;
+  margin-top: 0;
   margin-left: 20px;
   margin-right: 20px;
   font-family: "Google Sans Medium";
@@ -114,7 +114,7 @@
 .blog-header-detail-text {
   font-size: 20px;
   line-height: 30px;
-  margin-top: 0px;
+  margin-top: 0;
   margin-left: 20px;
   margin-right: 20px;
   font-family: "Google Sans Medium";
@@ -154,12 +154,12 @@
 @media (max-width: 768px) {
   .contact-heading-text {
     font-size: 30px;
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   .blog-heading-text {
     font-size: 30px;
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   .address-heading-text {
@@ -190,16 +190,16 @@
 
   .contact-header-detail-text {
     font-size: 16px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
     line-height: normal;
     text-align: center;
   }
 
   .blog-header-detail-text {
     font-size: 16px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
     line-height: normal;
     text-align: center;
   }
