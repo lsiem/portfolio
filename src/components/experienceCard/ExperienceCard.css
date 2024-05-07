@@ -49,7 +49,7 @@
 .experience-header-detail-text {
   font-size: 20px;
   line-height: 30px;
-  margin-top: 0px;
+  margin-top: 0;
   margin-left: 20px;
   margin-right: 20px;
   font-family: "Google Sans Medium";
@@ -81,7 +81,7 @@
 
   .experience-header-detail-text {
     font-size: 16px;
-    margin-right: 0px;
+    margin-right: 0;
     line-height: normal;
     text-align: center;
   }
@@ -148,7 +148,7 @@
   font-family: "Google Sans Regular";
   margin-top: 10px;
   margin-bottom: 2px;
-  margin-left: 0px;
+  margin-left: 0;
   margin-right: 7px;
   text-align: left;
 }
@@ -163,8 +163,8 @@
   font-family: "Google Sans Regular";
   margin-top: 10px;
   margin-bottom: 2px;
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: 0;
+  margin-right: 0;
   text-align: right;
   color: #868e96;
 }
@@ -233,35 +233,6 @@
   flex-direction: row;
 }
 
-/* .dot:before{
-  content:' ';
-  position: absolute;
-  z-index:2;
-  left:0;
-  top:0;
-  width:20px;
-  height:20px; 
-  background-color: #ff4200;
-  border-radius: 50%;
-}
-
-.dot:after {
-  content:' ';
-  position: absolute;
-  z-index:1;
-  width:20px;
-  height:20px; 
-  background-color: #ff4200;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0,0,0,.3) inset;
-  -webkit-animation-name:'ripple';
-  -webkit-animation-duration: 1s;
-  -webkit-animation-timing-function: ease;
-  -webkit-animation-delay: 0s;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-direction: normal;
-} */
-
 @keyframes ripple {
   0% {
     left: 5px;
@@ -302,14 +273,7 @@
     width: 100px;
   }
 
-  .experience-card-heading-left {
-    float: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .experience-card-heading-right {
-    float: center;
+  .experience-card-heading-left, .experience-card-heading-right {
     margin-left: auto;
     margin-right: auto;
   }
@@ -333,7 +297,10 @@
   }
 
   .experience-card-header-div {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .experience-card-description {
