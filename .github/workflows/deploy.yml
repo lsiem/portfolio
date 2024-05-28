@@ -17,9 +17,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 'lts'  # Specify the Node.js version.
+        node-version: '20.13.1'  # Specify the Node.js version.
 
     - name: Install dependencies
+
       run: npm install  # Install project dependencies.
 
     - name: Build
