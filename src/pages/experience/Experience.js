@@ -9,6 +9,7 @@ import { Fade } from "react-reveal";
 
 class Experience extends Component {
   render() {
+    console.log("Experience", experience);
     const theme = this.props.theme;
     return (
       <div className="experience-main">
@@ -19,7 +20,7 @@ class Experience extends Component {
               <div className="experience-heading-img-div">
                 {
                   <img
-                    src={require(`../../assets/images/${experience["header_image_path"]}`)}
+                    src={require("../../assets/images/experience.png")}
                     alt=""
                   />
                 }

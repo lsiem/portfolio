@@ -455,7 +455,6 @@ const experience = {
   subtitle: "Berufliche Tätigkeiten",
   description:
     "Mit 16 startete mein Weg als Consultant in einem Start-Up-Unternehmen. Hier beriet und betreute ich Firmen bei der Digitalisierung und Migration in die Cloud. Seit 5 Jahren bin ich als Full-Stack-Entwickler und DevOps Engineer tätig und habe viel Erfahrung gesammelt. Meine Expertise ist die Planung und Realisierung von Softwareprojekten und digitalen Infrastrukturen.",
-  header_image_path: "experience.png",
   sections: [
     {
       title: "Berufliche Tätigkeiten",
