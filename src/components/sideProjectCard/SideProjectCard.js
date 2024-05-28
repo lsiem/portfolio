@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Fade } from "react-reveal";
 import "./SideProjectCard.css";
 import ProjectLanguages from "../projectLanguages/ProjectLanguages";
