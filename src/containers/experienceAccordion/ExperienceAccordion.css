@@ -22,7 +22,7 @@
 }
 
 .experience-details-container.expanded {
-  max-height: 1000px; /* Adjust this value based on your content */
+  max-height: none;
 }
 
 @keyframes fadeIn {

@@ -461,6 +461,16 @@ const experience = {
       work: true,
       experiences: [
         {
+          title: "Systemadministrator",
+          company: "ITSC GmbH",
+          company_url: "https://www.itsc.de",
+          logo_path: "itsc_logo.png",
+          duration: "Juni 2024 - Heute",
+          location: "Hannover, Remote",
+          description:
+            "In meiner Rolle als Systemadministrator bei der ITSC GmbH bin ich für die Verwaltung und Optimierung der IT-Infrastruktur von öffentlichen Krankenkassen verantwortlich. Dazu gehört die Verwaltung von Servern, Netzwerken, Microservices im Klusterbetrieb und anderen IT-Ressourcen."
+        },
+        {
           title: "Software Engineer",
           company: "Just Relate Group GmbH",
           company_url: "https://www.justrelate.de",

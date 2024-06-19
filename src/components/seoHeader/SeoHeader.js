@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async"; // Use react-helmet-async instead of react-helmet for SEO
 import {
   greeting,
   seo,
