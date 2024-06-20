@@ -30,7 +30,7 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4.6.1
       with:
         token: ${{ secrets.PAT_TOKEN }} # Use the PAT token to authenticate the deployment
-        repository-name: lsiem.github.io # Deploy to the lsiem.github.io repository
+        repository-name: lsiem/lsiem.github.io # Deploy to the lsiem.github.io repository
         branch: main # The branch the action should deploy to.
         folder: build # The folder the action should deploy.
         clean: true # Automatically remove deleted files from the deployment.
