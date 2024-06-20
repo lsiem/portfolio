@@ -17,7 +17,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.13.1'  # Specify the Node.js version.
+        node-version: '22.3.0'  # Specify the Node.js version.
 
     - name: Install dependencies
 
@@ -27,10 +27,11 @@ jobs:
       run: npm run build  # Build the project and output to 'build' directory.
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.4.3
+      uses: JamesIves/github-pages-deploy-action@v4.6.1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages # The branch the action should deploy to.
+        token: ${{ secrets.PAT_TOKEN }} # Use the PAT token to authenticate the deployment
+        repository-name: lsiem.github.io # Deploy to the lsiem.github.io repository
+        branch: main # The branch the action should deploy to.
         folder: build # The folder the action should deploy.
         clean: true # Automatically remove deleted files from the deployment.
 
