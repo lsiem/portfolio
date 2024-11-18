@@ -1,16 +1,15 @@
-import React from 'react';
+import React from "react";
 import Header from "../../../components/header/Header";
-import Footer from "../../../components/footer/Footer";
 import TopButton from "../../../components/topButton/TopButton";
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated } from "react-spring";
 import "./Error.css";
 import { Link } from "react-router-dom";
 
 function Error({ theme }) {
   const fadeAndSlide = useSpring({
-    from: { opacity: 0, transform: 'translateY(40px)' },
-    to: { opacity: 1, transform: 'translateY(0)' },
-    config: { duration: 2000 }
+    from: { opacity: 0, transform: "translateY(40px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 2000 },
   });
 
   return (
@@ -21,8 +20,8 @@ function Error({ theme }) {
           <h1>Woops</h1>
           <h1 className="error-404">404</h1>
           <p>
-            Die angeforderte Seite ist nicht verfügbar... Klicke auf den
-            Button um auf die Startseite zu gelangen!
+            Die angeforderte Seite ist nicht verfügbar... Klicke auf den Button
+            um auf die Startseite zu gelangen!
           </p>
           <Link
             className="main-button"
@@ -38,7 +37,6 @@ function Error({ theme }) {
           </Link>
         </animated.div>
       </div>
-      <Footer theme={theme} />
       <TopButton theme={theme} />
     </div>
   );

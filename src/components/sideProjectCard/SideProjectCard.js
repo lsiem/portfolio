@@ -1,25 +1,31 @@
 import React from "react";
-import "./SideProjectCard.css";
+import { Card, CardContent, Typography, Box } from "@mui/material";
+import { useSpring, animated } from "react-spring";
 import ProjectLanguages from "../projectLanguages/ProjectLanguages";
-import { useSpring, animated } from 'react-spring';
+
+const AnimatedCard = animated(Card);
 
 const SideProjectCard = ({ project }) => {
   const fadeAndSlide = useSpring({
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    to: { opacity: 1, transform: 'translateY(0)' },
-    config: { duration: 1000 }
+    from: { opacity: 0, transform: "translateY(20px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 1000 },
   });
 
   return (
-    <animated.div style={fadeAndSlide} className="side-project-card">
-      <div className="side-project-details">
-        <h2 className="side-project-title">{project.title}</h2>
-        <p className="side-project-description">{project.description}</p>
-        <div className="side-project-footer">
+    <AnimatedCard style={fadeAndSlide} sx={{ mb: 3 }}>
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          {project.title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          {project.description}
+        </Typography>
+        <Box mt={2}>
           <ProjectLanguages logos={project.technologies} />
-        </div>
-      </div>
-    </animated.div>
+        </Box>
+      </CardContent>
+    </AnimatedCard>
   );
 };
 

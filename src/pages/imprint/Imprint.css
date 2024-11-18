@@ -1,0 +1,21 @@
+.imprint-container {
+  padding-top: 100px;
+  padding-bottom: 60px;
+}
+
+.imprint-content {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+}
+
+@media (max-width: 600px) {
+  .imprint-container {
+    padding-top: 80px;
+  }
+
+  .imprint-content {
+    padding: 1rem;
+  }
+}

@@ -1,10 +1,19 @@
 /* header */
 
 .header {
-  display: block;
-  max-width: 90%;
-  padding: 20px 10px;
-  margin: 0 auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5%;
+  background-color: rgba(30, 38, 49, 0.8) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  border-bottom: 1px solid rgba(48, 54, 61, 0.5);
 }
 
 .header ul {
@@ -31,18 +40,22 @@
 }
 
 .header .logo {
-  display: block;
-  float: left;
-  font-size: 1.5em;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  margin-top: 10px;
-  line-height: normal;
+  margin: 0;
+  padding: 0;
 }
 .header .logo-name {
-  font-family: "Google Sans Regular";
-  font-weight: bold;
-  padding: 0 10px;
-  /* color: #55198b; */
+  color: #8b949e;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: "Google Sans", sans-serif;
+  margin-left: 40px;
+}
+
+.header .logo-name:hover {
+  color: #c9d1d9;
 }
 
 /* menu */
@@ -144,5 +157,92 @@
 @media (max-width: 960px) and (min-width: 768px) {
   .header {
     font-size: 12px;
+  }
+}
+
+.header-content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+  padding-left: 0;
+}
+
+.logo-name {
+  color: #8b949e;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: "Google Sans", sans-serif;
+  transition: color 0.3s ease;
+}
+
+.logo-name:hover {
+  color: #c9d1d9;
+}
+
+.navigation-links {
+  display: flex;
+  gap: 3rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #8b949e;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #c9d1d9;
+  background-color: rgba(110, 64, 201, 0.1);
+}
+
+.nav-link.active {
+  color: #c9d1d9;
+  background-color: rgba(110, 64, 201, 0.15);
+}
+
+.menu-button {
+  color: #c9d1d9 !important;
+}
+
+.drawer-list {
+  background-color: #161b22;
+  height: 100%;
+  width: 250px;
+  padding: 2rem 1rem;
+}
+
+.drawer-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.drawer-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.drawer-link.active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 900px) {
+  .header-content {
+    padding: 0.5rem 1rem;
   }
 }

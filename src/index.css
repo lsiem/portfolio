@@ -2,42 +2,50 @@
   font-family: "Agustina Regular";
   font-style: normal;
   font-weight: normal;
-  src: local("Agustina Regular"),
+  src:
+    local("Agustina Regular"),
     url("./assets/fonts/Agustina.woff") format("woff");
 }
 @font-face {
   font-family: "Montserrat";
-  src: local("Montserrat"),
+  src:
+    local("Montserrat"),
     url("./assets/fonts/Montserrat-Regular.ttf") format("woff");
 }
 @font-face {
   font-family: "Google Sans Bold";
-  src: local("Google Sans Bold"),
+  src:
+    local("Google Sans Bold"),
     url("./assets/fonts/GoogleSans-Bold.ttf") format("woff");
 }
 @font-face {
   font-family: "Google Sans Bold Italic";
-  src: local("Google Sans Bold Italic"),
+  src:
+    local("Google Sans Bold Italic"),
     url("./assets/fonts/GoogleSans-BoldItalic.ttf") format("woff");
 }
 @font-face {
   font-family: "Google Sans Italic";
-  src: local("Google Sans Italic"),
+  src:
+    local("Google Sans Italic"),
     url("./assets/fonts/GoogleSans-Italic.ttf") format("woff");
 }
 @font-face {
   font-family: "Google Sans Medium";
-  src: local("Google Sans Medium"),
+  src:
+    local("Google Sans Medium"),
     url("./assets/fonts/GoogleSans-Medium.ttf") format("woff");
 }
 @font-face {
   font-family: "Google Sans Medium Italic";
-  src: local("Google Sans Medium Italic"),
+  src:
+    local("Google Sans Medium Italic"),
     url("./assets/fonts/GoogleSans-MediumItalic.ttf") format("woff");
 }
 @font-face {
   font-family: "Google Sans Regular";
-  src: local("Google Sans Regular"),
+  src:
+    local("Google Sans Regular"),
     url("./assets/fonts/GoogleSans-Regular.ttf") format("woff");
 }
 code {
@@ -51,9 +59,13 @@ body {
 }
 body {
   margin: 0;
-  font: 19px / 23px Montserrat, "Montserrat", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #0d1117;
+  color: #c9d1d9;
 }
 /* Media Query */
 @media (max-width: 1380px) {
@@ -62,4 +74,32 @@ body {
     font-size: 16px;
     line-height: normal;
   }
+}
+
+.app-content {
+  min-height: 100vh;
+  background-color: #0d1117;
+}
+
+/* Add smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161b22;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #424a53;
 }

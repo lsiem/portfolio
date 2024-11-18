@@ -1,40 +1,15 @@
 import React from "react";
-import "./Button.css";
+import Button from "@mui/material/Button";
 
-const onMouseEnter = (event, color, bgColor) => {
-  const el = event.target;
-  el.style.color = color;
-  el.style.backgroundColor = bgColor;
-};
-
-const onMouseOut = (event, color, bgColor) => {
-  const el = event.target;
-  el.style.color = color;
-  el.style.backgroundColor = bgColor;
-};
-
-export default function Button({ text, className, href, newTab, theme }) {
-  if (!theme || !theme.body || !theme.text) {
-    console.error("Theme prop is missing or incomplete");
-    theme = { body: "defaultBodyColor", text: "defaultTextColor" }; // Default values
-  }
-
+export default function CustomButton({ text, href, newTab }) {
   return (
-    <div className={className}>
-      <a
-        className="main-button"
-        href={href}
-        target={newTab && "_blank"}
-        style={{
-          color: theme.body,
-          backgroundColor: theme.text,
-          border: `solid 1px ${theme.text}`,
-        }}
-        onMouseEnter={(event) => onMouseEnter(event, theme.text, theme.body)}
-        onMouseOut={(event) => onMouseOut(event, theme.body, theme.text)}
-      >
-        {text}
-      </a>
-    </div>
+    <Button
+      variant="contained"
+      color="primary"
+      href={href}
+      target={newTab ? "_blank" : "_self"}
+    >
+      {text}
+    </Button>
   );
 }

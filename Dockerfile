@@ -16,6 +16,9 @@ RUN npm install --silent
 # Copy the rest of the application code
 COPY . .
 
+# Expose port 3001 to the outside world
+EXPOSE 3001
+
 # Create a non-root user to run the application securely
 RUN adduser -D myuser
 USER myuser

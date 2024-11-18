@@ -1,49 +1,77 @@
-import React from 'react';
+import React from "react";
+import { Typography, Box, Paper } from "@mui/material";
+import { useSpring, animated, useTrail } from "react-spring";
 import SoftwareSkill from "../../components/softwareSkills/SoftwareSkill";
 import { skills } from "../../portfolio";
 import "./Skills.css";
-import { useSpring, animated } from 'react-spring';
 
-function SkillSection({ theme }) {
-  const skillData = skills ? skills.data : []; // Provide a default empty array if skills.data is undefined
+const AnimatedBox = animated(Box);
+const AnimatedPaper = animated(Paper);
 
-  const fadeRight = useSpring({
-    from: { opacity: 0, transform: 'translateX(100px)' },
-    to: { opacity: 1, transform: 'translateX(0)' },
-    config: { duration: 1000 }
+function SkillSection() {
+  const skillData = skills?.data || [];
+
+  const fadeIn = useSpring({
+    from: { opacity: 0, transform: "translateY(20px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 1000 },
+  });
+
+  // Using useTrail instead of individual springs for staggered animation
+  const trail = useTrail(skillData.length, {
+    from: { opacity: 0, transform: "translateY(20px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 800 },
   });
 
   return (
-    <div>
-      {skillData.map((skill, i) => (
-        <div key={i} className="skills-div">
-          <animated.div style={fadeRight}>
-            <h1 className="skills-heading" style={{ color: theme.text }}>
-              {skill.title}
-            </h1>
-          </animated.div>
-          <div className="skills-subcategory-wrapper skills-subcategory-wrapper-responsive">
-            {skill.categories &&
-              skill.categories.map((category, index) => (
-                <div key={index} className="skills-subcategory-container skills-subcategory-container-responsive">
-                  <animated.div style={fadeRight}>
-                    <h2 className="skills-subheading" style={{ color: theme.text }}>
-                      {category.categoryTitle}
-                    </h2>
-                    <SoftwareSkill logos={category.softwareSkills} />
-                    {category.skills &&
-                      category.skills.map((skillSentence, idx) => (
-                        <p key={idx} className="subTitle skills-text" style={{ color: theme.secondaryText }}>
-                          {skillSentence}
-                        </p>
-                      ))}
-                  </animated.div>
-                </div>
-              ))}
-          </div>
-        </div>
+    <Box className="skills-container">
+      {trail.map((props, i) => (
+        <Box key={i} sx={{ mb: 6 }}>
+          <AnimatedBox style={fadeIn}>
+            <Typography
+              variant="h3"
+              className="skills-section-title"
+              gutterBottom
+            >
+              {skillData[i].title}
+            </Typography>
+          </AnimatedBox>
+
+          <Box className="skills-category-grid">
+            {skillData[i].categories?.map((category, index) => (
+              <AnimatedPaper
+                key={index}
+                style={{
+                  ...props,
+                  delay: 200 * index,
+                }}
+                className="skill-category-card"
+                elevation={3}
+              >
+                <Typography variant="h5" className="category-title">
+                  {category.categoryTitle}
+                </Typography>
+
+                <SoftwareSkill logos={category.softwareSkills} />
+
+                <Box className="skills-list">
+                  {category.skills?.map((skillSentence, idx) => (
+                    <Typography
+                      key={idx}
+                      variant="body1"
+                      className="skill-item"
+                    >
+                      {skillSentence}
+                    </Typography>
+                  ))}
+                </Box>
+              </AnimatedPaper>
+            ))}
+          </Box>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 }
 

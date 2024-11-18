@@ -1,34 +1,69 @@
 import React from "react";
-import "./SocialMedia.css";
-import { socialMediaLinks } from "../../portfolio";
+import { IconButton, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fab } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGithub,
+  faLinkedin,
+  faGoogle,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 
-library.add(fab);
+const socialMediaLinks = [
+  {
+    name: "Github",
+    link: "https://github.com/lsiem",
+    icon: faGithub,
+    backgroundColor: "#333",
+  },
+  {
+    name: "LinkedIn",
+    link: "https://www.linkedin.com/in/YourLinkedInUsername",
+    icon: faLinkedin,
+    backgroundColor: "#0077B5",
+  },
+  {
+    name: "Google",
+    link: "mailto:your.email@gmail.com",
+    icon: faGoogle,
+    backgroundColor: "#DB4437",
+  },
+  {
+    name: "Instagram",
+    link: "https://www.instagram.com/YourInstagramUsername",
+    icon: faInstagram,
+    backgroundColor: "#E4405F",
+  },
+];
 
-export default function SocialMedia(props) {
+export default function SocialMedia() {
   return (
-    <div className="social-media-div">
-      {socialMediaLinks.map((media, i) => {
-        return (
-          <a
-            key={i}
-            href={media.link}
-            className="icon-button"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Box sx={{ display: "flex", gap: 1.5 }}>
+      {socialMediaLinks.map((media, i) => (
+        <IconButton
+          key={i}
+          href={media.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            bgcolor: "rgba(255, 255, 255, 0.1)",
+            width: 40,
+            height: 40,
+            "&:hover": {
+              bgcolor: media.backgroundColor,
+              transform: "translateY(-3px)",
+              transition: "all 0.3s ease-in-out",
+            },
+          }}
+        >
+          <FontAwesomeIcon
+            icon={media.icon}
             style={{
-              "--background-color": media.backgroundColor,
-              "--hover-background-color": props.theme.text,
+              fontSize: "1.2rem",
+              color: "#fff",
             }}
-          >
-            <div className="icon-wrapper">
-              <FontAwesomeIcon icon={media.fontAwesomeIcon} />
-            </div>
-          </a>
-        );
-      })}
-    </div>
+          />
+        </IconButton>
+      ))}
+    </Box>
   );
 }

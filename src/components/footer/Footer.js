@@ -1,22 +1,23 @@
 import React from "react";
-import "./Footer.css";
-import { useSpring, animated } from 'react-spring';
-/* eslint-disable jsx-a11y/accessible-emoji */
+import { Typography, Link, Box } from "@mui/material";
 
-export default function Footer(props) {
-  const fade = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
-
+export default function Footer() {
   return (
-    <div className="footer-div">
-      <animated.div style={fade}>
-        <p className="footer-text" style={{ color: props.theme.secondaryText }}>
-          Copyright © {new Date().getFullYear()} Lasse Siemoneit |{" "}
-          <a href="/imprint" style={{ color: props.theme.secondaryText }}>
-            Impressum
-          </a>
-        </p>
-        {/* <ToggleSwitch theme={props.theme} onToggle={props.onToggle}/> */}
-      </animated.div>
-    </div>
+    <Box
+      component="footer"
+      sx={{
+        py: 2,
+        textAlign: "center",
+        backgroundColor: "background.paper",
+        color: "text.secondary",
+      }}
+    >
+      <Typography variant="body2">
+        &copy; {new Date().getFullYear()} Lasse Siemoneit |{" "}
+        <Link href="/imprint" color="inherit">
+          Impressum
+        </Link>
+      </Typography>
+    </Box>
   );
 }

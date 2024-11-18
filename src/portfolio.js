@@ -29,33 +29,12 @@ const greeting = {
   githubProfile: "https://github.com/lsiem",
 };
 
-const socialMediaLinks = [
-  /* Social Media Link */
-  {
-    name: "Github",
-    link: "https://github.com/lsiem",
-    fontAwesomeIcon: ["fab", "github"], // Reference https://fontawesome.com/icons/github?style=brands
-    backgroundColor: "#181717", // Reference https://simpleicons.org/?q=github
-  },
-  {
-    name: "LinkedIn",
-    link: "https://www.linkedin.com/in/lasse-siemoneit-170ab7195/",
-    fontAwesomeIcon: ["fab", "linkedin-in"], // Reference https://fontawesome.com/icons/linkedin-in?style=brands
-    backgroundColor: "#0A66C2", // Reference https://simpleicons.org/?q=linkedin
-  },
-  {
-    name: "Gmail",
-    link: "mailto:lasse.siemoneit@gmail.com",
-    fontAwesomeIcon: ["fab", "google"], // Reference https://fontawesome.com/icons/google?style=brands
-    backgroundColor: "#EA4335", // Reference https://simpleicons.org/?q=gmail
-  },
-  {
-    name: "Instagram",
-    link: "https://www.instagram.com/lsiem0927/",
-    fontAwesomeIcon: ["fab", "instagram"], // Reference https://fontawesome.com/icons/instagram?style=brands
-    backgroundColor: "#E4405F", // Reference https://simpleicons.org/?q=instagram
-  },
-];
+const socialMediaLinks = {
+  github: "https://github.com/YourGithubUsername",
+  linkedin: "https://www.linkedin.com/in/YourLinkedInUsername",
+  gmail: "your.email@gmail.com",
+  instagram: "https://www.instagram.com/YourInstagramUsername",
+};
 
 const skills = {
   data: [
@@ -468,7 +447,7 @@ const experience = {
           duration: "Juni 2024 - Heute",
           location: "Hannover, Remote",
           description:
-            "In meiner Rolle als Systemadministrator bei der ITSC GmbH bin ich für die Verwaltung und Optimierung der IT-Infrastruktur von öffentlichen Krankenkassen verantwortlich. Dazu gehört die Verwaltung von Servern, Netzwerken, Microservices im Klusterbetrieb und anderen IT-Ressourcen."
+            "In meiner Rolle als Systemadministrator bei der ITSC GmbH bin ich für die Verwaltung und Optimierung der IT-Infrastruktur von öffentlichen Krankenkassen verantwortlich. Dazu gehört die Verwaltung von Servern, Netzwerken, Microservices im Klusterbetrieb und anderen IT-Ressourcen.",
         },
         {
           title: "Software Engineer",
@@ -711,6 +690,153 @@ const contactPageData = {
   },
 };
 
+const projects = [
+  {
+    title: "EWE/osnatel Vertriebspartner Mediathek",
+    description:
+      "Entwicklung einer Vertriebspartnermediathek für die EWE Aktiengesellschaft und osnatel...",
+    technologies: ["Java", "Spring Boot", "Vaadin", "PostgreSQL"],
+    link: "https://bpp.ewe.de/login",
+  },
+  {
+    title: "Disy-One",
+    description:
+      "Projekt für die Vidama GmbH, welches das Verwalten und konfigurierbares Abspielen von Medien für Unternehmen, wie EWE/osnatel, Olantis, Famila, Öffentliche Versicherungen in deren Stehlen, TVs oder Banden ermglicht...",
+    technologies: [
+      "Python",
+      "Flask",
+      "FastAPI",
+      "REST",
+      "Bash",
+      "Unix",
+      "Docker",
+      "CI/CD Pipelines",
+      "Grafana",
+      "Prometheus",
+    ],
+    link: "https://vidama.de",
+  },
+  {
+    title: "Sport Event Controller",
+    description:
+      "Der Sport Event Controller bietet eine Lösung für die Steuerung der Medienwiedergabe während eines Sport-Events...",
+    technologies: [
+      "Python",
+      "Flask",
+      "FastAPI",
+      "REST",
+      "Bash",
+      "Unix",
+      "Docker",
+      "CI/CD Pipelines",
+      "WebSocket",
+      "Orchestration",
+      "HTML",
+      "CSS",
+      "JavaScript",
+    ],
+    link: "https://www.handball-bundesliga-frauen.de/",
+  },
+  {
+    title: "Ferrero Foto-Aktion",
+    description:
+      "Die Ferrero Fotoaktion ist eine Marketingkampagne der Ferrero Gruppe, die im letzten Jahr von der Teamwork GmbH und mir durchgeführt wurde...",
+    technologies: ["Python", "AWS", "HTML", "CSS", "JavaScript"],
+  },
+  {
+    title: "Immobilienbaukasten",
+    description:
+      "Der Immobilienbaukasten ist eine Webanwendung, welche ursprünglich für die Schlüssel Gruppe GmbH entwickelt wurde und anhand einer benutzerfreundlichen und intuitiven Weboberfläche das erstellen von One-Page Webseiten für Immobilienprojekte ohne Programmierkenntnisse ermglicht...",
+    technologies: [
+      "Java",
+      "Spring Boot",
+      "Thymeleaf",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "PostgreSQL",
+      "Docker",
+      "CI/CD Pipelines",
+    ],
+    link: "https://www.schluessel-gruppe.de/",
+  },
+  {
+    title: "Website Entwicklung JR PurTec",
+    description:
+      "Für JR PurTec habe ich eine moderne und benutzerfreundliche Website entwickelt, die das Fachwissen des Unternehmens im Bereich der Polyurethan-Technologie und seine breite Palette von Anwendungen - von der Automobilindustrie über den öffentlichen Nahverkehr bis hin zur Medizintechnik - vorstellt...",
+    technologies: [
+      "WordPress",
+      "JetPack",
+      "Elementor",
+      "HTML",
+      "CSS",
+      "JavaScrpt",
+      "PHP",
+    ],
+    link: "https://www.jrpurtec.com/",
+  },
+  {
+    title: "Imke Folkerts Kundenportal",
+    description:
+      "Kundenportal für Imke Folkerts Fotografin für die Verwaltung von Kundendaten, sowie die Mglichkeit der digitalen Registrierung für Kunden...",
+    technologies: [
+      "Java",
+      "Spring Boot",
+      "Vaadin",
+      "Gradle",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "PostgreSQL",
+      "Docker",
+      "CI/CD Pipelines",
+    ],
+    link: "https://www.imkefolkerts-fotografin.de/",
+  },
+  {
+    title: "Just Relate Group GmbH",
+    description:
+      "Entwicklung eines CRM-Systems für die Just Relate Group GmbH, welches die Verwaltung von Kundenanfragen und deren Verteilung auf die entsprechenden Mitarbeiter ermöglicht...",
+    technologies: [
+      "Java",
+      "Spring Boot",
+      "Vaadin",
+      "Gradle",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "PostgreSQL",
+      "Docker",
+      "CI/CD Pipelines",
+      "JUnit",
+      "Mockito",
+      "Selenium",
+    ],
+    link: "https://www.justrelate.de/",
+  },
+  {
+    title: "ITSC GmbH",
+    description:
+      "Verwaltung und Optimierung der IT-Infrastruktur von öffentlichen Krankenkassen...",
+    technologies: [
+      "Python",
+      "RedHat OpenShift",
+      "Kubernetes",
+      "Docker",
+      "CI/CD Pipelines",
+      "Shell",
+      "Unix",
+    ],
+    link: "https://www.itsc.de/",
+  },
+];
+
+const about = {
+  title: "Über mich",
+  description:
+    "Ich bin ein selbsterlerneter und passionierter Full-Stack Software Entwickler mit einem Fokus auf die Entwicklung von Web- und Hybrid-Apps. Ich bin ein leidenschaftlicher Entwickler, der ständig neue Technologien erlernt und anwendet, um innovative Lösungen zu schaffen. Mein Schwerpunkt liegt auf der Erstellung robuster, benutzerfreundlicher und skalierbarer Software, die sowohl technische als auch wirtschaftliche Anforderungen erfüllt.",
+};
+
 export {
   settings,
   seo,
@@ -719,4 +845,6 @@ export {
   skills,
   experience,
   contactPageData,
+  projects,
+  about,
 };

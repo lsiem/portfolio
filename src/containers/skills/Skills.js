@@ -1,26 +1,25 @@
 import React from "react";
-import "./Skills.css";
+import { Typography, Container, Box } from "@mui/material";
+import { useSpring, animated } from "react-spring";
 import SkillSection from "./SkillSection";
-import { useSpring, animated } from 'react-spring';
 
-export default function Skills(props) {
-  const theme = props.theme;
+const AnimatedBox = animated(Box);
+
+export default function Skills() {
   const fadeAndSlide = useSpring({
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    to: { opacity: 1, transform: 'translateY(0)' },
-    config: { duration: 2000 }
+    from: { opacity: 0, transform: "translateY(20px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 2000 },
   });
 
   return (
-    <div className="main" id="skills">
-      <div className="skills-header-div">
-        <animated.div style={fadeAndSlide}>
-          <h1 className="skills-header" style={{ color: theme.text }}>
-            Meine Fähigkeiten
-          </h1>
-        </animated.div>
-      </div>
-      <SkillSection theme={theme} />
-    </div>
+    <Container sx={{ mt: 4 }}>
+      <AnimatedBox style={fadeAndSlide}>
+        <Typography variant="h4" gutterBottom>
+          Meine Fähigkeiten
+        </Typography>
+      </AnimatedBox>
+      <SkillSection />
+    </Container>
   );
 }

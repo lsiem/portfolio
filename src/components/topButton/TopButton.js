@@ -1,7 +1,8 @@
 import React from "react";
-import "./TopButton.css";
+import Fab from "@mui/material/Fab";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-export default function TopButton({ theme }) {
+export default function TopButton() {
   const [isVisible, setIsVisible] = React.useState(false);
 
   React.useEffect(() => {
@@ -18,38 +19,25 @@ export default function TopButton({ theme }) {
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
-  const applyColor = (color, bgColor) => {
-    /* For the button */
-    const topButton = document.getElementById("topButton");
-    topButton.style.color = color;
-    topButton.style.backgroundColor = bgColor;
-
-    /* For arrow icon */
-    const arrow = document.getElementById("arrow");
-    arrow.style.color = color;
-    arrow.style.backgroundColor = bgColor;
-  };
-
-  const onMouseEnter = () => {
-    applyColor(theme.text, theme.body);
-  };
-
-  const onMouseLeave = () => {
-    applyColor(theme.body, theme.text);
-  };
-
   return (
-    <div
-      onClick={() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }}
-      id="topButton"
-      className={`top-button ${isVisible ? "visible" : ""}`}
-      title="Go up"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      <i className="fas fa-arrow-up" id="arrow" aria-hidden="true" />
-    </div>
+    <>
+      {isVisible && (
+        <Fab
+          color="primary"
+          size="small"
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          sx={{
+            position: "fixed",
+            bottom: 16,
+            right: 16,
+          }}
+          aria-label="scroll back to top"
+        >
+          <KeyboardArrowUpIcon />
+        </Fab>
+      )}
+    </>
   );
 }
