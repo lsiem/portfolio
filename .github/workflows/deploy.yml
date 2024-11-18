@@ -27,7 +27,7 @@ jobs:
       run: npm run build  # Build the project and output to 'build' directory.
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.6.1
+      uses: JamesIves/github-pages-deploy-action@v4.6.9
       with:
         token: ${{ secrets.PAT_TOKEN }} # Use the PAT token to authenticate the deployment
         repository-name: lsiem/lsiem.github.io # Deploy to the lsiem.github.io repository
