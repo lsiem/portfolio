@@ -1,3 +1,6 @@
 {
-  "svg.preview.background": "white"
+  "svg.preview.background": "white",
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///c%3A/Users/LasseSiemoneit/Development/portfolio/.github/workflows/deploy.yml"
+  }
 }

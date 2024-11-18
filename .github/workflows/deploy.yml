@@ -1,35 +1,25 @@
 name: Build and Deploy to GitHub Pages
 
-on:
-  push:
-    branches:
-      - master  # Trigger the workflow on push events to the master branch.
+on: [push]
 
 permissions:
   contents: write
 
 jobs:
   build-and-deploy:
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest  # Specifies the runner environment.
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Ensures you fetch all history for .git-based commands to work.
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.3.0'  # Specify the Node.js version.
-
-    - name: Install dependencies
-
-      run: npm install  # Install project dependencies.
-
-    - name: Build
-      run: npm run build  # Build the project and output to 'build' directory.
-
-    - name: Deploy to GitHub Pages
+    - name: Checkout 🛎️
+      uses: actions/checkout@v4
+    
+    - name: Install and build
+      run: |
+        npm ci
+        npm run build
+      
+    - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4.6.9
       with:
         token: ${{ secrets.PAT_TOKEN }} # Use the PAT token to authenticate the deployment
