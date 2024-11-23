@@ -1,40 +1,69 @@
 import React from "react";
+import { Box, Typography, Container, Link, useTheme } from "@mui/material";
 import "./Contact.css";
 import SocialMedia from "../../components/socialMedia/SocialMedia";
 import { contactPageData, socialMediaLinks } from "../../portfolio";
 
 const Contact: React.FC = () => {
-  return (
-    <div className="main contact-margin-top" id="contact">
-      <div className="contact-div-main">
-        <div className="contact-header">
-          <h1 className="heading contact-title">
-            {contactPageData.contactSection.title}
-          </h1>
-          <p className="subTitle contact-subtitle">
-            {contactPageData.contactSection.description}
-          </p>
+  const theme = useTheme();
 
-          <div className="contact-text-div">
-            <a
-              className="contact-detail-email"
-              href={`mailto:${socialMediaLinks.gmail}`}
+  return (
+    <Box
+      sx={{
+        backgroundColor: "background.default",
+        minHeight: "100vh",
+        pt: 4,
+        pb: 8,
+      }}
+    >
+      <Container className="contact-margin-top" id="contact">
+        <Box className="contact-div-main">
+          <Box className="contact-header">
+            <Typography
+              variant="h1"
+              className="contact-title"
+              color="text.primary"
             >
-              {socialMediaLinks.gmail}
-            </a>
-            <br />
-            <br />
-            <SocialMedia />
-          </div>
-        </div>
-        <div className="contact-image-div">
-          <img
-            alt="Contact Mail"
-            src={require("../../assets/images/contactMail.png")}
-          />
-        </div>
-      </div>
-    </div>
+              {contactPageData.contactSection.title}
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              className="contact-subtitle"
+              color="text.secondary"
+            >
+              {contactPageData.contactSection.description}
+            </Typography>
+
+            <Box className="contact-text-div">
+              <Link
+                href={`mailto:${socialMediaLinks.gmail}`}
+                className="contact-detail-email"
+                sx={{
+                  color: "text.secondary",
+                  textDecoration: "none",
+                  "&:hover": {
+                    color: "text.primary",
+                    textShadow: (theme) =>
+                      `2px 1px 2px ${theme.palette.mode === "light" ? "#b5b5b5" : "#000000"}`,
+                  },
+                }}
+              >
+                {socialMediaLinks.gmail}
+              </Link>
+              <br />
+              <br />
+              <SocialMedia />
+            </Box>
+          </Box>
+          <Box className="contact-image-div">
+            <img
+              alt="Contact Mail"
+              src={require("../../assets/images/contactMail.png")}
+            />
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 
