@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Typography, Grid, Box } from "@mui/material";
 import { useSpring, animated, SpringValue } from "react-spring";
+import styled from "@emotion/styled";
+import { Theme } from "@mui/material/styles";
 import SocialMedia from "../../components/socialMedia/SocialMedia";
 
 interface AnimatedStyles {
@@ -10,6 +12,33 @@ interface AnimatedStyles {
 
 const AnimatedBox = animated(Box);
 
+// Styled components
+const StyledContainer = styled(Container)`
+  min-height: 100vh;
+`;
+
+const AnimatedContent = styled(AnimatedBox)`
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+`;
+
+const Title = styled(Typography)`
+  color: ${({ theme }) => (theme as Theme).palette.text.primary};
+  font-weight: bold;
+  margin-bottom: ${({ theme }) => (theme as Theme).spacing(3)};
+`;
+
+const Subtitle = styled(Typography)`
+  color: ${({ theme }) => (theme as Theme).palette.text.secondary};
+  margin-bottom: ${({ theme }) => (theme as Theme).spacing(4)};
+  line-height: 1.4;
+`;
+
+const SocialMediaWrapper = styled(Box)`
+  margin-bottom: ${({ theme }) => (theme as Theme).spacing(4)};
+`;
+
 const Greeting: React.FC = () => {
   const fadeAndSlide = useSpring({
     from: { opacity: 0, transform: "translateY(40px)" },
@@ -18,46 +47,23 @@ const Greeting: React.FC = () => {
   }) as AnimatedStyles;
 
   return (
-    <Container maxWidth="lg">
-      <AnimatedBox
-        style={fadeAndSlide}
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
+    <StyledContainer maxWidth="lg">
+      <AnimatedContent style={fadeAndSlide}>
         <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} md={6}>
-            <Typography
-              variant="h2"
-              sx={{
-                color: "text.primary",
-                fontWeight: "bold",
-                mb: 3,
-              }}
-            >
-              Hi, ich bin Lasse
-            </Typography>
-            <Typography
-              variant="h4"
-              sx={{
-                color: "text.secondary",
-                mb: 4,
-                lineHeight: 1.4,
-              }}
-            >
+            <Title variant="h2">Hi, ich bin Lasse</Title>
+            <Subtitle variant="h4">
               Ich bin ein selbsterlerneter und passionierter Full-Stack Software
               Entwickler mit einem Fokus auf die Entwicklung von Web- und
               Hybrid-Apps.
-            </Typography>
-            <Box sx={{ mb: 4 }}>
+            </Subtitle>
+            <SocialMediaWrapper>
               <SocialMedia />
-            </Box>
+            </SocialMediaWrapper>
           </Grid>
         </Grid>
-      </AnimatedBox>
-    </Container>
+      </AnimatedContent>
+    </StyledContainer>
   );
 };
 

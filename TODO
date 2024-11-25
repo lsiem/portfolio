@@ -5,8 +5,8 @@
 
 ## Theme and Styling Improvements
 - [x] Implement the TODO for light/dark mode toggle
-- [ ] Add theme persistence using localStorage
-- [ ] Consider adding CSS-in-JS solution like styled-components for better styling management
+- [x] Add theme persistence using localStorage
+- [x] Consider adding CSS-in-JS solution like styled-components for better styling management
 - [ ] Add proper color contrast checking for accessibility
 
 ## Code Quality and Testing
