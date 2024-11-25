@@ -32,7 +32,7 @@ const Greeting: React.FC = () => {
             <Typography
               variant="h2"
               sx={{
-                color: "grey.300",
+                color: "text.primary",
                 fontWeight: "bold",
                 mb: 3,
               }}
@@ -42,7 +42,7 @@ const Greeting: React.FC = () => {
             <Typography
               variant="h4"
               sx={{
-                color: "grey.400",
+                color: "text.secondary",
                 mb: 4,
                 lineHeight: 1.4,
               }}

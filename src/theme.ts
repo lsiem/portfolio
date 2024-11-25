@@ -12,13 +12,13 @@ const getTheme = (mode: "light" | "dark"): Theme =>
               paper: "#ffffff",
             },
             text: {
-              primary: "#24292f",
-              secondary: "#57606a",
+              primary: "#000000", // Darkened for better contrast
+              secondary: "#1a1a1a", // Darkened for better contrast
             },
             primary: {
-              main: "#6e40c9",
-              dark: "#553098",
-              light: "#8b5cf6",
+              main: "#476792",
+              dark: "#6BA1EA",
+              light: "#192535",
             },
             divider: "rgba(0, 0, 0, 0.12)",
             grey: {
@@ -41,8 +41,8 @@ const getTheme = (mode: "light" | "dark"): Theme =>
               paper: "#2d3642",
             },
             text: {
-              primary: "#c9d1d9",
-              secondary: "#8b949e",
+              primary: "#ffffff", // Brightened for better contrast
+              secondary: "#e1e1e1", // Brightened for better contrast
             },
             primary: {
               main: "#6e40c9",
@@ -51,9 +51,9 @@ const getTheme = (mode: "light" | "dark"): Theme =>
             },
             divider: "rgba(255, 255, 255, 0.12)",
             grey: {
-              900: "#c9d1d9",
-              800: "#b1bac4",
-              700: "#8b949e",
+              900: "#ffffff", // Adjusted for better contrast
+              800: "#e1e1e1",
+              700: "#c2c2c2",
               600: "#6e7681",
               500: "#484f58",
               400: "#30363d",
@@ -82,13 +82,14 @@ const getTheme = (mode: "light" | "dark"): Theme =>
           },
           containedPrimary: {
             backgroundColor: "#6e40c9",
+            color: "#ffffff", // Ensuring button text is always visible
             "&:hover": {
               backgroundColor: "#553098",
             },
           },
           outlined: {
             borderColor: mode === "light" ? "#d0d7de" : "#30363d",
-            color: mode === "light" ? "#24292f" : "#c9d1d9",
+            color: mode === "light" ? "#000000" : "#ffffff", // Adjusted for better contrast
             "&:hover": {
               backgroundColor: "rgba(110, 64, 201, 0.1)",
             },
@@ -99,6 +100,7 @@ const getTheme = (mode: "light" | "dark"): Theme =>
         styleOverrides: {
           root: {
             backgroundImage: "none",
+            color: mode === "light" ? "#000000" : "#ffffff", // Ensuring text in Paper components is visible
           },
         },
       },
