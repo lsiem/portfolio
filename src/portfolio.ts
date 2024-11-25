@@ -470,7 +470,7 @@ interface Project {
   link?: string;
 }
 
-interface ExperienceSection {
+export interface ExperienceSection {
   title: string;
   work?: boolean;
   mainProjects?: boolean;

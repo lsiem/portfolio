@@ -4,7 +4,7 @@
 - [x] Add proper TypeScript configurations
 
 ## Theme and Styling Improvements
-- [ ] Implement the TODO for light/dark mode toggle
+- [x] Implement the TODO for light/dark mode toggle
 - [ ] Add theme persistence using localStorage
 - [ ] Consider adding CSS-in-JS solution like styled-components for better styling management
 - [ ] Add proper color contrast checking for accessibility

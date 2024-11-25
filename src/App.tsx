@@ -97,18 +97,56 @@ const router = (
     },
   ]);
 
+const THEME_MODE_KEY = "portfolio-theme";
+
+const getInitialTheme = (): "light" | "dark" => {
+  try {
+    const savedMode = localStorage.getItem(THEME_MODE_KEY);
+    console.log("Saved theme mode:", savedMode);
+
+    if (savedMode === "light" || savedMode === "dark") {
+      return savedMode;
+    }
+
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    const defaultMode = prefersDark ? "dark" : "light";
+    localStorage.setItem(THEME_MODE_KEY, defaultMode);
+    console.log("Setting default mode:", defaultMode);
+    return defaultMode;
+  } catch (error) {
+    console.error("Error accessing localStorage:", error);
+    return "light";
+  }
+};
+
 const App: React.FC = () => {
-  const [mode, setMode] = useState<"light" | "dark">(() => {
-    const savedMode = localStorage.getItem("theme-mode");
-    return savedMode === "light" || savedMode === "dark" ? savedMode : "dark";
-  });
+  const [mode, setMode] = useState<"light" | "dark">(getInitialTheme);
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      const savedMode = localStorage.getItem(THEME_MODE_KEY);
+      if (!savedMode) {
+        const newMode = e.matches ? "dark" : "light";
+        setMode(newMode);
+        localStorage.setItem(THEME_MODE_KEY, newMode);
+        console.log("System theme changed to:", newMode);
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const theme = getTheme(mode);
 
   const toggleTheme = () => {
     const newMode = mode === "light" ? "dark" : "light";
+    console.log("Toggling theme to:", newMode);
     setMode(newMode);
-    localStorage.setItem("theme-mode", newMode);
+    localStorage.setItem(THEME_MODE_KEY, newMode);
   };
 
   return (
