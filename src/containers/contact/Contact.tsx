@@ -1,12 +1,10 @@
 import React from "react";
-import { Box, Typography, Container, Link, useTheme } from "@mui/material";
+import { Box, Typography, Container, Link } from "@mui/material";
 import "./Contact.css";
 import SocialMedia from "../../components/socialMedia/SocialMedia";
 import { contactPageData, socialMediaLinks } from "../../portfolio";
 
 const Contact: React.FC = () => {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{

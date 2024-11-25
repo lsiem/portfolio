@@ -1,4 +1,3 @@
-import { title } from "process";
 import { Skills } from "./types/portfolio";
 
 // Website related settings

@@ -1,4 +1,4 @@
-import React, { Suspense, ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Header from "./components/header/Header";
 import Home from "./pages/home/HomeComponent";
