@@ -13,23 +13,25 @@ const CustomCursor = () => {
       return false;
     }
 
-    // Check localStorage preference
-    const savedPref = localStorage.getItem('customCursorEnabled');
-
-    // Check system preferences
+    // Check system preferences first - these are hard requirements
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const hasFineMouse = window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
 
-    // Determine if custom cursor should be enabled
-    // Priority: localStorage > reduced motion preference > device capability
-    let shouldEnable = false;
-    if (savedPref !== null) {
-      shouldEnable = savedPref === 'true';
-    } else {
-      shouldEnable = hasFineMouse && !prefersReducedMotion;
+    // If system doesn't support custom cursor, never enable
+    if (prefersReducedMotion || !hasFineMouse) {
+      return false;
     }
 
-    return shouldEnable;
+    // Check localStorage preference only if system supports it
+    const savedPref = localStorage.getItem('customCursorEnabled');
+
+    // If user has explicitly saved a preference and system supports it, use that
+    if (savedPref !== null) {
+      return savedPref === 'true';
+    }
+
+    // Default: enable if system supports it
+    return true;
   };
 
   // Function to update cursor state

@@ -29,6 +29,7 @@ const Header = () => {
 
   // State for custom cursor toggle
   const [customCursorEnabled, setCustomCursorEnabled] = useState(false);
+  const [cursorTooltip, setCursorTooltip] = useState(null);
 
   // Use shared contact form hook
   const {
@@ -84,6 +85,26 @@ const Header = () => {
 
   // Handle custom cursor toggle
   const toggleCustomCursor = () => {
+    // Check system preferences at toggle time
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasFineMouse = window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
+
+    // If trying to enable but system doesn't support it, show explanation
+    if (!customCursorEnabled && (prefersReducedMotion || !hasFineMouse)) {
+      let message = 'Eigener Cursor nicht verfügbar: ';
+      if (prefersReducedMotion && !hasFineMouse) {
+        message += 'Bewegungsreduzierung aktiv und Maus nicht erkannt';
+      } else if (prefersReducedMotion) {
+        message += 'Bewegungsreduzierung in den Systemeinstellungen aktiv';
+      } else {
+        message += 'Präzise Maus erforderlich (Touchscreen nicht unterstützt)';
+      }
+
+      setCursorTooltip(message);
+      setTimeout(() => setCursorTooltip(null), 4000);
+      return;
+    }
+
     const newState = !customCursorEnabled;
     setCustomCursorEnabled(newState);
 
@@ -302,7 +323,17 @@ const Header = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.1, duration: 0.5 }}
             onClick={toggleCustomCursor}
-            className="text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
+            className={`transition-colors duration-300 ${
+              customCursorEnabled
+                ? 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                : (() => {
+                    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    const hasFineMouse = typeof window !== 'undefined' && window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
+                    return (prefersReducedMotion || !hasFineMouse)
+                      ? 'text-gray-500 dark:text-gray-600 cursor-not-allowed'
+                      : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400';
+                  })()
+            }`}
             aria-label={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
             title={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
           >
@@ -386,7 +417,17 @@ const Header = () => {
             )}
             <button
               onClick={toggleCustomCursor}
-              className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
+              className={`transition-colors duration-300 ${
+                customCursorEnabled
+                  ? 'text-gray-300 hover:text-blue-400'
+                  : (() => {
+                      const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                      const hasFineMouse = typeof window !== 'undefined' && window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
+                      return (prefersReducedMotion || !hasFineMouse)
+                        ? 'text-gray-600 cursor-not-allowed'
+                        : 'text-gray-300 hover:text-blue-400';
+                    })()
+              }`}
               aria-label={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
               title={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
             >
@@ -596,6 +637,30 @@ const Header = () => {
                 }
               }} style={{ position: 'absolute', width: '1px', height: '1px', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }} />
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Cursor Tooltip/Toast */}
+      <AnimatePresence>
+        {cursorTooltip && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -20, x: '-50%' }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] max-w-md px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-xl"
+            role="alert"
+            aria-live="polite"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-5 h-5 text-yellow-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-sm text-gray-200">{cursorTooltip}</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
