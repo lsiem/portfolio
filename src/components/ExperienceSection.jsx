@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo } from "react";
+import { useRef, useCallback, useMemo, useState } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 import { LuExternalLink, LuCalendar, LuMapPin } from "react-icons/lu";
@@ -280,6 +280,17 @@ const ExperienceSection = () => {
 
 const ExperienceCard = ({ experience, index, timelineItemsRef }) => {
   const isEven = index % 2 === 0;
+  const [logoError, setLogoError] = useState(false);
+
+  // Generate company initials for fallback
+  const getCompanyInitials = (companyName) => {
+    return companyName
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <motion.div
@@ -305,15 +316,23 @@ const ExperienceCard = ({ experience, index, timelineItemsRef }) => {
           {/* Company logo and info */}
           <div className="flex items-start gap-4 mb-4">
             {experience.logo_path && (
-              <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-xl p-2 backdrop-blur-sm">
-                <img
-                  src={`/logos/${experience.logo_path}`}
-                  alt={`${experience.company} logo`}
-                  className="w-full h-full object-contain"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+              <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-xl p-2 backdrop-blur-sm flex items-center justify-center">
+                {!logoError ? (
+                  <img
+                    src={`/logos/${experience.logo_path}`}
+                    alt={`${experience.company} logo`}
+                    aria-hidden="true"
+                    className="w-full h-full object-contain"
+                    onError={() => setLogoError(true)}
+                  />
+                ) : (
+                  <span
+                    className="text-blue-400 font-bold text-sm md:text-base"
+                    aria-hidden="true"
+                  >
+                    {getCompanyInitials(experience.company)}
+                  </span>
+                )}
               </div>
             )}
             <div className="flex-1">
