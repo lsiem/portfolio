@@ -87,13 +87,13 @@ portfolio/
 │   │   ├── ExperienceSection.jsx   # Professional experience
 │   │   ├── Header.jsx              # Navigation header
 │   │   ├── HeroSection.jsx         # Landing/hero section
-│   │   ├── ProjectCard.jsx         # Individual project card
 │   │   ├── ProjectsSection.jsx     # Projects showcase
 │   │   └── SkillsSection.jsx       # Skills/technologies
 │   ├── config/            # Configuration files
 │   │   └── personal.js    # Personal info, experience, and social links
 │   ├── hooks/             # Custom React hooks
-│   │   └── useContactForm.js
+│   │   ├── useContactForm.js       # Contact form validation hook
+│   │   └── useGsapScroll.js        # GSAP ScrollTrigger animations hook
 │   ├── utils/             # Utility functions
 │   │   └── motion.js      # Motion/animation utilities
 │   ├── App.jsx            # Main app component
@@ -275,7 +275,14 @@ Update this file to customize all content throughout the portfolio.
 
 ### Tailwind CSS v4
 
-This project uses Tailwind CSS v4 with the `@source` and `@theme` directives in `src/index.css`. Theme customization should be done in the CSS file rather than `tailwind.config.js`.
+This project uses Tailwind CSS v4 with modern configuration patterns:
+
+- **Content Scanning**: Uses `@source` directives in `src/index.css` instead of content paths in config
+- **Theme Configuration**: Uses `@theme` blocks in CSS for custom design tokens
+- **Minimal Config**: `tailwind.config.js` is minimal - most configuration is in CSS
+- **CSS-First Approach**: Colors, fonts, and other theme values are defined in `@theme` blocks
+
+See `src/index.css` for the main theme configuration.
 
 ### SEO & Metadata
 
@@ -298,7 +305,6 @@ Update meta tags in `index.html` for SEO optimization:
 - **[Quick Reference](QUICK_REFERENCE.md)** - Common commands and quick tips
 - **[Deployment Guide](DEPLOYMENT.md)** - Complete guide for deploying to GitHub Pages
 - **[Contributing Guide](CONTRIBUTING.md)** - Guidelines for contributing to the project
-- **[Setup Summary](SETUP_SUMMARY.md)** - Overview of project configuration
 - **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines
 - **[License](LICENSE)** - MIT License details
 
