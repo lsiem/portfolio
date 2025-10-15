@@ -29,6 +29,10 @@ const ExperienceSection = () => {
   , []);
 
   const setupAnimations = useCallback(() => {
+    // Reset ref arrays to avoid duplicates across re-renders
+    starsRef.current = starsRef.current.filter(el => el !== null && el !== undefined);
+    timelineItemsRef.current = timelineItemsRef.current.filter(el => el !== null && el !== undefined);
+
     const reducedMotion = prefersReducedMotion();
 
       // Title animation
@@ -170,6 +174,7 @@ const ExperienceSection = () => {
       // Stars parallax effect
       if (!reducedMotion) {
         starsRef.current.forEach((star, index) => {
+          if (!star) return;
           const direction = index % 2 === 0 ? 1 : -1;
           const speed = stars[index]?.speed || 0.3;
 
@@ -191,18 +196,6 @@ const ExperienceSection = () => {
 
   useGsapScroll(sectionRef, [], setupAnimations);
 
-  const addToStars = (el) => {
-    if (el && !starsRef.current.includes(el)) {
-      starsRef.current.push(el);
-    }
-  };
-
-  const addToTimelineItems = (el) => {
-    if (el && !timelineItemsRef.current.includes(el)) {
-      timelineItemsRef.current.push(el);
-    }
-  };
-
   return (
     <section
       id="experience"
@@ -211,10 +204,10 @@ const ExperienceSection = () => {
     >
       {/* Animated background stars */}
       <div className="absolute inset-0 pointer-events-none">
-        {stars.map((star) => (
+        {stars.map((star, i) => (
           <div
             key={star.id}
-            ref={addToStars}
+            ref={(el) => { starsRef.current[i] = el; }}
             className="absolute w-1 h-1 bg-white rounded-full opacity-30"
             style={{
               left: star.left,
@@ -275,7 +268,7 @@ const ExperienceSection = () => {
                 key={index}
                 experience={exp}
                 index={index}
-                addToTimelineItems={addToTimelineItems}
+                timelineItemsRef={timelineItemsRef}
               />
             ))}
           </motion.div>
@@ -285,12 +278,12 @@ const ExperienceSection = () => {
   );
 };
 
-const ExperienceCard = ({ experience, index, addToTimelineItems }) => {
+const ExperienceCard = ({ experience, index, timelineItemsRef }) => {
   const isEven = index % 2 === 0;
 
   return (
     <motion.div
-      ref={addToTimelineItems}
+      ref={(el) => { timelineItemsRef.current[index] = el; }}
       variants={getStaggerItem()}
       className={`relative flex items-center ${
         isEven ? "md:flex-row" : "md:flex-row-reverse"

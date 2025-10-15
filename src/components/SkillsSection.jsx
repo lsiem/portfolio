@@ -83,6 +83,10 @@ const SkillsSection = () => {
   };
 
   const setupAnimations = useCallback(() => {
+    // Reset ref arrays to avoid duplicates across re-renders
+    starsRef.current = starsRef.current.filter(el => el !== null && el !== undefined);
+    cardsRef.current = cardsRef.current.filter(el => el !== null && el !== undefined);
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Title animation
@@ -145,6 +149,7 @@ const SkillsSection = () => {
     // Star parallax animations
     if (!prefersReducedMotion && starsRef.current.length > 0) {
       starsRef.current.forEach((star, index) => {
+        if (!star) return;
         const direction = index % 2 === 0 ? 1 : -1;
         const speed = stars[index]?.speed || 0.5;
 
@@ -166,18 +171,6 @@ const SkillsSection = () => {
 
   useGsapScroll(sectionRef, [], setupAnimations);
 
-  const addToCardsRef = (el) => {
-    if (el && !cardsRef.current.includes(el)) {
-      cardsRef.current.push(el);
-    }
-  };
-
-  const addToStars = (el) => {
-    if (el && !starsRef.current.includes(el)) {
-      starsRef.current.push(el);
-    }
-  };
-
   return (
     <section
       id="skills"
@@ -186,9 +179,9 @@ const SkillsSection = () => {
     >
       {/* Animated Stars Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {stars.map((star) => (
+        {stars.map((star, i) => (
           <div
-            ref={addToStars}
+            ref={(el) => { starsRef.current[i] = el; }}
             key={`star-${star.id}`}
             className="absolute rounded-full"
             style={{
@@ -231,7 +224,7 @@ const SkillsSection = () => {
           {skillsData.data.map((skillGroup, groupIndex) => (
             <div
               key={groupIndex}
-              ref={addToCardsRef}
+              ref={(el) => { cardsRef.current[groupIndex] = el; }}
               className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/40 hover:border-blue-400/60 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20 relative overflow-hidden group break-inside-avoid mb-8"
             >
               {/* Card hover glow effect */}

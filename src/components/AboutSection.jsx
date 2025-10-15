@@ -25,6 +25,9 @@ const AboutSection = () => {
   , []);
 
   const setupAnimations = useCallback(() => {
+    // Reset ref array to avoid duplicates across re-renders
+    starsRef.current = starsRef.current.filter(el => el !== null && el !== undefined);
+
     // Check for reduced motion preference
     const reducedMotion = prefersReducedMotion();
 
@@ -64,6 +67,7 @@ const AboutSection = () => {
     // Stars parallax effect (skip if reduced motion)
     if (!reducedMotion) {
       starsRef.current.forEach((star, index) => {
+        if (!star) return;
         const direction = index % 2 === 0 ? 1 : -1;
         const speed = stars[index]?.speed || 0.5;
 
@@ -85,12 +89,6 @@ const AboutSection = () => {
 
   useGsapScroll(sectionRef, [], setupAnimations);
 
-  const addToStars = (el) => {
-    if (el && !starsRef.current.includes(el)) {
-      starsRef.current.push(el);
-    }
-  };
-
   return (
     <section
       id="about"
@@ -101,7 +99,7 @@ const AboutSection = () => {
         {/* Stars Background */}
         {stars.map((star, i) => (
           <div
-            ref={addToStars}
+            ref={(el) => { starsRef.current[i] = el; }}
             key={`star-${star.id}`}
             className="absolute rounded-full"
             style={{

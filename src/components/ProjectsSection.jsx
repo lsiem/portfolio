@@ -117,14 +117,10 @@ const ProjectsSection = () => {
     }))
   , []);
 
-  // Helper to collect star refs
-  const addToStars = (el) => {
-    if (el && !starsRef.current.includes(el)) {
-      starsRef.current.push(el);
-    }
-  };
-
   const setupAnimations = useCallback(() => {
+    // Reset ref array to avoid duplicates across re-renders
+    starsRef.current = starsRef.current.filter(el => el !== null && el !== undefined);
+
     // Check for reduced motion preference
     const reducedMotion = prefersReducedMotion();
 
@@ -253,9 +249,9 @@ const ProjectsSection = () => {
     >
       {/* Decorative Background Stars */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {stars.map((star) => (
+        {stars.map((star, i) => (
           <div
-            ref={addToStars}
+            ref={(el) => { starsRef.current[i] = el; }}
             key={`star-${star.id}`}
             className="absolute rounded-full bg-white"
             style={{
