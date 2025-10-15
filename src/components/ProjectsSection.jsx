@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "../utils/motion";
 import { useGsapScroll } from "../hooks/useGsapScroll";
@@ -103,6 +103,19 @@ const ProjectsSection = () => {
   };
 
   const projectImages = getAllProjects();
+
+  // Generate star properties once on mount to prevent hydration mismatches
+  const stars = useMemo(() =>
+    Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      width: 2 + Math.random() * 4,
+      height: 2 + Math.random() * 4,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      opacity: 0.2 + Math.random() * 0.5,
+      blur: `${Math.random() * 1.5}px`,
+    }))
+  , []);
 
   // Helper to collect star refs
   const addToStars = (el) => {
@@ -240,18 +253,18 @@ const ProjectsSection = () => {
     >
       {/* Decorative Background Stars */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {stars.map((star) => (
           <div
             ref={addToStars}
-            key={`star-${i}`}
+            key={`star-${star.id}`}
             className="absolute rounded-full bg-white"
             style={{
-              width: `${2 + Math.random() * 4}px`,
-              height: `${2 + Math.random() * 4}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: 0.2 + Math.random() * 0.5,
-              filter: `blur(${Math.random() * 1.5}px)`,
+              width: `${star.width}px`,
+              height: `${star.height}px`,
+              top: star.top,
+              left: star.left,
+              opacity: star.opacity,
+              filter: `blur(${star.blur})`,
             }}
           />
         ))}

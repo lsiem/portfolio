@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 import { LuExternalLink, LuCalendar, LuMapPin } from "react-icons/lu";
@@ -17,6 +17,16 @@ const ExperienceSection = () => {
   const timelineProgressRef = useRef(null);
   const timelineItemsRef = useRef([]);
   const starsRef = useRef([]);
+
+  // Generate star properties once on mount to prevent hydration mismatches
+  const stars = useMemo(() =>
+    Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      speed: 0.3 + Math.random() * 0.4,
+    }))
+  , []);
 
   const setupAnimations = useCallback(() => {
     const reducedMotion = prefersReducedMotion();
@@ -161,7 +171,7 @@ const ExperienceSection = () => {
       if (!reducedMotion) {
         starsRef.current.forEach((star, index) => {
           const direction = index % 2 === 0 ? 1 : -1;
-          const speed = 0.3 + Math.random() * 0.4;
+          const speed = stars[index]?.speed || 0.3;
 
           gsap.to(star, {
             x: `${direction * (80 + index * 15)}`,
@@ -177,7 +187,7 @@ const ExperienceSection = () => {
           });
         });
       }
-  }, []);
+  }, [stars]);
 
   useGsapScroll(sectionRef, [], setupAnimations);
 
@@ -201,14 +211,14 @@ const ExperienceSection = () => {
     >
       {/* Animated background stars */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {stars.map((star) => (
           <div
-            key={i}
+            key={star.id}
             ref={addToStars}
             className="absolute w-1 h-1 bg-white rounded-full opacity-30"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: star.left,
+              top: star.top,
             }}
           />
         ))}

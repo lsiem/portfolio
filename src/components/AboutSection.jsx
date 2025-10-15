@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "../utils/motion";
 import { useGsapScroll } from "../hooks/useGsapScroll";
@@ -9,6 +9,20 @@ const AboutSection = () => {
   const titleRef = useRef(null);
   const introRef = useRef(null);
   const starsRef = useRef([]);
+
+  // Generate star properties once on mount to prevent hydration mismatches
+  const stars = useMemo(() =>
+    Array.from({ length: 10 }, (_, i) => ({
+      id: i,
+      width: 10 + i * 3,
+      height: 10 + i * 3,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      blur: `${Math.random() * 2}px`,
+      opacity: 0.2 + Math.random() * 0.4,
+      speed: 0.5 + Math.random() * 0.5,
+    }))
+  , []);
 
   const setupAnimations = useCallback(() => {
     // Check for reduced motion preference
@@ -51,7 +65,7 @@ const AboutSection = () => {
     if (!reducedMotion) {
       starsRef.current.forEach((star, index) => {
         const direction = index % 2 === 0 ? 1 : -1;
-        const speed = 0.5 + Math.random() * 0.5;
+        const speed = stars[index]?.speed || 0.5;
 
         gsap.to(star, {
           x: `${direction * (100 + index * 20)}`,
@@ -67,7 +81,7 @@ const AboutSection = () => {
         });
       });
     }
-  }, []);
+  }, [stars]);
 
   useGsapScroll(sectionRef, [], setupAnimations);
 
@@ -85,19 +99,19 @@ const AboutSection = () => {
     >
       <div className="absolute inset-0 overflow-hidden">
         {/* Stars Background */}
-        {[...Array(10)].map((_, i) => (
+        {stars.map((star, i) => (
           <div
             ref={addToStars}
-            key={`star-${i}`}
+            key={`star-${star.id}`}
             className="absolute rounded-full"
             style={{
-              width: `${10 + i * 3}px`,
-              height: `${10 + i * 3}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              filter: `blur(${Math.random() * 2}px)`,
+              width: `${star.width}px`,
+              height: `${star.height}px`,
+              top: star.top,
+              left: star.left,
+              filter: `blur(${star.blur})`,
               backgroundColor: "white",
-              opacity: 0.2 + Math.random() * 0.4,
+              opacity: star.opacity,
             }}
           />
         ))}

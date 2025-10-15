@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 import {
@@ -38,6 +38,20 @@ const SkillsSection = () => {
   const subtitleRef = useRef(null);
   const cardsRef = useRef([]);
   const starsRef = useRef([]);
+
+  // Generate star properties once on mount to prevent hydration mismatches
+  const stars = useMemo(() =>
+    Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      width: 8 + i * 2,
+      height: 8 + i * 2,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      blur: `${Math.random() * 1.5}px`,
+      opacity: 0.15 + Math.random() * 0.35,
+      speed: 0.5 + Math.random() * 0.5,
+    }))
+  , []);
 
   // Icon mapping from Iconify simple-icons to react-icons
   const iconMap = {
@@ -133,7 +147,7 @@ const SkillsSection = () => {
     if (!prefersReducedMotion && starsRef.current.length > 0) {
       starsRef.current.forEach((star, index) => {
         const direction = index % 2 === 0 ? 1 : -1;
-        const speed = 0.5 + Math.random() * 0.5;
+        const speed = stars[index]?.speed || 0.5;
 
         gsap.to(star, {
           x: `${direction * (80 + index * 15)}`,
@@ -149,7 +163,7 @@ const SkillsSection = () => {
         });
       });
     }
-  }, []);
+  }, [stars]);
 
   useGsapScroll(sectionRef, [], setupAnimations);
 
@@ -173,19 +187,19 @@ const SkillsSection = () => {
     >
       {/* Animated Stars Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {stars.map((star) => (
           <div
             ref={addToStars}
-            key={`star-${i}`}
+            key={`star-${star.id}`}
             className="absolute rounded-full"
             style={{
-              width: `${8 + i * 2}px`,
-              height: `${8 + i * 2}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              filter: `blur(${Math.random() * 1.5}px)`,
+              width: `${star.width}px`,
+              height: `${star.height}px`,
+              top: star.top,
+              left: star.left,
+              filter: `blur(${star.blur})`,
               backgroundColor: "white",
-              opacity: 0.15 + Math.random() * 0.35,
+              opacity: star.opacity,
             }}
           />
         ))}
