@@ -22,9 +22,6 @@ const getTransitions = () => {
   };
 };
 
-// Export transitions as a getter function
-export const transitions = getTransitions();
-
 // Factory functions that return animation variants based on current reduced motion preference
 export const getFadeIn = () => {
   const trans = getTransitions();
@@ -119,14 +116,15 @@ export const getStaggerItem = () => {
   };
 };
 
-// Backward compatibility: export named variants that call the factory functions
-// These will be evaluated at usage time
-export const fadeIn = getFadeIn();
-export const slideUp = getSlideUp();
-export const slideDown = getSlideDown();
-export const slideLeft = getSlideLeft();
-export const slideRight = getSlideRight();
-export const scaleIn = getScaleIn();
-export const fadeAndSlide = getFadeAndSlide();
-export const staggerContainer = getStaggerContainer();
-export const staggerItem = getStaggerItem();
+// Optional helper to get all variants on demand
+export const getAllVariants = () => ({
+  fadeIn: getFadeIn(),
+  slideUp: getSlideUp(),
+  slideDown: getSlideDown(),
+  slideLeft: getSlideLeft(),
+  slideRight: getSlideRight(),
+  scaleIn: getScaleIn(),
+  fadeAndSlide: getFadeAndSlide(),
+  staggerContainer: getStaggerContainer(),
+  staggerItem: getStaggerItem()
+});

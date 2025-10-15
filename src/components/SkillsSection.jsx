@@ -28,7 +28,6 @@ import {
 import { FaAws } from "react-icons/fa6";
 import { FaCloud, FaWindows } from "react-icons/fa";
 import { TbBrandPowershell } from "react-icons/tb";
-import { getStaggerContainer, getStaggerItem } from "../animations/variants";
 import { useGsapScroll } from "../hooks/useGsapScroll";
 import { skillsData } from "../config/personal";
 
