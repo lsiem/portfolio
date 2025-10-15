@@ -182,6 +182,20 @@ const ContactSection = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Honeypot field - invisible to users, catches bots */}
+          <div className="hidden" aria-hidden="true">
+            <label htmlFor="website">Website</label>
+            <input
+              type="text"
+              id="website"
+              name="website"
+              value={formData.website}
+              onChange={handleChange}
+              tabIndex="-1"
+              autoComplete="off"
+            />
+          </div>
+
           {/* Name Field */}
           <div>
             <label

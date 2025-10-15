@@ -1,15 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Custom hook for contact form state management and validation
  * Shared between ContactSection and Header components
+ * Includes anti-bot measures: honeypot field and time threshold
  */
 export const useContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    website: '' // Honeypot field - should remain empty
   });
+
+  // Track when form was loaded for time threshold check
+  const formLoadTimeRef = useRef(null);
+
+  // Set form load time on mount
+  useEffect(() => {
+    formLoadTimeRef.current = Date.now();
+  }, []);
 
   const [formErrors, setFormErrors] = useState({
     name: '',
@@ -53,6 +63,19 @@ export const useContactForm = () => {
   // Form validation
   const validateForm = () => {
     const errors = {};
+
+    // Anti-bot check: Honeypot field (website) should be empty
+    if (formData.website && formData.website.trim() !== '') {
+      errors.submit = 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+      return errors;
+    }
+
+    // Anti-bot check: Time threshold - reject submissions faster than 800ms
+    const timeSinceLoad = Date.now() - (formLoadTimeRef.current || 0);
+    if (timeSinceLoad < 800) {
+      errors.submit = 'Bitte nimm dir einen Moment Zeit, um das Formular auszufüllen.';
+      return errors;
+    }
 
     if (!formData.name.trim()) {
       errors.name = 'Name ist erforderlich';
@@ -137,8 +160,12 @@ export const useContactForm = () => {
       setFormData({
         name: '',
         email: '',
-        message: ''
+        message: '',
+        website: '' // Reset honeypot field
       });
+
+      // Reset form load time for next submission
+      formLoadTimeRef.current = Date.now();
 
       // Call optional success callback
       if (onSuccess) {
@@ -171,7 +198,8 @@ export const useContactForm = () => {
     setFormData({
       name: '',
       email: '',
-      message: ''
+      message: '',
+      website: '' // Reset honeypot field
     });
     setFormErrors({
       name: '',
@@ -180,6 +208,8 @@ export const useContactForm = () => {
       submit: ''
     });
     setSubmitSuccess(false);
+    // Reset form load time
+    formLoadTimeRef.current = Date.now();
   };
 
   return {

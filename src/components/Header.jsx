@@ -532,6 +532,19 @@ const Header = () => {
 
               {/* Input forms */}
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot field - invisible to users, catches bots */}
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="website-header">Website</label>
+                  <input
+                    type="text"
+                    id="website-header"
+                    value={formData.website}
+                    onChange={(e) => handleInputChange("website", e.target.value)}
+                    tabIndex="-1"
+                    autoComplete="off"
+                  />
+                </div>
+
                 <div>
                   <label
                     htmlFor="name"
