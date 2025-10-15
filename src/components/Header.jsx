@@ -162,30 +162,43 @@ const Header = () => {
     };
   }, [isContactFormOpen]);
 
-  // Focus trap for modal
+  // Focus trap for modal with dynamic focusable element detection
   useEffect(() => {
     if (!isContactFormOpen) return;
 
     const modalElement = document.querySelector('[role="dialog"]');
     if (!modalElement) return;
 
-    const focusableElements = modalElement.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+    // Re-query focusable elements on every keydown to handle dynamic changes
+    // (e.g., when submitSuccess or formErrors change and add/remove elements)
+    const getFocusableElements = () => {
+      const elements = modalElement.querySelectorAll(
+        'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+      );
+      return Array.from(elements).filter(el => {
+        // Filter out hidden elements
+        return el.offsetParent !== null || el.getClientRects().length > 0;
+      });
+    };
 
     const handleTabKey = (e) => {
       if (e.key !== 'Tab') return;
 
+      // Get current focusable elements dynamically
+      const focusableElements = getFocusableElements();
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
       if (e.shiftKey) {
-        // Shift + Tab
+        // Shift + Tab - moving backwards
         if (document.activeElement === firstElement) {
           e.preventDefault();
           lastElement.focus();
         }
       } else {
-        // Tab
+        // Tab - moving forwards
         if (document.activeElement === lastElement) {
           e.preventDefault();
           firstElement.focus();
@@ -198,7 +211,7 @@ const Header = () => {
     return () => {
       modalElement.removeEventListener('keydown', handleTabKey);
     };
-  }, [isContactFormOpen]);
+  }, [isContactFormOpen, submitSuccess, formErrors]);
 
   // Handle ESC key to close modal
   const handleKeyDown = (e) => {
@@ -424,6 +437,19 @@ const Header = () => {
               className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Hidden sentinel for focus trap - start boundary */}
+              <div tabIndex={0} onFocus={(e) => {
+                const focusableElements = e.currentTarget.parentElement.querySelectorAll(
+                  'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+                );
+                const visibleElements = Array.from(focusableElements).filter(el =>
+                  el !== e.currentTarget && (el.offsetParent !== null || el.getClientRects().length > 0)
+                );
+                if (visibleElements.length > 0) {
+                  visibleElements[visibleElements.length - 1].focus();
+                }
+              }} style={{ position: 'absolute', width: '1px', height: '1px', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }} />
+
               <div className="flex justify-between items-center mb-4">
                 <h2 id="contact-form-title" className="text-2xl font-bold text-gray-300">
                   Kontaktiere mich
@@ -556,6 +582,19 @@ const Header = () => {
                   {isSubmitting ? 'Wird gesendet...' : 'Senden'}
                 </motion.button>
               </form>
+
+              {/* Hidden sentinel for focus trap - end boundary */}
+              <div tabIndex={0} onFocus={(e) => {
+                const focusableElements = e.currentTarget.parentElement.querySelectorAll(
+                  'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+                );
+                const visibleElements = Array.from(focusableElements).filter(el =>
+                  el !== e.currentTarget && (el.offsetParent !== null || el.getClientRects().length > 0)
+                );
+                if (visibleElements.length > 0) {
+                  visibleElements[0].focus();
+                }
+              }} style={{ position: 'absolute', width: '1px', height: '1px', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }} />
             </motion.div>
           </motion.div>
         )}
