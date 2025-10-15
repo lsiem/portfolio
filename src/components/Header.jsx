@@ -37,6 +37,7 @@ const Header = () => {
     isSubmitting,
     submitSuccess,
     handleChange: handleFormChange,
+    handleBlur: handleFormBlur,
     handleSubmit: handleFormSubmit
   } = useContactForm();
 
@@ -128,6 +129,17 @@ const Header = () => {
       }
     };
     handleFormChange(syntheticEvent);
+  };
+
+  // Handle input blur - convert to match hook's expected format
+  const handleInputBlur = (field, value) => {
+    const syntheticEvent = {
+      target: {
+        name: field,
+        value: value
+      }
+    };
+    handleFormBlur(syntheticEvent);
   };
 
   // Focus management and body scroll prevention
@@ -466,6 +478,7 @@ const Header = () => {
                     id="name"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
+                    onBlur={(e) => handleInputBlur("name", e.target.value)}
                     placeholder="Dein Name"
                     className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-gray-300 ${
                       formErrors.name ? "border-red-500" : "border-gray-600"
@@ -491,6 +504,7 @@ const Header = () => {
                     id="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
+                    onBlur={(e) => handleInputBlur("email", e.target.value)}
                     placeholder="Deine Email"
                     className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-gray-300 ${
                       formErrors.email ? "border-red-500" : "border-gray-600"
@@ -516,6 +530,7 @@ const Header = () => {
                     id="message"
                     value={formData.message}
                     onChange={(e) => handleInputChange("message", e.target.value)}
+                    onBlur={(e) => handleInputBlur("message", e.target.value)}
                     placeholder="Deine Nachricht"
                     className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-gray-300 ${
                       formErrors.message ? "border-red-500" : "border-gray-600"

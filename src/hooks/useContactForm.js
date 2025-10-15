@@ -21,6 +21,35 @@ export const useContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // Validate a single field
+  const validateField = (name, value) => {
+    let error = '';
+
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          error = 'Name ist erforderlich';
+        }
+        break;
+      case 'email':
+        if (!value.trim()) {
+          error = 'Email ist erforderlich';
+        } else if (!/\S+@\S+\.\S+/.test(value)) {
+          error = 'Ungültige Email-Adresse';
+        }
+        break;
+      case 'message':
+        if (!value.trim()) {
+          error = 'Nachricht ist erforderlich';
+        }
+        break;
+      default:
+        break;
+    }
+
+    return error;
+  };
+
   // Form validation
   const validateForm = () => {
     const errors = {};
@@ -60,6 +89,20 @@ export const useContactForm = () => {
     // Clear success message when user starts editing again
     if (submitSuccess) {
       setSubmitSuccess(false);
+    }
+  };
+
+  // Handle input blur - validate single field
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+
+    // Only set error if field has been touched and has content or was previously validated
+    if (error) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
     }
   };
 
@@ -145,6 +188,7 @@ export const useContactForm = () => {
     isSubmitting,
     submitSuccess,
     handleChange,
+    handleBlur,
     handleSubmit,
     validateForm,
     resetForm

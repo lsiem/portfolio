@@ -21,6 +21,7 @@ const ContactSection = () => {
     isSubmitting,
     submitSuccess,
     handleChange,
+    handleBlur,
     handleSubmit
   } = useContactForm();
 
@@ -195,6 +196,7 @@ const ContactSection = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder="Dein Name"
               aria-invalid={formErrors.name ? 'true' : 'false'}
               aria-describedby={formErrors.name ? 'name-error' : undefined}
@@ -223,6 +225,7 @@ const ContactSection = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder="deine@email.de"
               aria-invalid={formErrors.email ? 'true' : 'false'}
               aria-describedby={formErrors.email ? 'email-error' : undefined}
@@ -250,6 +253,7 @@ const ContactSection = () => {
               name="message"
               value={formData.message}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder="Deine Nachricht..."
               rows="6"
               aria-invalid={formErrors.message ? 'true' : 'false'}
