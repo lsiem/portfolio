@@ -8,10 +8,17 @@ const HeroSection = () => {
   const [splineLoading, setSplineLoading] = useState(true);
   const [splineError, setSplineError] = useState(false);
   const [splineKey, setSplineKey] = useState(0);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  const MAX_RETRIES = 3;
+  const RETRY_DELAYS = [500, 1000, 2000]; // Exponential-ish backoff in ms
 
   const handleSplineLoad = () => {
     setSplineLoading(false);
     setSplineError(false);
+    // Reset retry count on successful load
+    setRetryCount(0);
   };
 
   const handleSplineError = () => {
@@ -20,10 +27,25 @@ const HeroSection = () => {
   };
 
   const handleRetry = () => {
-    setSplineLoading(true);
+    // Check if max retries exceeded
+    if (retryCount >= MAX_RETRIES) {
+      return;
+    }
+
+    setIsRetrying(true);
     setSplineError(false);
-    // Force remount by incrementing the key
-    setSplineKey((prevKey) => prevKey + 1);
+
+    // Calculate delay based on retry count (with fallback)
+    const delay = RETRY_DELAYS[retryCount] || RETRY_DELAYS[RETRY_DELAYS.length - 1];
+
+    // Wait before retrying (small backoff)
+    setTimeout(() => {
+      setSplineLoading(true);
+      setRetryCount((prev) => prev + 1);
+      // Force remount by incrementing the key
+      setSplineKey((prevKey) => prevKey + 1);
+      setIsRetrying(false);
+    }, delay);
   };
 
   return (
@@ -77,12 +99,36 @@ const HeroSection = () => {
             <div className="text-blue-300 text-lg text-center">
               {uiText.spline3D.error}
             </div>
-            <button
-              onClick={handleRetry}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900"
-            >
-              {uiText.spline3D.retry}
-            </button>
+
+            {retryCount > 0 && retryCount < MAX_RETRIES && (
+              <div className="text-blue-400 text-sm">
+                Versuch {retryCount} von {MAX_RETRIES}
+              </div>
+            )}
+
+            {retryCount >= MAX_RETRIES ? (
+              <div className="text-center space-y-2">
+                <div className="text-yellow-400 text-sm">
+                  Maximale Anzahl von Wiederholungsversuchen erreicht.
+                </div>
+                <div className="text-gray-400 text-xs">
+                  Bitte laden Sie die Seite neu oder versuchen Sie es später erneut.
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleRetry}
+                disabled={isRetrying}
+                className={`px-6 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900 ${
+                  isRetrying
+                    ? 'bg-gray-600 cursor-not-allowed text-gray-300'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
+                aria-label={isRetrying ? 'Lädt...' : uiText.spline3D.retry}
+              >
+                {isRetrying ? 'Lädt...' : uiText.spline3D.retry}
+              </button>
+            )}
           </div>
         )}
 
