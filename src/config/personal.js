@@ -14,6 +14,18 @@ export const personalInfo = {
 };
 
 /**
+ * UI text labels in German
+ * Centralized text strings to maintain language consistency
+ */
+export const uiText = {
+  spline3D: {
+    loading: 'Lade 3D-Szene...',
+    error: '3D-Szene konnte nicht geladen werden',
+    retry: 'Erneut versuchen',
+  },
+};
+
+/**
  * Check if a social link is configured
  * @param {string} key - The key to check (e.g., 'github', 'linkedin')
  * @returns {boolean}

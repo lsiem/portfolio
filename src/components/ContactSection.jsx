@@ -1,13 +1,11 @@
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiMail, FiGithub, FiLinkedin } from 'react-icons/fi';
 import { useContactForm } from '../hooks/useContactForm';
 import { personalInfo, hasSocialLink } from '../config/personal';
 import { prefersReducedMotion } from '../utils/motion';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useGsapScroll } from '../hooks/useGsapScroll';
 
 const ContactSection = () => {
   const sectionRef = useRef(null);
@@ -37,92 +35,77 @@ const ContactSection = () => {
   })), []);
 
   // GSAP Animations
-  useEffect(() => {
+  useGsapScroll(sectionRef, () => {
     if (prefersReducedMotion()) return;
 
-    // Capture current ref for cleanup
-    const currentSection = sectionRef.current;
+    // Animate title
+    gsap.fromTo(
+      titleRef.current,
+      { y: 100, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
 
-    const ctx = gsap.context(() => {
-      // Animate title
-      gsap.fromTo(
-        titleRef.current,
-        { y: 100, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
+    // Animate underline
+    gsap.fromTo(
+      underlineRef.current,
+      { width: 0 },
+      {
+        width: '100%',
+        duration: 1,
+        delay: 0.3,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+
+    // Animate form container
+    gsap.fromTo(
+      formRef.current,
+      { y: 80, opacity: 0, scale: 0.95 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        delay: 0.5,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+
+    // Animate stars with parallax effect
+    starsRef.current.forEach((star, index) => {
+      if (star) {
+        gsap.to(star, {
+          y: -50 - (index % 3) * 20,
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1 + (index % 3) * 0.5
           }
-        }
-      );
-
-      // Animate underline
-      gsap.fromTo(
-        underlineRef.current,
-        { width: 0 },
-        {
-          width: '100%',
-          duration: 1,
-          delay: 0.3,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      );
-
-      // Animate form container
-      gsap.fromTo(
-        formRef.current,
-        { y: 80, opacity: 0, scale: 0.95 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          delay: 0.5,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      );
-
-      // Animate stars with parallax effect
-      starsRef.current.forEach((star, index) => {
-        if (star) {
-          gsap.to(star, {
-            y: -50 - (index % 3) * 20,
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1 + (index % 3) * 0.5
-            }
-          });
-        }
-      });
-    }, sectionRef);
-
-    return () => {
-      ctx.revert();
-      // Kill all ScrollTriggers associated with this section
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === currentSection) {
-          trigger.kill();
-        }
-      });
-    };
-  }, []);
+        });
+      }
+    });
+  });
 
   return (
     <section
@@ -174,6 +157,8 @@ const ContactSection = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
+            role="alert"
+            aria-live="polite"
             className="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-center"
           >
             Vielen Dank für deine Nachricht! Ich werde mich bald bei dir melden.
@@ -185,6 +170,8 @@ const ContactSection = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
+            role="alert"
+            aria-live="assertive"
             className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-center"
           >
             {formErrors.submit}
@@ -214,7 +201,7 @@ const ContactSection = () => {
               } text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300`}
             />
             {formErrors.name && (
-              <p id="name-error" className="text-red-400 text-sm mt-1">
+              <p id="name-error" className="text-red-400 text-sm mt-1" role="alert" aria-live="polite">
                 {formErrors.name}
               </p>
             )}
@@ -242,7 +229,7 @@ const ContactSection = () => {
               } text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300`}
             />
             {formErrors.email && (
-              <p id="email-error" className="text-red-400 text-sm mt-1">
+              <p id="email-error" className="text-red-400 text-sm mt-1" role="alert" aria-live="polite">
                 {formErrors.email}
               </p>
             )}
@@ -270,7 +257,7 @@ const ContactSection = () => {
               } text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none`}
             />
             {formErrors.message && (
-              <p id="message-error" className="text-red-400 text-sm mt-1">
+              <p id="message-error" className="text-red-400 text-sm mt-1" role="alert" aria-live="polite">
                 {formErrors.message}
               </p>
             )}

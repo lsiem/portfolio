@@ -2,10 +2,12 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import Spline from "@splinetool/react-spline";
 import ErrorBoundary from "./ErrorBoundary";
+import { uiText } from "../config/personal";
 
 const HeroSection = () => {
   const [splineLoading, setSplineLoading] = useState(true);
   const [splineError, setSplineError] = useState(false);
+  const [splineKey, setSplineKey] = useState(0);
 
   const handleSplineLoad = () => {
     setSplineLoading(false);
@@ -20,8 +22,8 @@ const HeroSection = () => {
   const handleRetry = () => {
     setSplineLoading(true);
     setSplineError(false);
-    // Force re-render by remounting the component
-    window.location.reload();
+    // Force remount by incrementing the key
+    setSplineKey((prevKey) => prevKey + 1);
   };
 
   return (
@@ -65,7 +67,7 @@ const HeroSection = () => {
         {splineLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-blue-300 text-lg animate-pulse">
-              Loading 3D scene...
+              {uiText.spline3D.loading}
             </div>
           </div>
         )}
@@ -73,13 +75,13 @@ const HeroSection = () => {
         {splineError && (
           <div className="absolute inset-0 flex items-center justify-center flex-col gap-4 p-6">
             <div className="text-blue-300 text-lg text-center">
-              Failed to load 3D scene
+              {uiText.spline3D.error}
             </div>
             <button
               onClick={handleRetry}
               className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900"
             >
-              Retry
+              {uiText.spline3D.retry}
             </button>
           </div>
         )}
@@ -87,6 +89,7 @@ const HeroSection = () => {
         {!splineError && (
           <ErrorBoundary>
             <Spline
+              key={splineKey}
               className="w-full h-full"
               scene="https://prod.spline.design/jGMQp1lHBPya2w37/scene.splinecode"
               onLoad={handleSplineLoad}

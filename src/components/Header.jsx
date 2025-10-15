@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FiGithub, FiLinkedin, FiMenu, FiX } from "react-icons/fi";
+import { RiCursorLine, RiCursorFill } from "react-icons/ri";
 import { useState, useRef, useEffect } from "react";
 import { useContactForm } from "../hooks/useContactForm";
 import { personalInfo, hasSocialLink } from "../config/personal";
@@ -26,6 +27,9 @@ const Header = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // State for custom cursor toggle
+  const [customCursorEnabled, setCustomCursorEnabled] = useState(false);
+
   // Use shared contact form hook
   const {
     formData,
@@ -40,7 +44,7 @@ const Header = () => {
   const contactButtonRef = useRef(null);
   const firstInputRef = useRef(null);
 
-  // Check if we're on mobile
+  // Check if we're on mobile and initialize custom cursor state
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -48,6 +52,17 @@ const Header = () => {
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
+
+    // Initialize custom cursor state from localStorage
+    const savedPref = localStorage.getItem('customCursorEnabled');
+    if (savedPref !== null) {
+      setCustomCursorEnabled(savedPref === 'true');
+    } else {
+      // Default to enabled if device supports it
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const hasFineMouse = window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
+      setCustomCursorEnabled(hasFineMouse && !prefersReducedMotion);
+    }
 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
@@ -64,6 +79,25 @@ const Header = () => {
         contactSection.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  };
+
+  // Handle custom cursor toggle
+  const toggleCustomCursor = () => {
+    const newState = !customCursorEnabled;
+    setCustomCursorEnabled(newState);
+
+    // Update localStorage
+    localStorage.setItem('customCursorEnabled', String(newState));
+
+    // Update HTML class
+    if (newState) {
+      document.documentElement.classList.add("has-custom-cursor");
+    } else {
+      document.documentElement.classList.remove("has-custom-cursor");
+    }
+
+    // Dispatch custom event for CustomCursor component
+    window.dispatchEvent(new Event('customCursorToggle'));
   };
 
   // Close the contact form
@@ -190,7 +224,7 @@ const Header = () => {
           {navigationItems.map((item, index) => (
             <motion.a
               key={item.id}
-              className="relative text-gray-800 dark:text-gray-200 hover:blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-300 group"
+              className="relative text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-300 group"
               href={`#${item.id}`}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -238,6 +272,21 @@ const Header = () => {
               <FiLinkedin className="w-5 h-5" />
             </motion.a>
           )}
+          <motion.button
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1.1, duration: 0.5 }}
+            onClick={toggleCustomCursor}
+            className="text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
+            aria-label={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
+            title={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
+          >
+            {customCursorEnabled ? (
+              <RiCursorFill className="w-5 h-5" />
+            ) : (
+              <RiCursorLine className="w-5 h-5" />
+            )}
+          </motion.button>
         </div>
 
         {/* Contact Button */}
@@ -299,7 +348,7 @@ const Header = () => {
         </nav>
 
         <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
-          <div className="flex space-x-5">
+          <div className="flex space-x-5 items-center">
             {hasSocialLink('github') && (
               <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <FiGithub className="w-5 h-5 text-gray-300" />
@@ -310,6 +359,18 @@ const Header = () => {
                 <FiLinkedin className="w-5 h-5 text-gray-300" />
               </a>
             )}
+            <button
+              onClick={toggleCustomCursor}
+              className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
+              aria-label={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
+              title={customCursorEnabled ? "Eigenen Cursor deaktivieren" : "Eigenen Cursor aktivieren"}
+            >
+              {customCursorEnabled ? (
+                <RiCursorFill className="w-5 h-5" />
+              ) : (
+                <RiCursorLine className="w-5 h-5" />
+              )}
+            </button>
           </div>
           <button
             onClick={() => {
@@ -331,7 +392,7 @@ const Header = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="fixed inset-0 bg-black/50 background-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={closeContactForm}
             onKeyDown={handleKeyDown}
             role="dialog"
@@ -369,6 +430,8 @@ const Header = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  role="alert"
+                  aria-live="polite"
                   className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-sm text-center"
                 >
                   Vielen Dank! Ich werde mich bald bei dir melden.
@@ -380,6 +443,8 @@ const Header = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  role="alert"
+                  aria-live="assertive"
                   className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-sm text-center"
                 >
                   {formErrors.submit}
@@ -409,7 +474,7 @@ const Header = () => {
                     aria-describedby={formErrors.name ? "name-error" : undefined}
                   />
                   {formErrors.name && (
-                    <p id="name-error" className="text-red-400 text-sm mt-1">
+                    <p id="name-error" className="text-red-400 text-sm mt-1" role="alert" aria-live="polite">
                       {formErrors.name}
                     </p>
                   )}
@@ -434,7 +499,7 @@ const Header = () => {
                     aria-describedby={formErrors.email ? "email-error" : undefined}
                   />
                   {formErrors.email && (
-                    <p id="email-error" className="text-red-400 text-sm mt-1">
+                    <p id="email-error" className="text-red-400 text-sm mt-1" role="alert" aria-live="polite">
                       {formErrors.email}
                     </p>
                   )}
@@ -459,7 +524,7 @@ const Header = () => {
                     aria-describedby={formErrors.message ? "message-error" : undefined}
                   />
                   {formErrors.message && (
-                    <p id="message-error" className="text-red-400 text-sm mt-1">
+                    <p id="message-error" className="text-red-400 text-sm mt-1" role="alert" aria-live="polite">
                       {formErrors.message}
                     </p>
                   )}

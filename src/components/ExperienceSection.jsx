@@ -1,10 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
-import { Icon } from "@iconify/react";
-import { staggerContainer, staggerItem } from "../animations/variants";
+import { LuExternalLink, LuCalendar, LuMapPin } from "react-icons/lu";
+import { getStaggerContainer, getStaggerItem } from "../animations/variants";
 import { prefersReducedMotion } from "../utils/motion";
+import { useGsapScroll } from "../hooks/useGsapScroll";
 import { experienceData } from "../config/personal";
 
 const ExperienceSection = () => {
@@ -18,13 +18,8 @@ const ExperienceSection = () => {
   const timelineItemsRef = useRef([]);
   const starsRef = useRef([]);
 
-  useEffect(() => {
-    const currentSection = sectionRef.current;
-
-    const ctx = gsap.context(() => {
-      gsap.registerPlugin(ScrollTrigger);
-
-      const reducedMotion = prefersReducedMotion();
+  useGsapScroll(sectionRef, () => {
+    const reducedMotion = prefersReducedMotion();
 
       // Title animation
       gsap.fromTo(
@@ -182,17 +177,7 @@ const ExperienceSection = () => {
           });
         });
       }
-    }, sectionRef);
-
-    return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === currentSection) {
-          trigger.kill();
-        }
-      });
-    };
-  }, []);
+  });
 
   const addToStars = (el) => {
     if (el && !starsRef.current.includes(el)) {
@@ -267,7 +252,7 @@ const ExperienceSection = () => {
 
           {/* Experience items */}
           <motion.div
-            variants={staggerContainer}
+            variants={getStaggerContainer()}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, amount: 0.2 }}
@@ -294,7 +279,7 @@ const ExperienceCard = ({ experience, index, addToTimelineItems }) => {
   return (
     <motion.div
       ref={addToTimelineItems}
-      variants={staggerItem}
+      variants={getStaggerItem()}
       className={`relative flex items-center ${
         isEven ? "md:flex-row" : "md:flex-row-reverse"
       } flex-col md:justify-between`}
@@ -338,7 +323,7 @@ const ExperienceCard = ({ experience, index, addToTimelineItems }) => {
                   className="text-blue-400 hover:text-blue-300 text-lg md:text-xl font-semibold inline-flex items-center gap-2 transition-colors"
                 >
                   {experience.company}
-                  <Icon icon="lucide:external-link" className="w-4 h-4" />
+                  <LuExternalLink className="w-4 h-4" />
                 </a>
               ) : (
                 <p className="text-blue-400 text-lg md:text-xl font-semibold">
@@ -351,11 +336,11 @@ const ExperienceCard = ({ experience, index, addToTimelineItems }) => {
           {/* Duration and location */}
           <div className="flex flex-wrap gap-4 mb-4 text-sm md:text-base">
             <div className="flex items-center gap-2 text-gray-300">
-              <Icon icon="lucide:calendar" className="w-5 h-5 text-blue-400" />
+              <LuCalendar className="w-5 h-5 text-blue-400" />
               <span>{experience.duration}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-300">
-              <Icon icon="lucide:map-pin" className="w-5 h-5 text-purple-400" />
+              <LuMapPin className="w-5 h-5 text-purple-400" />
               <span>{experience.location}</span>
             </div>
           </div>

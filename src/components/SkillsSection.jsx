@@ -1,9 +1,35 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
-import { Icon } from "@iconify/react";
-import { staggerContainer, staggerItem } from "../animations/variants";
+import {
+  SiHtml5,
+  SiCss3,
+  SiJavascript,
+  SiVaadin,
+  SiSpringboot,
+  SiPython,
+  SiDjango,
+  SiFlask,
+  SiPostman,
+  SiFastapi,
+  SiMysql,
+  SiPostgresql,
+  SiMongodb,
+  SiRedis,
+  SiJenkins,
+  SiGitlab,
+  SiDocker,
+  SiKubernetes,
+  SiPrometheus,
+  SiGrafana,
+  SiLinux,
+  SiAnsible,
+} from "react-icons/si";
+import { FaAws } from "react-icons/fa6";
+import { FaCloud, FaWindows } from "react-icons/fa";
+import { TbBrandPowershell } from "react-icons/tb";
+import { getStaggerContainer, getStaggerItem } from "../animations/variants";
+import { useGsapScroll } from "../hooks/useGsapScroll";
 import { skillsData } from "../config/personal";
 
 const SkillsSection = () => {
@@ -13,20 +39,66 @@ const SkillsSection = () => {
   const cardsRef = useRef([]);
   const starsRef = useRef([]);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.registerPlugin(ScrollTrigger);
+  // Icon mapping from Iconify simple-icons to react-icons
+  const iconMap = {
+    "simple-icons:html5": SiHtml5,
+    "simple-icons:css3": SiCss3,
+    "simple-icons:javascript": SiJavascript,
+    "simple-icons:vaadin": SiVaadin,
+    "simple-icons:springboot": SiSpringboot,
+    "simple-icons:python": SiPython,
+    "simple-icons:django": SiDjango,
+    "simple-icons:flask": SiFlask,
+    "simple-icons:postman": SiPostman,
+    "simple-icons:fastapi": SiFastapi,
+    "simple-icons:mysql": SiMysql,
+    "simple-icons:postgresql": SiPostgresql,
+    "simple-icons:mongodb": SiMongodb,
+    "simple-icons:redis": SiRedis,
+    "simple-icons:jenkins": SiJenkins,
+    "simple-icons:gitlab": SiGitlab,
+    "simple-icons:docker": SiDocker,
+    "simple-icons:kubernetes": SiKubernetes,
+    "simple-icons:amazonaws": FaAws,
+    "simple-icons:microsoftazure": FaCloud,
+    "simple-icons:prometheus": SiPrometheus,
+    "simple-icons:grafana": SiGrafana,
+    "simple-icons:linux": SiLinux,
+    "simple-icons:ansible": SiAnsible,
+    "simple-icons:windows": FaWindows,
+    "simple-icons:powershell": TbBrandPowershell,
+  };
 
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  useGsapScroll(sectionRef, () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Title animation
+    // Title animation
+    gsap.fromTo(
+      titleRef.current,
+      { y: prefersReducedMotion ? 0 : 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: prefersReducedMotion ? 0.1 : 1,
+        ease: "power3.out",
+        scrollTrigger: prefersReducedMotion ? false : {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    // Subtitle animation
+    if (subtitleRef.current) {
       gsap.fromTo(
-        titleRef.current,
-        { y: prefersReducedMotion ? 0 : 50, opacity: 0 },
+        subtitleRef.current,
+        { y: prefersReducedMotion ? 0 : 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: prefersReducedMotion ? 0.1 : 1,
+          duration: prefersReducedMotion ? 0.1 : 0.8,
+          delay: prefersReducedMotion ? 0 : 0.3,
           ease: "power3.out",
           scrollTrigger: prefersReducedMotion ? false : {
             trigger: sectionRef.current,
@@ -35,71 +107,49 @@ const SkillsSection = () => {
           },
         }
       );
+    }
 
-      // Subtitle animation
-      if (subtitleRef.current) {
-        gsap.fromTo(
-          subtitleRef.current,
-          { y: prefersReducedMotion ? 0 : 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: prefersReducedMotion ? 0.1 : 0.8,
-            delay: prefersReducedMotion ? 0 : 0.3,
-            ease: "power3.out",
-            scrollTrigger: prefersReducedMotion ? false : {
-              trigger: sectionRef.current,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
+    // Cards stagger animation
+    if (!prefersReducedMotion) {
+      gsap.fromTo(
+        cardsRef.current,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+    }
 
-      // Cards stagger animation
-      if (!prefersReducedMotion) {
-        gsap.fromTo(
-          cardsRef.current,
-          { y: 60, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
+    // Star parallax animations
+    if (!prefersReducedMotion && starsRef.current.length > 0) {
+      starsRef.current.forEach((star, index) => {
+        const direction = index % 2 === 0 ? 1 : -1;
+        const speed = 0.5 + Math.random() * 0.5;
 
-      // Star parallax animations
-      if (!prefersReducedMotion && starsRef.current.length > 0) {
-        starsRef.current.forEach((star, index) => {
-          const direction = index % 2 === 0 ? 1 : -1;
-          const speed = 0.5 + Math.random() * 0.5;
-
-          gsap.to(star, {
-            x: `${direction * (80 + index * 15)}`,
-            y: `${direction * (-40 + index * 8)}`,
-            rotation: direction * 180,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: speed,
-            },
-          });
+        gsap.to(star, {
+          x: `${direction * (80 + index * 15)}`,
+          y: `${direction * (-40 + index * 8)}`,
+          rotation: direction * 180,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: speed,
+          },
         });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+      });
+    }
+  });
 
   const addToCardsRef = (el) => {
     if (el && !cardsRef.current.includes(el)) {
@@ -200,26 +250,28 @@ const SkillsSection = () => {
 
                     {/* Software Skills Icons */}
                     <div className="flex flex-wrap gap-4 pt-2">
-                      {category.softwareSkills.map((software, softwareIndex) => (
-                        <motion.div
-                          key={softwareIndex}
-                          className="group relative"
-                          whileHover={{ scale: 1.15, y: -8 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        >
-                          <div className="flex flex-col items-center">
-                            <div className="relative w-14 h-14 flex items-center justify-center rounded-lg bg-gray-800/60 border border-gray-600/40 group-hover:border-blue-400/60 group-hover:bg-gray-700/80 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300">
-                              <Icon
-                                icon={software.fontAwesomeClassname}
-                                className="w-7 h-7 text-gray-300 group-hover:text-white transition-colors duration-300"
-                              />
+                      {category.softwareSkills.map((software, softwareIndex) => {
+                        const IconComponent = iconMap[software.fontAwesomeClassname];
+                        return (
+                          <motion.div
+                            key={softwareIndex}
+                            className="group relative"
+                            whileHover={{ scale: 1.15, y: -8 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          >
+                            <div className="flex flex-col items-center">
+                              <div className="relative w-14 h-14 flex items-center justify-center rounded-lg bg-gray-800/60 border border-gray-600/40 group-hover:border-blue-400/60 group-hover:bg-gray-700/80 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300">
+                                {IconComponent && (
+                                  <IconComponent className="w-7 h-7 text-gray-300 group-hover:text-white transition-colors duration-300" />
+                                )}
+                              </div>
+                              <span className="text-xs text-gray-400 group-hover:text-blue-300 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                                {software.skillName}
+                              </span>
                             </div>
-                            <span className="text-xs text-gray-400 group-hover:text-blue-300 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                              {software.skillName}
-                            </span>
-                          </div>
-                        </motion.div>
-                      ))}
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}

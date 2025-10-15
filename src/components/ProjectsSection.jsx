@@ -1,28 +1,31 @@
 import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "../utils/motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useGsapScroll } from "../hooks/useGsapScroll";
 import {
-  faJs,
-  faPython,
-  faJava,
-  faPhp,
-  faCss3,
-  faHtml5,
-  faDocker,
-  faWordpress,
-  faReact,
-  faAws,
-} from "@fortawesome/free-brands-svg-icons";
+  SiJavascript,
+  SiPython,
+  SiPhp,
+  SiCss3,
+  SiHtml5,
+  SiDocker,
+  SiWordpress,
+  SiReact,
+  SiFlask,
+  SiGradle,
+  SiGrafana,
+  SiPrometheus,
+  SiSelenium,
+} from "react-icons/si";
 import {
-  faCode,
-  faDatabase,
-  faGears,
-  faFlask,
-  faChartLine,
-  faShareFromSquare,
-} from "@fortawesome/free-solid-svg-icons";
+  FaCode,
+  FaDatabase,
+  FaGears,
+  FaChartLine,
+  FaShareFromSquare,
+  FaAws,
+  FaJava,
+} from "react-icons/fa6";
 import { projectsData } from "../config/personal";
 
 const ProjectsSection = () => {
@@ -38,45 +41,45 @@ const ProjectsSection = () => {
   // Skills icon mapping
   const skillIcons = {
     // Core languages
-    javascript: faJs,
-    python: faPython,
-    java: faJava,
-    php: faPhp,
-    css: faCss3,
-    html: faHtml5,
+    javascript: SiJavascript,
+    python: SiPython,
+    java: FaJava,
+    php: SiPhp,
+    css: SiCss3,
+    html: SiHtml5,
 
     // Frameworks & Libraries
-    'spring boot': faGears,
-    flask: faFlask,
-    wordpress: faWordpress,
+    'spring boot': FaGears,
+    flask: SiFlask,
+    wordpress: SiWordpress,
 
     // Databases
-    postgresql: faDatabase,
+    postgresql: FaDatabase,
 
     // DevOps & Tools
-    docker: faDocker,
-    aws: faAws,
-    gradle: faGears,
-    grafana: faChartLine,
-    prometheus: faChartLine,
-    selenium: faCode,
+    docker: SiDocker,
+    aws: FaAws,
+    gradle: SiGradle,
+    grafana: SiGrafana,
+    prometheus: SiPrometheus,
+    selenium: SiSelenium,
 
     // WordPress plugins
-    jetpack: faWordpress,
-    elementor: faWordpress,
+    jetpack: SiWordpress,
+    elementor: SiWordpress,
 
     // Generic fallbacks for concepts/patterns (use generic code icon)
-    vaadin: faCode,
-    rest: faCode,
-    'ci/cd pipelines': faGears,
-    junit: faCode,
-    mockito: faCode,
-    fastapi: faCode,
-    bash: faCode,
-    unix: faCode,
-    websocket: faCode,
-    orchestration: faGears,
-    thymeleaf: faCode,
+    vaadin: FaCode,
+    rest: FaCode,
+    'ci/cd pipelines': FaGears,
+    junit: FaCode,
+    mockito: FaCode,
+    fastapi: FaCode,
+    bash: FaCode,
+    unix: FaCode,
+    websocket: FaCode,
+    orchestration: FaGears,
+    thymeleaf: FaCode,
   };
 
   // Function to get all projects from all sections
@@ -108,17 +111,9 @@ const ProjectsSection = () => {
     }
   };
 
-  useEffect(() => {
-    // Capture the current timeouts ref for cleanup
-    const timeouts = hoverTimeoutsRef.current;
-    // Capture current ref for cleanup
-    const currentSection = sectionRef.current;
-
-    const ctx = gsap.context(() => {
-      gsap.registerPlugin(ScrollTrigger);
-
-      // Check for reduced motion preference
-      const reducedMotion = prefersReducedMotion();
+  useGsapScroll(sectionRef, () => {
+    // Check for reduced motion preference
+    const reducedMotion = prefersReducedMotion();
 
       // Animate stars
       if (!reducedMotion && starsRef.current.length > 0) {
@@ -197,7 +192,7 @@ const ProjectsSection = () => {
       }
 
       // Animate project cards individually
-      if (!prefersReducedMotion && horizontalRef.current) {
+      if (!reducedMotion && horizontalRef.current) {
         const cards = gsap.utils.toArray(horizontalRef.current.children);
 
         if (cards.length > 0) {
@@ -223,22 +218,17 @@ const ProjectsSection = () => {
           );
         }
       }
-    }, sectionRef);
+  }, [projectImages.length]);
 
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    const timeouts = hoverTimeoutsRef.current;
     return () => {
-      ctx.revert();
-      // Kill all ScrollTriggers associated with this section
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === currentSection) {
-          trigger.kill();
-        }
-      });
-      // Cleanup all timeouts on unmount
       Object.values(timeouts).forEach((timeoutId) => {
         clearTimeout(timeoutId);
       });
     };
-  }, [projectImages.length]);
+  }, []);
 
   return (
     <section
@@ -337,7 +327,7 @@ const ProjectsSection = () => {
                   <div className="relative overflow-hidden bg-gradient-to-br from-blue-900/40 to-gray-800/40 w-full aspect-video border-b border-gray-700/50">
                     <div className="w-full h-full flex items-center justify-center">
                       <div className="text-6xl text-blue-400 opacity-30">
-                        <FontAwesomeIcon icon={faReact} />
+                        <SiReact />
                       </div>
                     </div>
                   </div>
@@ -353,15 +343,14 @@ const ProjectsSection = () => {
                     <div className="flex flex-wrap gap-2 mb-4">
                       {project.technologies?.slice(0, 6).map((tech, index) => {
                         const techKey = tech.toLowerCase().replace(/\s+/g, ' ');
-                        const icon = skillIcons[techKey] || faCode;
+                        const IconComponent = skillIcons[techKey] || FaCode;
                         return (
                           <div
                             key={index}
                             className="flex items-center justify-center w-8 h-8 bg-gray-700/50 rounded-full group-hover:bg-blue-500/20 transition-colors duration-300 border border-gray-600/50 group-hover:border-blue-500/50"
                             title={tech}
                           >
-                            <FontAwesomeIcon
-                              icon={icon}
+                            <IconComponent
                               className="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors duration-300"
                             />
                           </div>
@@ -377,8 +366,7 @@ const ProjectsSection = () => {
                     <h2 className="project-title flex items-center justify-between text-xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
                       <span className="line-clamp-2">{project.title}</span>
                       {project.link && (
-                        <FontAwesomeIcon
-                          icon={faShareFromSquare}
+                        <FaShareFromSquare
                           className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-shrink-0 ml-2 text-blue-400"
                         />
                       )}

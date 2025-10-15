@@ -78,10 +78,13 @@ export const useContactForm = () => {
 
     try {
       // TODO: Integrate with email service (EmailJS, Formspree, or custom backend)
-      // For now, just log the data
-      console.log('Form submitted:', formData);
 
-      // Simulate API call
+      // Only log in development environment
+      if (import.meta.env.DEV) {
+        console.log('Form submitted:', formData);
+      }
+
+      // Simulate API call (replace with actual submission)
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Show success message
@@ -106,7 +109,11 @@ export const useContactForm = () => {
 
       return true;
     } catch (error) {
-      console.error('Form submission error:', error);
+      // Only log detailed errors in development
+      if (import.meta.env.DEV) {
+        console.error('Form submission error:', error);
+      }
+
       setFormErrors({
         submit: 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.'
       });

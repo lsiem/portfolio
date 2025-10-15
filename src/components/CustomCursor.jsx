@@ -7,10 +7,10 @@ const CustomCursor = () => {
   const cursorBorderRef = useRef(null);
   const [isEnabled, setIsEnabled] = useState(false);
 
-  useEffect(() => {
-    // SSR guard
+  // Function to determine if cursor should be enabled
+  const checkCursorEnabled = () => {
     if (typeof window === "undefined") {
-      return;
+      return false;
     }
 
     // Check localStorage preference
@@ -29,6 +29,12 @@ const CustomCursor = () => {
       shouldEnable = hasFineMouse && !prefersReducedMotion;
     }
 
+    return shouldEnable;
+  };
+
+  // Function to update cursor state
+  const updateCursorState = () => {
+    const shouldEnable = checkCursorEnabled();
     setIsEnabled(shouldEnable);
 
     // Add or remove custom cursor class based on support
@@ -37,6 +43,31 @@ const CustomCursor = () => {
     } else {
       document.documentElement.classList.remove("has-custom-cursor");
     }
+  };
+
+  useEffect(() => {
+    // Initial check
+    updateCursorState();
+
+    // Listen for storage events (for cross-tab synchronization)
+    const handleStorageChange = (e) => {
+      if (e.key === 'customCursorEnabled') {
+        updateCursorState();
+      }
+    };
+
+    // Listen for custom event (for same-tab updates)
+    const handleCustomCursorToggle = () => {
+      updateCursorState();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('customCursorToggle', handleCustomCursorToggle);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('customCursorToggle', handleCustomCursorToggle);
+    };
   }, []);
 
   useEffect(() => {

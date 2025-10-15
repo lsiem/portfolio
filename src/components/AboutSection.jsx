@@ -1,8 +1,8 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "../utils/motion";
-import meImage from "../assets/images/me.png";
+import { useGsapScroll } from "../hooks/useGsapScroll";
+import meImage from "../assets/images/me.webp";
 
 const AboutSection = () => {
   const sectionRef = useRef(null);
@@ -10,81 +10,64 @@ const AboutSection = () => {
   const introRef = useRef(null);
   const starsRef = useRef([]);
 
-  useEffect(() => {
-    // Capture current ref for cleanup
-    const currentSection = sectionRef.current;
+  useGsapScroll(sectionRef, () => {
+    // Check for reduced motion preference
+    const reducedMotion = prefersReducedMotion();
 
-    const ctx = gsap.context(() => {
-      gsap.registerPlugin(ScrollTrigger);
-
-      // Check for reduced motion preference
-      const reducedMotion = prefersReducedMotion();
-
-      // Title animation
-      gsap.fromTo(
-        titleRef.current,
-        { y: reducedMotion ? 0 : 100, opacity: 0 },
-        {
-          y: reducedMotion ? 0 : -300,
-          opacity: 1,
-          duration: reducedMotion ? 0.1 : 0.8,
-          scrollTrigger: reducedMotion ? false : {
-            trigger: sectionRef.current,
-            start: "top 40%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // Intro animation
-      gsap.fromTo(
-        introRef.current,
-        { y: reducedMotion ? 0 : 100, opacity: 0, filter: reducedMotion ? "blur(0px)" : "blur(10px)" },
-        {
-          y: reducedMotion ? 0 : -400,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: reducedMotion ? 0.1 : 1.5,
-          scrollTrigger: reducedMotion ? false : {
-            trigger: sectionRef.current,
-            start: "top 40%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // Stars parallax effect (skip if reduced motion)
-      if (!reducedMotion) {
-        starsRef.current.forEach((star, index) => {
-          const direction = index % 2 === 0 ? 1 : -1;
-          const speed = 0.5 + Math.random() * 0.5;
-
-          gsap.to(star, {
-            x: `${direction * (100 + index * 20)}`,
-            y: `${direction * (-50 + index * 10)}`,
-            rotation: direction * 360,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: speed,
-            },
-          });
-        });
+    // Title animation
+    gsap.fromTo(
+      titleRef.current,
+      { y: reducedMotion ? 0 : 100, opacity: 0 },
+      {
+        y: reducedMotion ? 0 : -300,
+        opacity: 1,
+        duration: reducedMotion ? 0.1 : 0.8,
+        scrollTrigger: reducedMotion ? false : {
+          trigger: sectionRef.current,
+          start: "top 40%",
+          toggleActions: "play none none reverse",
+        },
       }
-    }, sectionRef);
+    );
 
-    return () => {
-      ctx.revert();
-      // Kill all ScrollTriggers associated with this section
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === currentSection) {
-          trigger.kill();
-        }
+    // Intro animation
+    gsap.fromTo(
+      introRef.current,
+      { y: reducedMotion ? 0 : 100, opacity: 0, filter: reducedMotion ? "blur(0px)" : "blur(10px)" },
+      {
+        y: reducedMotion ? 0 : -400,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: reducedMotion ? 0.1 : 1.5,
+        scrollTrigger: reducedMotion ? false : {
+          trigger: sectionRef.current,
+          start: "top 40%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    // Stars parallax effect (skip if reduced motion)
+    if (!reducedMotion) {
+      starsRef.current.forEach((star, index) => {
+        const direction = index % 2 === 0 ? 1 : -1;
+        const speed = 0.5 + Math.random() * 0.5;
+
+        gsap.to(star, {
+          x: `${direction * (100 + index * 20)}`,
+          y: `${direction * (-50 + index * 10)}`,
+          rotation: direction * 360,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: speed,
+          },
+        });
       });
-    };
-  }, []);
+    }
+  });
 
   const addToStars = (el) => {
     if (el && !starsRef.current.includes(el)) {
