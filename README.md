@@ -17,7 +17,7 @@ Personal portfolio website showcasing professional experience, projects, and ski
 - **3D Graphics**: Spline
 - **Build Tool**: Vite
 - **Linting**: ESLint with React Hooks rules
-- **Icons**: React Icons, Font Awesome, Iconify
+- **Icons**: React Icons (Simple Icons, Font Awesome, Feather Icons, Tabler Icons, Lucide)
 - **Performance**: Lazy loading, code splitting, reduced-motion support
 
 ## 📦 Setup
@@ -331,8 +331,8 @@ This project is open source and available under the [MIT License](LICENSE).
 - [GSAP](https://gsap.com/) - Animation library with ScrollTrigger
 - [Framer Motion](https://www.framer.com/motion/) - React animation library
 - [Spline](https://spline.design/) - 3D design and animation tool
-- [React Icons](https://react-icons.github.io/react-icons/) - Icon library
-- [Font Awesome](https://fontawesome.com/) - Icon toolkit
-- [Iconify](https://iconify.design/) - Unified icon framework
+- [React Icons](https://react-icons.github.io/react-icons/) - Comprehensive icon library (includes Simple Icons, Font Awesome, Feather Icons, Tabler Icons, Lucide, and more)
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [Vite](https://vitejs.dev/) - Next generation frontend tooling
+
+> **Note**: This project previously used Font Awesome and Iconify as separate dependencies. We've since migrated to React Icons, which provides a unified interface to multiple icon sets including Font Awesome icons, eliminating the need for separate icon libraries.
