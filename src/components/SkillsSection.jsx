@@ -30,6 +30,7 @@ import { FaCloud, FaWindows } from "react-icons/fa";
 import { TbBrandPowershell } from "react-icons/tb";
 import { useGsapScroll } from "../hooks/useGsapScroll";
 import { skillsData } from "../config/personal";
+import { prefersReducedMotion } from "../utils/motion";
 
 const SkillsSection = () => {
   const sectionRef = useRef(null);
@@ -87,18 +88,18 @@ const SkillsSection = () => {
     starsRef.current = starsRef.current.filter(el => el !== null && el !== undefined);
     cardsRef.current = cardsRef.current.filter(el => el !== null && el !== undefined);
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = prefersReducedMotion();
 
     // Title animation
     gsap.fromTo(
       titleRef.current,
-      { y: prefersReducedMotion ? 0 : 50, opacity: 0 },
+      { y: reducedMotion ? 0 : 50, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: prefersReducedMotion ? 0.1 : 1,
+        duration: reducedMotion ? 0.1 : 1,
         ease: "power3.out",
-        scrollTrigger: prefersReducedMotion ? false : {
+        scrollTrigger: reducedMotion ? false : {
           trigger: sectionRef.current,
           start: "top 80%",
           toggleActions: "play none none reverse",
@@ -110,14 +111,14 @@ const SkillsSection = () => {
     if (subtitleRef.current) {
       gsap.fromTo(
         subtitleRef.current,
-        { y: prefersReducedMotion ? 0 : 30, opacity: 0 },
+        { y: reducedMotion ? 0 : 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: prefersReducedMotion ? 0.1 : 0.8,
-          delay: prefersReducedMotion ? 0 : 0.3,
+          duration: reducedMotion ? 0.1 : 0.8,
+          delay: reducedMotion ? 0 : 0.3,
           ease: "power3.out",
-          scrollTrigger: prefersReducedMotion ? false : {
+          scrollTrigger: reducedMotion ? false : {
             trigger: sectionRef.current,
             start: "top 80%",
             toggleActions: "play none none reverse",
@@ -127,7 +128,7 @@ const SkillsSection = () => {
     }
 
     // Cards stagger animation
-    if (!prefersReducedMotion) {
+    if (!reducedMotion) {
       gsap.fromTo(
         cardsRef.current,
         { y: 60, opacity: 0 },
@@ -147,7 +148,7 @@ const SkillsSection = () => {
     }
 
     // Star parallax animations
-    if (!prefersReducedMotion && starsRef.current.length > 0) {
+    if (!reducedMotion && starsRef.current.length > 0) {
       starsRef.current.forEach((star, index) => {
         if (!star) return;
         const direction = index % 2 === 0 ? 1 : -1;

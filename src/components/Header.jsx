@@ -4,6 +4,7 @@ import { RiCursorLine, RiCursorFill } from "react-icons/ri";
 import { useState, useRef, useEffect } from "react";
 import { useContactForm } from "../hooks/useContactForm";
 import { personalInfo, hasSocialLink } from "../config/personal";
+import { prefersReducedMotion } from "../utils/motion";
 
 const Header = () => {
   // Navigation items mapping
@@ -61,9 +62,9 @@ const Header = () => {
       setCustomCursorEnabled(savedPref === 'true');
     } else {
       // Default to enabled if device supports it
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reducedMotion = prefersReducedMotion();
       const hasFineMouse = window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
-      setCustomCursorEnabled(hasFineMouse && !prefersReducedMotion);
+      setCustomCursorEnabled(hasFineMouse && !reducedMotion);
     }
 
     return () => window.removeEventListener('resize', checkMobile);
@@ -86,15 +87,15 @@ const Header = () => {
   // Handle custom cursor toggle
   const toggleCustomCursor = () => {
     // Check system preferences at toggle time
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = prefersReducedMotion();
     const hasFineMouse = window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
 
     // If trying to enable but system doesn't support it, show explanation
-    if (!customCursorEnabled && (prefersReducedMotion || !hasFineMouse)) {
+    if (!customCursorEnabled && (reducedMotion || !hasFineMouse)) {
       let message = 'Eigener Cursor nicht verfügbar: ';
-      if (prefersReducedMotion && !hasFineMouse) {
+      if (reducedMotion && !hasFineMouse) {
         message += 'Bewegungsreduzierung aktiv und Maus nicht erkannt';
-      } else if (prefersReducedMotion) {
+      } else if (reducedMotion) {
         message += 'Bewegungsreduzierung in den Systemeinstellungen aktiv';
       } else {
         message += 'Präzise Maus erforderlich (Touchscreen nicht unterstützt)';
@@ -327,9 +328,9 @@ const Header = () => {
               customCursorEnabled
                 ? 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                 : (() => {
-                    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    const reducedMotion = prefersReducedMotion();
                     const hasFineMouse = typeof window !== 'undefined' && window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
-                    return (prefersReducedMotion || !hasFineMouse)
+                    return (reducedMotion || !hasFineMouse)
                       ? 'text-gray-500 dark:text-gray-600 cursor-not-allowed'
                       : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400';
                   })()
@@ -421,9 +422,9 @@ const Header = () => {
                 customCursorEnabled
                   ? 'text-gray-300 hover:text-blue-400'
                   : (() => {
-                      const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                      const reducedMotion = prefersReducedMotion();
                       const hasFineMouse = typeof window !== 'undefined' && window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
-                      return (prefersReducedMotion || !hasFineMouse)
+                      return (reducedMotion || !hasFineMouse)
                         ? 'text-gray-600 cursor-not-allowed'
                         : 'text-gray-300 hover:text-blue-400';
                     })()

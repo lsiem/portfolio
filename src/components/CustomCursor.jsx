@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { prefersReducedMotion } from "../utils/motion";
 
 const CustomCursor = () => {
   // Refs for cursor elements
@@ -14,11 +15,11 @@ const CustomCursor = () => {
     }
 
     // Check system preferences first - these are hard requirements
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = prefersReducedMotion();
     const hasFineMouse = window.matchMedia('(pointer: fine) and (min-width: 769px)').matches;
 
     // If system doesn't support custom cursor, never enable
-    if (prefersReducedMotion || !hasFineMouse) {
+    if (reducedMotion || !hasFineMouse) {
       return false;
     }
 
