@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import { gsap } from "gsap";
-
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { lazy, Suspense } from "react";
@@ -18,16 +16,13 @@ const ContactSection = lazy(() => import("./components/ContactSection"));
 export default function App() {
 
   useEffect(() => {
-    // Register ScrollTrigger plugin
-    gsap.registerPlugin(ScrollTrigger);
+    // Optional: Refresh ScrollTrigger after initial mount to ensure proper layout calculations
+    // ScrollTrigger is registered per-section via useGsapScroll hook
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
-    // Refresh ScrollTrigger when the page is fully loaded
-    ScrollTrigger.refresh();
-
-    // Cleanup function to kill all ScrollTriggers on unmount
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
