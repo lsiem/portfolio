@@ -7,11 +7,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
  * Handles registration, context setup, and cleanup
  *
  * @param {React.RefObject} sectionRef - Reference to the section element
- * @param {Function} setup - Setup function that creates GSAP animations
- * @param {Array} dependencies - Optional dependency array for the effect
+ * @param {Array} dependencies - Dependency array for the effect (required)
+ * @param {Function} setup - Setup function that creates GSAP animations (should be stable via useCallback)
  */
-export const useGsapScroll = (sectionRef, setup, dependencies = []) => {
+export const useGsapScroll = (sectionRef, dependencies, setup) => {
   useEffect(() => {
+    // Dev-mode warning for missing dependencies
+    if (process.env.NODE_ENV === 'development') {
+      if (!dependencies || dependencies.length === 0) {
+        console.warn(
+          '[useGsapScroll] No dependencies provided. If your setup function uses props or state, ' +
+          'you may encounter stale closures. Wrap setup in useCallback and pass relevant dependencies.'
+        );
+      }
+    }
+
     // Register ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
 
@@ -37,6 +47,5 @@ export const useGsapScroll = (sectionRef, setup, dependencies = []) => {
         }
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies);
+  }, [...dependencies, setup, sectionRef]);
 };

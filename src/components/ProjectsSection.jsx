@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "../utils/motion";
 import { useGsapScroll } from "../hooks/useGsapScroll";
@@ -111,7 +111,7 @@ const ProjectsSection = () => {
     }
   };
 
-  useGsapScroll(sectionRef, () => {
+  const setupAnimations = useCallback(() => {
     // Check for reduced motion preference
     const reducedMotion = prefersReducedMotion();
 
@@ -219,6 +219,8 @@ const ProjectsSection = () => {
         }
       }
   }, [projectImages.length]);
+
+  useGsapScroll(sectionRef, [projectImages.length], setupAnimations);
 
   // Cleanup timeouts on unmount
   useEffect(() => {

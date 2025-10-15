@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 import { LuExternalLink, LuCalendar, LuMapPin } from "react-icons/lu";
@@ -18,7 +18,7 @@ const ExperienceSection = () => {
   const timelineItemsRef = useRef([]);
   const starsRef = useRef([]);
 
-  useGsapScroll(sectionRef, () => {
+  const setupAnimations = useCallback(() => {
     const reducedMotion = prefersReducedMotion();
 
       // Title animation
@@ -177,7 +177,9 @@ const ExperienceSection = () => {
           });
         });
       }
-  });
+  }, []);
+
+  useGsapScroll(sectionRef, [], setupAnimations);
 
   const addToStars = (el) => {
     if (el && !starsRef.current.includes(el)) {

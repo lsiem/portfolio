@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "../utils/motion";
 import { useGsapScroll } from "../hooks/useGsapScroll";
@@ -10,7 +10,7 @@ const AboutSection = () => {
   const introRef = useRef(null);
   const starsRef = useRef([]);
 
-  useGsapScroll(sectionRef, () => {
+  const setupAnimations = useCallback(() => {
     // Check for reduced motion preference
     const reducedMotion = prefersReducedMotion();
 
@@ -67,7 +67,9 @@ const AboutSection = () => {
         });
       });
     }
-  });
+  }, []);
+
+  useGsapScroll(sectionRef, [], setupAnimations);
 
   const addToStars = (el) => {
     if (el && !starsRef.current.includes(el)) {

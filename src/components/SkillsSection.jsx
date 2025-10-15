@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 import {
@@ -69,7 +69,7 @@ const SkillsSection = () => {
     "simple-icons:powershell": TbBrandPowershell,
   };
 
-  useGsapScroll(sectionRef, () => {
+  const setupAnimations = useCallback(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Title animation
@@ -149,7 +149,9 @@ const SkillsSection = () => {
         });
       });
     }
-  });
+  }, []);
+
+  useGsapScroll(sectionRef, [], setupAnimations);
 
   const addToCardsRef = (el) => {
     if (el && !cardsRef.current.includes(el)) {

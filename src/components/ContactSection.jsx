@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { FiMail, FiGithub, FiLinkedin } from 'react-icons/fi';
@@ -35,7 +35,7 @@ const ContactSection = () => {
   })), []);
 
   // GSAP Animations
-  useGsapScroll(sectionRef, () => {
+  const setupAnimations = useCallback(() => {
     if (prefersReducedMotion()) return;
 
     // Animate title
@@ -105,7 +105,9 @@ const ContactSection = () => {
         });
       }
     });
-  });
+  }, []);
+
+  useGsapScroll(sectionRef, [], setupAnimations);
 
   return (
     <section
