@@ -1,0 +1,1 @@
+import{r as i,g as o,S as e}from"./index-B2ZngLyE.js";const g=(t,l,r)=>{i.useEffect(()=>{o.registerPlugin(e);const n=t.current,a=o.context(()=>{r&&typeof r=="function"&&r()},t);return()=>{a.revert(),e.getAll().forEach(c=>{c.trigger===n&&c.kill()})}},[...l,r,t])};export{g as u};
