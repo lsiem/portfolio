@@ -1,53 +1,27 @@
 # Deployment Guide
 
-## 🚀 Quick Deploy to GitHub Pages
-
-### Prerequisites
-
-- GitHub account
-- Repository created on GitHub
-- Code committed to local repository
+## 🚀 Deployment to Vercel (Recommended)
 
 ### Step-by-Step Deployment
 
-#### 1. Prepare Your Repository
+1. **Connect Repository to Vercel**:
+   - Go to [vercel.com](https://vercel.com)
+   - Click **New Project**
+   - Import this repository (`lsiem/portfolio`)
 
-Ensure you have committed all changes:
+2. **Configure Domain**:
+   - In Vercel, go to **Settings** → **Domains**
+   - Add `lsiem.de`
 
-```bash
-git add .
-git commit -m "Prepare for deployment"
-```
+3. **DNS Settings**:
+   - Vercel will provide the necessary DNS settings (usually an A Record pointing to `76.76.21.21` or a CNAME for subdomains).
+   - Your current DNS already points to Vercel (`216.198.79.1` is a Vercel IP).
 
-#### 2. Configure for GitHub Pages
+## 🛠 Project Configuration
 
-If deploying to `username.github.io/portfolio` (repository name is not your username):
+- **Base URL**: Set to `'/'` in [vite.config.js](vite.config.js) for custom domains.
+- **Node Version**: Suggested version `20` or higher.
 
-Update `vite.config.js`:
-
-```javascript
-export default defineConfig({
-  base: '/portfolio/', // Replace with your repo name
-  plugins: [react(), tailwindcss()],
-})
-```
-
-If deploying to custom domain or `username.github.io`:
-
-Keep `base: '/'` in `vite.config.js`.
-
-#### 3. Push to GitHub
-
-```bash
-git remote add origin https://github.com/lsiem/portfolio.git
-git branch -M main
-git push -u origin main
-```
-
-#### 4. Enable GitHub Pages
-
-1. Go to your repository on GitHub
-2. Click **Settings** → **Pages**
 3. Under **Source**, select **GitHub Actions**
 4. The deployment will start automatically
 
