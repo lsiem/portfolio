@@ -7,6 +7,7 @@ export const personalInfo = {
   email: 'info@lsiem.de',
   github: 'https://github.com/lsiem',
   linkedin: 'https://www.linkedin.com/in/lasse-siemoneit/',
+  isMaintenanceMode: true,
 
   // Optional: Add more social links as needed
   twitter: '',
@@ -18,6 +19,21 @@ export const personalInfo = {
  * Centralized text strings to maintain language consistency
  */
 export const uiText = {
+  maintenance: {
+    title: 'Hier entsteht etwas Neues',
+    subtitle: 'Ich arbeite gerade an einer neuen Version meines Portfolios.',
+    cta: 'Vernetzen wir uns auf LinkedIn',
+    footer: 'Schau bald wieder vorbei!',
+    statusPrefix: 'Status:',
+    progressLabel: 'Fortschritt',
+    comingSoon: 'Februar 2026',
+    roadmap: [
+      { id: 1, title: 'Konzept erstellt', completed: true },
+      { id: 2, title: 'Design finalisiert', completed: true },
+      { id: 3, title: 'Entwicklung abgeschlossen', completed: true },
+      { id: 4, title: 'Letzter Feinschliff (Februar 2026)', completed: false, isCurrent: true },
+    ]
+  },
   spline3D: {
     loading: 'Lade 3D-Szene...',
     error: '3D-Szene konnte nicht geladen werden',
