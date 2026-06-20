@@ -1,141 +1,57 @@
-# WARP.md
+# WARP.md — Portfolio Architecture
 
-This file provides guidance to WARP (warp.dev) when working with code in this repository.
+## Overview
 
-## Development Commands
+Animation-first React/Vite/TypeScript SPA deployed on Vercel (`lsiem.de`).
 
-```bash
-# Development
-npm run dev          # Start dev server (http://localhost:5173) with hot reload
-npm run build        # Build for production (outputs to dist/)
-npm run preview      # Preview production build locally
-npm run lint         # Run ESLint to check code quality
+## Stack
 
-# Debugging port conflicts
-lsof -ti:5173 | xargs kill -9    # Kill process on port 5173
-npm run dev -- --port 3000      # Use different port
+- React 19 + Vite 7 + TypeScript
+- Tailwind CSS v4 (`@theme` tokens in `src/index.css`)
+- Lenis + GSAP ScrollTrigger
+- Framer Motion for UI micro-interactions
+- React Three Fiber for the hero scene
+- Resend via `api/contact.ts`
 
-# Dependencies
-npm ci                           # Clean install (faster, production-ready)
-npm update                       # Update dependencies
-npm audit fix                    # Fix security vulnerabilities
+## Structure
+
+```
+src/
+  content/          Typed content modules + Zod validation
+  components/
+    layout/         Header, SectionWrapper, ScrollProgress
+    sections/       Hero, Skills, About, Experience, Projects, Contact
+    ui/             Button, Modal, Badge, Toast, MagneticButton
+    three/          HeroScene (lazy)
+    easter-eggs/    DevTerminal
+  hooks/            Lenis, GSAP scroll, contact form, motion prefs
+  utils/            Motion helpers, cn()
+api/
+  contact.ts        Vercel Serverless → Resend
 ```
 
-## Architecture Overview
+## Content
 
-This is a React 19 + Vite portfolio using Tailwind CSS v4 with advanced animation capabilities and accessibility considerations.
+All copy and structured data live in `src/content/*.ts`. Experience and projects are separate datasets. Content is validated at import time via Zod schemas in `src/content/validate.ts`.
 
-### Performance & Loading Strategy
+## Motion & Accessibility
 
-- **Lazy Loading**: Non-critical components (Skills, About, Experience, Projects, Contact) are lazy-loaded using `React.lazy()` and `Suspense`
-- **Critical Path**: Only Header, HeroSection, and CustomCursor load immediately
-- **Code Splitting**: Automatic component-level code splitting via Vite
+- Reduced motion toggle in the header
+- Lenis disabled when reduced motion is active
+- Custom cursor only on fine pointers
+- Modal focus trap + ESC close + `aria-live` for form status
 
-### Animation Architecture
+## Commands
 
-**GSAP + ScrollTrigger Integration:**
-- Main animation engine in `App.jsx` with proper cleanup (`ScrollTrigger.getAll().forEach(trigger => trigger.kill())`)
-- Accessibility: All animations respect `prefers-reduced-motion` via `src/utils/motion.js`
-- Utility functions for consistent motion behavior across components
-
-**Framer Motion:**
-- Component-level animations in `src/animations/variants.js`
-- Reduced motion support built into all variants
-- Staggered container animations for lists
-
-### Styling Architecture
-
-**Tailwind CSS v4:**
-- Configuration via CSS `@theme` directive in `src/index.css` (not `tailwind.config.js`)
-- Global theme tokens defined as CSS custom properties
-- Semantic color system with HSL color functions
-
-### State Management Patterns
-
-**Custom Hooks:**
-- `useContactForm`: Centralized form state, validation, and submission logic
-- Shared between multiple components for consistent form behavior
-- Includes error handling and success states
-
-**Configuration-Driven Content:**
-- All personal data centralized in `src/config/personal.js`
-- Experience, projects, skills data as JavaScript objects
-- Helper functions for social link management
-
-### Error Handling
-
-**ErrorBoundary Component:**
-- Specifically designed for 3D Spline component failures
-- Provides fallback UI with retry functionality
-- Logs errors to console (extend for error reporting services)
-
-### 3D Graphics Integration
-
-**Spline Integration:**
-- `@splinetool/react-spline` for 3D hero section
-- Wrapped in ErrorBoundary for graceful degradation
-- Performance optimized with lazy loading
-
-## Content Management
-
-**Personal Information:**
-- Edit `src/config/personal.js` for all content updates
-- Experience data structure includes company logos (place in `public/logos/`)
-- Project images go in `src/assets/images/`
-- Social links with conditional rendering based on configuration
-
-**Logos and Assets:**
-- Company logos: `public/logos/` (referenced by filename in personal.js)
-- Project images: `src/assets/images/` (imported in components)
-- Icons: React Icons, Font Awesome, Iconify packages
+```bash
+npm run dev        # Vite dev server
+npm run build      # Typecheck + production build
+npm run lint       # ESLint
+npm run test       # Vitest unit tests
+npm run test:e2e   # Playwright smoke tests
+vercel dev         # Local API + frontend
+```
 
 ## Deployment
 
-**GitHub Pages (Auto-Deployment):**
-```bash
-# Deploy process (automated on push to main)
-git add .
-git commit -m "Your changes"
-git push origin main
-# GitHub Actions builds and deploys automatically
-```
-
-**Domain Configuration:**
-- Custom domain: `base: '/'` in vite.config.js + `public/CNAME`
-- GitHub subdomain: `base: '/portfolio/'` + remove CNAME
-
-**Build Process:**
-- Node.js 20, npm ci for dependencies
-- `npm run build` creates optimized dist/
-- GitHub Actions workflow handles deployment to Pages
-
-## Accessibility Features
-
-- **Reduced Motion**: All animations check `prefers-reduced-motion`
-- **Focus Management**: Custom focus indicators for all interactive elements
-- **Custom Cursor**: Only enabled on pointer-capable devices
-- **Semantic HTML**: ARIA labels and semantic structure
-- **Keyboard Navigation**: Full keyboard accessibility
-
-## Language & Internationalization
-
-- Currently German language interface
-- Validation messages and UI text in German
-- Structure supports easy expansion to multi-language setup
-
-## Key Dependencies
-
-- **React 19** + **Vite 7** (latest versions)
-- **Tailwind CSS v4** with Vite plugin
-- **GSAP** with ScrollTrigger for scroll animations
-- **Framer Motion** for component animations
-- **Spline** for 3D graphics integration
-- **ESLint 9** with React Hooks rules
-
-## Development Notes
-
-- ESLint configured for React 19 with hooks rules
-- No test setup currently (extend with Vitest if needed)
-- Bundle analysis: Check `dist/` folder size after build
-- Custom cursor disabled on touch devices for better UX
-- All animations use hardware acceleration for smooth performance
+See [DEPLOYMENT.md](./DEPLOYMENT.md). Production deploys happen through Vercel on push to `main`.

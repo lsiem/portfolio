@@ -1,6 +1,6 @@
 {
   "name": "portfolio",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Personal portfolio website showcasing professional experience, projects, and skills",
   "author": "Lasse Siemoneit <info@lsiem.de>",
   "license": "MIT",
@@ -13,6 +13,7 @@
     "portfolio",
     "react",
     "vite",
+    "typescript",
     "tailwindcss",
     "gsap",
     "framer-motion"
@@ -21,29 +22,50 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@splinetool/react-spline": "^4.1.0",
+    "@react-three/drei": "^10.0.6",
+    "@react-three/fiber": "^9.1.2",
     "@tailwindcss/vite": "^4.1.14",
     "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
+    "lenis": "^1.3.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
-    "tailwindcss": "^4.1.14"
+    "resend": "^4.5.1",
+    "tailwindcss": "^4.1.14",
+    "three": "^0.175.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@playwright/test": "^1.52.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.15.3",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
+    "@types/three": "^0.175.0",
     "@vitejs/plugin-react": "^5.0.4",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
-    "vite": "^7.1.7"
+    "jsdom": "^26.1.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1",
+    "@vercel/node": "^5.1.14",
+    "vite": "^7.1.7",
+    "vite-imagetools": "^7.1.0",
+    "vitest": "^3.1.2"
   }
 }
