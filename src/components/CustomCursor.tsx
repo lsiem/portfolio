@@ -26,6 +26,11 @@ export function CustomCursor() {
     document.documentElement.classList.add('has-custom-cursor');
     localStorage.setItem(STORAGE_KEY, 'true');
 
+    // Center the dots on the pointer via gsap's percentage transform. A CSS
+    // `-translate-x/y-1/2` class would be clobbered by gsap writing the full
+    // transform matrix when it animates `x`/`y`, leaving the dots off-center.
+    gsap.set([outerRef.current, innerRef.current], { xPercent: -50, yPercent: -50 });
+
     const outerX = gsap.quickTo(outerRef.current, 'x', { duration: 0.5, ease: 'power3.out' });
     const outerY = gsap.quickTo(outerRef.current, 'y', { duration: 0.5, ease: 'power3.out' });
     const innerX = gsap.quickTo(innerRef.current, 'x', { duration: 0.2, ease: 'power3.out' });
@@ -52,12 +57,12 @@ export function CustomCursor() {
       <div
         ref={outerRef}
         aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[200] h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/60"
+        className="pointer-events-none fixed left-0 top-0 z-[200] h-8 w-8 rounded-full border border-accent/60"
       />
       <div
         ref={innerRef}
         aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[201] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent"
+        className="pointer-events-none fixed left-0 top-0 z-[201] h-2 w-2 rounded-full bg-accent"
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiGithub, FiLinkedin, FiMenu, FiX } from 'react-icons/fi';
 import { getConfiguredSocialLinks, personalInfo } from '@/content';
@@ -30,13 +30,6 @@ export function Header() {
     handleSubmit,
     resetForm,
   } = useContactForm();
-
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      '--header-offset',
-      mobileOpen ? '0px' : '0px',
-    );
-  }, [mobileOpen]);
 
   const handleNavClick = (href: string) => {
     scrollToSection(href);

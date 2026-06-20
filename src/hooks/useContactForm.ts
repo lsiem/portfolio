@@ -113,7 +113,6 @@ export function useContactForm() {
           email: formData.email.trim(),
           message: formData.message.trim(),
           website: formData.website,
-          submittedAt: formLoadTimeRef.current,
         }),
       });
 

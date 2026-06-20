@@ -22,6 +22,7 @@ export function useLenis(): void {
     lenis.on('scroll', ScrollTrigger.update);
 
     lenisRef.current = lenis;
+    window.__lenis = lenis;
 
     let frame = 0;
     const raf = (time: number) => {
@@ -34,24 +35,9 @@ export function useLenis(): void {
       cancelAnimationFrame(frame);
       lenis.destroy();
       lenisRef.current = null;
+      delete window.__lenis;
     };
   }, [lenisEnabled]);
-}
-
-export function useLenisScrollTo(): (target: string) => void {
-  const { lenisEnabled } = useMotionPreferences();
-
-  return (target: string) => {
-    const element = document.querySelector(target);
-    if (!element) return;
-
-    if (lenisEnabled) {
-      const lenis = (window as Window & { __lenis?: Lenis }).__lenis;
-      lenis?.scrollTo(element as HTMLElement, { offset: -80 });
-    } else {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 }
 
 export { gsap };
