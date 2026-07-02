@@ -79,3 +79,6 @@ Thumbs.db
 .playwright-mcp
 test-results
 playwright-report
+
+# Internal reference material — never commit (public repo)
+.planning/phases/*/reference/
