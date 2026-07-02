@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { getCaseStudies } from "@/lib/content";
 import { localeAlternates, siteMetadataBase } from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string }> }>;
@@ -24,6 +25,7 @@ export default async function HomePage({ params }: Props) {
 
   const t = await getTranslations("home");
   const nav = await getTranslations("nav");
+  const caseStudies = getCaseStudies(locale);
 
   return (
     <main>
@@ -45,6 +47,18 @@ export default async function HomePage({ params }: Props) {
           </li>
         </ul>
       </nav>
+      <section id="projects">
+        <h2>{t("caseStudies")}</h2>
+        <ul>
+          {caseStudies.map((caseStudy) => (
+            <li key={caseStudy.slug}>
+              <Link href={`/case-studies/${caseStudy.slug}`}>
+                {caseStudy.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   );
 }

@@ -11,5 +11,10 @@
   "home": {
     "role": "Full-stack developer & DevOps engineer",
     "caseStudies": "Case studies"
+  },
+  "caseStudy": {
+    "role": "Role",
+    "period": "Period",
+    "stack": "Stack"
   }
 }
