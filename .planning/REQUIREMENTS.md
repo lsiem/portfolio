@@ -73,9 +73,34 @@
 
 <!-- Filled by roadmap creation: REQ-ID → Phase mapping -->
 
-| REQ-ID | Phase |
-|--------|-------|
-| (pending roadmap) | |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| CONT-01 | Phase 1 | Pending |
+| CONT-02 | Phase 2 | Pending |
+| CONT-03 | Phase 2 | Pending |
+| CONT-04 | Phase 2 | Pending |
+| CONT-05 | Phase 2 | Pending |
+| CONT-06 | Phase 2 | Pending |
+| CONT-07 | Phase 2 | Pending |
+| CONT-08 | Phase 2 | Pending |
+| WOW-01 | Phase 4 | Pending |
+| WOW-02 | Phase 3 | Pending |
+| WOW-03 | Phase 3 | Pending |
+| WOW-04 | Phase 3 | Pending |
+| MODE-01 | Phase 2 | Pending |
+| MODE-02 | Phase 3 | Pending |
+| I18N-01 | Phase 1 | Pending |
+| I18N-02 | Phase 1 | Pending |
+| TECH-01 | Phase 2 | Pending |
+| TECH-02 | Phase 3 | Pending |
+| TECH-03 | Phase 2 | Pending |
+| TECH-04 | Phase 2 | Pending |
+| TECH-05 | Phase 2 | Pending |
+| TECH-06 | Phase 1 | Pending |
+| TECH-07 | Phase 1 | Pending |
+| TECH-08 | Phase 2 | Pending |
+
+**Coverage:** 24/24 v1 requirements mapped — no orphans, no duplicates.
 
 ---
 *Requirements for: Portfolio Neubau lsiem.de — v1*
