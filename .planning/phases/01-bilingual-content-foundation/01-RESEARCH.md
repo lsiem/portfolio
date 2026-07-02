@@ -487,13 +487,15 @@ Deep case-study target structure (from CONT-04 + D-02): Problem/Kontext → Arch
 | A4 | TypeScript 6.0.3 is accepted by the whole chain (create-next-app template, content-collections typegen) | Standard Stack | STACK.md already defines the fallback: pin 5.9.x, zero code changes. `[ASSUMED]` |
 | A5 | Deployment Protection on the existing project's previews is either off or can be turned off / bypassed with a shareable link | Pattern 5 | Reviewer and success criterion 2 blocked until the setting is changed — dashboard-only fix. `[ASSUMED]` |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Which branch is the Vercel production branch, and what does `main` currently deploy?**
    - What we know: lsiem.de serves the old live site; current work happens on `cursor/portfolio-rewrite-a2cc`; `main`'s deploy state wasn't probed.
    - What's unclear: whether `main` already contains the discarded rewrite (i.e., whether lsiem.de is deployed from `main` or from an older commit/project).
    - Recommendation: first execution task runs `vercel project inspect` / checks the dashboard; all Phase-1 work stays on a non-production branch regardless (D-08).
+   - **RESOLVED (planning revision 2026-07-02):** Plan 01-02 Task 3 inspects the linked Vercel project (`vercel project inspect`), records the production branch name in its SUMMARY, and asserts post-deploy that lsiem.de is unchanged. All Phase-1 work stays on the non-production branch per D-08 — no pre-execution answer needed.
 2. **Impressum/Datenschutzerklärung (German legal requirement per PITFALLS.md)** — not in Phase-1 requirements; site is only on a preview URL. Recommendation: author both as ordinary content documents in this phase (cheap, bilingual, feeds Phase 2's live launch), but treat as optional scope — flag to planner as a nice-to-have task, not a gate.
+   - **RESOLVED (planning revision 2026-07-02):** Plan 01-04 Task 2 authors Impressum and Datenschutzerklärung bilingually as ordinary `pages`-collection documents (routes `/{locale}/impressum`, `/{locale}/datenschutz`); the street-address decision is surfaced at the end-of-phase human check.
 
 ## Environment Availability
 
