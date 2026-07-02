@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "home": "Start",
+    "projects": "Projekte",
+    "about": "Über mich",
+    "contact": "Kontakt"
+  },
+  "common": {
+    "languageSwitcher": "English"
+  },
+  "home": {
+    "role": "Full-Stack-Entwickler & DevOps Engineer",
+    "caseStudies": "Case Studies"
+  }
+}
