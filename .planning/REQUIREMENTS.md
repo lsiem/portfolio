@@ -30,7 +30,7 @@
 
 ### Internationalisierung
 
-- [ ] **I18N-01**: Besucher kann zwischen Deutsch und Englisch wechseln (routen-basiertes i18n mit Switcher, hreflang, per-Locale-SEO)
+- [x] **I18N-01**: Besucher kann zwischen Deutsch und Englisch wechseln (routen-basiertes i18n mit Switcher, hreflang, per-Locale-SEO)
 - [x] **I18N-02**: Alle Inhalte inkl. Case Studies liegen vollständig in beiden Sprachen vor
 
 ### Technische Basis
@@ -89,7 +89,7 @@
 | WOW-04 | Phase 3 | Pending |
 | MODE-01 | Phase 2 | Pending |
 | MODE-02 | Phase 3 | Pending |
-| I18N-01 | Phase 1 | Pending |
+| I18N-01 | Phase 1 | Complete |
 | I18N-02 | Phase 1 | Complete |
 | TECH-01 | Phase 2 | Pending |
 | TECH-02 | Phase 3 | Pending |
