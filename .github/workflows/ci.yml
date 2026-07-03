@@ -36,11 +36,14 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Type check
-        run: pnpm exec tsc --noEmit
-
+      # Build first: it generates .content-collections/generated, which the
+      # tsconfig "content-collections" path alias resolves to — tsc fails
+      # with TS2307 if it runs before the directory exists.
       - name: Build
         run: pnpm build
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium

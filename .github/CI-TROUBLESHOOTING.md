@@ -62,3 +62,23 @@ also deprecated Node 20 on Actions runners.
 
 **Resolution:** Bumped `actions/setup-node` to `node-version: 22`, matching the
 Vercel project's Node 22.x runtime so CI and deploy run the same major version.
+
+## Failure 4: Type check fails — `Cannot find module 'content-collections'`
+
+**Observed on:** PR #1 (`cursor/portfolio-rewrite-a2cc`), "Lint & Build" job, first run
+that reached the Type check step
+
+**Symptom:**
+
+```
+src/lib/content.ts(1,32): error TS2307: Cannot find module 'content-collections'
+or its corresponding type declarations.
+```
+
+**Root cause:** The `content-collections` import is a tsconfig path alias pointing at
+`./.content-collections/generated`, a directory that is gitignored and only created
+by the content-collections build (which runs inside `pnpm build`). The workflow ran
+`tsc --noEmit` before `pnpm build`, so the generated module did not exist yet. It
+passed locally only because a previous local build had already generated it.
+
+**Resolution:** Reordered the CI steps so Build runs before Type check.
