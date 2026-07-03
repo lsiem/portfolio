@@ -13,7 +13,7 @@ Vier vertikale Slices, jede endet in einem nutzbaren Stand: Zuerst entsteht das 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics
+- [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
 - [ ] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion
 - [ ] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet
 - [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Jeder Deploy nach lsiem.de läuft durch eine Pipeline, die bei überschrittenem Performance-Budget (LCP, Initial-JS) fehlschlägt
   4. Seitenbetreiber sieht Besucherzahlen in cookieless, DSGVO-freundlichen Analytics
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -47,7 +47,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-04-PLAN.md — Prosa-Inhalte: ELIA-Flaggschiff (abstrahiert, Blocklist-Gate), Vidama-Deep-Dive, About + Impressum/Datenschutz, End-to-End-Verifikation auf Preview-URL (Wave 3)
+- [x] 01-04-PLAN.md — Prosa-Inhalte: ELIA-Flaggschiff (abstrahiert, Blocklist-Gate), Vidama-Deep-Dive, About + Impressum/Datenschutz, End-to-End-Verifikation auf Preview-URL (Wave 3)
 
 ### Phase 2: Recruiter Overview Live
 
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Bilingual Content Foundation | 3/4 | In Progress|  |
+| 1. Bilingual Content Foundation | 4/4 | Complete   | 2026-07-03 |
 | 2. Recruiter Overview Live | 0/TBD | Not started | - |
 | 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
