@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 1
-current_phase_name: Bilingual Content Foundation
+current_phase: 01
+current_phase_name: bilingual-content-foundation
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-07-02T18:44:15.309Z"
+last_updated: "2026-07-02T18:57:31.457Z"
 last_activity: 2026-07-02
-last_activity_desc: Roadmap created (4 Phasen, 24/24 Requirements gemappt)
+last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
+  total_plans: 4
   completed_plans: 0
   percent: 0
 ---
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 1 — Bilingual Content Foundation
+**Current focus:** Phase 01 — bilingual-content-foundation
 
 ## Current Position
 
-Phase: 1 of 4 (Bilingual Content Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to execute
-Last activity: 2026-07-02 — Roadmap created (4 Phasen, 24/24 Requirements gemappt)
+Phase: 01 (bilingual-content-foundation) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 01
+Last activity: 2026-07-03 - Completed quick task 260703-flk: Fix PR #1 failing checks (CI pnpm version, Vercel framework preset) and ECC follow-ups
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -76,6 +76,12 @@ None yet.
 - [Phase 2] CV-PDF-Generierung aus dem Content-Modell: kein verifiziertes Pattern — beim Phase-2-Planning recherchieren
 - [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260703-flk | Fix PR #1 failing checks: CI pnpm version, Vercel framework preset, ECC follow-ups | 2026-07-03 | b51d9c2 | [260703-flk-fix-pr-1-failing-checks-ci-pnpm-version-](./quick/260703-flk-fix-pr-1-failing-checks-ci-pnpm-version-/) |
 
 ## Deferred Items
 
