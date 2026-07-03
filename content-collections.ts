@@ -7,6 +7,10 @@ const caseStudies = defineCollection({
   directory: "content",
   include: "*/case-studies/*.mdx", // matches de/... and en/...
   schema: z.object({
+    // Explicit raw MDX body (was implicitly added by content-collections).
+    // Phase 2's CV-PDF and v2's AI chat need prose text, not just compiled
+    // MDX (CONT-01) — do not drop this field.
+    content: z.string(),
     title: z.string(),
     summary: z.string(),
     role: z.string(),
@@ -19,10 +23,11 @@ const caseStudies = defineCollection({
     const mdx = await compileMDX(ctx, doc);
     const [locale] = doc._meta.path.split("/"); // 'de' | 'en'
     const slug = doc._meta.fileName.replace(/\.mdx$/, "");
-    // Spreading doc retains the raw MDX text (doc.content) — Phase 2's CV-PDF
-    // and v2's AI chat need prose text, not just compiled MDX (CONT-01).
+    // Spreading doc retains the raw MDX text (doc.content, explicit in the
+    // schema above) — Phase 2's CV-PDF and v2's AI chat need prose text, not
+    // just compiled MDX (CONT-01).
     return { ...doc, mdx, locale, slug };
   },
 });
 
-export default defineConfig({ collections: [caseStudies] });
+export default defineConfig({ content: [caseStudies] });
