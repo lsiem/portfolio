@@ -40,7 +40,13 @@
   },
   "footer": {
     "builtWith": "Gebaut mit Next.js",
-    "copyright": "© {year} Lasse Siemoneit"
+    "copyright": "© {year} Lasse Siemoneit",
+    "legal": {
+      "label": "Rechtliches",
+      "about": "Über mich",
+      "impressum": "Impressum",
+      "datenschutz": "Datenschutz"
+    }
   },
   "accessibility": {
     "skipToContent": "Zum Inhalt springen",

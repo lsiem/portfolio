@@ -1,4 +1,4 @@
-import { allCaseStudies } from "content-collections";
+import { allCaseStudies, allPages } from "content-collections";
 import {
   career as careerDe,
   careerIntro as careerIntroDe,
@@ -21,6 +21,7 @@ import type {
 } from "../../content/shared/types";
 
 export type CaseStudy = (typeof allCaseStudies)[number];
+export type Page = (typeof allPages)[number];
 
 const CAREER = { de: careerDe, en: careerEn } as const;
 const CAREER_INTRO = { de: careerIntroDe, en: careerIntroEn } as const;
@@ -73,5 +74,19 @@ export function getCaseStudy(
 ): CaseStudy | undefined {
   return allCaseStudies.find(
     (caseStudy) => caseStudy.locale === locale && caseStudy.slug === slug,
+  );
+}
+
+/** All prose pages (about, impressum, datenschutz) for a locale, sorted by `order`. */
+export function getPages(locale: string): Page[] {
+  return allPages
+    .filter((page) => page.locale === locale)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+/** A single prose page by locale + slug, or undefined if unknown. */
+export function getPage(locale: string, slug: string): Page | undefined {
+  return allPages.find(
+    (page) => page.locale === locale && page.slug === slug,
   );
 }

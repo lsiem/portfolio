@@ -30,4 +30,24 @@ const caseStudies = defineCollection({
   },
 });
 
-export default defineConfig({ content: [caseStudies] });
+const pages = defineCollection({
+  name: "pages",
+  directory: "content",
+  include: "*/pages/*.mdx", // matches de/... and en/...
+  schema: z.object({
+    // Explicit raw MDX body — Phase 2's CV-PDF and v2's AI chat need prose
+    // text, not just compiled MDX (CONT-01). Mirrors caseStudies.
+    content: z.string(),
+    title: z.string(),
+    description: z.string().optional(),
+    order: z.number().optional(),
+  }),
+  transform: async (doc, ctx) => {
+    const mdx = await compileMDX(ctx, doc);
+    const [locale] = doc._meta.path.split("/"); // 'de' | 'en'
+    const slug = doc._meta.fileName.replace(/\.mdx$/, "");
+    return { ...doc, mdx, locale, slug };
+  },
+});
+
+export default defineConfig({ content: [caseStudies, pages] });

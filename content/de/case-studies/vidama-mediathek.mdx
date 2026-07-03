@@ -1,6 +1,6 @@
 ---
 title: "Vertriebspartner-Mediathek für EWE & osnatel"
-summary: "Enterprise-Mediathek für Vertriebspartner: Kampagnenfilme verwalten, zuweisen und im Shop wiedergeben — mit Template-basierter Content-Erstellung und Rollenmodell."
+summary: "Enterprise-Mediathek für Vertriebspartner: Kampagnenfilme verwalten, gezielt zuweisen und im Shop wiedergeben — mit Template-basierter Content-Erstellung und durchgängigem Rollenmodell. Als CTO und Alleinentwickler von der Planung bis zum Betrieb umgesetzt."
 role: "CTO / Alleinentwickler, Vidama GmbH"
 period: "12/2021 – 01/2024"
 stack:
@@ -17,26 +17,79 @@ order: 2
 ## Problem & Kontext
 
 Die Vertriebspartner von EWE und osnatel benötigten zentral verwaltete
-Marketingmedien mit regionaler Kontrolle: Kampagnenfilme sollten sich
-verwalten, gezielt zuweisen und direkt im Shop wiedergeben lassen — ohne
-dass jeder Standort seine Inhalte manuell pflegt.
+Marketingmedien mit regionaler Kontrolle. Kampagnenfilme mussten sich zentral
+pflegen, aber differenziert zuweisen lassen: Nicht jeder Standort darf jede
+Kampagne zeigen, und was am Point of Sale läuft, hängt von Region, Partner und
+Freigabe ab.
 
-## Lösung
+Vor dem Projekt liefen diese Abläufe verstreut und manuell — Medien wurden per
+Datei verteilt, Zuständigkeiten waren unklar, und jede neue Kampagne bedeutete
+Handarbeit an vielen Stellen. Gesucht war eine Anwendung, die drei Dinge
+zusammenbringt: eine gepflegte Medienbibliothek, ein klares Berechtigungsmodell
+und die Wiedergabe direkt im Verkaufsprozess.
 
-Entstanden ist eine Enterprise-Webanwendung mit durchgängigem Rollenmodell
-für Administratoren, Vertriebspartner und Beauftragte. Die Mediathek bündelt
-Medienverwaltung und Shop-Integration in einer Oberfläche: Kampagnenfilme
-werden zentral eingestellt, regional zugewiesen und am Point of Sale
-abgespielt.
+## Architektur-Entscheidungen
 
-Über eine Template-basierte Content-Erstellung entstehen neue Inhalte aus
-Vorlagen, statt für jede Kampagne von Grund auf produziert zu werden — das
-hält die Pflege auch bei vielen Partnern und Regionen handhabbar.
+Entstanden ist eine Enterprise-Webanwendung mit durchgängigem Rollenmodell und
+Shop-Integration. Drei Entscheidungen prägen die Umsetzung.
 
-## Rolle
+### Ein durchgängiges Rollenmodell
 
-Als CTO der Vidama GmbH war ich der einzige Entwickler und verantwortete die
-gesamte individuelle Softwareentwicklung — von der Planung über die Umsetzung
-bis zur Wartung. Die Anwendung läuft als containerisierte Java-/Spring-Boot-
-Anwendung mit Vaadin-Frontend und PostgreSQL, ausgeliefert über eine
+Die Anwendung unterscheidet klar zwischen **Administratoren**,
+**Vertriebspartnern** und **Beauftragten**. Administratoren pflegen den
+zentralen Medienbestand und die Freigaben; Vertriebspartner sehen und nutzen
+nur, was für sie freigegeben ist; Beauftragte handeln delegiert im Rahmen ihres
+Partners. Dieses Modell zieht sich durch die gesamte Anwendung — von der Ansicht
+über die Zuweisung bis zur Wiedergabe — und ist die Grundlage für die regionale
+Kontrolle, die der Fachbereich verlangt hat.
+
+### Template-basierte Content-Erstellung
+
+Statt jede Kampagne von Grund auf zu produzieren, entstehen neue Inhalte aus
+**Vorlagen**. Das war die entscheidende Skalierungsentscheidung: Bei vielen
+Partnern und Regionen wäre manuelle Einzelproduktion nicht handhabbar gewesen.
+Über Templates bleibt die Pflege beherrschbar und die Ausgabe konsistent im
+Marken-Look.
+
+### Shop-Integration und Point-of-Sale-Wiedergabe
+
+Die Mediathek endet nicht in einem Archiv, sondern spielt die freigegebenen
+Kampagnenfilme direkt im Shop am Point of Sale aus. Medienverwaltung und
+Wiedergabe leben damit in einer Oberfläche statt in getrennten Systemen — ein
+bewusster Schnitt, der den Übergabepunkt zwischen „Inhalt pflegen“ und „Inhalt
+zeigen“ eliminiert.
+
+Technisch ist das eine containerisierte Java-/Spring-Boot-Anwendung mit
+Vaadin-Frontend und PostgreSQL als Datenhaltung, ausgeliefert über eine
 CI/CD-Pipeline.
+
+## Tradeoffs
+
+Als **alleiniger Entwickler und CTO** habe ich die Architektur bewusst auf
+Betriebseinfachheit statt maximale Funktionsbreite ausgelegt.
+
+- **Vaadin als serverseitiges UI-Framework** hält Frontend und Backend in einem
+  Java-Stack zusammen. Für ein Ein-Personen-Team ist das ein großer Gewinn: kein
+  separates Frontend-Ökosystem, keine doppelte Modellpflege. Der Preis ist
+  weniger Freiheit bei hochgradig individuellen UI-Interaktionen — für eine
+  formular- und listengetriebene Enterprise-Anwendung ein guter Tausch.
+- **Ein einzelner, containerisierter Deployment-Pfad** statt einer
+  Microservice-Landschaft: einfacher zu betreiben, einfacher zu überblicken,
+  leichter wartbar von einer Person. Skalierung wäre komplexer — war aber für
+  den Nutzungsrahmen nicht die bindende Anforderung.
+- **Template-Vorlagen statt frei gestaltbarer Kampagnen**: etwas weniger
+  kreative Freiheit im Einzelfall, dafür konsistente Marke und beherrschbare
+  Pflege über viele Partner hinweg.
+
+## Ergebnis & Stand
+
+Die Plattform ist in produktivem Einsatz bei den Vertriebspartnern von EWE und
+osnatel. Kampagnenfilme werden zentral eingestellt, regional zugewiesen und am
+Point of Sale abgespielt — der Kreislauf aus Pflege, Freigabe und Wiedergabe
+läuft ohne manuelle Zwischenschritte.
+
+Als CTO der Vidama GmbH war ich der einzige Entwickler und habe die gesamte
+individuelle Softwareentwicklung verantwortet — von der Planung über die
+Umsetzung bis zur Wartung. Das Projekt steht exemplarisch für die Rolle, in der
+ich damals gearbeitet habe: technische Gesamtverantwortung für eine
+Enterprise-Lösung, allein umgesetzt, im Betrieb bewährt.

@@ -1,6 +1,6 @@
 ---
 title: "Sales Partner Media Library for EWE & osnatel"
-summary: "Enterprise media library for sales partners: manage, assign, and play campaign films in the shop — with template-based content creation and a role model."
+summary: "Enterprise media library for sales partners: manage, assign, and play campaign films in the shop — with template-based content creation and a consistent role model. Built end to end as CTO and sole developer, from planning to operations."
 role: "CTO / sole developer, Vidama GmbH"
 period: "12/2021 – 01/2024"
 stack:
@@ -16,25 +16,75 @@ order: 2
 
 ## Problem & Context
 
-The sales partners of EWE and osnatel needed centrally managed marketing
-media with regional control: campaign films had to be managed, assigned to
-the right partners, and played back directly in the shop — without every
-location maintaining its own content by hand.
+The sales partners of EWE and osnatel needed centrally managed marketing media
+with regional control. Campaign films had to be maintained centrally but
+assigned in a differentiated way: not every location may show every campaign,
+and what runs at the point of sale depends on region, partner, and approval.
 
-## Solution
+Before the project these processes were scattered and manual — media were
+distributed as files, responsibilities were unclear, and every new campaign
+meant hand work in many places. What was needed was an application that brings
+three things together: a curated media library, a clear permission model, and
+playback directly inside the sales process.
 
-The result is an enterprise web application with a consistent role model for
-administrators, sales partners, and delegates. The media library combines
-media management and shop integration in a single interface: campaign films
-are uploaded centrally, assigned regionally, and played at the point of sale.
+## Architecture Decisions
 
-Template-based content creation lets new content be derived from existing
-templates instead of being produced from scratch for every campaign — keeping
-maintenance manageable even across many partners and regions.
+The result is an enterprise web application with a consistent role model and shop
+integration. Three decisions shape the implementation.
 
-## Role
+### A consistent role model
 
-As CTO of Vidama GmbH I was the sole developer, responsible for all custom
-software development — from planning through implementation to maintenance.
-The application runs as a containerized Java/Spring Boot application with a
-Vaadin frontend and PostgreSQL, delivered through a CI/CD pipeline.
+The application draws a clear line between **administrators**, **sales
+partners**, and **delegates**. Administrators maintain the central media
+inventory and approvals; sales partners see and use only what is approved for
+them; delegates act on a partner's behalf within their scope. This model runs
+through the entire application — from viewing to assignment to playback — and is
+the foundation for the regional control the business asked for.
+
+### Template-based content creation
+
+Instead of producing every campaign from scratch, new content is derived from
+**templates**. This was the decisive scaling decision: with many partners and
+regions, manual one-off production would not have been manageable. Templates
+keep maintenance under control and output consistent with the brand.
+
+### Shop integration and point-of-sale playback
+
+The media library does not end in an archive; it plays approved campaign films
+directly in the shop at the point of sale. Media management and playback
+therefore live in a single interface rather than in separate systems — a
+deliberate cut that removes the hand-off between "maintain content" and "show
+content."
+
+Technically it is a containerized Java/Spring Boot application with a Vaadin
+frontend and PostgreSQL for storage, delivered through a CI/CD pipeline.
+
+## Tradeoffs
+
+As the **sole developer and CTO** I deliberately optimized the architecture for
+operational simplicity over maximum feature breadth.
+
+- **Vaadin as a server-side UI framework** keeps frontend and backend within a
+  single Java stack. For a one-person team that is a big win: no separate
+  frontend ecosystem, no duplicated model maintenance. The price is less freedom
+  for highly custom UI interactions — for a form- and list-driven enterprise
+  application, a good trade.
+- **A single containerized deployment path** instead of a microservice
+  landscape: easier to operate, easier to reason about, easier to maintain by
+  one person. Scaling would be more complex — but that was not the binding
+  requirement for this usage profile.
+- **Template presets instead of freely designed campaigns**: slightly less
+  creative freedom in the individual case, in exchange for a consistent brand
+  and manageable maintenance across many partners.
+
+## Result & Status
+
+The platform is in productive use with the sales partners of EWE and osnatel.
+Campaign films are uploaded centrally, assigned regionally, and played at the
+point of sale — the loop of maintenance, approval, and playback runs without
+manual intermediate steps.
+
+As CTO of Vidama GmbH I was the sole developer and owned all custom software
+development — from planning through implementation to maintenance. The project
+is representative of the role I worked in at the time: full technical ownership
+of an enterprise solution, built single-handedly, proven in production.
