@@ -1,0 +1,653 @@
+# Instincts generated from https://github.com/lsiem/portfolio
+# Generated: 2026-07-03T09:09:24.332Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: portfolio-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: docs, feat, chore, fix
+
+## Evidence
+
+- 17 commits analyzed
+- Detected conventional commit pattern
+- Examples: fix: resolve code bugs from implementation review, docs: initialize project
+
+---
+id: portfolio-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Commit Length
+
+## Action
+
+Write moderate-length commit messages (~51 characters)
+
+## Evidence
+
+- Average commit message length: 51 chars
+- Based on 17 commits
+
+---
+id: portfolio-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: portfolio-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: portfolio-arch-type-based
+trigger: "when adding new code"
+confidence: 0.8
+domain: architecture
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Arch Type Based
+
+## Action
+
+Place code in the appropriate type folder (components/, services/, utils/, etc.)
+
+## Evidence
+
+- Type-based module organization detected
+- Folders: animations, app, assets, components, config
+
+---
+id: portfolio-test-colocate
+trigger: "when writing tests"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Test Colocate
+
+## Action
+
+Place test file next to the source file (e.g., Button.test.tsx next to Button.tsx)
+
+## Evidence
+
+- Colocated test pattern detected
+- Tests live alongside source files
+
+---
+id: portfolio-test-framework
+trigger: "when writing tests"
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Test Framework
+
+## Action
+
+Use vitest as the test framework
+
+## Evidence
+
+- Test framework detected: vitest
+- File pattern: *.test.ts
+
+---
+id: portfolio-test-naming
+trigger: "when creating a test file"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Test Naming
+
+## Action
+
+Name test files using the pattern: *.test.ts
+
+## Evidence
+
+- File pattern: *.test.ts
+- Consistent across test files
+
+---
+id: portfolio-test-types
+trigger: "when planning tests for a feature"
+confidence: 0.7
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Test Types
+
+## Action
+
+Write unit, e2e tests to match project standards
+
+## Evidence
+
+- Test types detected: unit, e2e
+- Coverage config: no
+
+---
+id: portfolio-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~11x per month
+- Files: api/*, src/components/*, src/components/layout/*
+
+---
+id: portfolio-workflow-phase-planning-and-documentation
+trigger: "when doing phase planning and documentation"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Workflow Phase Planning And Documentation
+
+## Action
+
+Follow the phase-planning-and-documentation workflow:
+1. Create or update markdown files under .planning/ (e.g., REQUIREMENTS.md, ROADMAP.md, STATE.md)
+2. Add or revise research and plan files under .planning/research/ and .planning/phases/
+3. Optionally update .gitignore or related config if new files or directories are introduced
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: .planning/REQUIREMENTS.md, .planning/ROADMAP.md, .planning/STATE.md
+
+---
+id: portfolio-workflow-project-initialization-and-rewrite
+trigger: "when doing project initialization and rewrite"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Workflow Project Initialization And Rewrite
+
+## Action
+
+Follow the project-initialization-and-rewrite workflow:
+1. Extract or archive old content files to a planning or extracted directory
+2. Delete obsolete source files, configs, and documentation
+3. Scaffold new project structure (e.g., create-next-app, Vite, etc.)
+4. Add or update configuration files (e.g., package.json, next.config.ts, tailwind.config.js, etc.)
+5. Install and configure dependencies
+6. Set up initial public assets and documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .gitignore, .github/workflows/ci.yml, package.json
+
+---
+id: portfolio-workflow-i18n-feature-development
+trigger: "when doing i18n feature development"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Workflow I18n Feature Development
+
+## Action
+
+Follow the i18n-feature-development workflow:
+1. Add or update translation JSON files (e.g., messages/de.json, messages/en.json)
+2. Update or create locale-based layouts and pages (e.g., src/app/[locale]/layout.tsx, src/app/[locale]/page.tsx)
+3. Implement or update language switcher components
+4. Update i18n utility files (e.g., navigation.ts, request.ts, routing.ts)
+5. Update configuration to support new locales
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: messages/*.json, src/app/[locale]/**/*, src/components/locale-switcher.tsx
+
+---
+id: portfolio-workflow-content-model-extension
+trigger: "when doing content model extension"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Workflow Content Model Extension
+
+## Action
+
+Follow the content-model-extension workflow:
+1. Add or update content collection definitions (e.g., content-collections.ts)
+2. Add new content files for each locale (e.g., content/de/case-studies/*.mdx, content/en/case-studies/*.mdx)
+3. Update or create shared types and schemas (e.g., content/shared/types.ts)
+4. Update SSG/page logic to consume new content
+5. Update configuration if necessary
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: content-collections.ts, content/*/case-studies/*.mdx, content/shared/types.ts
+
+---
+id: portfolio-workflow-ci-and-test-suite-extension
+trigger: "when doing ci and test suite extension"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/lsiem/portfolio
+---
+
+# Portfolio Workflow Ci And Test Suite Extension
+
+## Action
+
+Follow the ci-and-test-suite-extension workflow:
+1. Add or update CI workflow files (e.g., .github/workflows/ci.yml)
+2. Add or update test specs (e.g., evals/*.spec.ts, e2e/*.spec.ts)
+3. Update test runner configuration (e.g., playwright.config.ts)
+4. Update package.json or lockfiles if dependencies change
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .github/workflows/ci.yml, evals/*.spec.ts, e2e/*.spec.ts
+
+---
+id: portfolio-coding-naming-files
+trigger: "When creating or renaming files"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Coding Naming Files
+
+## Action
+
+Use camelCase for file names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.files
+- Observed in src/components/CustomCursor.tsx
+
+---
+id: portfolio-coding-naming-functions
+trigger: "When defining functions"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Coding Naming Functions
+
+## Action
+
+Use camelCase for function names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.functions
+
+---
+id: portfolio-coding-naming-classes
+trigger: "When defining classes"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Coding Naming Classes
+
+## Action
+
+Use PascalCase for class names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.classes
+
+---
+id: portfolio-coding-naming-constants
+trigger: "When declaring constants"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Coding Naming Constants
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.constants
+
+---
+id: portfolio-coding-import-style
+trigger: "When importing modules"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Coding Import Style
+
+## Action
+
+Use a mixed import style (default and named imports as appropriate)
+
+## Evidence
+
+- Pattern in codeStyle.importStyle
+
+---
+id: portfolio-coding-export-style
+trigger: "When exporting modules"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Coding Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Pattern in codeStyle.exportStyle
+
+---
+id: portfolio-testing-file-pattern
+trigger: "When creating test files"
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Testing File Pattern
+
+## Action
+
+Name test files with the pattern *.test.ts
+
+## Evidence
+
+- Pattern in testing.filePattern
+- Seen in src/components/CustomCursor.test.ts
+
+---
+id: portfolio-testing-framework
+trigger: "When writing tests"
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Testing Framework
+
+## Action
+
+Use Vitest as the test framework
+
+## Evidence
+
+- Pattern in testing.framework
+- Presence of vitest.config.ts
+
+---
+id: portfolio-testing-types
+trigger: "When planning tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Testing Types
+
+## Action
+
+Write both unit and e2e tests
+
+## Evidence
+
+- Pattern in testing.testTypes
+
+---
+id: portfolio-git-commit-format
+trigger: "When committing code"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Git Commit Format
+
+## Action
+
+Use conventional commit prefixes: docs, feat, chore, fix
+
+## Evidence
+
+- Pattern in commits.prefixes
+- Seen in commit: 'fix: resolve code bugs from implementation review'
+- Seen in commit: 'docs: initialize project'
+
+---
+id: portfolio-git-commit-length
+trigger: "When writing commit messages"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Git Commit Length
+
+## Action
+
+Keep commit messages concise (average ~51 characters)
+
+## Evidence
+
+- Pattern in commits.averageLength
+
+---
+id: portfolio-workflow-phase-planning
+trigger: "When planning a new phase or updating project documentation"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Workflow Phase Planning
+
+## Action
+
+Create or update markdown files under .planning/ (REQUIREMENTS.md, ROADMAP.md, STATE.md, research, phases), and optionally update .gitignore or configs
+
+## Evidence
+
+- Workflow: phase-planning-and-documentation
+- Files: .planning/REQUIREMENTS.md, .planning/ROADMAP.md, .planning/research/*.md
+
+---
+id: portfolio-workflow-project-init
+trigger: "When initializing a new project or performing a major rewrite"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Workflow Project Init
+
+## Action
+
+Extract/archive old content, delete obsolete files, scaffold new structure, update configs, install dependencies, and set up initial public assets
+
+## Evidence
+
+- Workflow: project-initialization-and-rewrite
+- Files: .github/workflows/ci.yml, package.json, src/app/**/*, .planning/phases/*/extracted/*.ts
+
+---
+id: portfolio-workflow-i18n-feature
+trigger: "When adding or improving multilingual support"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Workflow I18n Feature
+
+## Action
+
+Add/update translation JSON files, locale-based layouts/pages, language switcher, i18n utilities, and update config for new locales
+
+## Evidence
+
+- Workflow: i18n-feature-development
+- Files: messages/*.json, src/app/[locale]/**/*, src/components/locale-switcher.tsx
+
+---
+id: portfolio-workflow-content-model
+trigger: "When adding/extending content types or localizing content"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Workflow Content Model
+
+## Action
+
+Add/update content collection definitions, new locale content files, shared types/schemas, update SSG/page logic, and update config if needed
+
+## Evidence
+
+- Workflow: content-model-extension
+- Files: content-collections.ts, content/*/case-studies/*.mdx, content/shared/types.ts
+
+---
+id: portfolio-workflow-ci-test-suite
+trigger: "When adding or extending automated tests or CI"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: lsiem/portfolio
+---
+
+# Portfolio Workflow Ci Test Suite
+
+## Action
+
+Add/update CI workflow files, test specs (*.spec.ts), test runner configs, and update package.json/lockfiles if dependencies change
+
+## Evidence
+
+- Workflow: ci-and-test-suite-extension
+- Files: .github/workflows/ci.yml, evals/*.spec.ts, playwright.config.ts
+
