@@ -1,0 +1,109 @@
+---
+title: "ELIA — Multi-Agent AI Assistant"
+summary: "Internal AI assistant for an IT service provider serving public health insurers: from platform operations to product ownership — a multi-agent architecture that reaches verified live data through MCP-based tool-calling instead of a classic RAG index, operated GDPR-compliant inside the EU."
+role: "Product Owner"
+period: "since 04/2026"
+stack:
+  - Multi-agent architecture
+  - MCP-based tool-calling
+  - Agent framework
+  - EU data residency
+  - GDPR
+  - Teams integration
+depth: flagship
+order: 1
+---
+
+## Problem & Context
+
+ELIA is the internal AI assistant of an IT service provider for public health
+insurers. Every day, business units ask the same questions across several
+systems at once: What is the status of a given case? What does the internal
+wiki say about it? Who is responsible? Until now that meant opening several
+interfaces, searching by hand, and stitching context together manually. ELIA
+answers such questions in natural language by having specialized agents access
+the connected line-of-business systems in a coordinated way.
+
+I grew into this product through the engineering side. I started in platform
+operations — running the container platform (OpenShift/Kubernetes) that the
+business applications of this regulated environment run on. Operations turned
+into software engineering, and engineering eventually turned into product
+ownership of ELIA. That order shapes how I lead the product: I make architecture
+and roadmap calls from the perspective of someone who knows what keeps an
+operations team up at night, and what a regulated industry's data-protection
+promises actually have to deliver.
+
+## Architecture Decisions
+
+Three decisions define the current architecture — each one deliberately taken
+against the obvious default.
+
+### Live data instead of a vector index: MCP-based tool-calling
+
+The obvious path for a knowledge assistant is a classic RAG pipeline: copy
+content into a self-operated vector index, match questions against embeddings.
+We deliberately discarded that path and chose **MCP-based tool-calling** instead:
+the agents reach the **live data** of the connected systems through standardized
+tool interfaces — an ITSM system for cases and a wiki for knowledge content.
+
+The payoff is twofold. First, re-index cycles disappear entirely: answers are
+always based on the current state, not on a nightly snapshot. Second — and
+decisive in a regulated environment — the **permission logic is not duplicated**.
+Access runs through the existing systems and their access model; there is no
+second data store to keep in sync and secure separately.
+
+### Feature-flagged orchestrator migration in parallel operation
+
+Coordinating the agents — which agent handles which question, how partial
+answers are merged — runs through an orchestrator. We are migrating this
+orchestration onto a current, vendor-backed agent framework that supports MCP
+natively.
+
+A migration like this in a live system is risky. So it runs **feature-flagged in
+parallel operation**: the new orchestrator path is switched on in a controlled
+way behind a feature flag while the existing path keeps running. That lets the
+new path be verified first in development and staging, then for selected user
+groups, without a big-bang cutover putting availability at risk.
+
+### EU data residency and GDPR as a platform decision
+
+For an IT service provider to public health insurers, data protection is not a
+compliance footnote but a core requirement. The choice of AI platform therefore
+deliberately landed on a **GDPR-compliant** managed service operated inside the
+**EU**, with enterprise-grade guarantees — over the alternative evaluated first.
+The deciding factors were dependable contractual data-protection commitments,
+the EU data-residency path, and integration into the existing office landscape,
+which enables later access through **Teams**.
+
+## Tradeoffs
+
+None of these decisions is free.
+
+- **Live data instead of an index** ties answer quality to the availability and
+  latency of the source systems. A vector index would be faster and independent
+  of those systems — but in a regulated environment that decoupling is a burden,
+  not a benefit: it means duplicated data and a second permission world. We
+  deliberately pay a little latency for freshness and a single access model.
+- **Parallel operation** costs double the operational complexity for as long as
+  two orchestrator paths coexist. The price is chosen on purpose: it buys
+  fallback safety and a low-risk, reversible migration path.
+- **A managed EU service** constrains free model choice compared to a
+  self-hosted setup and creates vendor lock-in. For a small team in a regulated
+  industry, shedding operational and compliance load clearly outweighs that
+  constraint.
+
+## Result & Status
+
+The platform foundation is in place: the migration to the EU managed service is
+complete, the first productive data sources are connected live through MCP, and
+the orchestrator migration is running feature-flagged in parallel operation.
+ELIA is used by a defined pilot group, and a structured feedback channel feeds
+prioritization.
+
+My role as Product Owner covers the roadmap and prioritization, the
+architectural guardrails (the three decisions above come out of that
+responsibility), and the trade-off between feature scope, operational reality,
+and the data-protection requirements of a regulated industry. The next steps are
+completing the orchestrator migration, connecting further line-of-business
+systems, and gradually opening access through Teams — each shaped so that
+availability and data protection are never up for negotiation.

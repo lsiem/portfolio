@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,7 +10,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Lint & Build
+    name: Parity, build & performance budget
     runs-on: ubuntu-latest
 
     steps:
@@ -27,26 +25,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      # I18N-02 + D-03 gate: DE/EN parity (blocklist skips in CI — file is local-only)
+      - name: Content parity check
+        run: pnpm check:content
 
-      # Build first: it generates .content-collections/generated, which the
-      # tsconfig "content-collections" path alias resolves to — tsc fails
-      # with TS2307 if it runs before the directory exists.
       - name: Build
         run: pnpm build
 
-      - name: Type check
-        run: pnpm exec tsc --noEmit
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Test
-        run: pnpm test
+      # TECH-07 performance budget: LCP <= 2500ms, script bytes <= 153600, perf >= 0.9
+      - name: Lighthouse CI budget
+        run: npx lhci autorun

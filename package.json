@@ -5,6 +5,8 @@
   "packageManager": "pnpm@11.1.2",
   "scripts": {
     "dev": "next dev",
+    "check:content": "node scripts/check-content-parity.ts",
+    "prebuild": "pnpm check:content",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

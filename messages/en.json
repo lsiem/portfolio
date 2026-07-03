@@ -1,16 +1,56 @@
 {
   "nav": {
     "home": "Home",
+    "career": "Career",
     "projects": "Projects",
-    "about": "About",
+    "skills": "Skills",
     "contact": "Contact"
   },
   "common": {
     "languageSwitcher": "Deutsch"
   },
   "home": {
-    "role": "Full-stack developer & DevOps engineer",
+    "role": "Software Engineer & Product Owner",
     "caseStudies": "Case studies"
+  },
+  "career": {
+    "title": "Career",
+    "present": "Present"
+  },
+  "projects": {
+    "title": "Projects",
+    "problem": "Problem",
+    "solution": "Solution",
+    "technologies": "Technologies",
+    "visit": "Visit project",
+    "caseStudy": "Read case study"
+  },
+  "skills": {
+    "title": "Skills",
+    "years": "{years} yrs"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Let's work together — I'd love to hear from you.",
+    "email": "Email",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "copyEmail": "Copy email",
+    "copied": "Copied!"
+  },
+  "footer": {
+    "builtWith": "Built with Next.js",
+    "copyright": "© {year} Lasse Siemoneit",
+    "legal": {
+      "label": "Legal",
+      "about": "About",
+      "impressum": "Legal Notice",
+      "datenschutz": "Privacy"
+    }
+  },
+  "accessibility": {
+    "skipToContent": "Skip to content",
+    "reducedMotion": "Reduce motion"
   },
   "caseStudy": {
     "role": "Role",

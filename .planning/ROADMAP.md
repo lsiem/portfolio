@@ -33,17 +33,17 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Jeder Deploy nach lsiem.de läuft durch eine Pipeline, die bei überschrittenem Performance-Budget (LCP, Initial-JS) fehlschlägt
   4. Seitenbetreiber sieht Besucherzahlen in cookieless, DSGVO-freundlichen Analytics
 
-**Plans:** 4 plans
+**Plans:** 3/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Walking Skeleton: Next.js-16-Scaffold, DE/EN-Routing mit hreflang, Content-Modell mit einer echten Case Study end-to-end (Wave 1)
+- [x] 01-01-PLAN.md — Walking Skeleton: Next.js-16-Scaffold, DE/EN-Routing mit hreflang, Content-Modell mit einer echten Case Study end-to-end (Wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Deploy-Pipeline: Parity-/Vertraulichkeits-Gate, CI-Performance-Budget (LHCI), Vercel-Preview + cookieless Analytics (Wave 2)
-- [ ] 01-03-PLAN.md — Strukturierte bilinguale Inhalte: Werdegang (D-02-Bogen), Projekte (D-01-Gewichtung), Skills, Kontakt, UI-Messages (Wave 2)
+- [x] 01-02-PLAN.md — Deploy-Pipeline: Parity-/Vertraulichkeits-Gate, CI-Performance-Budget (LHCI), Vercel-Preview + cookieless Analytics (Wave 2)
+- [x] 01-03-PLAN.md — Strukturierte bilinguale Inhalte: Werdegang (D-02-Bogen), Projekte (D-01-Gewichtung), Skills, Kontakt, UI-Messages (Wave 2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Bilingual Content Foundation | 0/4 | Planned | - |
+| 1. Bilingual Content Foundation | 3/4 | In Progress|  |
 | 2. Recruiter Overview Live | 0/TBD | Not started | - |
 | 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |

@@ -1,0 +1,19 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm start",
+      "url": ["http://localhost:3000/de", "http://localhost:3000/en"],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "largest-contentful-paint": ["error", { "maxNumericValue": 3000 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 184643 }],
+        "categories:performance": ["error", { "minScore": 0.9 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

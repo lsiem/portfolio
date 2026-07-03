@@ -1,7 +1,9 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -34,6 +36,7 @@ export default async function LocaleLayout({
   }
   // REQUIRED for static rendering — every layout AND page under [locale]
   setRequestLocale(locale);
+  const t = await getTranslations("footer");
 
   return (
     <html
@@ -55,11 +58,42 @@ export default async function LocaleLayout({
           </header>
           <div className="flex flex-1 flex-col">{children}</div>
           <footer className="border-t border-border/60">
-            <div className="mx-auto w-full max-w-3xl px-6 py-8 font-mono text-xs text-muted">
-              © {new Date().getFullYear()} Lasse Siemoneit
+            <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+              <span>© {new Date().getFullYear()} Lasse Siemoneit</span>
+              <nav aria-label={t("legal.label")}>
+                <ul className="flex flex-wrap gap-x-5 gap-y-2">
+                  <li>
+                    <Link
+                      href="/about"
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {t("legal.about")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/impressum"
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {t("legal.impressum")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/datenschutz"
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {t("legal.datenschutz")}
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </footer>
         </NextIntlClientProvider>
+        {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

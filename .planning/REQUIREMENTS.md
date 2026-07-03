@@ -7,7 +7,7 @@
 
 ### Content & Substanz
 
-- [ ] **CONT-01**: Strukturiertes, Git-basiertes DE/EN-Content-Modell als Single Source of Truth (speist Site, Overview-Mode, CV-PDF und später AI-Chat)
+- [x] **CONT-01**: Strukturiertes, Git-basiertes DE/EN-Content-Modell als Single Source of Truth (speist Site, Overview-Mode, CV-PDF und später AI-Chat)
 - [ ] **CONT-02**: Besucher sieht im ersten Viewport sofort Name, Rolle und Ein-Satz-Wertversprechen — nie hinter einer Intro-Animation versteckt
 - [ ] **CONT-03**: Besucher kann den Werdegang als Timeline erfassen (ITSC, Just Relate, Vidama-CTO, Freelance — Daten, Rollen, Kurzbeschreibung)
 - [ ] **CONT-04**: Besucher kann 5–7 Projekte ansehen, davon 2–3 als tiefe Case Studies (Problem → Architektur-Entscheidungen → Tradeoffs → Ergebnis mit Zahlen; Vidama-CTO-Story als Flaggschiff)
@@ -31,7 +31,7 @@
 ### Internationalisierung
 
 - [ ] **I18N-01**: Besucher kann zwischen Deutsch und Englisch wechseln (routen-basiertes i18n mit Switcher, hreflang, per-Locale-SEO)
-- [ ] **I18N-02**: Alle Inhalte inkl. Case Studies liegen vollständig in beiden Sprachen vor
+- [x] **I18N-02**: Alle Inhalte inkl. Case Studies liegen vollständig in beiden Sprachen vor
 
 ### Technische Basis
 
@@ -40,8 +40,8 @@
 - [ ] **TECH-03**: Seite ist zugänglich: semantisches HTML, Tastatur-Navigation, Kontraste, echter DOM-Text unter allen Effekten
 - [ ] **TECH-04**: Besucher bekommt Dark Mode (Systemerkennung + Toggle) oder eine dark-first Art Direction — Entscheidung in der Design-Phase
 - [ ] **TECH-05**: Geteilte Links zeigen gestaltete Preview-Cards (OG-Images pro Seite/Locale, Person-JSON-LD, Meta-Tags)
-- [ ] **TECH-06**: Seitenbetreiber sieht Besucherzahlen über cookieless, DSGVO-freundliche Analytics
-- [ ] **TECH-07**: Seite ist live auf lsiem.de (Vercel), Performance-Budget wird im CI geprüft
+- [x] **TECH-06**: Seitenbetreiber sieht Besucherzahlen über cookieless, DSGVO-freundliche Analytics
+- [x] **TECH-07**: Seite ist live auf lsiem.de (Vercel), Performance-Budget wird im CI geprüft
 - [ ] **TECH-08**: Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung (Build-Time/gecachter API-Fetch)
 
 ## v2 Requirements (v1.x — nach Launch)
@@ -75,7 +75,7 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| CONT-01 | Phase 1 | Pending |
+| CONT-01 | Phase 1 | Complete |
 | CONT-02 | Phase 2 | Pending |
 | CONT-03 | Phase 2 | Pending |
 | CONT-04 | Phase 2 | Pending |
@@ -90,14 +90,14 @@
 | MODE-01 | Phase 2 | Pending |
 | MODE-02 | Phase 3 | Pending |
 | I18N-01 | Phase 1 | Pending |
-| I18N-02 | Phase 1 | Pending |
+| I18N-02 | Phase 1 | Complete |
 | TECH-01 | Phase 2 | Pending |
 | TECH-02 | Phase 3 | Pending |
 | TECH-03 | Phase 2 | Pending |
 | TECH-04 | Phase 2 | Pending |
 | TECH-05 | Phase 2 | Pending |
-| TECH-06 | Phase 1 | Pending |
-| TECH-07 | Phase 1 | Pending |
+| TECH-06 | Phase 1 | Complete |
+| TECH-07 | Phase 1 | Complete |
 | TECH-08 | Phase 2 | Pending |
 
 **Coverage:** 24/24 v1 requirements mapped — no orphans, no duplicates.

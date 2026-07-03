@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Internal reference material — never commit (public repo)
 .planning/phases/*/reference/
+
+# Lighthouse CI local artifacts
+.lighthouseci/
