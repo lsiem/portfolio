@@ -48,3 +48,9 @@ next-env.d.ts
 
 # Lighthouse CI local artifacts
 .lighthouseci/
+
+# Local dev tooling — never commit
+google-cloud-sdk/
+google-cloud-cli-*.tar.gz
+.antigravity/
+.serena/
