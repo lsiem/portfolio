@@ -1,7 +1,8 @@
 ---
 phase: 01-bilingual-content-foundation
 verified: 2026-07-03T17:10:00Z
-status: human_needed
+status: passed
+human_verified: 2026-07-03T18:45:14Z
 score: 4/4 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
@@ -27,7 +28,7 @@ human_verification:
 
 **Phase Goal:** Sämtliche Portfolio-Inhalte existieren fertig geschrieben und strukturiert in Deutsch und Englisch als Single Source of Truth — und rendern über eine deployte, performance-überwachte Foundation auf lsiem.de
 **Verified:** 2026-07-03T17:10:00Z
-**Status:** human_needed
+**Status:** passed (all 5 human-verification items resolved via UAT 2026-07-03 — see "Human Verification — Resolution")
 **Re-verification:** No — initial verification
 
 ## Goal Achievement
@@ -130,6 +131,16 @@ See frontmatter `human_verification` for the structured list. Summary:
 3. **Content-quality read** — a subjective pass over ELIA (DE+EN) and the deep Vidama case study for abstraction level, PO-perspective narrative, and depth differentiation.
 4. **Analytics field data** — confirm real visitor data appears in the Vercel dashboard after traffic.
 5. **D-08 reconciliation** — decide how to formally amend the D-08 decision now that `lsiem.de` already serves an interim Next.js site via a user-merged PR outside this workflow (not a defect of any GSD plan — flagged by two independent executors as a changed circumstance).
+
+## Human Verification — Resolution (UAT 2026-07-03)
+
+All five items resolved via `/gsd-verify-work 01` (see `01-UAT.md`):
+
+1. **Impressum address** — ✓ PASS. Confirmed present as a clearly-marked placeholder; replacing it with a real postal address is a Phase-2-launch content decision, not a Phase-1 code defect.
+2. **ITSC transition date** — ✓ PASS. Owner-confirmed.
+3. **Content-quality read** — ✓ PASS. Owner-confirmed the ELIA (DE+EN) and deep Vidama abstraction level, PO-perspective narrative, and depth differentiation.
+4. **Analytics field data** — ✓ RESOLVED (deployed + verified live). Root cause: `lsiem.de` was aliased to the **git-main interim build**, which did not carry the `<Analytics/>`/`<SpeedInsights/>` instrumentation (that had shipped only to preview). Fix (user-authorized 2026-07-03): shipped the instrumented Phase-1 build to production via **PR #11** (`fix/interim-portfolio-styling` → `main`); Vercel auto-deployed `portfolio-35oj0apbg` to `lsiem.de`. Verified live in a real browser: both Web Analytics + Speed Insights beacon scripts load `200` (served via obfuscated anti-adblock proxy paths, not the literal `/_vercel/insights/` string), `window.va` is initialized and accepts events. `hasData` populates as real traffic registers. (Web Analytics + Speed Insights were already enabled at the project level: `/_vercel/insights/script.js` → 200, bogus control → 404.)
+5. **D-08 reconciliation** — ✓ RESOLVED. Canonical + living docs amended: `01-CONTEXT.md:80` (internal contradiction fixed), `01-CONTEXT.md:96` (scoped to the final/complete Recruiter-site switch), `PROJECT.md:33` (interim Next.js site noted). Reconciled statement: the automated Phase-1 workflow deploys only to Vercel deployment/preview URLs and never touches production; `lsiem.de` MAY already serve an interim minimal version of the new site from Phase 1 (a deliberate user action outside the phase); the final domain switch for the complete Recruiter site remains Phase-2 work. Historical PLAN/SUMMARY/RESEARCH references left intact as the audit trail.
 
 ## Gaps Summary
 

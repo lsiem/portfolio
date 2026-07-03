@@ -30,7 +30,7 @@ Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden d
 
 ## Context
 
-- **Bestehende Seite:** lsiem.de, aktuell React 19 + Vite + TypeScript + Tailwind 4 + GSAP + Framer Motion + React Three Fiber + Lenis, deployed auf Vercel. Wird als Referenz behalten, aber nicht weiterentwickelt.
+- **Bestehende Seite (Alt-Rewrite):** Der frühere React 19 + Vite + TypeScript + Tailwind 4 + GSAP + Framer Motion + React Three Fiber + Lenis-Rewrite — wird als Referenz behalten (in der Git-History), aber nicht weiterentwickelt. *Update: lsiem.de serviert seit Phase 1 nicht mehr diesen Alt-Stand, sondern eine interim Minimal-Version der neuen Next.js-Site (D-08 AMENDED).*
 - **Vorhandene Inhalte (deutsch, als Rohmaterial verwertbar):** Werdegang (ITSC GmbH Systemadministrator, Just Relate Software Engineer, ex-CTO Vidama, Freelancer), ~7 Projekte, Skills, Über-mich-Texte in `src/content/`.
 - **Profil:** Selbsterlernter Full-Stack-Entwickler & DevOps Engineer, 5+ Jahre Erfahrung, Fokus Web- und Hybrid-Apps.
 - **Unzufriedenheit mit dem Rewrite:** Design wirkt generisch, Inhalte zu dünn, Codebasis unsauber — daher kompletter Neustart mit frischem Blick.
