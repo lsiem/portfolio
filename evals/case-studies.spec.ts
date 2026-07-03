@@ -9,8 +9,8 @@ for (const locale of ["de", "en"] as const) {
     });
 
     test("page responds with 200", async ({ page }) => {
-      // If the page 404s, Playwright throws; reaching here means it loaded.
-      await expect(page.locator("body")).toBeVisible();
+      const response = await page.goto(`/${locale}/case-studies/${SLUG}`);
+      expect(response?.status()).toBe(200);
     });
 
     test("renders a heading", async ({ page }) => {
