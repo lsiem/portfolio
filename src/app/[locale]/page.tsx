@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getCaseStudies } from "@/lib/content";
+import {
+  getCareer,
+  getCaseStudy,
+  getContact,
+  getProjects,
+  getSkillDomains,
+} from "@/lib/content";
 import { localeAlternates, siteMetadataBase } from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string }> }>;
@@ -18,6 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/** Render "YYYY-MM" as "MM/YYYY"; null/undefined falls back to the present label. */
+function formatMonth(value: string | null, present: string): string {
+  if (!value) return present;
+  const [year, month] = value.split("-");
+  return `${month}/${year}`;
+}
+
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   // REQUIRED for static rendering — every layout AND page under [locale]
@@ -25,7 +38,15 @@ export default async function HomePage({ params }: Props) {
 
   const t = await getTranslations("home");
   const nav = await getTranslations("nav");
-  const caseStudies = getCaseStudies(locale);
+  const careerT = await getTranslations("career");
+  const projectsT = await getTranslations("projects");
+  const skillsT = await getTranslations("skills");
+  const contactT = await getTranslations("contact");
+
+  const { intro: careerIntro, entries: career } = getCareer(locale);
+  const projects = getProjects(locale);
+  const skillDomains = getSkillDomains(locale);
+  const contact = getContact(locale);
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-20 px-6 py-20 sm:gap-28 sm:py-28">
@@ -34,54 +55,182 @@ export default async function HomePage({ params }: Props) {
           Portfolio
         </p>
         <h1 className="text-5xl font-semibold tracking-tight sm:text-7xl">
-          Lasse Siemoneit
+          {contact.name}
         </h1>
         <p className="max-w-xl text-lg text-muted sm:text-xl">{t("role")}</p>
-        <nav className="mt-2">
+        <nav aria-label={nav("home")} className="mt-2">
           <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
             <li>
-              <Link
-                href="/"
-                className="text-muted transition-colors hover:text-foreground"
-              >
-                {nav("home")}
-              </Link>
+              <a href="#career" className="text-muted transition-colors hover:text-foreground">
+                {nav("career")}
+              </a>
             </li>
             <li>
-              <a
-                href="#projects"
-                className="text-muted transition-colors hover:text-foreground"
-              >
+              <a href="#projects" className="text-muted transition-colors hover:text-foreground">
                 {nav("projects")}
+              </a>
+            </li>
+            <li>
+              <a href="#skills" className="text-muted transition-colors hover:text-foreground">
+                {nav("skills")}
+              </a>
+            </li>
+            <li>
+              <a href="#contact" className="text-muted transition-colors hover:text-foreground">
+                {nav("contact")}
               </a>
             </li>
           </ul>
         </nav>
       </section>
 
-      <section id="projects" className="flex scroll-mt-24 flex-col gap-6">
-        <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-          {t("caseStudies")}
+      <section id="career" aria-labelledby="career-heading" className="flex scroll-mt-24 flex-col gap-6">
+        <h2 id="career-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          {careerT("title")}
         </h2>
-        <ul className="flex flex-col overflow-hidden rounded-xl border border-border">
-          {caseStudies.map((caseStudy) => (
-            <li key={caseStudy.slug} className="border-b border-border last:border-b-0">
-              <Link
-                href={`/case-studies/${caseStudy.slug}`}
-                className="group flex items-center justify-between gap-4 px-5 py-5 transition-colors hover:bg-foreground/5"
-              >
-                <span className="text-lg font-medium tracking-tight">
-                  {caseStudy.title}
-                </span>
-                <span
-                  aria-hidden
-                  className="font-mono text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent"
-                >
-                  →
-                </span>
-              </Link>
+        <p className="max-w-2xl text-muted">{careerIntro}</p>
+        <ol className="flex flex-col gap-8">
+          {career.map((entry) => (
+            <li key={entry.slug} className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-lg font-medium tracking-tight">
+                  {entry.orgUrl ? (
+                    <a href={entry.orgUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent">
+                      {entry.org}
+                    </a>
+                  ) : (
+                    entry.org
+                  )}
+                </h3>
+                <p className="font-mono text-xs text-muted">
+                  {formatMonth(entry.from, careerT("present"))} – {formatMonth(entry.to, careerT("present"))}
+                  {entry.location ? ` · ${entry.location}` : ""}
+                </p>
+              </div>
+              {entry.intro ? <p className="text-muted">{entry.intro}</p> : null}
+              <ol className="flex flex-col gap-3 border-l border-border pl-4">
+                {entry.roles.map((role, i) => (
+                  <li key={`${entry.slug}-${i}`} className="flex flex-col gap-1">
+                    <p className="font-medium">
+                      {role.title}
+                      <span className="ml-2 font-mono text-xs text-muted">
+                        {formatMonth(role.from, careerT("present"))} – {formatMonth(role.to, careerT("present"))}
+                      </span>
+                    </p>
+                    <p className="text-sm text-muted">{role.description}</p>
+                  </li>
+                ))}
+              </ol>
+              {entry.techStack.length > 0 ? (
+                <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
+                  {entry.techStack.map((tech) => (
+                    <li key={tech} className="rounded border border-border px-2 py-0.5">
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </li>
           ))}
+        </ol>
+      </section>
+
+      <section id="projects" aria-labelledby="projects-heading" className="flex scroll-mt-24 flex-col gap-6">
+        <h2 id="projects-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          {projectsT("title")}
+        </h2>
+        <ul className="flex flex-col gap-6">
+          {projects.map((project) => {
+            const caseStudy =
+              project.depth === "flagship" || project.depth === "deep"
+                ? getCaseStudy(locale, project.slug)
+                : undefined;
+            return (
+              <li key={project.slug} className="flex flex-col gap-2 border-b border-border pb-6 last:border-b-0">
+                <h3 className="text-lg font-medium tracking-tight">{project.title}</h3>
+                {project.period ? (
+                  <p className="font-mono text-xs text-muted">{project.period}</p>
+                ) : null}
+                <p className="text-muted">{project.summary}</p>
+                <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
+                  {project.tags.map((tag) => (
+                    <li key={tag} className="rounded border border-border px-2 py-0.5">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-4 font-mono text-sm">
+                  {caseStudy ? (
+                    <Link
+                      href={`/case-studies/${project.slug}`}
+                      className="text-accent transition-colors hover:text-foreground"
+                    >
+                      {projectsT("caseStudy")} →
+                    </Link>
+                  ) : null}
+                  {project.url ? (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted transition-colors hover:text-foreground"
+                    >
+                      {projectsT("visit")} ↗
+                    </a>
+                  ) : null}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section id="skills" aria-labelledby="skills-heading" className="flex scroll-mt-24 flex-col gap-6">
+        <h2 id="skills-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          {skillsT("title")}
+        </h2>
+        <div className="flex flex-col gap-8">
+          {skillDomains.map((domain) => (
+            <div key={domain.domain} className="flex flex-col gap-3">
+              <h3 className="text-lg font-medium tracking-tight">{domain.domain}</h3>
+              <ul className="flex flex-col gap-2">
+                {domain.skills.map((skill) => (
+                  <li key={skill.name} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="font-medium">{skill.name}</span>
+                    {typeof skill.years === "number" ? (
+                      <span className="font-mono text-xs text-muted">
+                        {skillsT("years", { years: skill.years })}
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="contact" aria-labelledby="contact-heading" className="flex scroll-mt-24 flex-col gap-4">
+        <h2 id="contact-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          {contactT("title")}
+        </h2>
+        <p className="max-w-xl text-muted">{contactT("intro")}</p>
+        <ul className="flex flex-col gap-2 font-mono text-sm">
+          <li>
+            <a href={`mailto:${contact.email}`} className="text-accent transition-colors hover:text-foreground">
+              {contactT("email")}: {contact.email}
+            </a>
+          </li>
+          <li>
+            <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
+              {contactT("github")} ↗
+            </a>
+          </li>
+          <li>
+            <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
+              {contactT("linkedin")} ↗
+            </a>
+          </li>
         </ul>
       </section>
     </main>
