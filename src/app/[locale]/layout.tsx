@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -60,6 +62,9 @@ export default async function LocaleLayout({
             </div>
           </footer>
         </NextIntlClientProvider>
+        {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
