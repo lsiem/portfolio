@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -39,12 +40,25 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <NextIntlClientProvider>
-          <header>
-            <LocaleSwitcher />
+          <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
+            <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4">
+              <Link
+                href="/"
+                className="font-mono text-sm font-semibold tracking-tight transition-opacity hover:opacity-70"
+              >
+                LS<span className="text-accent">.</span>
+              </Link>
+              <LocaleSwitcher />
+            </div>
           </header>
-          {children}
+          <div className="flex flex-1 flex-col">{children}</div>
+          <footer className="border-t border-border/60">
+            <div className="mx-auto w-full max-w-3xl px-6 py-8 font-mono text-xs text-muted">
+              © {new Date().getFullYear()} Lasse Siemoneit
+            </div>
+          </footer>
         </NextIntlClientProvider>
       </body>
     </html>

@@ -21,6 +21,7 @@ export function LocaleSwitcher() {
       locale={otherLocale}
       rel="alternate"
       hrefLang={otherLocale}
+      className="rounded-full border border-border px-3 py-1 font-mono text-xs text-muted transition-colors hover:border-foreground/40 hover:text-foreground"
     >
       {t("languageSwitcher")}
     </Link>
