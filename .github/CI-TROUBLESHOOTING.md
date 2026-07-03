@@ -42,3 +42,23 @@ Vite's `dist/` output instead of Next.js's `.next/`.
 **Resolution:** Added a repo-level `vercel.json` with `"framework": "nextjs"`, which
 overrides the stale dashboard preset. No `buildCommand`/`outputDirectory` overrides —
 the Next.js preset defaults are correct.
+
+## Failure 3: "Setup Node.js" step fails — pnpm 11 requires Node ≥ 22.13
+
+**Observed on:** PR #1 (`cursor/portfolio-rewrite-a2cc`), "Lint & Build" job, first run
+after Failure 1 was fixed
+
+**Symptom:**
+
+```
+Error [ERR_UNKNOWN_BUILTIN_MODULE]: No such built-in module: node:sqlite
+##[error]warn: This version of pnpm requires at least Node.js v22.13
+warn: The current version of Node.js is v20.20.2
+```
+
+**Root cause:** The workflow pinned `node-version: 20`, but pnpm 11 (pinned via
+`packageManager`) imports `node:sqlite`, which only exists in Node ≥ 22.13. GitHub
+also deprecated Node 20 on Actions runners.
+
+**Resolution:** Bumped `actions/setup-node` to `node-version: 22`, matching the
+Vercel project's Node 22.x runtime so CI and deploy run the same major version.
