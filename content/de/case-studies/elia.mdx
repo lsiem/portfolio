@@ -1,0 +1,112 @@
+---
+title: "ELIA — Multi-Agenten-KI-Assistent"
+summary: "Interner KI-Assistent einer IT-Dienstleisterin für öffentliche Krankenkassen: vom Plattformbetrieb zur Produktverantwortung — eine Multi-Agenten-Architektur, die statt eines klassischen RAG-Index über MCP-basiertes Tool-Calling auf verifizierte Live-Daten zugreift, DSGVO-konform in der EU betrieben."
+role: "Product Owner"
+period: "seit 04/2026"
+stack:
+  - Multi-Agenten-Architektur
+  - MCP-basiertes Tool-Calling
+  - Agent-Framework
+  - EU-Datenresidenz
+  - DSGVO
+  - Teams-Integration
+depth: flagship
+order: 1
+---
+
+## Problem & Kontext
+
+ELIA ist der interne KI-Assistent einer IT-Dienstleisterin für öffentliche
+Krankenkassen. Fachbereiche stellen dort täglich dieselben Fragen an mehrere
+Systeme gleichzeitig: Wie ist der Stand zu einem Vorgang? Was steht dazu im
+internen Wiki? Wer ist zuständig? Bisher hieß das: mehrere Oberflächen öffnen,
+manuell suchen, Kontext von Hand zusammentragen. ELIA beantwortet solche Fragen
+in natürlicher Sprache, indem spezialisierte Agenten koordiniert auf die
+angebundenen Fachsysteme zugreifen.
+
+Ich bin über die Technik in dieses Produkt hineingewachsen. Angefangen habe ich
+im Plattformbetrieb — dem Betrieb der Container-Plattform (OpenShift/Kubernetes),
+auf der die Fachanwendungen dieser regulierten Umgebung laufen. Aus dem Betrieb
+wurde Softwareentwicklung, aus der Entwicklung schließlich die Produktverantwortung
+für ELIA. Diese Reihenfolge prägt, wie ich das Produkt führe: Ich entscheide über
+Architektur und Roadmap aus der Perspektive von jemandem, der weiß, was ein
+Betriebsteam nachts wach hält und was eine regulierte Branche an
+Datenschutz-Zusagen wirklich einlösen muss.
+
+## Architektur-Entscheidungen
+
+Drei Entscheidungen prägen die aktuelle Architektur — jede davon ist bewusst
+gegen die naheliegende Standardlösung getroffen.
+
+### Live-Daten statt Vektor-Index: MCP-basiertes Tool-Calling
+
+Der naheliegende Weg für einen Wissens-Assistenten ist ein klassischer
+RAG-Pfad: Inhalte in einen selbst betriebenen Vektor-Index kopieren, Fragen
+gegen Embeddings matchen. Wir haben diesen Pfad bewusst verworfen und stattdessen
+auf **MCP-basiertes Tool-Calling** gesetzt: Die Agenten greifen über standardisierte
+Tool-Schnittstellen auf die **Live-Daten** der angebundenen Systeme zu — ein
+ITSM-System für Vorgänge und ein Wiki für Wissensinhalte.
+
+Der Gewinn ist doppelt. Erstens entfallen Re-Index-Zyklen komplett: Antworten
+basieren immer auf dem aktuellen Stand, nicht auf einem nächtlichen Snapshot.
+Zweitens — und in einer regulierten Umgebung entscheidend — wird die
+**Berechtigungslogik nicht dupliziert**. Zugriffe laufen durch die bestehenden
+Systeme mit deren Rechtemodell; es gibt keinen zweiten Datenbestand, der
+synchron gehalten und separat abgesichert werden müsste.
+
+### Feature-geflaggte Orchestrator-Migration im Parallelbetrieb
+
+Die Koordination der Agenten — welcher Agent welche Frage übernimmt, wie
+Teilantworten zusammengeführt werden — läuft über einen Orchestrator. Wir
+migrieren diese Orchestrierung auf ein aktuelles, herstellergestütztes
+Agent-Framework, das MCP nativ unterstützt.
+
+Eine solche Migration im laufenden Betrieb ist riskant. Deshalb läuft sie
+**feature-geflaggt im Parallelbetrieb**: Der neue Orchestrator-Pfad wird über
+ein Feature-Flag kontrolliert zugeschaltet, während der bestehende Pfad
+weiterläuft. So lässt sich der neue Weg zunächst in Entwicklungs- und
+Staging-Umgebungen und dann für ausgewählte Nutzergruppen verifizieren, ohne
+dass ein Big-Bang-Cutover die Verfügbarkeit gefährdet.
+
+### EU-Datenresidenz und DSGVO als Plattform-Entscheidung
+
+Für eine IT-Dienstleisterin öffentlicher Krankenkassen ist Datenschutz keine
+Compliance-Fußnote, sondern eine Kern-Anforderung. Die Wahl der KI-Plattform
+fiel deshalb bewusst auf einen in der **EU** betriebenen, **DSGVO-konformen**
+Managed-Dienst mit Enterprise-Zusagen — gegen die zunächst evaluierte
+Alternative. Ausschlaggebend waren belastbare vertragliche Datenschutz-Zusagen,
+der EU-Datenresidenz-Pfad und die Integration in die vorhandene
+Office-Landschaft, die den späteren Zugriff über **Teams** ermöglicht.
+
+## Tradeoffs
+
+Keine dieser Entscheidungen ist kostenlos.
+
+- **Live-Daten statt Index** bindet die Antwortqualität an die Verfügbarkeit und
+  Latenz der Quellsysteme. Ein Vektor-Index wäre schneller und system-unabhängig
+  — aber genau diese Entkopplung ist in einer regulierten Umgebung eine Last, kein
+  Vorteil: Sie bedeutet Datenduplikate und eine zweite Berechtigungswelt. Wir
+  zahlen bewusst mit etwas Latenz für Aktualität und ein einziges Rechtemodell.
+- **Der Parallelbetrieb** kostet doppelte Betriebskomplexität, solange zwei
+  Orchestrator-Pfade koexistieren. Der Preis ist bewusst gewählt: Er kauft
+  Rückfallsicherheit und einen risikoarmen, umkehrbaren Migrationsweg.
+- **Ein Managed-EU-Dienst** schränkt die freie Modellwahl gegenüber einer
+  Self-Hosting-Variante ein und erzeugt Anbieterbindung. Für eine kleine Mannschaft
+  in einer regulierten Branche überwiegt der Wegfall von Betriebs- und
+  Compliance-Last diese Einschränkung deutlich.
+
+## Ergebnis & Stand
+
+Die Plattform-Basis steht: Die Migration auf den EU-Managed-Dienst ist
+abgeschlossen, die Anbindung der ersten produktiven Datenquellen über MCP ist
+live, und die Orchestrator-Migration läuft feature-geflaggt im Parallelbetrieb.
+ELIA wird von einer definierten Pilotgruppe genutzt; ein strukturierter
+Feedback-Kanal speist die Priorisierung.
+
+Meine Rolle als Product Owner umfasst die Roadmap und Priorisierung, die
+architektonischen Leitplanken (die drei Entscheidungen oben stammen aus dieser
+Verantwortung) und die Abwägung zwischen Funktionsumfang, Betriebsrealität und
+den Datenschutz-Anforderungen einer regulierten Branche. Die nächsten Schritte
+sind der Abschluss der Orchestrator-Migration, die Anbindung weiterer
+Fachsysteme und der schrittweise Zugang über Teams — jeweils so zugeschnitten,
+dass Verfügbarkeit und Datenschutz zu keinem Zeitpunkt verhandelbar werden.
