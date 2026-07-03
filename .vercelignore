@@ -1,0 +1,14 @@
+# Local-only cruft and artifacts that must never be uploaded to Vercel builds.
+# Vercel installs deps and builds from source, so these are unnecessary and huge.
+node_modules
+.next
+.content-collections
+.git
+
+# Planning + internal material (never needed for the build)
+.planning
+.serena
+
+# Local tooling installs accidentally present in the working tree
+google-cloud-sdk
+google-cloud-cli-*.tar.gz
