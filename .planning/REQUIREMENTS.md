@@ -7,7 +7,7 @@
 
 ### Content & Substanz
 
-- [ ] **CONT-01**: Strukturiertes, Git-basiertes DE/EN-Content-Modell als Single Source of Truth (speist Site, Overview-Mode, CV-PDF und später AI-Chat)
+- [x] **CONT-01**: Strukturiertes, Git-basiertes DE/EN-Content-Modell als Single Source of Truth (speist Site, Overview-Mode, CV-PDF und später AI-Chat)
 - [ ] **CONT-02**: Besucher sieht im ersten Viewport sofort Name, Rolle und Ein-Satz-Wertversprechen — nie hinter einer Intro-Animation versteckt
 - [ ] **CONT-03**: Besucher kann den Werdegang als Timeline erfassen (ITSC, Just Relate, Vidama-CTO, Freelance — Daten, Rollen, Kurzbeschreibung)
 - [ ] **CONT-04**: Besucher kann 5–7 Projekte ansehen, davon 2–3 als tiefe Case Studies (Problem → Architektur-Entscheidungen → Tradeoffs → Ergebnis mit Zahlen; Vidama-CTO-Story als Flaggschiff)
@@ -75,7 +75,7 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| CONT-01 | Phase 1 | Pending |
+| CONT-01 | Phase 1 | Complete |
 | CONT-02 | Phase 2 | Pending |
 | CONT-03 | Phase 2 | Pending |
 | CONT-04 | Phase 2 | Pending |
