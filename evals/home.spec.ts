@@ -17,7 +17,7 @@ for (const locale of locales) {
     });
 
     test("navigation is present", async ({ page }) => {
-      const nav = page.locator("nav");
+      const nav = page.getByRole("navigation").first();
       await expect(nav).toBeVisible();
     });
 
@@ -26,8 +26,8 @@ for (const locale of locales) {
     });
 
     test("case study list renders at least one item", async ({ page }) => {
-      const items = page.locator("#projects ul li");
-      await expect(items).toHaveCount(1);
+      const items = page.locator("#projects > ul > li");
+      await expect(items.first()).toBeVisible();
     });
 
     test("case study link navigates to detail page", async ({ page }) => {
