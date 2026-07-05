@@ -63,12 +63,12 @@ Plans:
   4. Site erreicht Core Web Vitals "good" auf Mobilgeräten, ist per Tastatur vollständig bedienbar (semantisches HTML, Kontraste) und bietet Dark Mode (Systemerkennung + Toggle)
   5. Geteilte Links zeigen gestaltete Preview-Cards pro Seite und Locale (OG-Images, Person-JSON-LD), und Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung
 
-**Plans:** 7 plans
+**Plans:** 1/7 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Recruiter overview complete: hero value-prop, About (text-first), one-click contact affordance, CV download button, a11y baseline (Wave 1)
+- [x] 02-01-PLAN.md — Recruiter overview complete: hero value-prop, About (text-first), one-click contact affordance, CV download button, a11y baseline (Wave 1)
 - [ ] 02-02-PLAN.md — Build-time CV-PDF generation per locale from the content model (@react-pdf/renderer, embedded Geist, one-column ATS) (Wave 1)
 
 **Wave 2** *(blocked on Wave 1)*
@@ -133,6 +133,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
-| 2. Recruiter Overview Live | 0/7 | Not started | - |
+| 2. Recruiter Overview Live | 1/7 | In Progress|  |
 | 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
