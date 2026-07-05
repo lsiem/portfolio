@@ -1,512 +1,374 @@
 ---
 phase: 3
+review_round: 2
 reviewers: [gemini, cursor, antigravity]
 failed_reviewers: [codex, coderabbit]
-reviewed_at: 2026-07-05T17:40:29Z
+reviewed_at: 2026-07-05T18:13:56Z
+reviewed_commit: 6b2f2c4
 plans_reviewed: [03-01-PLAN.md, 03-02-PLAN.md, 03-03-PLAN.md, 03-04-PLAN.md]
 ---
 
-# Cross-AI Plan Review — Phase 3
+# Cross-AI Plan Review — Phase 3 (Round 2)
 
-> 3 of 5 reviewers completed. **codex** failed (litellm-proxy/Azure backend rejected the tool-call sequence mid-run — infra, not a plan defect). **coderabbit** skipped (diff-only reviewer; no plan/code content in the working-tree diff). Working tree verified UNCHANGED after the run — no reviewer edited files (AGENTS.md cross-harness guard satisfied).
+> Round 2 re-reviews the plans **after** round-1 feedback was incorporated (commit `6b2f2c4`). All three reviewers confirm the 10 round-1 fixes are correctly embedded. This file now carries the **round-2** findings (a consensus HIGH + a structural HIGH + several MEDIUMs) — feed them back with `/gsd-plan-phase 3 --reviews`. codex failed (litellm/Azure backend); coderabbit skipped (diff-only). Working tree verified UNCHANGED.
 
 ---
 
-## Gemini Review
+## Gemini Review (Round 2)
 
-# Phase 3 Plan Review: Design Direction & Immersive Experience
+# Cross-AI Plan Review (Round 2) — Phase 3: Design Direction & Immersive Experience
+
+This review verifies the hardened implementation plans (03-01..03-04) against the Round 1 findings and the project's engineering standards.
+
+## Round-1 Verification Summary
+
+| Finding | Fix Correct & Complete? | Evidence / Location |
+|:---|:---:|:---|
+| 1. Bundle gate BLOCKING + Subpaths | **YES** | 03-01 Task 2: "confirm resource-summary:script:size ≤ 184,643 bytes"; subpath imports (gsap/ScrollTrigger) mandated. |
+| 2. `html.lenis { scroll-behavior: auto }` | **YES** | 03-01 Task 2: Explicitly added to `globals.css` with rationale. |
+| 3. `TransitionLink` as Enhanced `Link` | **YES** | 03-03 Task 2: Implemented as "enhanced `@/i18n/navigation` Link" with modifier/middle-click passthrough. |
+| 4. `getMotionToken` SSR + Stable Wrapper | **YES** | 03-01 Task 2: Mandates `typeof window` guard and stable wrapper element for `MotionProvider`. |
+| 5. Bento `<li>` semantics | **YES** | 03-02 Task 2: "each project MUST be exactly ONE outer `<li>` that itself acts as the grid container". |
+| 6. Hero intro = mount timeline | **YES** | 03-01 Task 3: "HeroIntro is an on-mount timeline, NOT a scroll-triggered reveal". |
+| 7. Non-circular Font Token | **YES** | 03-01 Task 2: Naming convention `--font-bricolage` (next/font) → `--font-display` (Tailwind) followed. |
+| 8. Lenis scope + Hash-anchors | **YES** | 03-01 Task 2: Inspection of `lenis-react.d.ts` + 03-01 Task 3: Playwright hash-anchor assertion. |
+| 9. Layout width D-04 reconciliation | **YES** | 03-01 Task 3: Deliberate editorial break-out recorded in Summary. |
+| 10. About photo CLS reservation | **YES** | 03-04 Task 1: Frame reserves box via `aspect-ratio` and placeholder background. |
+
+---
+
+## Detailed Plan Analysis
+
+### Plan 03-01: Motion Foundation & Hero Intro
+**Summary:** Establishes the GSAP+Lenis infra, tokens, and the "system booting" hero sequence.
+*   **Strengths:** Exceptional defensive engineering on the `MotionProvider` and `getMotionToken` utility. The `useSyncExternalStore` pattern prevents hydration mismatches and lint errors seen in previous phases.
+*   **Concerns (LOW):** The 184,643-byte script budget is extremely tight for Next.js + GSAP + Lenis.
+*   **Suggestions:** None — the plan already correctly treats the budget as a BLOCKING gate.
+*   **Risk:** LOW (High confidence in integration patterns).
+
+### Plan 03-02: Career Storytelling & Bento Projects
+**Summary:** Implements the scroll-linked career scenes and featured project bento.
+*   **Strengths:** The ITSC multi-beat pattern correctly identifies the "emotional core" of the content. A11y discipline on the Bento `<li>` structure prevents screen-reader over-announcement.
+*   **Concerns (LOW):** `CareerSpine` vertical alignment.
+*   **Suggestions:** Ensure `CareerSpine` use of `ScrollTrigger` uses `refresh()` after the bento grid above it renders, as bento layout can shift career start positions. (Task 1 `ScrollTrigger.refresh()` mentions font load, which usually covers this).
+*   **Risk:** LOW.
+
+### Plan 03-03: Craft Micro-interactions & Transitions
+**Summary:** Adds magnetic buttons and the GSAP-orchestrated sub-route crossfade.
+*   **Strengths:** `TransitionLink` implementation is robust, specifically the mandatory early-return for modified clicks which preserves power-user behavior (Cmd+Click).
+*   **Concerns (LOW):** Native "Back" button navigation won't trigger the GSAP exit transition.
+*   **Suggestions:** This is a known limitation of manual `router.push` transitions and is acceptable for this MVP scope.
+*   **Risk:** LOW.
+
+### Plan 03-04: Signature Treatments & Full Verification
+**Summary:** Completes the About photo treatment and ensures cross-site consistency.
+*   **Strengths:** CLS reservation for the About photo is well-planned. The inclusion of a full human-verified walkthrough against the Success Criteria ensures the "Wow" is qualitative, not just green tests.
+*   **Concerns (NONE).**
+*   **Suggestions:** None.
+*   **Risk:** LOW.
+
+---
+
+## New Findings & Observations
+
+### 1. `SplitText` Accuracy vs. Font Loading
+**Status:** Observation (LOW)
+While 03-01 Task 2 includes `ScrollTrigger.refresh()` on `fonts.ready`, `SplitText` itself is sensitive to font metrics. If `SplitText` executes before `Bricolage Grotesque` has fully swapped/loaded, character/word boundaries may be slightly off.
+*   **Recommendation:** If visual glitches appear in the SplitText stagger, consider wrapping the SplitText initialization in `document.fonts.ready.then(...)`.
+
+### 2. Single Animation Engine Enforcement
+**Status:** Verified (OK)
+The plan correctly checks `package.json` in 03-03 Task 2 to ensure no second animation runtime (Framer Motion, etc.) has leaked into the repo, fulfilling the D-08 success criterion.
+
+### 3. DSGVO & Self-Hosting
+**Status:** Verified (OK)
+The `next/font` configuration for Bricolage Grotesque and the local bundling of GSAP/Lenis preserve the project's strict no-runtime-third-party calls requirement.
+
+## Final Verdict
+
+**VERDICT: APPROVED FOR EXECUTION**
+
+The plans are technically superior, faithfully incorporate all feedback, and maintain the project's high standards for performance and accessibility. The 10 Round-1 findings are completely addressed. No high-risk gaps were identified.
+
+---
+
+## Cursor Review (Round 2)
+
+# Cross-AI Plan Review — Round 2 (Phase 3: Design Direction & Immersive Experience)
+
+## Round-1 Fix Verification
+
+| # | Finding | Verdict | Notes |
+|---|---------|---------|-------|
+| 1 | Blocking bundle gate + GSAP subpath imports | **Correct & complete** | 03-01 Task 2 AC hard-stops on `lhci autorun` ≤ 184,643 bytes; Task 3 re-runs; subpath imports specified (`gsap/ScrollTrigger`, `gsap/SplitText`). |
+| 2 | `html.lenis { scroll-behavior: auto }` | **Correct & complete** | Explicit rule + rationale tied to existing `globals.css:64-68` native smooth scroll. |
+| 3 | TransitionLink as enhanced `@/i18n/navigation` Link | **Correct in spec, incomplete in file scope** | 03-03 spec is strong (real anchor, modifier passthrough). **But** `files_modified` omits `project-bento.tsx` where case-study links land after 03-02 — see 03-03. |
+| 4 | `getMotionToken` SSR guard + stable MotionProvider wrapper | **Correct & complete** | Explicit `typeof window` guard, no default-param token reads, bans fragment↔wrapper swap; overrides stale RESEARCH Pattern 1 snippet that still uses `<>`. |
+| 5 | Bento = one `<li>` per project | **Correct & complete** | 03-02 action + AC with Playwright count vs project list. |
+| 6 | Hero intro = on-mount `HeroIntro`, not scroll `Reveal` | **Correct & complete** | Dedicated component, D-12 beats, Playwright no-scroll opacity test. |
+| 7 | Bricolage `--font-bricolage` → `@theme --font-display` | **Correct & complete** | Mirrors Geist pattern in `globals.css:17-18`; anti-circular binding called out. |
+| 8 | Lenis wrapper scope + hash anchors | **Partially complete** | Forces a decision + SUMMARY evidence + Playwright `#career` test. Does not pre-resolve scope; research already recommends `ReactLenis root` wrapping `{children}` in layout — acceptable if executor follows that. |
+| 9 | Hero `max-w-[1440px]` vs chrome `max-w-3xl` | **Incomplete fix** | Documented as “record intent in SUMMARY,” but **does not change the structural blocker**: `page.tsx:79` wraps all sections in `max-w-3xl`, so a nested `max-w-[1440px]` hero cannot actually break wide; career spine left margin (D-07) has the same constraint. |
+| 10 | About photo CLS reservation | **Correct & complete** | 03-04: aspect-ratio box, placeholder, explicit img dimensions, grep ACs. |
+
+---
+
+## Plan 03-01 — Motion Foundation + Hero Intro
+
+### Summary
+Installs GSAP/Lenis/Bricolage, motion tokens, gated `MotionProvider`, reusable `Reveal`/`SplitHeading`, and a mount-timeline `HeroIntro` on the existing SSR hero. Strong Wave-1 foundation with blocking human package gate and blocking LHCI after deps land.
+
+### Strengths
+- **Evidence-backed line refs** into `theme-toggle.tsx`, `globals.css`, `layout.tsx`, `page.tsx`, `lighthouserc.json` — verified accurate (e.g. `useSyncExternalStore` at `theme-toggle.tsx:15-43`, script budget at `lighthouserc.json:13`, no motion deps in `package.json` today).
+- **MODE-02 / D-18 alignment**: single DOM, motion gated off server-side (`getServerSnapshot → false`), matches “page already is the quiet variant.”
+- **Threat model + package-legitimacy gate** for Lenis SUS flag is appropriate.
+- **Round-1 hardening** is woven into acceptance criteria, not just prose.
+
+### Concerns
+- **HIGH — D-04 layout cannot execute as written.** Hero “break wide to `max-w-[1440px]`” inside `<main className="… max-w-3xl …">` (`page.tsx:79`) is capped at ~768px. Career spine “left margin column” (D-07) needs the same page-level width change. Finding #9 is documented, not structurally solved.
+- **MEDIUM — WOW-04 vs post-hydration opacity.** Must-haves require static SSR before JS; `HeroIntro` mount timeline likely animates from `opacity: 0`. Plan should require first client frame = SSR final state, then animate (or CSS `@starting-style`), so recruiters never see blank hero text after hydration.
+- **MEDIUM — `HeroIntro` + `SplitHeading` coordination.** Plan warns against double animation but doesn’t specify ownership (timeline-only vs primitive-only). Risk of split-then-re-animate or SplitText running twice.
+- **LOW — RESEARCH Pattern 1 still shows fragment swap**; plan correctly overrides it — executor must follow plan, not research snippet.
+
+### Suggestions
+1. Add an explicit 03-01 Task 3 sub-step: **restructure `<main>`** — e.g. remove global `max-w-3xl`, apply reading width per section, full-bleed wrapper for hero/career grid; or document a viewport breakout pattern with concrete classes.
+2. Specify: **`SplitHeading` on hero H1 is passive under `HeroIntro`** (split once, timeline drives words) OR hero skips `SplitHeading` and `HeroIntro` owns SplitText directly.
+3. Add AC: hero text **computed opacity ≥ 1** (or visibility) on first Playwright snapshot before any `waitForTimeout`.
+
+### Risk: **MEDIUM** (HIGH if layout restructure is skipped)
+
+---
+
+## Plan 03-02 — Career Storytelling + Bento Projects
+
+### Summary
+Adds `CareerSpine` (lg+ progress rail), progressive `Reveal` on career chapters with ITSC multi-beat, and `ProjectBento` for ELIA/Vidama featured hierarchy. Reuses Wave-1 primitives; no new deps.
+
+### Strengths
+- **Career markup preservation** matches actual structure (`page.tsx:129-177`): nested role lists, conditional org links (nested-link trap noted), `formatMonth` untouched.
+- **Bento semantics fix (finding #5)** is explicit with Playwright `#projects > ul > li` count AC — aligns with `evals/home.spec.ts:28-38`.
+- **No pinning / scrolljacking** enforced via grep AC — consistent with D-05 and TECH-02.
+- **Content model verified**: 6 projects, ELIA `flagship` + Vidama `deep` in `content/en/projects.ts`.
+
+### Concerns
+- **HIGH — Depends on 03-01 layout fix.** Spine in “reserved left margin column” is impossible inside current `max-w-3xl` main without page shell changes.
+- **MEDIUM — No blocking bundle re-check.** After spine + bento client JS, plan only says “CI LHCI authoritative.” Budget could breach in Wave 2 and surface late at 03-04 checkpoint.
+- **MEDIUM — `ProjectBento` server/client split ambiguous.** “Prefer Server Component composing `<Reveal>`” — `Reveal` is `"use client"`; needs a clear pattern (server shell + client cell wrappers) to avoid marking the whole bento client unnecessarily.
+- **LOW — Li-count test** needs project count source in spec (hardcode 6 vs fetch from API/fixture) to avoid drift.
+
+### Suggestions
+1. Add Task 2 verify step: **`pnpm exec lhci autorun`** after bento lands (soft stop minimum; hard stop if over budget).
+2. Split `career-spine.tsx` into server tick markup + client fill wrapper (as plan implies) with explicit file note.
+3. Pre-wire 03-03: **`ProjectBento` accepts `LinkComponent` prop** defaulting to `@/i18n/navigation` `Link`, swappable to `TransitionLink` in Wave 3.
+
+### Risk: **MEDIUM**
+
+---
+
+## Plan 03-03 — Craft Micro-interactions + Transitions
+
+### Summary
+Adds `Magnetic` (pointer-only), designed CSS interaction states, and `TransitionLink` GSAP crossfade for case studies and `/about`. Single-engine discipline enforced.
+
+### Strengths
+- **TransitionLink (finding #3)** is well specified: real `Link`, modifier/middle-click passthrough, reduced-motion instant `router.push`, `@/i18n/navigation` only (`navigation.ts:4-5`).
+- **Magnetic** follows RESEARCH Pattern 3 (`contextSafe`, absent-not-degraded on touch).
+- **`:focus-visible` preservation** references actual rule at `globals.css:88-91` and ties to `evals/a11y.spec.ts`.
+- **Package.json single-engine check** in AC is practical.
+
+### Concerns
+- **HIGH — Case-study `TransitionLink` wiring gap.** 03-02 moves case-study links into `ProjectBento`; 03-03 `files_modified` lists only `page.tsx`, not `project-bento.tsx`. Action says “In page.tsx: render case-study links via TransitionLink” — **stale after Wave 2.** About read-more at `page.tsx:268-273` is covered; bento links are not.
+- **MEDIUM — `<main>` crossfade scope.** Overview `main` at `page.tsx:79`; case-study pages have their own `main` (`case-studies/[slug]/page.tsx:48`). Exit fade on overview works; incoming case-study mount `Reveal` is separate — acceptable, but header/footer won’t crossfade (probably fine). Plan should note no shared-element morphing expectation.
+- **MEDIUM — Header/footer `/about` links** (`layout.tsx:106-111`) stay plain `Link` — inconsistent transition UX vs overview read-more.
+- **LOW — Duplicate motion-gate logic** (`MotionProvider` vs `Magnetic` mount gate) — extract shared `useMotionGates()` to avoid drift.
+
+### Suggestions
+1. Add `src/components/motion/project-bento.tsx` to `files_modified`; use `TransitionLink` inside bento for internal case-study routes.
+2. Optionally extend `TransitionLink` to footer `/about` for consistency (LOW priority).
+3. Document crossfade target: **`document.querySelector('main')`** on current page only.
+
+### Risk: **MEDIUM-HIGH** (HIGH if bento links ship without TransitionLink)
+
+---
+
+## Plan 03-04 — Signature Treatments + Verification
+
+### Summary
+Photo treatment (D-16, degrades to text-only), reading-first case-study/about elevation via `SplitHeading`/`Reveal`, and blocking human checkpoint for wow / skippable / quiet / mobile + full LHCI.
+
+### Strengths
+- **Photo CLS (finding #10)** is concrete: aspect-ratio, placeholder, explicit dimensions — matches current text-only About (`page.tsx:255-274`, no `<img>` today).
+- **Case-study page refs verified**: plain H1 at `case-studies/[slug]/page.tsx:51-52` — safe SplitText target; SSG paths preserved.
+- **Checkpoint Task 3** runs full Playwright + LHCI before human sign-off — appropriate phase closer.
+- **Reading-first D-15** constraints (gentle reveals, keep `max-w-2xl`) are clear.
+
+### Concerns
+- **MEDIUM — Photo asset detection vague.** “Known `public/` path check or content-model field” — no field exists today; fine for degrade-to-text-only, but executor may invent ad-hoc logic. Prefer explicit “no image until content model extended” to match current behavior.
+- **MEDIUM — Client boundaries on SSG routes.** Wrapping case-study H1 + body in client primitives increases JS on detail routes; no incremental bundle gate until final checkpoint.
+- **LOW — `grep -c 'dark:' src/app/globals.css` is 0** — trivially true today (`globals.css` uses `data-theme`, not `dark:` utilities); low signal as AC.
+
+### Suggestions
+1. Keep About image slot **CSS-only + conditional render false** until a content-model field lands — avoids fake path checks.
+2. Add case-study route **script-size spot-check** in Task 2 verify (even one slug on `/de` + `/en`).
+3. Human checkpoint: add explicit **hash-nav from header `#contact`** (`layout.tsx:88-93`) under Lenis, not only hero `#career`.
+
+### Risk: **LOW-MEDIUM**
+
+---
 
 ## Overall Assessment
-The implementation strategy for Phase 3 is exceptionally robust, demonstrating a deep understanding of the intersection between Next.js 16 (App Router), React 19, and advanced animation orchestration (GSAP + Lenis). The architecture correctly prioritizes the "Content-First" core value by ensuring that all immersive effects are layered as enhancements over accessible, SSR-rendered HTML. The strict adherence to a single-animation-engine discipline (GSAP) and the use of centralized CSS motion tokens are key architectural wins that prevent the technical debt often associated with multi-library animation stacks.
-
-**Overall Risk: LOW** (assuming the bundle size budget is monitored as planned).
-
----
-
-## Plan 03-01: Motion Foundation + Hero Intro
-### Summary
-Establishes the technical foundation for the entire phase. It correctly identifies the `useSyncExternalStore` pattern for browser-state detection, avoiding common React 19 / hydration pitfalls associated with `matchMedia`.
-
-### Strengths
-- **Safe Integration:** Uses `useSyncExternalStore` for media queries (reduced-motion/pointer), matching the existing pattern in `src/components/theme-toggle.tsx:15-43`.
-- **DSGVO Compliance:** Self-hosts Bricolage Grotesque via `next/font/google`, mirroring the Geist implementation in `layout.tsx`.
-- **Accessibility:** Acknowledges the SplitText nested-link trap (RESEARCH Pitfall 4) and correctly restricts its usage to plain-text targets.
-- **Performance:** Ensures Name/Role/Value-prop are static SSR HTML (WOW-04), visible before any JS runs.
-
-### Concerns
-- **Bundle Headroom (MEDIUM):** GSAP core + ScrollTrigger + SplitText + Lenis is a substantial addition. While the plan includes a measurement checkpoint, the 184KB LHCI script budget (enforced in `lighthouserc.json`) is extremely tight for these additions.
-- **Lenis Ref Shape (LOW):** The research identifies a potential version-drift risk in the `lenis/react` ref shape. Task 2 correctly includes a step to inspect `.d.ts` before writing.
-
-### Suggestions
-- Ensure `getMotionToken` in `src/lib/motion-tokens.ts` handles the case where `document.documentElement` might not be available during a stray server-side import (the plan labels it client-only, but an export-type safety check is wise).
-
----
-
-## Plan 03-02: Career Storytelling + Bento Projects
-### Summary
-Elevates the two most data-dense sections of the site. The ITSC multi-beat sub-sequence is a strong identity-driven narrative choice that leverages the existing content model.
-
-### Strengths
-- **Narrative Focus:** Focuses on the "emotional core" (ITSC growth arc) as requested in SPECIFICS.
-- **Native Scroll Integrity:** Strict "no pinning, no scrolljacking" rule (D-05) ensures the site remains robust and predictable for users.
-- **Mobile First:** Correctly hides the `CareerSpine` on mobile (D-19), relying on existing date labels for context to avoid redundancy.
-
-### Concerns
-- **Grid Complexity (LOW):** The asymmetric bento grid requires careful Tailwind class management for col-spans across breakpoints to match the 12-column spec (UI-SPEC §Bento project grid).
-
-### Suggestions
-- In `ProjectBento`, ensure the `2px var(--border)` featured signal (UI-SPEC) is visually distinct enough to represent "featured" status without relying on color (which is reserved for the accent signal).
-
----
-
-## Plan 03-03: Craft + Transitions
-### Summary
-Adds the "felt craft" layer through micro-interactions and route transitions.
-
-### Strengths
-- **Single-Engine Discipline:** Orchestrates route transitions via GSAP exit tweens + `@/i18n/navigation` router, avoiding the experimental View Transitions API as per D-11.4.
-- **Magnetic Physics:** Uses `contextSafe` for event-driven tweens, which is the correct pattern for React 19 / GSAP 3.15 integration to ensure proper cleanup.
-- **Mobile Battery/Performance:** Correctly gates Magnetic effects to `pointer: fine`, preventing dead event listeners on touch devices.
-
-### Concerns
-- **Transition Continuity (LOW):** Since Next.js App Router unmounts instantly, the "crossfade" effect relies entirely on the exit tween completing before `router.push`. The plan correctly handles this in the `onComplete` callback.
-
----
-
-## Plan 03-04: Signature Treatments + Verification
-### Summary
-Ensures cross-site consistency and performs the final "wow" walkthrough.
-
-### Strengths
-- **Clean Degradation:** The About photo treatment correctly degrades to text-only if no asset is provided (D-16), a pragmatic engineering choice that prevents blocking the phase.
-- **Reading Integrity:** Maintains the `max-w-2xl` reading column for case studies (D-15), ensuring immersion doesn't sacrifice legibility for tech-leads and recruiters.
-- **Comprehensive Walkthrough:** The human walkthrough dimension (WOW/Skippable/Quiet/Mobile) matches the phase success criteria perfectly.
-
----
-
-## Risk Assessment & Final Verdict
-
-### Risks
-1. **Hydration Ceiling:** If `MotionProvider` or `Reveal` trigger layout reads too early, hydration mismatches could occur. The plan's reliance on `useGSAP` (which runs after commit) and `useSyncExternalStore` (with a stable `false` server snapshot) significantly mitigates this.
-2. **Bundle Size:** The LHCI gate is the final arbiter. If exceeded, the team may need to import GSAP plugins from dedicated subpaths or consider lighter alternatives for non-critical reveals.
-
-### Final Verdict: **PROCEED**
-The plans are technically sound, structurally consistent with the existing codebase (specifically copying the `useSyncExternalStore` pattern from `ThemeToggle`), and perfectly aligned with the "Engineered/Systems" design direction. The separation of foundation (01), storytelling (02), micro-interactions (03), and consistency (04) is the correct execution order.
-
-**Sign-off:** *Gemini CLI (Plan Reviewer)* 2026-07-05
-
----
-
-## Cursor Review
-
-# Phase 3 Plan Review — Design Direction & Immersive Experience
-
-Reviewed against the live repo at `/Users/lasse/Development/Projects/portfolio` (Phase 2 shipped baseline: no motion deps, single-scroll overview page, LHCI gate at 184,643 bytes). Plans were cross-checked with `src/app/[locale]/page.tsx`, `layout.tsx`, `globals.css`, `package.json`, `lighthouserc.json`, `content/en/career.ts`, `content/en/projects.ts`, and existing Playwright evals.
-
----
-
-## Overall Assessment
-
-These four plans are unusually strong: they trace requirements to artifacts, reuse an established `useSyncExternalStore` pattern, forbid duplicate animation engines, gate Lenis/magnetic by reduced-motion and pointer type, and carry threat models plus eval contracts through all waves. Wave ordering (foundation → storytelling → craft → verification) is sound.
-
-The main risks are not architectural direction but **execution gaps**: hero intro choreography is underspecified vs the UI contract, the **184,643-byte script budget** is assumed not measured, Lenis placement vs sticky header/hash anchors is left open, and layout widening is scoped to `page.tsx` without aligning header/footer chrome. Overall risk: **MEDIUM**.
-
----
-
-## Plan 03-01 — Motion Foundation + Engineered Hero Intro
 
 ### Summary
-
-Wave 1 correctly establishes the single-engine foundation (GSAP + Lenis, motion tokens, gated `MotionProvider`, reusable primitives) and anchors WOW-04/MODE-02/TECH-02 in structure rather than bolting them on later. The package-legitimacy human gate for `lenis` is appropriate. Hero work is the weakest task relative to the locked D-12 timing spec.
-
-### Strengths
-
-- **Accurate baseline claim**: `package.json` has zero animation deps today (`gsap`, `@gsap/react`, `lenis` absent) — the “greenfield motion layer” framing is correct.
-- **`useSyncExternalStore` mandate matches repo convention**: `src/components/theme-toggle.tsx:15-43,90` is cited correctly; MotionProvider should mirror this, not `useState`+`useEffect`.
-- **WOW-04 grounded in real markup**: Hero already exposes name, role, value-prop, and anchor nav as static SSR (`src/app/[locale]/page.tsx:84-127`); H1 has no nested link — safe SplitText target per Pattern 4.
-- **Reduced-motion = same DOM**: Aligns with `03-RESEARCH.md` insight that the current page *is* the quiet variant; motion is layered on top.
-- **Prerequisites well scoped**: `HeroSceneSlot` reserves Phase 4 WOW-01 seam without shipping WebGL.
-- **Threat model + pinned versions**: Human gate before `pnpm add` is proportionate to supply-chain risk.
-
-### Concerns
-
-| Severity | Concern |
-|----------|---------|
-| **HIGH** | **Hero intro choreography does not match D-12/UI-SPEC.** UI contract specifies a **time-orchestrated** mount sequence (grid 0–400ms → H1 split 200–900ms → value-prop 500–1000ms). Task 3 wraps value-prop in `<Reveal>` with ScrollTrigger `start: "top 85%"` and adds a decorative overlay, but never defines a unified hero timeline. Reveal-on-enter ≠ intro-on-mount; even if the hero triggers immediately, timing will not match the spec beats. |
-| **HIGH** | **184,643-byte LHCI budget treated as “CI will catch it” without a mandatory measure checkpoint.** Current scripts bundle is tiny (React + next-intl + header client islands only). GSAP core + ScrollTrigger + SplitText + Lenis + Bricolage font JS is a step change. Research flags this as MEDIUM confidence (`03-RESEARCH.md` Open Q2). Plan 01 mentions optional local LHCI only “if headroom is in doubt” — that should be **blocking after Task 2**, not optional. |
-| **MEDIUM** | **Bricolage `@theme` binding may be circular.** Plan says `variable: "--font-display"` on `next/font` *and* `@theme inline --font-display: var(--font-display)`. Geist uses distinct names (`--font-geist-sans` → `--font-sans` in `globals.css:17-18`). Copy that pattern (`--font-bricolage` or similar). |
-| **MEDIUM** | **Lenis mount scope vs sticky header unresolved.** Plan wraps only `{children}` (`layout.tsx:99`), leaving header/footer outside `MotionProvider`. `03-PATTERNS.md` explicitly flags verifying whether `<ReactLenis root>` must include the sticky header (`layout.tsx:71`) for correct Lenis/sticky/hash behavior. Deferred to d.ts inspection is fine, but no acceptance criterion forces resolution. |
-| **MEDIUM** | **`scroll-behavior: smooth` may double-smooth with Lenis.** `globals.css:64-68` enables native smooth scroll under `prefers-reduced-motion: no-preference`. When Lenis is active on pointer:fine, both may apply — plan should gate or remove CSS smooth scroll for the Lenis path. |
-| **LOW** | **Layout width change only on `page.tsx`.** Hero widens to `max-w-[1440px]` per D-04, but header/footer stay `max-w-3xl` (`layout.tsx:72,101`). Visual misalignment likely unless chrome widens too or hero breaks out via negative margin. |
-
-### Suggestions
-
-1. Add a **Task 2.5 or hard acceptance gate**: `pnpm build` + inspect route JS / run `pnpm exec lhci autorun` before Task 3 hero work. Fail fast if over budget.
-2. Split hero work: **`HeroIntro` client component** with a single `useGSAP` timeline (grid → SplitHeading → value-prop), separate from scroll-triggered `Reveal`.
-3. Fix font token naming: `--font-bricolage` (next/font) → `--font-display` (Tailwind `@theme`), mirroring Geist.
-4. Add acceptance: **hash anchor nav** (`#career` from `page.tsx:101`) scrolls correctly with Lenis on desktop (manual or Playwright).
-5. Document Lenis wrapper decision in `03-01-SUMMARY.md` with evidence from `lenis-react.d.ts`.
-
-### Risk Assessment
-
-**MEDIUM** — Foundation patterns are correct and repo-aligned, but hero timing gap and bundle-size assumption could fail late in Wave 1.
-
----
-
-## Plan 03-02 — Career Scroll-Storytelling + Bento Projects
-
-### Summary
-
-Wave 2 delivers WOW-02 and deferred D-14 flagship treatment using plan 01 primitives. Career markup preservation, nested-link avoidance on org `<h3>`, and `evals/home.spec.ts` regression awareness (`#projects > ul > li`) are well handled. Content-model slugs align (`itsc`, `elia`, `vidama-mediathek` in `content/en/projects.ts`).
+Round-2 plans are materially stronger: round-1 findings are mostly embedded in acceptance criteria with grep/Playwright/LHCI enforcement. Wave ordering, single-engine discipline, MODE-02 “same DOM” model, and recruiter skippability are well aligned with Phase 2 reality (zero motion deps, SSR overview at `page.tsx`). Two integration gaps remain that can fail success criteria without plan edits: **(1) page shell width blocks D-04/D-07**, **(2) TransitionLink scope misses post-bento case-study links**.
 
 ### Strengths
+- Comprehensive traceability to locked decisions (D-08–D-19), UI spec, and live code line refs.
+- Blocking gates at the right choke points: package legitimacy (03-01 Task 1), bundle (03-01 Task 2–3), human wow/quiet/mobile (03-04 Task 3).
+- Eval strategy builds incrementally (`evals/immersive.spec.ts`) without breaking existing `home`/`a11y`/`case-studies` contracts.
+- DSGVO/runtime constraints respected: self-hosted fonts (`next/font`), no CDN GSAP, no runtime third-party motion calls.
 
-- **Correct ITSC target**: `slug: "itsc"` with three roles (`content/en/career.ts:20-50`) matches D-06 multi-beat intent.
-- **No scrolljacking**: Explicit `pin:` grep = 0 and `once: true` reveals align with D-05 and UI mobile contract.
-- **Spine discipline**: `aria-hidden` decorative ticks follow `github-heatmap.tsx:55-77` precedent; dates remain in visible DOM.
-- **Bento accent budget**: Plan correctly uses `2px var(--border)` not accent for featured signal — matches corrected UI-SPEC text (`03-UI-SPEC.md:158-159`).
-- **i18n routing**: Internal links must use `@/i18n/navigation` — matches existing case-study links (`page.tsx:206-211`).
-- **Autonomous after Wave 1**: Appropriate dependency on 03-01 primitives only.
+### Concerns (cross-cutting)
+| Tag | Issue |
+|-----|-------|
+| **HIGH** | **`max-w-3xl` on `<main>` (`page.tsx:79`) prevents hero 1440px breakout and career spine margin layout** — finding #9 fix is documentation-only. |
+| **HIGH** | **03-03 TransitionLink does not modify `project-bento.tsx`** after 03-02 moves case-study links there — WOW-03/D-11.4 partially undelivered. |
+| **MEDIUM** | **Bundle budget enforced only in 03-01**; Waves 2–4 add ScrollTrigger instances, Magnetic, TransitionLink, case-study client JS without mandatory local LHCI stops. |
+| **MEDIUM** | **Hash-anchor nav** uses native `<a href="#…">` (`page.tsx:101-124`); Lenis `root` should handle these, but plan relies on manual + one Playwright test — no `scrollTo` fallback specified if native hash breaks under Lenis. |
+| **MEDIUM** | **Post-hydration hero opacity** may briefly violate WOW-04 “facts visible” spirit if mount timeline starts from hidden state. |
+| **LOW** | Motion-gate logic duplicated across components; footer/header transition inconsistency. |
 
-### Concerns
+### Suggestions (priority order)
+1. **Amend 03-01 Task 3**: restructure page width shell before hero grid (required for D-04 + D-07, not optional SUMMARY note).
+2. **Amend 03-03**: add `project-bento.tsx` to scope; wire `TransitionLink` for all internal case-study anchors.
+3. **Add soft LHCI checkpoints** to 03-02 Task 2 and 03-03 Task 2 verify blocks.
+4. **Clarify hero animation initial state** preserves SSR-visible text until first intentional frame.
+5. **Pre-wire bento `LinkComponent` prop** in 03-02 to ease 03-03 transition wiring.
 
-| Severity | Concern |
-|----------|---------|
-| **MEDIUM** | **ITSC multi-beat detection unspecified.** Task says “ITSC entry specifically” but doesn’t mandate `entry.slug === "itsc"` (or similar). Executor could mis-identify org. |
-| **MEDIUM** | **CareerSpine hybrid Server/Client split is complex.** Static tick markup + client fill wrapper scoped to career section height needs clear `ScrollTrigger` trigger/end boundaries; underspecified how `entries={...}` syncs with wrapped `<li>` count. |
-| **MEDIUM** | **ProjectBento Server vs Client ambiguity.** Task allows either; client-heavy bento with Reveal on every cell adds JS proportional to project count (5–7 items). Prefer server shell + minimal client wrappers per cell. |
-| **LOW** | **Skills/activity sections untouched.** Acceptable for phase scope, but success criterion 2 (“nahtlose Sektions-Übergänge”) applies only partially until Wave 3. |
-| **LOW** | **`home.spec.ts` fragility.** `#projects > ul > li` (`evals/home.spec.ts:29-34`) — plan mentions preserving `<ul>/<li>` but bento grid-on-`<ul>` needs explicit CSS grid classes; worth a note in acceptance. |
+### Phase Success Criteria Achievability
 
-### Suggestions
+| Criterion | Achievable? | Blocker |
+|-----------|-------------|---------|
+| 1. Career scroll-storytelling | **Yes, if layout fixed** | Spine + grid need wider shell |
+| 2. Craft + one engine + tokens | **Yes** | TransitionLink bento gap |
+| 3. Skippable / no preloader | **Yes** | Hero opacity flash risk (minor) |
+| 4. Reduced-motion full quiet variant | **Yes** | Architecture is sound |
+| 5. Deliberate mobile, no scrolljacking | **Yes** | pointer:fine + coarse gates consistent |
 
-1. Acceptance criterion: `grep 'slug === "itsc"'` or equivalent branch in `page.tsx` / `CareerSpine`.
-2. Specify ScrollTrigger **start/end** for spine fill (career `#career` section bounds, not page-global).
-3. Default ProjectBento to **Server Component** composing `<Reveal>` children; document client boundary count target.
-4. Add Playwright: spine **not visible** below `lg` viewport (`TECH-02`).
-
-### Risk Assessment
-
-**MEDIUM** — Storytelling design is solid; spine scoping and bento client-weight need careful implementation.
-
----
-
-## Plan 03-03 — Craft Micro-Interactions + Seamless Transitions
-
-### Summary
-
-Wave 3 completes WOW-03 micro-interactions and D-11.4 crossfade transitions on the single GSAP engine. Magnetic `contextSafe`, pointer-only gating, `:focus-visible` preservation (`globals.css:88-91`), and `@/i18n/navigation` for `TransitionLink` are all correct calls for this codebase.
-
-### Strengths
-
-- **Single-engine discipline**: Explicit package.json check excluding `framer-motion` / `motion`.
-- **Locale-aware routing**: `src/i18n/navigation.ts:4-5` exports `Link`/`useRouter` — plan correctly forbids raw `next/navigation`.
-- **A11y regression guard**: `evals/a11y.spec.ts` focus-ring tests must stay green — magnetic must not break `:focus-visible`.
-- **Reduced-motion instant swap**: Matches UI reduced-motion contract for route transitions.
-- **External links excluded**: Case-study external `visit` links (`page.tsx:214-221`) stay native `<a>` — correct scope.
-
-### Concerns
-
-| Severity | Concern |
-|----------|---------|
-| **MEDIUM** | **`TransitionLink` main fade scope.** Fading `document.querySelector("main")` fades header/footer too if main is only `{children}` — actually header is outside main (`layout.tsx:71-99`), so only page content fades — OK. But **footer links to `/about`** (`layout.tsx:106-111`) are not TransitionLink targets while homepage about link is — inconsistent transition UX. |
-| **MEDIUM** | **Research Pattern 5 uses `<button className="contents">`; plan requires Link-equivalent.** Plan 03-03 corrects this, but implementation must preserve keyboard activation, `href` semantics, and middle-click/open-in-new-tab — easy to regress if implemented as click-only button. |
-| **MEDIUM** | **Magnetic on “nav” is ambiguous.** UI-SPEC covers nav/footer links hover states; plan wraps CV + contact in Magnetic and mentions nav — hero hash anchors (`page.tsx:101-124`) are poor magnetic targets and may feel odd. Clarify: magnetic on CV/contact only, CSS hover on hash nav. |
-| **LOW** | **Crossfade + client navigation timing.** New page mounts fresh `<main>` at opacity 1 (unmount clears inline styles) — acceptable. Incoming `Reveal` on case-study pages (plan 04) provides entrance — OK. |
-| **LOW** | **Playwright “transform changes on mouse move”** may flake in headless if pointer events differ; consider `page.mouse.move` with explicit coordinates. |
-
-### Suggestions
-
-1. Mandate `TransitionLink` as **wrapper around `@/i18n/navigation` `Link`** with `preventDefault` + tween + `router.push`, not a button — preserve Cmd+click.
-2. Scope magnetic explicitly to **CV button + contact block links**; hero/header nav get CSS-only D-11.3 states.
-3. Optional: extend TransitionLink to footer `/about` for consistency (or document intentional omission).
-4. Add eval: **middle-click** on case-study link still opens new tab without broken crossfade.
-
-### Risk Assessment
-
-**MEDIUM** — Patterns are right; TransitionLink a11y/semantics and magnetic scope need tight implementation.
+### Overall Risk: **MEDIUM-HIGH**
+Plans are execution-ready after **two targeted amendments** (page layout shell + TransitionLink/bento wiring). Without those, expect visual D-04 failure and incomplete route transitions despite otherwise excellent motion architecture.
 
 ---
 
-## Plan 03-04 — Signature Treatments + Full Verification
+## Antigravity Review (Round 2)
 
-### Summary
+# Cross-AI Plan Review (ROUND 2 — verifying hardened plans)
 
-Wave 4 closes deferred D-16 photo treatment and D-15 reading-first elevation on case-study/prose routes, then runs the blocking human checkpoint against all five phase success criteria. Good phase capstone; verification checklist is thorough.
-
-### Strengths
-
-- **Photo degrades cleanly**: Matches existing text-only About (`page.tsx:259-267`) — no asset blocking.
-- **SSG preservation**: Explicit `getCaseStudy` / `generateStaticParams` grep guards on case-study page (`case-studies/[slug]/page.tsx:11-17,40`).
-- **Case-study H1 safe for SplitHeading**: Plain text title (`case-studies/[slug]/page.tsx:51-52`), no nested links.
-- **Human checkpoint covers all five ROADMAP criteria**: wow / skippable / quiet / mobile + automated LHCI full suite.
-- **Both locales**: `/de` and `/en` throughout — matches I18N-02 parity discipline.
-
-### Concerns
-
-| Severity | Concern |
-|----------|---------|
-| **MEDIUM** | **Prose `/about` page has no visible H1 in server component.** `[slug]/page.tsx:45-50` renders MDXContent only — plan says “if the page renders a title heading” — executor may skip SplitHeading on full about page while case-study gets display H1; inconsistent identity. |
-| **MEDIUM** | **Client islands on SSG routes increase bundle per route.** `SplitHeading` + `Reveal` on case-study/about pages add client JS to routes that are 100% server today — cumulative with homepage motion; reinforces need for post-03-01 bundle measure. |
-| **LOW** | **Photo optional asset path undefined.** “Known public/ path check or content-model field” — no field exists today; executor needs explicit placeholder strategy (env flag, constant, or content model extension) to avoid ad-hoc logic. |
-| **LOW** | **Human checkpoint is subjective.** “Medium/expressive craft (D-10)” lacks measurable rubric beyond human judgment — acceptable for design phase but note for audit trail. |
-
-### Suggestions
-
-1. Add task clarity: extract about **MDX h1** via frontmatter or wrap MDX output — apply SplitHeading consistently with case-study pages.
-2. Photo slot: reference a **single constant** (e.g. `public/images/lasse.jpg` optional) documented in SUMMARY when absent.
-3. Checkpoint: require **screenshot or short screen recording** attachment in SUMMARY for human verify audit.
-4. Run **`pnpm exec lhci autorun` on preview URL** if local differs from CI (Vercel edge caching).
-
-### Risk Assessment
-
-**LOW–MEDIUM** — Mostly polish and verification; prose-page display treatment gap is the main substantive hole.
+This is a read-only architectural and code-integration review of the updated implementation plans for **Phase 3: Design Direction & Immersive Experience** for `lsiem.de`. The review evaluates the plans' correctness, completeness, and alignment with Next.js 16 App Router, React 19, performance budgets, accessibility, and smooth-scroll mechanics.
 
 ---
 
-## Cross-Cutting Analysis
+## 1. Executive Summary & Verdict
 
-### Phase Success Criteria Coverage
+The revised plans successfully integrate the feedback from the Round-1 review. By layering the GSAP/Lenis animation wrappers on top of server-rendered markup, the project preserves search engine indexing and performance baselines. Gating the scroll and magnetic layers with `useSyncExternalStore` matches the pre-existing patterns in [theme-toggle.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/theme-toggle.tsx) and adheres to the React Compiler's strict rendering requirements.
 
-| # | Criterion | Plans | Gap |
-|---|-----------|-------|-----|
-| 1 | Career scroll-storytelling | 03-02 | Covered |
-| 2 | Craft + one engine + motion tokens | 03-01, 03-03 | Hero timing vs tokens partially gap |
-| 3 | Skippable / no preloader | 03-01 (WOW-04) | Covered structurally |
-| 4 | Reduced-motion full quiet variant | 03-01 gates + all `matchMedia` branches | Covered if gates implemented once |
-| 5 | Deliberate mobile, no scrolljacking | 03-01, 02, 03 | Covered; Lenis/hash behavior needs verify |
-
-**WOW-01 (3D hero)** correctly deferred to Phase 4 with `HeroSceneSlot` — not a plan defect.
-
-### GSAP + Lenis + Next 16 + React 19 Integration
-
-| Topic | Verdict |
-|-------|---------|
-| `useSyncExternalStore` for motion gates | ✅ Required; matches `theme-toggle.tsx` |
-| `gsap.matchMedia` not deprecated `ScrollTrigger.matchMedia` | ✅ Specified in plans + research |
-| Lenis `autoRaf: false` + single `gsap.ticker` | ✅ Correct pattern; ref shape = verify at install |
-| SplitText nested-link trap | ✅ Called out; org `<h3>` with `<a>` excluded (`page.tsx:139-141`) |
-| Byte-identical career markup | ✅ “Wrap only” discipline |
-| `@/i18n/navigation` | ✅ Required for TransitionLink / bento |
-| Compositor-only (`transform`/`opacity`) | ✅ UI-SPEC + plan language align |
-
-### Performance & DSGVO
-
-- **LHCI gate is real**: `lighthouserc.json:10-14` enforces LCP ≤ 2500, TBT ≤ 200, CLS ≤ 0.1, script ≤ 184643, perf ≥ 0.9 on `/de` and `/en`.
-- **DSGVO**: Self-hosted npm bundles + `next/font` — no runtime Google calls — consistent with `AGENTS.md`.
-- **Fonts**: Third display face (Bricolage) adds download weight — monitor LCP after layout change.
-
-### Dependency & Wave Ordering
-
-```
-03-01 (foundation) → 03-02 (storytelling) → 03-03 (craft) → 03-04 (polish + verify)
-```
-
-Ordering is correct. No circular deps. Plan 02’s `depends_on: ["03-01"]` is load-bearing — executing out of order would duplicate motion infrastructure or fail evals.
-
-### Scope Creep / Over-Engineering
-
-Plans generally **avoid** second component trees, View Transitions API, and framer-motion. Risk of over-engineering is low. The main creep vector is **client boundary proliferation** on an otherwise static homepage — acceptable if bundle stays within gate.
+**Verdict: PROCEED**
+The plans are technically sound, structurally consistent, and ready for execution. The few remaining edge cases (subtree remounting and prose H1 consistency) can be resolved inline during implementation.
 
 ---
 
-## Overall Risk Assessment
+## 2. Verification of Round-1 Findings
 
-**MEDIUM**
+Each of the 10 findings from Round 1 has been verified against the updated plans:
 
-**Justification:** Architectural decisions (single engine, same DOM for MODE-02, skippable SSR-first hero, pointer/reduced-motion gates, i18n-safe navigation) are well researched and aligned with the shipped Phase 2 codebase. The plans will likely succeed if execution closes four gaps: (1) **measure bundle after first motion commit**, (2) **implement D-12 as a hero timeline not scroll Reveal**, (3) **resolve Lenis wrapper + hash anchor + CSS smooth-scroll interaction**, (4) **align layout chrome width with D-04 grid**. Without those, CI budget failure or hero/transition polish gaps are plausible late in the phase.
-
----
-
-## Recommended Pre-Execution Checklist
-
-1. Approve lenis package-legitimacy gate (plan 03-01 Task 1).
-2. After Task 2: **run LHCI**; do not proceed to hero choreography if script budget fails.
-3. Implement hero as **`HeroIntro` timeline**, not Reveal-on-scroll for above-the-fold beats.
-4. Fix Bricolage font variable naming before evals check `font-family` contains "Bricolage".
-5. Decide Lenis wrap scope (children-only vs header+children) before ScrollTrigger refresh logic lands.
-6. Specify ITSC branch by `slug === "itsc"` in plan 02 acceptance criteria.
-7. Implement `TransitionLink` as enhanced `Link`, not button-with-contents.
+1. **Bundle measurement made BLOCKING right after GSAP+Lenis install:** Verified. In [03-01-PLAN.md:187](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L187), the `resource-summary:script:size` audit (gated at 184,643 bytes) is marked as a **HARD STOP** blocking gate in Task 2. Furthermore, GSAP plugins are imported directly from subpaths (e.g. `gsap/ScrollTrigger`, `gsap/SplitText`) to ensure clean tree-shaking.
+2. **html.lenis { scroll-behavior: auto } added:** Verified. Task 2 in [03-01-PLAN.md:157](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L157) adds the override rule to [globals.css](file:///Users/lasse/Development/Projects/portfolio/src/app/globals.css) to stop collision with native smooth-scrolling.
+3. **TransitionLink modified-click passthrough:** Verified. Task 2 in [03-03-PLAN.md:131](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-03-PLAN.md#L131) checks for modifiers (`metaKey`, `ctrlKey`, `shiftKey`, `altKey`) and non-primary clicks, bypassing custom animations to let the browser handle new-tab requests natively. It is also correctly implemented as an enhanced `@/i18n/navigation` `Link` instead of a button.
+4. **getMotionToken SSR safety + stable MotionProvider wrapper:** Verified. Task 2 in [03-01-PLAN.md:159](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L159) adds a `typeof window === "undefined"` guard to prevent static compilation crashes. It also includes instructions to avoid changing DOM tags in `MotionProvider` to avoid hydration mismatches (but see recommendation below).
+5. **Bento grid semantics (one `<li>` per project):** Verified. Task 2 in [03-02-PLAN.md:126](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-02-PLAN.md#L126) forces each project to render as a single outer `<li>` acting as the grid container, maintaining valid HTML semantics and a 1:1 list-item mapping.
+6. **Hero intro mount timeline vs scroll reveal:** Verified. Task 3 in [03-01-PLAN.md:217](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L217) introduces a dedicated, time-orchestrated `useGSAP` timeline inside a `HeroIntro` wrapper that triggers on-mount rather than on native scroll.
+7. **Bricolage font token non-circular binding:** Verified. Task 2 in [03-01-PLAN.md:161](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L161) maps next/font's `--font-bricolage` variable to Tailwind's `--font-display` via `@theme`, mirroring the Geist configuration and avoiding self-binding.
+8. **Lenis wrapper-scope decision:** Verified. Task 2 in [03-01-PLAN.md:163](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L163) forces an explicit decision on whether to wrap the layout's header/footer and defines a Playwright check to ensure hash-anchors work under Lenis.
+9. **Layout width breakout:** Verified. Task 3 in [03-01-PLAN.md:219](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-01-PLAN.md#L219) reconciles and documents the width discrepancy between the widened hero grid (`max-w-[1440px]`) and the `max-w-3xl` header/footer chrome.
+10. **About photo CLS reservation:** Verified. Task 1 in [03-04-PLAN.md:98](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-04-PLAN.md#L98) sets an explicit aspect ratio, fixed width, and placeholder background to allocate space before the photo load completes.
 
 ---
 
-## Antigravity Review
+## 3. New Findings & Still-Wrong Items
 
-# Cross-AI Plan Review: Phase 3 — Design Direction & Immersive Experience
+During Wave reviews, a few minor architectural and visual gaps were identified. These should be addressed during implementation:
 
-This is a read-only architectural and code-integration review of the implementation plans for **Phase 3: Design Direction & Immersive Experience** for `lsiem.de`. The review evaluates compatibility with the existing codebase, React 19 / Next.js 16 App Router constraints, performance budgets, accessibility, and smooth scroll mechanics.
+### 3.1. Subtree Remounting in `MotionProvider` & `Magnetic` Wrappers
+*   **The Issue:** Swapping element types dynamically on the client based on feature gates (e.g., rendering `<ReactLenis root>{children}</ReactLenis>` when motion is enabled, and `<div>{children}</div>` when disabled; or `<Magnetic>{children}</Magnetic>` vs `{children}`) changes the React node hierarchy. Even if the underlying DOM element remains a `div`, React sees a component type change (e.g., `ReactLenis` vs `div`, or `Magnetic` vs `ReactFragment`) and **unmounts the entire children subtree and remounts it**. This resets state, drops DOM focus, and triggers flashes.
+*   **Mitigation:** 
+    *   **For `MotionProvider`:** Enforce a stable container type. Always render `<ReactLenis root autoRaf={false}>` but only conditionally register the `gsap.ticker` sync and scroll listeners inside a sub-hook or component when gates are satisfied. When the gates are false, leaving the RAF loop unticked makes Lenis completely inert and fallback to native scroll.
+    *   **For `Magnetic`:** Always wrap the children in the `<Magnetic>` element, but conditionally bind mouse event listeners (or execute them as no-ops) depending on the `pointer: fine` query.
 
----
+### 3.2. Missing H1 and Display Identity on Prose Pages
+*   **The Issue:** The about/prose template [[slug]/page.tsx](file:///Users/lasse/Development/Projects/portfolio/src/app/[locale]/[slug]/page.tsx) currently lacks an `<h1>` element. It renders raw markdown MDX where the highest heading is `## Über mich` (which is compiled to an `<h2>`). This violates heading hierarchy guidelines and SEO best practices (WCAG: single `<h1>` per page). Additionally, it prevents these pages from displaying the Bricolage Grotesque Display font used elsewhere, resulting in visual inconsistency.
+*   **Mitigation:** In [03-04-PLAN.md](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-04-PLAN.md), modify Task 2 to explicitly extract and render `page.title` as an H1 using `SplitHeading` at the top of [[slug]/page.tsx](file:///Users/lasse/Development/Projects/portfolio/src/app/[locale]/[slug]/page.tsx), matching the layout pattern of the case study page.
 
-## Overall Assessment & Integration Analysis
+### 3.3. Career Spine Tick Alignment
+*   **The Issue:** The career timeline list items in [page.tsx](file:///Users/lasse/Development/Projects/portfolio/src/app/[locale]/page.tsx#L129) are dynamically sized because description and stack lengths vary per organization. Rendering `CareerSpine` ticks inside a separate, fixed-height vertical container will cause markers to drift and misalign with the corresponding list items.
+*   **Mitigation:** To ensure perfect alignment without fragile JS layout measuring, render the ticks as absolute-positioned decorators directly *inside* each `<li>` in the career list (protruding out into the left margin column), rather than inside a separate sidebar.
 
-The four plans collectively define a cohesive vertical slice that elevates the portfolio from a static, text-first recruiter site into an immersive, identity-derived storytelling experience. The stack selection (**GSAP 3.15 + Lenis 1.3.x**) is standard and robust, avoiding the "two animation engines" anti-pattern. 
+### 3.4. TransitionLink Integration Scope
+*   **The Issue:** Task 2 in [03-03-PLAN.md](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-03-PLAN.md) modifies page-level case-study links to use `TransitionLink`. However, Wave 2 ([03-02-PLAN.md](file:///Users/lasse/Development/Projects/portfolio/.planning/phases/03-design-direction-immersive-experience/03-02-PLAN.md)) refactors the project list into `<ProjectBento>`.
+*   **Mitigation:** Clarify that `TransitionLink` must be integrated directly inside the new [project-bento.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/project-bento.tsx) component for the flagship/deep case-study links, rather than on the page-level mapping.
 
-By utilizing client-side animation wrappers on top of server-rendered markup, the project preserves search engine indexing and performance baselines. Gating the scroll and magnetic layers with `useSyncExternalStore` matches the pre-existing patterns in [theme-toggle.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/theme-toggle.tsx) and adheres to the React Compiler's strict rendering requirements.
-
-The overall risk profile is **LOW/MEDIUM**. The primary risks relate to **Server-Side Rendering (SSR) safety during static build compilation** and **minor usability edge cases** (e.g. browser navigation modifiers).
-
----
-
-## Plan-by-Plan Detailed Review
-
-### Plan 03-01: Motion Foundation + Engineered Hero Intro
-
-*   **Summary:** Installs core motion dependencies (`gsap`, `@gsap/react`, `lenis`), registers CSS motion tokens in [globals.css](file:///Users/lasse/Development/Projects/portfolio/src/app/globals.css), adds the display typeface **Bricolage Grotesque** via `next/font`, and implements the core `MotionProvider`, `Reveal`, and `SplitHeading` client primitives to drive the hero section's intro sequence.
-*   **Strengths:**
-    *   Centralization of motion tokens in [globals.css](file:///Users/lasse/Development/Projects/portfolio/src/app/globals.css:3) as the single source of truth.
-    *   Proper use of `useSyncExternalStore` for media queries and pointer status, matching the compiler-safe pattern in [theme-toggle.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/theme-toggle.tsx#L90) and avoiding hydration flashes.
-    *   The reserved [hero-scene-slot.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/hero-scene-slot.tsx) Server Component is a clean seam that prevents hero layout reflow in Phase 4.
-    *   GSAP plugins are registered at the module scope of [motion-provider.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/motion-provider.tsx), preventing duplicate registration errors under React 19's Strict Mode.
-*   **Concerns:**
-    *   > [!WARNING]
-        > **HIGH SEVERITY: SSR/Static Build Crash in `getMotionToken`**
-        > The plan states that `Reveal` should take optional distance/duration props that default to values from `getMotionToken` (which queries `getComputedStyle(document.documentElement)`). Because Next.js compiles `"use client"` components on the server during `pnpm build`, executing `getMotionToken` as a default parameter in the component function signature (e.g., `distance = getMotionToken(...)`) will execute on the server and throw `ReferenceError: document is not defined`, crashing the build.
-    *   > [!IMPORTANT]
-        > **MEDIUM SEVERITY: Hydration Mismatch in `MotionProvider` Wrapper**
-        > The `MotionProvider` returns `<>{children}</>` when motion is disabled (SSR fallback & reduced-motion), but `<ReactLenis root>{children}</ReactLenis>` when enabled. By default, `ReactLenis` renders a wrapping `div` (with a default tag of `"div"`). Changing the DOM tree structure from a fragment on the server to a wrapping `div` on the client will trigger a React hydration mismatch error.
-    *   > [!IMPORTANT]
-        > **MEDIUM SEVERITY: Smooth Scroll Collision**
-        > The native `scroll-behavior: smooth` is defined in [globals.css](file:///Users/lasse/Development/Projects/portfolio/src/app/globals.css#L66). When Lenis smooth scroll is active, it interpolates the scroll viewport position. Having both active causes browser jitter and input fight.
-*   **Suggestions:**
-    *   In [motion-tokens.ts](file:///Users/lasse/Development/Projects/portfolio/src/lib/motion-tokens.ts), ensure `getMotionToken` checks if `typeof window === 'undefined'` and returns safe fallback constants (e.g., `24` for distance, `0.4` for duration) when called on the server.
-    *   To prevent hydration mismatch, configure `ReactLenis` to always render the same wrapping element or enforce a matching layout wrapper structure on both server and client.
-    *   Add an override rule in [globals.css](file:///Users/lasse/Development/Projects/portfolio/src/app/globals.css) to disable native smooth scrolling when Lenis is active:
-        ```css
-        html.lenis {
-          scroll-behavior: auto !important;
-        }
-        ```
-    *   Register both `ScrollTrigger` and `SplitText` at the module scope of [split-heading.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/split-heading.tsx) as well.
+### 3.5. SVG Overlay for Photo Crop corner-ticks
+*   **The Issue:** Designing the `.photo-frame` crop corners using only `::before` and `::after` pseudo-elements is limited because there are only two pseudo-elements, making it difficult to draw four distinct L-shaped corner ticks without complex CSS hackery (like double border patterns).
+*   **Mitigation:** Use an absolute-positioned, decorative SVG overlay (`aria-hidden="true"`, `pointer-events-none`) inside the photo frame to draw the corner ticks. This is cleaner, accurate, and easier to style.
 
 ---
 
-### Plan 03-02: Career Scroll-Storytelling + Bento Projects
+## Codex Review (Round 2)
 
-*   **Summary:** Leverages foundation primitives to build out the career and projects sections. It introduces the `CareerSpine` progress rail, maps career roles to a timeline with a multi-beat reveal for the ITSC arc, and refactors the project list into an asymmetric bento grid highlights the ELIA and Vidama case studies.
-*   **Strengths:**
-    *   Strict adherence to `once: true` reveals on native scroll, avoiding intrusive scrolljacking or viewport pinning.
-    *   Spine ticks are marked `aria-hidden="true"`, preventing screen-reader clutter since career dates are already present in the DOM.
-    *   `CareerSpine` progress indicators modify compositor-only variables (`scaleY`/`translateY`), preventing layout thrashing.
-*   **Concerns:**
-    *   > [!NOTE]
-        > **LOW/MEDIUM SEVERITY: Invalid HTML Semantics in Bento Grid**
-        > If the bento grid is built by rendering the featured project cards and their supporting metric panels as direct sibling `<li>` items under a `<ul>` list container, the DOM hierarchy will represent them as independent list items. This will cause screen readers to announce more items than projects, degrading accessibility.
-*   **Suggestions:**
-    *   In [project-bento.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/project-bento.tsx), make each project entry a single outer `<li>` that acts as a 12-column grid container (e.g. `col-span-12 grid grid-cols-12 gap-6`). Place the project card (`col-span-8`) and supporting panel (`col-span-4`) inside it. This maintains semantically valid HTML and maps list items 1:1 to actual projects.
+_Failed again — same deterministic `litellm-proxy`/Azure error: "An assistant message with 'tool_calls' must be followed by tool messages…". Backend/proxy config issue in the local codex setup, not a plan defect._
 
 ---
 
-### Plan 03-03: Craft Micro-interactions + Seamless Transitions
+## CodeRabbit Review (Round 2)
 
-*   **Summary:** Implements the micro-interaction layers. It wraps focusable actions in a pointer-only `Magnetic` component, registers CSS-driven hover/active transitions for tech chips and links, and introduces `TransitionLink` to orchestrate a GSAP-driven exit animation when routing to case studies or `/about`.
-*   **Strengths:**
-    *   The `Magnetic` component isolates event listeners to pointer inputs, maintaining standard `:focus-visible` rings on keyboard focus.
-    *   Single-engine discipline is maintained by utilizing GSAP timelines for routing animations rather than introducing experimental View Transitions.
-*   **Concerns:**
-    *   > [!IMPORTANT]
-        > **MEDIUM SEVERITY: Broken Link Modifiers in Custom Navigation**
-        > The proposed `TransitionLink` click handler calls `e.preventDefault()` and triggers `router.push(href)` upon exit tween completion. This blocks native browser behaviors like `Cmd+Click`, `Ctrl+Click`, and middle-click to open case studies in new tabs, which will frustrate recruiters attempting to multi-task.
-*   **Suggestions:**
-    *   Update the click interceptor in [transition-link.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/transition-link.tsx) to pass through standard clicks when modifiers are held:
-        ```typescript
-        const isModified = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
-        const isRightClick = e.button === 2;
-        if (isModified || isRightClick) return; // Let browser open in new tab
-        e.preventDefault();
-        ```
-    *   Avoid wrapping elements in `<Magnetic>` dynamically on React state changes. Instead, render a static wrapper container and conditionally bind the event handlers only if pointer fine-gating is satisfied, avoiding DOM layout differences.
+_Skipped — diff-only reviewer; the working-tree diff has no plan/code content (plans are committed markdown)._
 
 ---
 
-### Plan 03-04: Signature Treatments + Full Immersive Verification
+## Consensus Summary — Round 2 (verifying hardened plans, commit 6b2f2c4)
 
-*   **Summary:** Extends visual treatments to case-study sub-pages and prose pages, implements the visual photo crop frame for the About section (designed to fall back to text-only if the photo asset is unsupplied), and runs Playwright/LHCI test verification blocks.
-*   **Strengths:**
-    *   Maintains consistent art direction across case studies, prose routes, and main content.
-    *   Fallback logic ensures that the About section degrades gracefully if the profile picture is absent at build time.
-    *   Automated LHCI gate ensures the performance baseline does not fall below the budget limit.
-*   **Concerns:**
-    *   > [!NOTE]
-        > **LOW SEVERITY: Cumulative Layout Shift (CLS) on Photo Load**
-        > Applying grayscale/contrast filters to the About photo is visual-only, but if the photo lacks a reserved bounding box, its late loading can trigger Cumulative Layout Shift, violating the `0.1` CLS threshold in [lighthouserc.json](file:///Users/lasse/Development/Projects/portfolio/lighthouserc.json#L12).
-*   **Suggestions:**
-    *   Ensure the photo container has explicit layout dimensions (e.g. `aspect-square w-[160px] md:w-[200px]`) and a background placeholder colour matching `var(--border)` to keep layout space pre-allocated.
-    *   In the Server Component [page.tsx](file:///Users/lasse/Development/Projects/portfolio/src/app/[locale]/page.tsx), use Node's `fs.existsSync` to detect the presence of the profile photo at build time before rendering the container shell to keep page structures clean.
+Three independent models — **Gemini**, **Cursor**, **Antigravity** — re-reviewed the plans after round-1 feedback was incorporated. **Codex failed again** (identical deterministic `litellm-proxy`/Azure tool-call backend error). **CodeRabbit skipped** (diff-only). Working tree verified **UNCHANGED** — no reviewer edited files.
 
----
+**All three confirm the 10 round-1 findings are correctly embedded** in acceptance criteria / actions / artifact lists — nobody asked for any of it to be reworked. Verdicts: Gemini **APPROVED FOR EXECUTION** (LOW) · Antigravity **PROCEED** (LOW/MEDIUM) · Cursor **MEDIUM-HIGH** ("execution-ready after two targeted amendments"). Two caveats on the round-1 fixes: finding #3 (TransitionLink) is correct in spec but **incomplete in file scope**, and finding #9 (layout width) was resolved **documentation-only, not structurally** — both feed the new findings below.
 
-## Risk Assessment
+### New findings this round
 
-*   **Overall Phase Risk:** **LOW/MEDIUM**
-*   **Justification:** The implementation steps are clean, logical, and rely on standard integration paths. The risks are standard Next.js compilation issues (SSR safety, hydration mismatches) and UX overrides (new-tab modifiers), all of which are easily mitigated by styling hooks, safety checks, and standard click filtering.
+**Consensus (2+ reviewers) — worth folding in before execution:**
 
----
+1. **[HIGH — Cursor + Antigravity] `TransitionLink` misses `project-bento.tsx`.** 03-02 (Wave 2) moves the case-study links into the new `ProjectBento`; 03-03 (Wave 3) wires `TransitionLink` only on `page.tsx` (`files_modified` omits `project-bento.tsx`). Net: bento case-study links never get the crossfade → **WOW-03 / D-11.4 partially undelivered.** Fix: add `src/components/motion/project-bento.tsx` to 03-03 `files_modified` and wire `TransitionLink` inside the bento; ideally pre-wire a `LinkComponent` prop in 03-02 (defaulting to i18n `Link`, swapped to `TransitionLink` in Wave 3).
 
-## Summary of Recommendations
+**Strong single-reviewer (Gemini explicitly disagrees) — worth fixing:**
 
-1.  **SSR Safety in [motion-tokens.ts](file:///Users/lasse/Development/Projects/portfolio/src/lib/motion-tokens.ts):** Add a `typeof window === 'undefined'` guard to `getMotionToken` to avoid build crashes during static generation.
-2.  **Smooth Scroll Fix in [globals.css](file:///Users/lasse/Development/Projects/portfolio/src/app/globals.css):** Set `scroll-behavior: auto !important` on `html.lenis` to prevent browser jitter.
-3.  **Hydration Mismatch Mitigation:** Render a matching container tag in `MotionProvider` or always keep the wrapper present to avoid server/client DOM mismatch during hydration.
-4.  **Bento Grid Semantics:** Wrap each featured project card and panel in a single outer `<li>` in [project-bento.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/project-bento.tsx) to maintain clean accessibility trees.
-5.  **Modifier Keys in [transition-link.tsx](file:///Users/lasse/Development/Projects/portfolio/src/components/motion/transition-link.tsx):** Bypass custom animations and routing if `Ctrl`, `Cmd`, `Shift`, or middle-click is pressed to preserve native new-tab features.
-6.  **Tree-Shaking and Script Size:** GSAP + Lenis + Next base is very close to the `184,643` byte script transfer limit in [lighthouserc.json](file:///Users/lasse/Development/Projects/portfolio/lighthouserc.json#L13). Ensure all GSAP plugins are imported directly from subpaths (e.g. `gsap/ScrollTrigger`) rather than core shortcuts, and run `pnpm build` immediately after Task 1 to measure the exact script payload size.
+2. **[HIGH — Cursor; adjacent Antigravity] Layout-width fix is documentation-only, not structural.** `<main className="… max-w-3xl …">` (`page.tsx:79`) caps content at ~768px, so round-1 finding-#9's "record intent in SUMMARY" does **not** actually let the hero break to `max-w-[1440px]` (D-04) or give the career spine its left-margin column (D-07). Antigravity's "career-spine tick alignment" (3.3) is the same constraint from another angle. Fix: 03-01 must **restructure the `<main>` width shell** (remove/relocate the global `max-w-3xl`, apply per-section reading widths, add a full-bleed wrapper for hero + career grid) — a real structural change, not a SUMMARY note. *Divergence:* Gemini rated #9 "YES — deliberate editorial break-out recorded in Summary"; the disagreement is whether documentation suffices — it does not, because the CSS cap is real and would visually fail D-04.
 
----
+3. **[MEDIUM — Antigravity + Cursor] MotionProvider / Magnetic subtree remount on element-type swap.** Round-1 #4 mandated a "stable wrapper," but conditionally rendering `<ReactLenis>` vs `<div>` (or `<Magnetic>` vs fragment) still changes the React node *type* → React unmounts/remounts the whole subtree (resets state, drops focus, flash). Fix: **always render `<ReactLenis root autoRaf={false}>`** and conditionally tick the `gsap.ticker` sync; **always render `<Magnetic>`** and conditionally bind the pointer listeners.
 
-## Codex Review
+4. **[MEDIUM — Antigravity; Cursor round-1] Prose `/about` page has no `<h1>`.** `src/app/[locale]/[slug]/page.tsx` renders MDX whose top heading is `##` → `<h2>`; SplitHeading/display font can't apply, and it breaks WCAG single-`<h1>`. Fix: 03-04 Task 2 should extract `page.title` as an H1 with `SplitHeading` (mirror the case-study page).
 
-_Failed — codex `litellm-proxy` (model-router/Azure) returned: "An assistant message with 'tool_calls' must be followed by tool messages responding to each 'tool_call_id'". This is a backend proxy/threading error in the local codex setup, not a plan issue. codex read files and spent ~62K tokens before the backend rejected the sequence._
+5. **[MEDIUM — Cursor] Bundle budget enforced only in 03-01.** Waves 2–4 add ScrollTrigger instances, `Magnetic`, `TransitionLink`, and case-study client JS with no mandatory local LHCI stop until the final 03-04 checkpoint → a breach surfaces late. Fix: add a soft `lhci` check to 03-02 and 03-03 verify blocks.
 
----
+6. **[MEDIUM — Cursor] Hero opacity flash vs WOW-04.** The `HeroIntro` mount timeline likely animates from `opacity: 0`; ensure the first client frame equals the SSR final state (or use CSS `@starting-style`) so recruiters never see blank hero text after hydration.
 
-## CodeRabbit Review
+**LOW:** wrap SplitText init in `document.fonts.ready` (Bricolage metrics) — Gemini; native Back button won't trigger the exit transition, acceptable for MVP — Gemini; photo corner-ticks cleaner as an `aria-hidden` SVG overlay than two pseudo-elements — Antigravity; specify `HeroIntro`↔`SplitHeading` SplitText ownership to avoid double-split — Antigravity/Cursor; extract shared `useMotionGates()` to avoid gate-logic drift, and pin the `<li>`-count test to a fixed project-count source — Cursor.
 
-_Skipped — CodeRabbit reviews the git working-tree diff, which currently contains only unrelated changes (`config.json`, `SKILL.md`, untracked tooling dirs); the Phase 3 plans are committed markdown, so a diff review would add no plan-level signal. (`--prompt-only` is also deprecated in the installed CodeRabbit; `--plain`/`--agent` are the current flags.)_
+### Divergent views
 
----
+- **Overall risk:** Gemini **LOW / APPROVED** vs Antigravity **LOW/MEDIUM / PROCEED** vs Cursor **MEDIUM-HIGH**. The entire gap is the two Cursor-HIGH items. Antigravity independently found #1 (bento transition), so that one is real consensus; #2 (layout shell) is Cursor's strongest solo call and Gemini explicitly accepted the documentation-only resolution — so it's a judgment call, but the CSS cap is objectively present in `page.tsx:79`.
 
-## Consensus Summary
+### Recommendation
 
-Three independent models — **Gemini CLI**, **Cursor agent**, and **Antigravity CLI** — reviewed all four plans against the live repo (each cited real `file:line` evidence). **Codex failed** (its `litellm-proxy`/Azure backend rejected the tool-call message sequence mid-run — infra, not a plan defect) and **CodeRabbit was skipped** (diff-only reviewer; the current working-tree diff has no plan/code content, so it would review unrelated config noise). All three completed reviewers reached the same verdict: **architecturally sound — PROCEED — with a small set of execution gaps to close during Waves 1–3.** Per-reviewer risk: Gemini **LOW**, Antigravity **LOW/MEDIUM**, Cursor **MEDIUM**.
-
-### Agreed Strengths (2+ reviewers)
-
-- **`useSyncExternalStore` mandate** for reduced-motion/pointer detection correctly mirrors `src/components/theme-toggle.tsx:15-43,90` — React-Compiler-safe, no hydration flash. *(all 3)*
-- **Single-engine GSAP discipline** — `framer-motion`/`motion` excluded via an explicit `package.json` check. *(all 3)*
-- **MODE-02 = same DOM** — reduced-motion renders the identical markup with motion layered on top; no duplicate quiet variant. *(all 3)*
-- **SSR-first, skippable hero** — name/role/value-prop/anchor-nav are static HTML before any JS (WOW-04), grounded in real `page.tsx:84-127` markup. *(Gemini, Cursor)*
-- **Pointer + reduced-motion gating** on Lenis and magnetic effects. *(all 3)*
-- **Internal nav via `@/i18n/navigation`** (never raw `next/link`). *(Gemini, Cursor)*
-- **Correct wave ordering** (foundation → storytelling → craft → verify), no circular deps. *(all 3)*
-- **`lenis` package-legitimacy human checkpoint** is proportionate supply-chain hygiene. *(Gemini, Cursor)*
-
-### Agreed Concerns (2+ reviewers — highest priority)
-
-1. **[HIGH consensus] Measure the bundle early — don't assume it.** All three flag the **184,643-byte LHCI script gate** (`lighthouserc.json:13`) as tight for GSAP + ScrollTrigger + SplitText + Lenis + Bricolage; Cursor rates it HIGH. Make the `pnpm build` / `pnpm exec lhci autorun` measurement a **blocking gate right after the dependency install (03-01 Task 2)**, not "if headroom is in doubt", and import GSAP plugins from subpaths (`gsap/ScrollTrigger`). *(Gemini, Cursor, Antigravity — also matches the plan-checker's own warning.)*
-2. **[MEDIUM] Native `scroll-behavior: smooth` collides with Lenis.** `globals.css:64-68` enables native smooth scroll; with Lenis active this double-smooths / input-fights. Add `html.lenis { scroll-behavior: auto }` (or gate the CSS rule on the non-Lenis path). *(Cursor, Antigravity)*
-3. **[MEDIUM] `TransitionLink` breaks Cmd/Ctrl/Shift/middle-click "open in new tab".** The `preventDefault()` + `router.push()` handler must pass modified/middle clicks through to native behavior — recruiters multi-tab. Implement as an enhanced `@/i18n/navigation` `Link`, not a click-only button. *(Cursor, Antigravity)*
-4. **[HIGH/MEDIUM] MotionProvider / `getMotionToken` SSR + hydration safety.** `getMotionToken` reads `getComputedStyle(document.documentElement)`; used as a default parameter it executes during `pnpm build` → `ReferenceError: document is not defined` (Antigravity **HIGH**). Guard with `typeof window === 'undefined'` → constant fallback. Separately, `<>{children}</>` (SSR/reduced-motion) vs `<ReactLenis root>` wrapping-`div` (client) changes the DOM tree → hydration mismatch risk; keep a stable wrapper tag. *(Antigravity; Gemini notes the hydration ceiling + `getMotionToken` server-safety.)*
-5. **[MEDIUM/LOW] Bento grid `<li>` semantics.** Each project must be **one outer `<li>`** acting as a 12-col grid container (card `col-span-8` + panel `col-span-4` inside), so screen readers announce N projects (not N×panels) and `evals/home.spec.ts` (`#projects > ul > li`) stays green. *(Cursor, Antigravity)*
-
-### Single-reviewer findings worth investigating
-
-- **[HIGH — Cursor only] Hero intro choreography (D-12) is underspecified.** UI-SPEC specifies a **time-orchestrated mount** (grid 0–400ms → H1 split 200–900ms → value-prop 500–1000ms); 03-01 Task 3 wraps the value-prop in a scroll-triggered `<Reveal start:"top 85%">` — that's reveal-on-enter, not intro-on-mount, so the timing won't match the spec. Recommend a dedicated `HeroIntro` `useGSAP` timeline separate from scroll `Reveal`. Gemini/Antigravity did not raise this — **verify against UI-SPEC §hero before executing Wave 1.**
-- **[MEDIUM — Cursor only] Bricolage font token naming may be circular** — `--font-display` used for both the `next/font` variable and the Tailwind `@theme` binding. Mirror Geist's `--font-geist-sans → --font-sans` (`globals.css:17-18`): e.g. `--font-bricolage` → `--font-display`.
-- **[MEDIUM — Cursor only] Lenis wrapper scope vs sticky header + hash anchors** unresolved (wraps only `{children}`, header at `layout.tsx:71` is outside); no acceptance criterion forces the decision. **[LOW]** layout width mismatch (D-04): hero widens to `max-w-[1440px]` but header/footer stay `max-w-3xl`.
-- **[LOW — Antigravity only] CLS on the About photo** — reserve an explicit aspect-ratio box + placeholder so late image load can't breach the `0.1` CLS gate.
-
-### Divergent Views
-
-- **Overall risk:** Gemini **LOW** ("PROCEED") vs Cursor **MEDIUM** (driven by the hero-timing gap + the bundle assumption) vs Antigravity **LOW/MEDIUM**.
-- **Hero intro timing:** Cursor rates it **HIGH**; Gemini and Antigravity didn't flag it at all — the clearest disagreement, so it's the first thing to reconcile against the UI-SPEC.
-
-### Recommended next step
-
-Most findings are execution-time refinements, but five are cheap to fold into the plans now (bundle-measure-early, smooth-scroll collision, modifier-click passthrough, `getMotionToken` SSR guard + stable MotionProvider wrapper, bento `<li>` structure) plus the hero-timeline check:
+The round-1 hardening held — no rework requested. Round 2 found **one consensus HIGH (TransitionLink/bento wiring)** and **one strong structural gap (layout width shell)**, both genuine and cheap. Recommend one more targeted pass:
 
 ```
 /gsd-plan-phase 3 --reviews
 ```
 
-This replans incorporating this REVIEWS.md — each actionable finding must become a plan task / `<acceptance_criteria>` / `<action>` or an explicit deferral rationale before `/gsd-execute-phase 3`.
+…folding in findings 1–6 (especially **1** and **2**). After that the panel should be unanimous PROCEED. Alternatively, both are well-scoped enough to fix inline during execution — but wiring them into the plans now stops the executor from re-deriving them mid-build.
