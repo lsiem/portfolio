@@ -105,7 +105,25 @@ Plans:
   4. Besucher mit prefers-reduced-motion bekommt eine vollwertig gestaltete ruhige Variante mit komplettem Inhalt (geteilte Implementierung mit dem Overview-Mode)
   5. Mobile-Besucher bekommt eine bewusst gestaltete Variante — kein Scrolljacking, kein degradiertes Desktop-Layout
 
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Motion foundation + engineered hero intro: GSAP+Lenis single engine, motion tokens, Bricolage display face, MotionProvider (reduced-motion/touch gated), Reveal/SplitHeading/HeroSceneSlot, hero "system booting" sequence (Wave 1)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 03-02-PLAN.md — Career scroll-storytelling + bento projects: progress spine, progressive reveals, ITSC multi-beat sub-sequence, ELIA+Vidama featured bento (Wave 2)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 03-03-PLAN.md — Craft micro-interactions + seamless transitions: magnetic buttons (pointer-only), designed hover/focus/active states, GSAP crossfade sub-route transitions (Wave 3)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 03-04-PLAN.md — Signature treatments + full immersive verification: engineered photo treatment, reading-first case-study/about pages, wow/quiet/mobile walkthrough checkpoint (Wave 4)
+
 **UI hint**: yes
 
 ### Phase 4: Signature Moment & Launch Hardening
@@ -134,5 +152,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
-| 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
+| 3. Design Direction & Immersive Experience | 0/4 | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
