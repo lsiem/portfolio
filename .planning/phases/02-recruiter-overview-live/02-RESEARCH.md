@@ -568,18 +568,21 @@ src/app/[locale]/
 
 **Note:** package names (`@react-pdf/renderer`, `geist`, `tsx`) were verified against the npm registry AND authoritative sources (react-pdf.org, Vercel, esbuild-kit) — treated as verified, not `[ASSUMED]`. The build-pipeline wiring and the Tailwind block-form variant are the items most worth confirming at implementation time.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **CV depth of content** — Does the one-column CV include short project blurbs + full career arc only, or also condensed case-study outcomes?
    - What we know: D-E = one-column ATS; all structured content is available.
-   - Recommendation: career arc + domain skills + 3–5 project one-liners + contact; keep to ~1–2 pages. Decide exact sections in planning.
+   - Recommendation: career arc + domain skills + 3–5 project one-liners + contact; keep to ~1–2 pages.
+   - **RESOLVED → Plan 02-02 Task 2:** name/role/value-prop + career arc + 3–5 project one-liners + domain skills (no levels) + email/GitHub/LinkedIn, ~1–2 pages.
 
 2. **Per-case-study OG cards** — required now or overview-card only?
    - What we know: TECH-05 says "per page + per locale"; case-study routes exist.
-   - Recommendation: ship the overview card for all routes first (inherited), add per-case-study cards if planning budget allows (cheap — one more `opengraph-image.tsx`).
+   - Recommendation: ship the overview card for all routes first (inherited), add per-case-study cards if budget allows.
+   - **RESOLVED → Plan 02-04 Task 3:** ships the overview `opengraph-image.tsx` plus the sibling per-case-study card.
 
 3. **Toggle UI shape** — segmented 3-button vs cycling single button?
-   - Recommendation: segmented (System/Light/Dark) — clearer `aria-checked` semantics and one-click to any state; matches UI-SPEC's "segmented control or cycling button."
+   - Recommendation: segmented (System/Light/Dark) — clearer `aria-checked` semantics.
+   - **RESOLVED → Plan 02-03:** segmented 3-state System/Light/Dark control.
 
 ## Sources
 
