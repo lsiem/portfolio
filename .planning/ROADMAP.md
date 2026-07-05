@@ -105,12 +105,12 @@ Plans:
   4. Besucher mit prefers-reduced-motion bekommt eine vollwertig gestaltete ruhige Variante mit komplettem Inhalt (geteilte Implementierung mit dem Overview-Mode)
   5. Mobile-Besucher bekommt eine bewusst gestaltete Variante — kein Scrolljacking, kein degradiertes Desktop-Layout
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Motion foundation + engineered hero intro: GSAP+Lenis single engine, motion tokens, Bricolage display face, MotionProvider (reduced-motion/touch gated), Reveal/SplitHeading/HeroSceneSlot, hero "system booting" sequence (Wave 1)
+- [x] 03-01-PLAN.md — Motion foundation + engineered hero intro: GSAP+Lenis single engine, motion tokens, Bricolage display face, MotionProvider (reduced-motion/touch gated), Reveal/SplitHeading/HeroSceneSlot, hero "system booting" sequence (Wave 1)
 
 **Wave 2** *(blocked on Wave 1)*
 
@@ -152,5 +152,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
-| 3. Design Direction & Immersive Experience | 0/4 | Not started | - |
+| 3. Design Direction & Immersive Experience | 1/4 | In Progress|  |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |

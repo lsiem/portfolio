@@ -2,17 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 3
+current_phase: 03
+current_phase_name: design-direction-immersive-experience
 status: executing
 stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-07-05T16:19:20.959Z"
+last_updated: "2026-07-05T20:09:00.136Z"
 last_activity: 2026-07-05
-last_activity_desc: Phase 03 planning complete
+last_activity_desc: Phase 03 execution started
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 15
+  completed_plans: 12
   percent: 50
 ---
 
@@ -23,16 +24,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 3 — design direction & immersive experience
+**Current focus:** Phase 03 — design-direction-immersive-experience
 
 ## Current Position
 
-Phase: 3
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-07-05 — Phase 03 planning complete
+Phase: 03 (design-direction-immersive-experience) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute (03-01 complete)
+Last activity: 2026-07-05 -- Completed 03-01 (motion foundation + engineered hero intro; Option A: local LCP overage accepted, verify on prod)
 
-Progress: [██████████] 100%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -65,6 +66,7 @@ Progress: [██████████] 100%
 | Phase 02-recruiter-overview-live P05 | 20min | 3 tasks | 6 files |
 | Phase 02 P06 | 30 min | 3 tasks | 5 files |
 | Phase 02 P07 | ~15min | 2 tasks | 3 files |
+| Phase 03 P01 | 59min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -88,6 +90,7 @@ Recent decisions affecting current work:
 - [Phase 02-06]: Tightened LHCI budget to LCP<=2500ms + TBT<=200ms + CLS<=0.1, verified passing on a production build — Matches ROADMAP Success Criterion 4 / TECH-01 'Core Web Vitals good' verbatim instead of the looser 3000ms allowance that let CI pass while failing the phase's own success criterion
 - [Phase 02-07]: siteMetadataBase resolves via NODE_ENV==='production' rather than VERCEL_PROJECT_PRODUCTION_URL, keeping the production origin fixed and independent of which Vercel deployment triggers the build
 - [Phase 02-07]: Production cutover complete: PR #12 (phase/02-recruiter-overview-live -> main) promoted to production, lsiem.de live-verified by the human on both locales — all four blocking pre-cutover gates (GITHUB_TOKEN, Impressum address, CV no-404, career chronology) cleared
+- [Phase ?]: [03-01] Accepted local LHCI LCP overage (~2755ms) from the D-03 Bricolage display face; production Vercel LCP is the calibrated source of truth per Phase-2 precedent — verify on preview before phase completion.
 
 ### Pending Todos
 
@@ -99,6 +102,7 @@ None yet.
 - [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
+- [03-01/CWV] Verify production LCP <= 2500ms on the Vercel preview for /de and /en (local lantern ~2755ms is a Geist paragraph re-timed by the Bricolage @font-face on a load-confounded dev machine). If prod also exceeds, defer the below-fold GitHubHeatmap client component (scoped follow-up outside 03-01) — do NOT relax TECH-01. Enforce at the 03-04 full-phase checkpoint.
 
 ### Quick Tasks Completed
 
@@ -116,6 +120,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-05T15:31:39.785Z
+Last session: 2026-07-05T20:08:52.259Z
 Stopped at: Phase 3 UI-SPEC approved
 Resume file: .planning/phases/03-design-direction-immersive-experience/03-UI-SPEC.md
