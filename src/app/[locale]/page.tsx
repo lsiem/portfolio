@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import { GitHubHeatmap } from "@/components/github-heatmap";
 import {
   getCareer,
-  getCaseStudy,
   getContact,
   getPage,
   getProjects,
@@ -14,6 +13,7 @@ import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
 import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
+import { ProjectBento } from "@/components/motion/project-bento";
 import { Reveal } from "@/components/motion/reveal";
 import {
   localeAlternates,
@@ -263,58 +263,26 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
+      {/* Projects break wide (D-04) as an asymmetric bento — ELIA + Vidama
+          featured, the rest compact (D-14). page.tsx passes no LinkComponent, so
+          ProjectBento uses its default locale-aware Link; a later plan can
+          inject TransitionLink for the D-11.4 crossfade with no structural
+          change to ProjectBento. */}
       <section
         id="projects"
         aria-labelledby="projects-heading"
-        className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-6 px-6"
+        className="mx-auto flex w-full max-w-[1440px] scroll-mt-24 flex-col gap-6 px-6"
       >
         <h2 id="projects-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {projectsT("title")}
         </h2>
-        <ul className="flex flex-col gap-6">
-          {projects.map((project) => {
-            const caseStudy =
-              project.depth === "flagship" || project.depth === "deep"
-                ? getCaseStudy(locale, project.slug)
-                : undefined;
-            return (
-              <li key={project.slug} className="flex flex-col gap-2 border-b border-border pb-6 last:border-b-0">
-                <h3 className="text-lg font-medium tracking-tight">{project.title}</h3>
-                {project.period ? (
-                  <p className="font-mono text-xs text-muted">{project.period}</p>
-                ) : null}
-                <p className="text-muted">{project.summary}</p>
-                <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
-                  {project.tags.map((tag) => (
-                    <li key={tag} className="rounded border border-border px-2 py-0.5">
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex flex-wrap gap-4 font-mono text-sm">
-                  {caseStudy ? (
-                    <Link
-                      href={`/case-studies/${project.slug}`}
-                      className="text-accent transition-colors hover:text-foreground"
-                    >
-                      {projectsT("caseStudy")} →
-                    </Link>
-                  ) : null}
-                  {project.url ? (
-                    <a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted transition-colors hover:text-foreground"
-                    >
-                      {projectsT("visit")} ↗
-                    </a>
-                  ) : null}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <ProjectBento
+          projects={projects}
+          labels={{
+            caseStudy: projectsT("caseStudy"),
+            visit: projectsT("visit"),
+          }}
+        />
       </section>
 
       <section

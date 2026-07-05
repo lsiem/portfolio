@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getCareer } from "../src/lib/content";
+import { getCareer, getProjects } from "../src/lib/content";
 
 const locales = ["de", "en"] as const;
 
@@ -193,6 +193,52 @@ for (const locale of locales) {
       });
       expect(opacity).toBe(1);
       expect((await firstOrg.innerText()).trim().length).toBeGreaterThan(0);
+    });
+  });
+
+  test.describe(`Immersive projects bento (/${locale})`, () => {
+    test("projects render as a bento with one <li> per project (D-14, finding #5)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const items = page.locator("#projects > ul > li");
+      const headings = page.locator("#projects h3");
+      // Pinned to the SAME source the page renders (round-2 LOW finding #5) —
+      // never a hardcoded literal, so this does not drift when a project is
+      // added or removed.
+      const expectedCount = getProjects(locale).length;
+      expect(await items.count()).toBe(expectedCount);
+      // 1:1 project↔<li> mapping — no N×panel over-announcement.
+      expect(await headings.count()).toBe(expectedCount);
+    });
+
+    test("ELIA + Vidama are the featured pair with resolvable case-study links (D-14)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      await expect(
+        page.locator(`#projects a[href="/${locale}/case-studies/elia"]`),
+      ).toBeVisible();
+      await expect(
+        page.locator(
+          `#projects a[href="/${locale}/case-studies/vidama-mediathek"]`,
+        ),
+      ).toBeVisible();
+    });
+
+    test("project cells are fully present under reduced-motion (MODE-02)", async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(`/${locale}`);
+      const firstCell = page.locator("#projects > ul > li").first();
+      await expect(firstCell).toBeVisible();
+      const opacity = await firstCell.evaluate((el) => {
+        const inner = el.querySelector("div") ?? el;
+        return parseFloat(getComputedStyle(inner as Element).opacity);
+      });
+      expect(opacity).toBe(1);
+      expect((await firstCell.innerText()).trim().length).toBeGreaterThan(0);
     });
   });
 }
