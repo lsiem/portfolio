@@ -74,16 +74,16 @@ const styles = StyleSheet.create({
     color: MUTED,
   },
   sectionHeading: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 600,
     textTransform: "uppercase",
     letterSpacing: 1,
     color: INK,
-    marginTop: 14,
-    marginBottom: 8,
+    marginTop: 10,
+    marginBottom: 6,
   },
   careerEntry: {
-    marginBottom: 10,
+    marginBottom: 6,
   },
   careerHeaderRow: {
     flexDirection: "row",
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   roleItem: {
-    marginTop: 4,
+    marginTop: 2,
     marginLeft: 8,
   },
   roleTitle: {
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   projectItem: {
-    marginBottom: 6,
+    marginBottom: 4,
   },
   projectTitle: {
     fontSize: 10.5,
