@@ -34,6 +34,12 @@
     "title": "Über mich",
     "readMore": "Mehr über mich"
   },
+  "theme": {
+    "label": "Darstellung",
+    "system": "System",
+    "light": "Hell",
+    "dark": "Dunkel"
+  },
   "contact": {
     "title": "Kontakt",
     "intro": "Lass uns zusammenarbeiten — ich freue mich über deine Nachricht.",

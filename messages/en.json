@@ -34,6 +34,12 @@
     "title": "About",
     "readMore": "More about me"
   },
+  "theme": {
+    "label": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "contact": {
     "title": "Contact",
     "intro": "Let's work together — I'd love to hear from you.",
