@@ -46,6 +46,10 @@ next-env.d.ts
 # content-collections generated output
 .content-collections
 
+# CV PDFs — generated at build time via prebuild (scripts/generate-cv.tsx);
+# regenerated fresh on every `pnpm build`, never committed (like .next/)
+/public/Lasse-Siemoneit-CV-*.pdf
+
 # Internal reference material — never commit (public repo)
 .planning/phases/*/reference/
 
