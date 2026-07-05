@@ -36,7 +36,7 @@ export function localeAlternates(pathname: string): Metadata["alternates"] {
 export type OpenGraphMetadataParams = {
   title: string;
   description: string;
-  locale: (typeof routing.locales)[number];
+  locale: string;
   /** Unprefixed pathname, e.g. "/" or "/case-studies/foo" — mirrors {@link localeAlternates}. */
   pathname: string;
 };
@@ -53,8 +53,13 @@ export function openGraphMetadata({
   locale,
   pathname,
 }: OpenGraphMetadataParams): Pick<Metadata, "openGraph" | "twitter"> {
-  const url = new URL(getPathname({ locale, href: pathname }), siteMetadataBase)
-    .href;
+  const url = new URL(
+    getPathname({
+      locale: locale as (typeof routing.locales)[number],
+      href: pathname,
+    }),
+    siteMetadataBase,
+  ).href;
 
   return {
     openGraph: {

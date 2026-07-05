@@ -9,19 +9,27 @@ import {
   getProjects,
   getSkillDomains,
 } from "@/lib/content";
-import { localeAlternates, siteMetadataBase } from "@/lib/seo";
+import {
+  localeAlternates,
+  openGraphMetadata,
+  personJsonLd,
+  siteMetadataBase,
+} from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string }> }>;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+  const title = "Lasse Siemoneit";
+  const description = t("role");
 
   return {
     metadataBase: siteMetadataBase,
-    title: "Lasse Siemoneit",
-    description: t("role"),
+    title,
+    description,
     alternates: localeAlternates("/"),
+    ...openGraphMetadata({ title, description, locale, pathname: "/" }),
   };
 }
 
@@ -55,9 +63,16 @@ export default async function HomePage({ params }: Props) {
   const skillDomains = getSkillDomains(locale);
   const contact = getContact(locale);
   const aboutPage = getPage(locale, "about");
+  // Trusted first-party data from the typed content model (no user input),
+  // so dangerouslySetInnerHTML is safe here per react/security rules.
+  const personLd = personJsonLd(contact, locale);
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-20 px-6 py-20 sm:gap-28 sm:py-28">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
+      />
       <section id="hero" className="flex flex-col gap-5">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           Portfolio
