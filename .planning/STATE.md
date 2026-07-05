@@ -89,6 +89,7 @@ None yet.
 - [Phase 2] CV-PDF-Generierung aus dem Content-Modell: kein verifiziertes Pattern — beim Phase-2-Planning recherchieren
 - [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
+- [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
 
 ### Quick Tasks Completed
 
