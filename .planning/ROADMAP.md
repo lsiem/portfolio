@@ -69,7 +69,7 @@ Plans:
 **Wave 1**
 
 - [x] 02-01-PLAN.md — Recruiter overview complete: hero value-prop, About (text-first), one-click contact affordance, CV download button, a11y baseline (Wave 1)
-- [ ] 02-02-PLAN.md — Build-time CV-PDF generation per locale from the content model (@react-pdf/renderer, embedded Geist, one-column ATS) (Wave 1)
+- [x] 02-02-PLAN.md — Build-time CV-PDF generation per locale from the content model (@react-pdf/renderer, embedded Geist, one-column ATS) (Wave 1)
 
 **Wave 2** *(blocked on Wave 1)*
 
