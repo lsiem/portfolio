@@ -4,14 +4,11 @@ import { routing } from "@/i18n/routing";
 import type { ContactInfo } from "../../content/shared/types";
 
 /**
- * Absolute base URL for metadata. On Vercel deployments this resolves to the
- * production URL of the project; locally it falls back to localhost.
- * Phase 2 switches this to https://lsiem.de with a one-line change.
+ * Absolute base URL for metadata. Production builds resolve to the real
+ * domain https://lsiem.de (CTX-06); locally it falls back to localhost.
  */
 export const siteMetadataBase = new URL(
-  process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000",
+  process.env.NODE_ENV === "production" ? "https://lsiem.de" : "http://localhost:3000",
 );
 
 /**
