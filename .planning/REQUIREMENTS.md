@@ -91,7 +91,7 @@
 | MODE-02 | Phase 3 | Pending |
 | I18N-01 | Phase 1 | Complete |
 | I18N-02 | Phase 1 | Complete |
-| TECH-01 | Phase 2 | Complete |
+| TECH-01 | Phase 2 | Complete (launch-verified on lsiem.de, 02-07) |
 | TECH-02 | Phase 3 | Pending |
 | TECH-03 | Phase 2 | Complete |
 | TECH-04 | Phase 2 | Complete |
@@ -101,6 +101,8 @@
 | TECH-08 | Phase 2 | Complete |
 
 **Coverage:** 24/24 v1 requirements mapped — no orphans, no duplicates.
+
+**Phase 2 cutover context decisions satisfied (02-07):** CTX-06 (promote to `https://lsiem.de` only after verification passes) and CTX-07 (one PR from `phase/02-recruiter-overview-live` to `main` carries the full cutover) — both satisfied via PR #12, promoted to production and live-verified.
 
 ---
 *Requirements for: Portfolio Neubau lsiem.de — v1*

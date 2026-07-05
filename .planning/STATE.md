@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-07-05T11:22:50.901Z"
+status: verifying
+stopped_at: Completed 02-07-PLAN.md — Phase 2 complete, live on lsiem.de
+last_updated: "2026-07-05T13:49:18.058Z"
 last_activity: 2026-07-05
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 11
-  completed_plans: 10
-  percent: 25
+  completed_plans: 11
+  percent: 50
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 Phase: 02 (recruiter-overview-live) — EXECUTING
 Plan: 7 of 7
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-07-05
 
-Progress: [█████████░] 91%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [█████████░] 91%
 | Phase 02-recruiter-overview-live P04 | 10min | 3 tasks | 6 files |
 | Phase 02-recruiter-overview-live P05 | 20min | 3 tasks | 6 files |
 | Phase 02 P06 | 30 min | 3 tasks | 5 files |
+| Phase 02 P07 | ~15min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 02-05]: GitHubHeatmap uses role="img" + a visually-hidden total instead of a full ARIA table/grid role tree — The heatmap has no interactive cells; a labeled image-role summary satisfies conveying meaning without hover without extra ARIA machinery
 - [Phase 02-06]: No CSP shipped; documented gap in next.config.ts comment + STATE.md — Hash-based CSP proven (via Playwright + browser console) to break the site because Next App Router's per-page RSC hydration scripts have non-deterministic sha256 hashes per build; nonce-based CSP would force dynamic rendering across the whole static site
 - [Phase 02-06]: Tightened LHCI budget to LCP<=2500ms + TBT<=200ms + CLS<=0.1, verified passing on a production build — Matches ROADMAP Success Criterion 4 / TECH-01 'Core Web Vitals good' verbatim instead of the looser 3000ms allowance that let CI pass while failing the phase's own success criterion
+- [Phase 02-07]: siteMetadataBase resolves via NODE_ENV==='production' rather than VERCEL_PROJECT_PRODUCTION_URL, keeping the production origin fixed and independent of which Vercel deployment triggers the build
+- [Phase 02-07]: Production cutover complete: PR #12 (phase/02-recruiter-overview-live -> main) promoted to production, lsiem.de live-verified by the human on both locales — all four blocking pre-cutover gates (GITHUB_TOKEN, Impressum address, CV no-404, career chronology) cleared
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-05T11:22:50.895Z
-Stopped at: Completed 02-05-PLAN.md
+Last session: 2026-07-05T13:49:18.049Z
+Stopped at: Completed 02-07-PLAN.md — Phase 2 complete, live on lsiem.de
 Resume file: None
