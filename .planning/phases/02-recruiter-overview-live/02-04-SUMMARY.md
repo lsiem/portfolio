@@ -187,3 +187,7 @@ None - no external service configuration required. Font assets are read from an 
 ---
 *Phase: 02-recruiter-overview-live*
 *Completed: 2026-07-05*
+
+## Self-Check: PASSED
+
+All created/modified files verified present on disk; all 4 commits (`da2d028`, `2eabd4a`, `479da19`, `808d1a2`) verified present in git history.
