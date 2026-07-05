@@ -1,161 +1,16 @@
 ---
 phase: 2
-reviewers: [gemini, cursor]
-reviewers_attempted: [gemini, codex, coderabbit, cursor, antigravity]
-reviewed_at: 2026-07-05T06:51:12Z
+reviewers: [cursor, coderabbit]
+attempted_but_failed: [gemini, codex, antigravity]
+reviewed_at: 2026-07-05T09:15:04Z
 plans_reviewed: [02-01-PLAN.md, 02-02-PLAN.md, 02-03-PLAN.md, 02-04-PLAN.md, 02-05-PLAN.md, 02-06-PLAN.md, 02-07-PLAN.md]
 ---
 
 # Cross-AI Plan Review — Phase 2
 
-> **Reviewer outcomes:** 2 of 5 attempted reviewers produced grounded reviews (Gemini, Cursor — both with repo file access, both cited `file:line` evidence). Three failed for environment reasons unrelated to plan quality: **Codex** (Azure `invalid_payload` schema error on every request), **CodeRabbit** (timed out; diff-only reviewer with no Phase 2 code to review yet), **Antigravity** (timed out in its agentic file-reading loop before producing output). Plan-level consensus below is based on the two grounded reviews.
-
-## Gemini Review
-
-# Cross-AI Plan Review: Phase 2 — Recruiter Overview Live
-
-This is a comprehensive, structured technical review of the 7 implementation plans for **Phase 2: Recruiter Overview Live** on **lsiem.de**. This assessment evaluates plan quality, completeness, architectural coherence, performance budgets, accessibility, security, and edge-case robustness against the active repository state.
-
----
-
-## 1. Summary Assessment
-
-The Phase 2 implementation plans represent an **exceptionally mature, rigorous, and highly idiomatic Next.js 16/Tailwind 4 architecture**. The plans show deep empathy for both the target recruiter persona (facts in <30 seconds, static first viewport, seamless semantic navigation) and the developer experience (bilingual type safety, zero-dependency parity checks, build-time caching). By electing to generate the CV-PDF (`scripts/generate-cv.tsx`) and the OG images (`opengraph-image.tsx`) strictly at build-time using on-disk Geist TrueType fonts (`node_modules/geist/dist/fonts`), the architecture achieves absolute DSGVO/GDPR compliance with zero third-party runtime calls, zero client-side package bloat, and zero layout shift. The transition of dark-mode from a pure media query to an attribute-driven token override with a blocking inline no-flash script is the industry-standard way to solve dark-mode without hydration mismatches or flashes. This plan suite is production-grade and ready to execute.
-
----
-
-## 2. Plan-by-Plan Analysis & Source Verification
-
-### Plan 2-01: Recruiter Overview Complete
-*Objective: Build hero value-prop, About section (text-first), header Contact anchor, and CV download CTA.*
-
-*   **Strengths:**
-    *   **Strict Accent Discipline:** Restricts the orange accent color (`var(--accent)`) strictly to Case Study links, primary CTAs (CV button), and the email link, matching the `02-UI-SPEC.md` constraint.
-    *   **No Preloader/No Motion Gate:** Name, role, and the new value-prop are loaded as static SSR HTML in the first viewport, satisfying `CONT-02` and `MODE-01`.
-    *   **Graceful Text-First Degradation:** The About section in `src/app/[locale]/page.tsx` is built text-first with code comments left for future photo integration, keeping the scope clean and satisfying `CTX-03`.
-*   **Concerns:**
-    *   **LOW — Responsive Header Overcrowding:** In `src/app/[locale]/layout.tsx:48-57`, adding the `Contact` anchor (`href="#contact"`) to the header control cluster along with the future theme toggle and the locale switcher can lead to tight spaces on small mobile devices (e.g. iPhone SE, 320px width).
-    *   *Citing Evidence:* The layout shell is restricted to `max-w-3xl px-6` in `src/app/[locale]/layout.tsx:49`. Adding multiple text links (`LS.`, `Contact`, `DE/EN`) and a 3-state toggle on a single row requires responsive classes (like hiding text labels on screens `<400px` and using icon-only representations).
-*   **Suggestions:**
-    *   Ensure the `Contact` link in the header uses the responsive pattern: hide the text label on ultra-small screens (`hidden xs:inline`) and fallback to a simple mail/phone SVG icon with a visually-hidden label.
-
----
-
-### Plan 2-02: Build-Time CV-PDF Generation
-*Objective: Compile locale-specific, ATS-friendly, selectable-text PDFs under `public/` at build-time.*
-
-*   **Strengths:**
-    *   **Build-Time Isolation:** Running the generator via `tsx scripts/generate-cv.tsx` inside the `prebuild` phase (chained in `package.json:9`) guarantees that `@react-pdf/renderer` never enters the client/runtime dependency graph, saving hundreds of kilobytes in the production bundle.
-    *   **Synchronous Font Loading:** Fetching TTF binaries synchronously from `node_modules/geist/dist/fonts/geist-sans/` on-disk (instead of remote Google Fonts URLs) fully resolves the async font registration race condition common in `react-pdf` (`Font.register` issue #2675).
-*   **Concerns:**
-    *   **MEDIUM — React 19 Typing Friction:** The codebase is pinned to React `~19.2.0` (`package.json:17`). `@react-pdf/renderer` historically utilizes types tailored for React 17/18. When running `tsc --noEmit` inside `generate-cv.tsx` or its sub-components, JSX and React children typing conflicts may arise.
-    *   *Citing Evidence:* The plan runs `pnpm exec tsc --noEmit -p tsconfig.json` in the verification block to assert success. If `@types/react` (v19) collides with `@react-pdf/renderer` internal react typings, compilation will fail.
-    *   **LOW — Multi-Workspace Hoisting:** Although `pnpm-workspace.yaml` behaves like a single project, using hardcoded relative paths like `node_modules/geist/...` may break if the monorepo structure ever hoists dependencies to an outer root folder.
-*   **Suggestions:**
-    *   To mitigate React 19 typing friction, write `scripts/generate-cv.tsx` with a `.ts` extension using pure React 19-compatible elements, or resolve the fonts using `require.resolve('geist/package.json')` to dynamically locate the correct on-disk `node_modules/geist` path regardless of hoist levels.
-
----
-
-### Plan 2-03: 3-State Dark-Mode Toggle
-*Objective: Deliver a System/Light/Dark theme selector using Tailwind 4, a no-flash script, and localStorage.*
-
-*   **Strengths:**
-    *   **No FOUC (Flash of Unstyled Content):** Injecting the inline script as the first child of `<body>` in `src/app/[locale]/layout.tsx` executes synchronously before the React DOM hydrates, instantly setting the correct `data-theme` attribute.
-    *   **Pure Token Adaptation:** Avoiding `dark:` class utilities by letting the CSS variables flip color within `:root[data-theme="dark"]` inside `src/app/globals.css:21-29` is an incredibly elegant and low-overhead design.
-*   **Concerns:**
-    *   **MEDIUM — Toggle Hydration Flashing:** Because `ThemeToggle` is a client component, the server does not know the user's `localStorage` choice. Render-highlighting the active button immediately on hydration causes server/client HTML divergence (Hydration Mismatch).
-    *   *Citing Evidence:* In `src/components/theme-toggle.tsx` (new file), the component must resolve the active segment in a mount `useEffect` or `useSyncExternalStore` to avoid hydration mismatches, but this will cause the UI highlight to jump/flash *after* hydration if the user has an explicit non-System choice saved.
-*   **Suggestions:**
-    *   Provide a skeleton state or a neutral border-only state for the segmented buttons on the server-render, and apply the background active-segment fill only after mounting on the client (`isMounted` gate).
-
----
-
-### Plan 2-04: SEO Share Layer & Person JSON-LD
-*Objective: Build-time OG images per page/locale and machine-readable Person schema.*
-
-*   **Strengths:**
-    *   **Static-Optimized OG Routes:** Placing `opengraph-image.tsx` inside `src/app/[locale]/` guarantees Next.js bakes the PNG at build-time, preserving the zero-runtime-third-party posture.
-    *   **Strict Satori Constraints Met:** The plan explicitly enforces flexbox layout and forbids `display: grid`, matching satori's known CSS limitations.
-*   **Concerns:**
-    *   **LOW — Satori Weight Loading:** Satori has a strict size limit of 500KB total for custom fonts. Loading both `Geist-SemiBold.ttf` and `GeistMono-Regular.ttf` from disk could push the edge bundle sizes near that boundary.
-*   **Suggestions:**
-    *   Ensure the subset of characters inside the OG generator is tight, or use only a single font weight (e.g., `Geist-Medium` or `Geist-Regular`) to minimize file weight inside `ImageResponse`.
-
----
-
-### Plan 2-05: Build-Time GitHub Activity Heatmap
-*Objective: Fetch contribution data from GitHub GraphQL via server-only RSC, daily ISR, and fallback.*
-
-*   **Strengths:**
-    *   **DSGVO/GDPR Compliant Fetch:** No client-side requests ever hit GitHub; everything is cached statically on the server via `next: { revalidate: 86400 }` (`src/lib/github.ts`).
-    *   **Graceful Degradation:** Safely returns `null` on missing tokens (Vercel Preview) or request errors, failing over to a static localized line instead of crashing the page.
-*   **Concerns:**
-    *   **LOW — Week Index Alignment:** GitHub GraphQL contributions are mapped as days of the week (`0` to `6`). Slicing them into a grid requires aligning the dates to the correct column starting on Sunday. If the current month begins mid-week, empty padding cells must be accounted for to prevent the grid from misaligning.
-*   **Suggestions:**
-    *   Add a utility in `src/components/github-heatmap.tsx` to pre-pad the first week of the year/rolling-window with empty placeholder blocks so that columns align perfectly with actual weekdays.
-
----
-
-### Plan 2-06: Launch Hardening & Verification
-*Objective: Configure security headers, verify performance budgets in LHCI, and run a11y tests.*
-
-*   **Strengths:**
-    *   **Highly Defensive Headers:** Configures HSTS, nosniff, frame-ancestors, and Permissions-Policy on all routes (`next.config.ts`).
-    *   **Automated Lighthouse CI Gate:** Utilizing `lhci` in CI against a real production build (`pnpm start`) enforces LCP, performance minimums, and landing script limits (<150kb).
-*   **Concerns:**
-    *   **MEDIUM — Content-Security-Policy & Analytics Collision:** In Task 1, applying a strict CSP on a static-only site without per-request nonces requires hashing the inline dark-mode script. If a future edit alters a space or line-break in the inline script, the hash mismatch will break the blocking script, disabling dark mode without a build error.
-    *   *Citing Evidence:* `next.config.ts` handles the headers. The Vercel Analytics and Speed Insights packages inject inline chunks. Tracking and allowlisting these dynamically changing domains/hashes in a static-built CSP can easily lead to breakage in production.
-*   **Suggestions:**
-    *   Leverage Vercel's edge middleware or standard meta tag configs to inject nonces if possible, or opt for the recommended fallback: omit `script-src` from CSP if it restricts Vercel Analytics, and record the CSP status inside `STATE.md ## Blockers/Concerns`.
-
----
-
-### Plan 2-07: Production Cutover
-*Objective: Domain flip to `https://lsiem.de` and live verification.*
-
-*   **Strengths:**
-    *   **Metadata Unity:** Standardizing all absolute OG, canonical, and hreflang URLs to resolve against `siteMetadataBase` prevents SEO indexing fragmentation.
-    *   **PR-Driven Promotion:** Merging `phase/02-recruiter-overview-live` to `main` as a single, verified cutover prevents partial/half-broken states from shipping to `lsiem.de`.
-*   **Concerns:**
-    *   None. This plan is structurally sound and follows git/Vercel best practices perfectly.
-
----
-
-## 3. Key Architectural Strengths & Engineering Rigor
-
-1.  **Single Source of Truth (SSOT):** The plans consistently feed everything (the overview page, the downloadable CV-PDF, the structured Person JSON-LD, and the OG image generators) from the *same* pre-defined content model (`content/{de,en}/*`). This guarantees that Lasse's career dates, contact facts, and skills cannot fall out of sync.
-2.  **No Component Library (CSS-First):** Sticking to native Tailwind 4 and hand-authored components (no headless UI, Radix, or Radix-wrappers) maintains an extremely lean DOM structure and protects the landing bundle size from bloating, ensuring first-paint speed.
-3.  **Strict GDPR/DSGVO Enforcement:** By baking the GitHub heatmap and rendering the CV-PDF at build time, the visitor's browser never communicates with GitHub, `@react-pdf` registries, or unvetted CDNs, removing the need for annoying cookieless consent banners while keeping data footprint to an absolute minimum.
-
----
-
-## 4. Summary of Technical Risks & Mitigations
-
-| Severity | Risk Description | Citing File & Context | Mitigation Suggestion |
-|:---|:---|:---|:---|
-| **MEDIUM** | React 19 Typing Friction inside `@react-pdf/renderer` rendering. | `scripts/generate-cv.tsx` compilation via `tsc` | Resolve types explicitly or construct the PDF document using vanilla Node filesystem elements if react-pdf types conflict with React 19 `@types/react`. |
-| **MEDIUM** | Hydration Mismatch or selector flash on the theme toggle control. | `src/components/theme-toggle.tsx` hydration | Set default client layout to a neutral, unselected segmented design, and highlight the selection (`localStorage` match) only inside `useEffect` after mount is complete. |
-| **MEDIUM** | Content-Security-Policy hash mismatch on inline script edits. | `next.config.ts:headers()` block with inline hashes | Maintain the inline script as a separate, minified asset string inside `layout.tsx` so format changes during development don't silently break the hashed CSP rule. |
-| **LOW** | Mobile layout overcrowding of header controls on narrow screens. | `src/app/[locale]/layout.tsx:49` layout alignment | Apply responsive screen bounds on text labels (e.g., `hidden sm:inline` on "Contact") to maintain a single row on 320px screens. |
-
----
-
-## 5. Risk Assessment
-
-*   **Overall Risk Level:** **LOW-MEDIUM**
-*   **Justification:** The core technical decisions (build-time compiling, static file serving, token-only CSS flipping) are structurally safe, fast, and simple. The primary risks are minor build-time compilation type-clashes (React 19 vs `@react-pdf` types) and browser-runtime style-shattering (strict CSP vs Vercel Analytics scripts). These are easily isolated and resolved during the early execution phases of Wave 1 and Wave 2. The roadmap represents a phenomenal blueprint for high-performance portfolio building.
-
----
-
-## Codex Review
-
-Codex review failed: Azure provider invalid_payload schema error (environment issue, not plan-related). Excluded from consensus.
-
----
-
-## CodeRabbit Review
-
-CodeRabbit produced no usable review: it timed out (>7 min) reviewing the full branch-vs-main markdown diff, output was only the CLI banner. CodeRabbit is a diff-only reviewer (no prompt/model flag), and Phase 2 has no implementation code yet (status: Planned) — only committed plan docs. Structurally not applicable to this plan review. Excluded from plan-level consensus.
+> **Reviewer availability (this run):** Cursor (grounded plan review) and CodeRabbit (diff-only) succeeded.
+> Gemini (503 "high demand" on pro + both flash models), Codex (`invalid_payload` schema error from the Azure provider, both attempts), and Antigravity (`agy -p` hung in its Cascade loop past the 5-min timeout, no response written) all failed and are recorded below for transparency. Claude was skipped by design (this review runs inside Claude Code).
+> CodeRabbit is a **diff-only** reviewer — it never received the source-grounding prompt and reviews the working tree/branch diff, not the plans in isolation. Its findings are folded in as diff observations; plan-level consensus is anchored on Cursor.
 
 ---
 
@@ -163,303 +18,461 @@ CodeRabbit produced no usable review: it timed out (>7 min) reviewing the full b
 
 # Phase 2 Plan Review — Recruiter Overview Live
 
-Verified against the repo at `phase/02-recruiter-overview-live` (ahead of remote). Baseline: interim overview in `src/app/[locale]/page.tsx` renders hero/career/projects/skills/contact but lacks value-prop, `#about`, header Contact, CV button, dark mode, OG, GitHub heatmap, and security headers.
+## Summary
+
+The seven-plan wave structure is well aligned with the interim codebase and phase goal: it extends what already exists on `src/app/[locale]/page.tsx` rather than rewriting it, chains build-time artifacts correctly (`prebuild` → CV PDFs → `next build`), and keeps DSGVO constraints explicit (no runtime GitHub, script-only react-pdf, static OG images). Research, UI-SPEC, and PATTERNS are tightly integrated into task `read_first` blocks, and threat models are unusually concrete. Against the **current** repo, the plans accurately describe missing work (no `#about`, no value prop, no header Contact, no CV button, no theme toggle, no security headers, `siteMetadataBase` still on Vercel/localhost). Remaining gaps are mostly **single-source-of-truth drift** (value prop / about copy split across messages vs content model), **verification vs requirements mismatch** (LHCI LCP 3000ms vs TECH-01 “good” at 2500ms; no INP gate), and **operational dependencies** (GITHUB_TOKEN in CI/production, explicit `server-only` package). Overall the phase is executable with targeted fixes before Wave 1.
 
 ---
 
-## Plan 02-01 — Recruiter overview complete (Wave 1)
+## Strengths
 
-### Summary
-
-The plan correctly targets the largest functional gap between the current interim page and Phase 2 success criteria. Its RED→GREEN Playwright loop, wave-1 scope, and file references match the codebase. It should deliver CONT-02/03/04/05/06 (text-first)/07/08 (UI), MODE-01, and TECH-03 baseline — with one notable single-source-of-truth gap.
-
-### Strengths
-
-- **Accurate baseline reading:** `page.tsx:53-85` has hero without `#hero` or value-prop; anchor-nav stops at `#contact` with no `#about` (`page.tsx:61-83`). `layout.tsx:48-57` is logo + `LocaleSwitcher` only — no Contact affordance.
-- **TDD discipline:** Extending `evals/home.spec.ts:5-40` before implementation gives a concrete acceptance surface.
-- **Preserves working content:** Career-first order and depth-weighted projects (`page.tsx:138-185`, `content/de/projects.ts:26-37`) already satisfy CONT-03/04/05; plan says “preserve,” which matches reality (6 projects, 2 deep case studies: `elia`, `vidama-mediathek`).
-- **Wave-1 pairing with 02-02:** CV button href contract (`/Lasse-Siemoneit-CV-${locale}.pdf`) is explicit; 404 until PDF exists is acknowledged and acceptable for parallel execution.
-
-### Concerns
-
-- **MEDIUM — Single-source-of-truth drift for copy:** Plan puts `home.valueProp` and `about.summary` in `messages/de.json` / `messages/en.json`, but CONT-01/CTX-05 require the content model to feed site + CV. `contact.ts:9-15` already has `role`; `content/de/pages/about.mdx:3` has a `description` frontmatter usable via `getPage()` (`src/lib/content.ts:88-91`). Duplicating prose in messages creates a second authoring surface.
-- **MEDIUM — Skip link still missing:** `messages/de.json:52` defines `accessibility.skipToContent`, but `grep` shows no usage under `src/`. TECH-03 calls for keyboard navigation; a visible skip link is a common baseline the plan does not address.
-- **LOW — Header i18n wiring unstated:** `layout.tsx:39` loads only `footer` translations; Task 3 adds `nav("contact")` in layout but does not explicitly call `getTranslations("nav")` — minor, but easy to miss during execution.
-
-### Suggestions
-
-- Add `valueProp` to `content/shared/types.ts` + `content/{de,en}/contact.ts` (or a dedicated `profile.ts` module) so Plan 02’s CV generator and the hero share one field.
-- Derive the compact About summary from `getPage(locale, "about")?.description` instead of new message strings.
-- Wire the existing skip-to-content message as the first focusable element in `layout.tsx`.
-
-### Risk Assessment
-
-**LOW–MEDIUM** — Core UI work is straightforward against existing patterns; copy SSOT is the main design debt to fix before execution.
+- **Accurate baseline read** — Plans correctly treat the interim overview as the extension point: hero/career/projects/skills/contact already exist (`src/app/[locale]/page.tsx:52-235`), depth-weighted case-study links work (`page.tsx:144-169`), and `getContact`/`getCareer`/etc. are the established accessors (`src/lib/content.ts:39-61`).
+- **Wave ordering matches build mechanics** — CV generation in `prebuild` before `next build` is correct given `package.json:9` today only runs `check:content`; Pitfall 5 (postbuild too late) is addressed in 02-02.
+- **02-01 RED→GREEN eval loop** — Extending `evals/home.spec.ts` before implementation matches existing per-locale structure (`evals/home.spec.ts:5-40`) and gives concrete acceptance for CONT-02, MODE-01, CONT-07, CONT-08 UI.
+- **DSGVO posture is consistent** — Build-time GitHub fetch with `import "server-only"`, graceful `null` fallback, and “no client-side GitHub” (02-05) matches AGENTS constraints; analytics already cookieless in `layout.tsx:94-96`.
+- **02-03 dark mode design is pragmatic** — Token-only overrides + inline pre-paint script avoids `next-themes`; mirrors proven FOUC prevention and fits `globals.css:3-29` token structure.
+- **02-04 SEO approach matches Next 16** — `opengraph-image.tsx` convention, `params` as Promise, Geist ttf from disk (reusing `geist` from 02-02) aligns with bundled docs cited in RESEARCH; `localeAlternates` already correct (`src/lib/seo.ts:21-31`).
+- **02-07 human gate is appropriate** — Blocking cutover until Plan 06 verification + PAT confirmation prevents half-built production (CTX-06/CTX-07).
+- **Threat models per plan** — STRIDE entries (PAT leak, JSON-LD XSS, CSP vs inline theme script) show real boundary thinking, not checkbox security.
 
 ---
 
-## Plan 02-02 — CV-PDF generation (Wave 1)
+## Concerns
 
-### Summary
+### Cross-cutting
 
-Well-scoped resolution of the roadmap-flagged unknown: build-time `@react-pdf/renderer` via `prebuild`, devDependencies only, fail-loud on error. Aligns with `package.json:9` (`prebuild: pnpm check:content`) and DSGVO constraints. Depends on Wave 1 completing before downstream OG work (Plan 04 needs `geist`).
+- **HIGH — Value proposition breaks CONT-01 / CTX-05 SSOT** — Plan 01 adds `home.valueProp` to `messages/*.json`, but Plan 02 Task 2 requires the CV to render “name + role + one-sentence value prop” from **content modules only** (`content/{de,en}/*.ts`). `ContactInfo` has no `valueProp` field (`content/shared/types.ts:77-83`); only `role` exists in `content/de/contact.ts:9-15`. Site and PDF will diverge unless a content-model field is added or the CV imports messages (breaking the script-only content import pattern).
+- **MEDIUM — About summary duplicates `/about` prose** — Plan 01 authors `about.summary` in messages, but full about content already lives in `content/de/pages/about.mdx` and is served via `getPage()` (`src/app/[locale]/[slug]/page.tsx:40-48`). Two sources will drift; prefer `page.description` or a short excerpt from the content model.
+- **MEDIUM — TECH-01 vs LHCI budget mismatch** — ROADMAP criterion 4 requires CWV “good” (LCP **&lt; 2.5s**). `lighthouserc.json:10` allows LCP **3000ms**. Plan 06 only says “tighten if comfortable,” so TECH-01 can pass CI while failing the stated success criterion.
+- **MEDIUM — No INP assertion** — TECH-01 explicitly includes INP &lt; 200ms; `lighthouserc.json` asserts LCP, performance score, and script size only — INP regressions (e.g. theme toggle) would not fail the gate.
+- **MEDIUM — Production heatmap depends on env at build time** — Plan 05’s graceful fallback is correct for previews, but if `GITHUB_TOKEN` is missing on the **production** Vercel build, the live site ships the fallback line permanently until the next rebuild. Plan 07 documents this; Plan 05/06 should treat “token present in Production env” as a **blocking** pre-cutover check, not only manual step 7.
+- **LOW — `server-only` not listed as dependency** — Plan 05 requires `import "server-only"` but no plan adds the `server-only` package to `package.json`. Next bundles a compiled copy, but explicit dependency avoids resolution surprises in the standalone `tsx` script context.
+- **LOW — Plan 05 `depends_on: [02-03, 02-04]` is tighter than necessary** — Activity mount only needs 02-01’s page structure; coupling to theme/SEO increases merge contention without technical necessity.
 
-### Strengths
+### Per plan
 
-- **Correct build hook:** Chaining `generate:cv` after `check:content` mirrors the existing gate at `package.json:8-9`.
-- **Bundle isolation:** Explicit “never import under `src/app/**`” matches AGENTS.md runtime constraints.
-- **Filename contract:** Matches Plan 01’s href exactly — critical for end-to-end CV download.
-- **Threat model:** T-02-SC legitimacy audit reference and devDependency-only placement are appropriate.
+**02-01**
+- **MEDIUM** — Claims CONT-06 “text-first” but does not wire about copy from `getPage(locale, "about")` or `page.description`; new messages become a second SSOT.
+- **LOW** — UI-SPEC active anchor-nav indicator (in-view section) is not scoped in any task.
+- **LOW** — RED verify (`grep -Eiq "fail|expected"`) is brittle if Playwright output format changes.
 
-### Concerns
+**02-02**
+- **HIGH** — Value-prop sourcing conflict (see cross-cutting); generator cannot satisfy Task 2 acceptance without Plan 01 also writing to content or Plan 02 importing labels from messages.
+- **MEDIUM** — Task 2 typecheck verify runs project `tsc`; react-pdf JSX in `scripts/cv/` may need explicit tsconfig/`jsx` handling — not called out.
+- **LOW** — Wave 1 parallel with 02-01 means CV link 404 until 02-02 completes (acknowledged in Plan 01; acceptable if same PR).
 
-- **HIGH — Value prop not reachable from content imports:** Task 2 requires “one-sentence value prop” in `CvDocument`, but Plan 01 authors it in `messages/`. Plan 02 Task 3 imports `content/{de,en}/*.ts` directly — not `messages/` or `src/lib/content.ts` accessors. Without a content-model field, the CV will either duplicate copy or omit the value prop.
-- **MEDIUM — Turbopack/react-pdf friction unverified:** Research notes ESM/bundler issues as a fallback to a static route handler; automated verify only runs `pnpm generate:cv` via `tsx`, not a full `pnpm build` after wiring prebuild until Task 3. First CI build is the real integration test.
-- **LOW — Generated PDFs not gitignored:** `public/Lasse-Siemoneit-CV-*.pdf` could be committed accidentally; no `.gitignore` entry today.
+**02-03**
+- **MEDIUM** — Assumption A6: Tailwind 4 `@custom-variant` block syntax is “confirm at implementation”; failure would block build with no fallback task.
+- **LOW** — UI-SPEC mentions `localStorage` value `"system"`; implementation correctly uses `removeItem` — document the convention to avoid executor confusion.
 
-### Suggestions
+**02-04**
+- **LOW** — Per-case-study OG cards add build surface for every slug; only two deep case studies exist today (`content/de/projects.ts:26-38`) — cost is low but worth noting if slugs grow.
+- **LOW** — `personJsonLd` includes `email` in structured data; already public on page — acceptable but increases scraper exposure slightly.
 
-- Resolve value-prop location in Plan 01/02 jointly before execution (content model field required).
-- Add `public/Lasse-Siemoneit-CV-*.pdf` to `.gitignore` and document `pnpm generate:cv` for local dev (Playwright uses `pnpm dev` per `playwright.config.ts:24`, which does not run `prebuild`).
-- In Task 3 verify, explicitly assert `pnpm build` (not just `pnpm generate:cv`) after prebuild chain change.
+**02-05**
+- **MEDIUM** — ISR + `revalidate: 86400` on a fully static page: behavior is correct per Next “previous model” docs, but first deploy after token add requires rebuild/revalidate to show grid — not stated in verification.
+- **LOW** — `#activity` omitted from anchor-nav (Claude’s discretion) weakens MODE-01 “all facts one click” for GitHub activity.
 
-### Risk Assessment
+**02-06**
+- **MEDIUM** — CSP task allows shipping without CSP if hash/allowlist breaks analytics/theme script; acceptable fallback, but leaves a security gap unless STATE.md blocker is enforced.
+- **MEDIUM** — `evals/a11y.spec.ts` Tab-order tests are fragile (focus order varies by browser/extensions); may flake in CI.
+- **LOW** — LHCI runs against `localhost:3000` (`lighthouserc.json:5`), not Vercel preview — may differ from production CDN latency (Plan 07 manual mobile Lighthouse compensates).
 
-**MEDIUM** — Library choice is sound; SSOT wiring and first full-build integration are the main risks.
-
----
-
-## Plan 02-03 — Dark mode toggle (Wave 2)
-
-### Summary
-
-Solid TECH-04 delivery plan building on the existing token system in `globals.css:3-28` (`@media (prefers-color-scheme: dark)` only today). Three-state toggle, no-flash script, and `LocaleSwitcher` styling reuse (`locale-switcher.tsx:18-27`) are well specified. Depends on 02-01 only — correct, since dark mode does not need CV PDF.
-
-### Strengths
-
-- **Minimal client surface:** Only new client component besides existing `LocaleSwitcher`; Plan 06 accounts for LHCI JS budget (`lighthouserc.json:11`).
-- **DSGVO-safe:** Static inline script, no CDN — consistent with project rules.
-- **Header ordering preserved:** Inserts between Contact (Plan 01) and `LocaleSwitcher` (`layout.tsx:56`) per D-A.
-
-### Concerns
-
-- **MEDIUM — “No flash” eval is weak:** `evals/theme.spec.ts` (to be created) checks `data-theme` after reload, not computed-style flash or background color before paint. False confidence possible.
-- **MEDIUM — Assumption A6 (@custom-variant syntax):** Plan defers to “confirm at implementation”; Tailwind 4 block-form variant is non-trivial. Token-only path is preferred but not guaranteed without audit of existing `dark:` usage (currently none in `src/`).
-- **LOW — `viewport.themeColor` vs explicit theme:** System meta colors won’t track explicit Light/Dark until client updates — acknowledged in Task 2 but worth manual verification.
-
-### Suggestions
-
-- Add a Playwright check that `getComputedStyle(document.body).backgroundColor` matches dark tokens immediately after navigation with `localStorage.theme = 'dark'` (before React hydration completes ideally via `page.addInitScript`).
-- Decide token-only vs `@custom-variant` up front by grepping for `dark:` in the codebase (currently absent → token-only is sufficient).
-
-### Risk Assessment
-
-**LOW** — Well-trodden pattern; main risk is hydration/flash edge cases.
+**02-07**
+- **LOW** — `siteMetadataBase` flip (`seo.ts:10-14`) hardcodes production origin; preview builds after flip will emit `lsiem.de` URLs even on preview URLs until cutover strategy is clear (usually desired only on merge to main).
 
 ---
 
-## Plan 02-04 — SEO share layer (Wave 2)
+## Suggestions
 
-### Summary
-
-Correct TECH-05 approach: `opengraph-image.tsx` convention, extend `seo.ts:10-31`, Person JSON-LD on overview. Depends on 02-01 + 02-02 (for `geist` ttf) — ordering is right. No OG routes exist today (`glob **/opengraph-image.tsx` → 0 files).
-
-### Strengths
-
-- **Build-time OG:** Matches zero-runtime-third-party posture; uses same `geist` ttf strategy as CV.
-- **Does not hand-wire image URLs:** Correct use of Next file convention — avoids duplicate/stale OG URLs.
-- **JSON-LD from `getContact()`:** `contact.ts:9-15` is the right source; plan forbids hardcoding.
-
-### Concerns
-
-- **MEDIUM — Preview vs production absolute URLs:** `siteMetadataBase` resolves via `VERCEL_PROJECT_PRODUCTION_URL` or localhost (`seo.ts:10-14`); OG/canonical on preview builds won’t be `lsiem.de` until Plan 07. Plan 04 explicitly defers flip — fine, but link-preview testing before cutover will show preview URLs.
-- **LOW — OG coverage scope:** Only overview + case-study routes; legal pages (`/about`, `/impressum`, `/datenschutz`) get default metadata only. Acceptable for Phase 2, not full site OG parity.
-- **LOW — `dangerouslySetInnerHTML` on JSON-LD:** Acceptable for typed content; ensure `contact.email` cannot contain `</script>` (schema validates email format — low risk).
-
-### Suggestions
-
-- Add one eval assertion that `og:image` URL is absolute (starts with `http`) to catch `metadataBase` misconfiguration early.
-- Consider reusing `openGraphMetadata()` on case-study `page.tsx` metadata for textual OG fields consistency.
-
-### Risk Assessment
-
-**LOW** — Standard Next 16 patterns; dependencies correctly ordered.
+1. **Add `valueProp` to the content model** — Extend `contactInfoSchema` + `content/{de,en}/contact.ts`; use it in hero, CV (`CvDocument`), and optionally OG card. Keep messages for chrome only, or derive hero strings from content loaders.
+2. **Source About teaser from existing prose** — Use `getPage(locale, "about")?.description` (already in frontmatter, `about.mdx:3`) for the overview `#about` summary instead of new `about.summary` messages.
+3. **Tighten LHCI before Wave 4** — Set `largest-contentful-paint` max to **2500** and add an INP assertion (or `total-blocking-time` proxy) in `lighthouserc.json`; align Plan 06 acceptance criteria with ROADMAP criterion 4 verbatim.
+4. **Add `server-only` to devDependencies** in Plan 02 or 05 (`pnpm add server-only`) alongside the `import "server-only"` line.
+5. **Make GITHUB_TOKEN a Plan 06 gate** — Add automated check or documented CI step: production build must have token set, or cutover fails; avoids shipping fallback on lsiem.de.
+6. **Resolve CV value prop in Plan 02 Task 1** — Either add content field in Task 1 of 02-02, or explicitly import `messages/{locale}.json` in `generate-cv.tsx` with a comment that value prop is i18n chrome (weaker SSOT).
+7. **Plan 05 dependency** — Reduce to `depends_on: [02-01]` unless merge conflict history proves otherwise.
+8. **Plan 06 a11y eval** — Prefer role/landmark/rel assertions over strict Tab sequence; use `:focus-visible` style check on a subset of controls only.
+9. **Plan 01** — Add optional `#hero` to anchor-nav only if stopwatch testing shows recruiters need it; hero is already first viewport.
 
 ---
 
-## Plan 02-05 — GitHub activity heatmap (Wave 3)
+## Risk Assessment
 
-### Summary
+**Overall: MEDIUM**
 
-TECH-08 implementation via `"server-only"` module + build-time GraphQL fetch with daily ISR and graceful fallback is appropriate for DSGVO. Depends on 02-01, 02-03, 02-04 — sensible for `page.tsx` merge ordering, not technical necessity.
-
-### Strengths
-
-- **`server-only` guard:** Correct pattern; no `github.ts` exists yet.
-- **Login from content:** `contact.ts:13` → `https://github.com/lsiem` supports URL parsing instead of hardcoding.
-- **Token-agnostic eval:** Grid-or-fallback design matches CI/preview reality (no token in CI env).
-- **Owner action documented:** PAT setup before production cutover (Plan 07 step 1).
-
-### Concerns
-
-- **MEDIUM — PAT scope ambiguity:** Plan specifies `read:user`; public contribution calendars often work unauthenticated. Over-scoping is fine; under-scoping if private contributions matter is unlikely for a portfolio heatmap but worth confirming during implementation.
-- **MEDIUM — ISR on fully static overview:** `page.tsx` is SSG via `generateStaticParams` in `layout.tsx:22-24`. Fetch with `revalidate: 86400` should enable ISR, but verify the route doesn’t get fully frozen at first build with null data when token is missing in CI — fallback is intentional, but production needs a rebuild after token is added (Plan 07 covers this).
-- **LOW — Section placement left to discretion:** “Below About or inside contact area” may produce inconsistent IA vs UI-SPEC anchor-nav (which omits `#activity`).
-
-### Suggestions
-
-- Pin exact GraphQL query + minimum PAT scopes in `scripts/` or `github.ts` header comment after first successful fetch.
-- Trigger explicit Vercel redeploy in Plan 07 when `GITHUB_TOKEN` is first added (not just “confirm set”).
-- Fix section placement to one location in UI-SPEC terms (recommend: after `#about`, before `#contact`).
-
-### Risk Assessment
-
-**LOW–MEDIUM** — Graceful degradation is well designed; production data freshness depends on owner env setup + redeploy discipline.
+**Justification:** Architecture, wave sequencing, and DSGVO/build-time patterns are strong and match the repo’s actual interim state. The phase will likely ship a complete recruiter overview if executed as written. The main execution risks are **content drift** (value prop / about split across messages vs `content/`), **verification gaps** (LCP/INP vs TECH-01), and **operational cutover** (GITHUB_TOKEN on production build, human 30s test). None are structural rewrites; all are fixable with small plan amendments before or during Wave 1. Security and performance risk is moderate-low given static SSG, script-only PDF, and explicit header/CSP work in Plan 06.
 
 ---
 
-## Plan 02-06 — Launch hardening + verification (Wave 4)
+### Plan-by-plan verdict
 
-### Summary
-
-Right gate before cutover: security headers on empty `next.config.ts:7-9`, LHCI budget already in CI (`ci.yml:41-43`, `lighthouserc.json:8-12`), new a11y eval. This plan is where “launch-ready” should become enforceable — but a critical CI gap exists today.
-
-### Strengths
-
-- **LHCI already wired:** `.github/workflows/ci.yml:41-43` runs `npx lhci autorun` against production build — matches TECH-01/TECH-07.
-- **Pragmatic CSP guidance:** Allows hash-based CSP or documented TODO rather than breaking `'unsafe-inline'` — realistic for inline theme script + Vercel analytics (`layout.tsx:95-96`).
-- **Bundle leak check:** Explicit grep for react-pdf/OG/github in client graph aligns with DSGVO.
-
-### Concerns
-
-- **HIGH — Playwright not in CI:** Plan 07 step 2 says “Confirm CI is green (… Playwright evals)”, but `.github/workflows/ci.yml` runs only `check:content`, `build`, and `lhci autorun` — no `pnpm test`. Plans 01–05 add five new spec files; none will gate merge unless Plan 06 adds a CI step (Task 2 mentions `pnpm test` in acceptance criteria but not in `files_modified` or an explicit CI edit).
-- **MEDIUM — Evals run against dev server:** `playwright.config.ts:23-27` uses `pnpm dev`, not `pnpm start` after production build. LHCI tests production; Playwright tests dev — bundle size and SSR output can differ.
-- **MEDIUM — CSP maintenance burden:** Inline theme-script SHA-256 must be recomputed on any script change; fallback TODO risks shipping without CSP.
-- **LOW — Contrast checks manual only:** Appropriate given stack, but TECH-03 “good contrast” relies on human verification.
-
-### Suggestions
-
-- Add an explicit Task (or amend Task 2) to extend `.github/workflows/ci.yml` with `pnpm exec playwright test` after `pnpm build`, using `pnpm start` as webServer in CI (or a dedicated `playwright.config.ci.ts`).
-- Align Playwright webServer with production build for evals that assert metadata/JSON-LD/static output.
-- Record CSP gap in `.planning/STATE.md` if fallback taken — plan mentions this; ensure it’s not optional silently.
-
-### Risk Assessment
-
-**MEDIUM** — Verification architecture is sound on paper; automation gap in CI is the biggest launch risk.
+| Plan | Verdict | Notes |
+|------|---------|-------|
+| **02-01** | ✅ Proceed with SSOT fix | Solid slice; add content-model value prop + about teaser sourcing |
+| **02-02** | ⚠️ Proceed after SSOT fix | Prebuild CV pattern is sound; resolve value prop source before Task 2 |
+| **02-03** | ✅ Proceed | Standard attribute + inline-script approach; validate Tailwind variant early |
+| **02-04** | ✅ Proceed | Fits Next 16 OG conventions; depends on `geist` from 02-02 |
+| **02-05** | ⚠️ Proceed | Good DSGVO fetch design; add `server-only` dep + production token gate |
+| **02-06** | ⚠️ Proceed | Tighten LHCI thresholds; soften Tab-order eval |
+| **02-07** | ✅ Proceed | Appropriate human-only cutover; depends on 06 being truly green |
 
 ---
 
-## Plan 02-07 — Production cutover (Wave 5)
+## CodeRabbit Review
 
-### Summary
-
-Appropriate human-gated finale: one-line `siteMetadataBase` flip (`seo.ts:10-14` currently uses Vercel URL/localhost), PR from `phase/02-recruiter-overview-live`, and manual 30-second stopwatch UAT. `autonomous: false` is correct.
-
-### Strengths
-
-- **CTX-06 honored:** Preview-first, promote-when-green — visitors on lsiem.de stay on interim until this plan.
-- **Comprehensive live checklist:** Covers CV, theme, OG, heatmap, CWV, network tab for third-party calls — matches phase success criteria.
-- **GITHUB_TOKEN gate:** Explicit production-env check before expecting real heatmap data.
-
-### Concerns
-
-- **MEDIUM — CI/playwright mismatch (carried from 02-06):** Cutover checklist assumes green Playwright in CI; CI doesn’t run it yet.
-- **MEDIUM — `siteMetadataBase` dev/prod split:** Task 1 must preserve localhost for local dev while forcing `https://lsiem.de` in production — current env-var logic (`seo.ts:11-13`) needs careful branching; a naive string replace could break preview builds.
-- **LOW — 30-second test is subjective:** No automated stopwatch eval; acceptable for launch gate but not regression-safe.
-
-### Suggestions
-
-- Use `process.env.VERCEL_ENV === 'production'` (or explicit `NEXT_PUBLIC_SITE_URL`) for lsiem.de, keeping localhost for `next dev`.
-- Add a post-cutover smoke script (even manual checklist in PR description) referencing Plan 07 steps 4–7.
-
-### Risk Assessment
-
-**LOW** — Process-heavy but low technical complexity; depends on Plan 06 verification actually being automated.
-
----
-
-## Phase-Level Assessment
-
-### Do these plans achieve Phase 2 goals?
-
-| Success criterion | Covered by | Evidence / gap |
-|---|---|---|
-| 1. First viewport name/role/value-prop; facts <30s | 02-01 (MODE-01) | Hero has name+role today (`page.tsx:57-60`); value-prop + header Contact missing |
-| 2. Timeline, projects/case studies, skills, about, one-click contact | 02-01 + existing | Content exists; about block + header Contact are net-new |
-| 3. CV PDF from content model | 02-01 UI + 02-02 gen | **SSOT gap** for value prop unless content model extended |
-| 4. CWV good, keyboard, dark mode | 02-01 a11y + 02-03 + 02-06 | LHCI in CI; skip link still missing |
-| 5. OG + JSON-LD + GitHub activity | 02-04 + 02-05 | Not present in repo today |
-
-**Overall:** The seven-plan wave structure (functional core → polish → data → hardening → cutover) is coherent and maps cleanly to requirements. Existing Phase 1 assets (`content/*`, `src/lib/content.ts`, case-study routes, LHCI) reduce execution risk. The plans should deliver Phase 2 if two gaps are closed before/during execution: **(1) copy SSOT for value prop / about summary / CV**, **(2) Playwright in CI**.
-
-### Cross-cutting concerns
-
-| Issue | Severity | Evidence |
-|---|---|---|
-| Value prop / about copy split across messages vs content vs CV | **HIGH** | `messages/` vs `content/de/contact.ts` vs Plan 02 direct imports |
-| Playwright evals not in CI | **HIGH** | `ci.yml:34-43` vs Plan 07 cutover checklist |
-| Skip-to-content defined but unused | **MEDIUM** | `messages/de.json:52`, no `src/` usage |
-| Evals use dev server, LHCI uses production | **MEDIUM** | `playwright.config.ts:24` vs `lighthouserc.json:4` |
-| `next/font/google` in layout (pre-existing) | **LOW** | `layout.tsx:3,12-19` vs AGENTS.md self-host rule — out of Phase 2 scope but DSGVO-relevant |
-
-### Dependency ordering
+*(Diff-only: reviews `phase/02-recruiter-overview-live → main`, committed + uncommitted. 15 findings — 6 major, 9 minor.)*
 
 ```
-Wave 1: 02-01 ∥ 02-02     ✓ sensible (UI + PDF parallel; href contract documented)
-Wave 2: 02-03 (→01), 02-04 (→01,02)   ✓ geist dep for OG correct
-Wave 3: 02-05 (→01,03,04)   ✓ merge-order rationale for page.tsx
-Wave 4: 02-06 (→ all)       ⚠ add CI playwright step
-Wave 5: 02-07 (→06)         ✓ human gate appropriate
+
+(\(\
+(• .•)  C*deR*bb*t: The uncensored bug hunter.
+
+
+────────────────────────────────────────────────────────────────────────
+  major [Security & Privacy]
+  → content/en/pages/impressum.mdx:16
+
+  Placeholder address must be filled before launch.
+
+  The Impressum contains placeholder text instead of a real postal address.
+  Under § 5 DDG, a complete and accurate provider address is a legal
+  requirement for German-facing sites; shipping this to production as-is
+  would leave the site non-compliant.
+
+  Ensure this is tracked as a hard blocker in the launch checklist and
+  resolved before the production cutover phase.
+
+
+
+
+
+  Also applies to: 25-25
+
+
+────────────────────────────────────────────────────────────────────────
+  major [Data Integrity & Integration]
+  → .github/workflows/ci.yml:41-43
+
+  Lighthouse budget comment doesn't match lighthouserc.json thresholds.
+
+  The inline comment states `LCP
+  Suggested fix (pick whichever value is actually correct)
+
+  -      # TECH-07 performance budget: LCP <= 2500ms, script bytes <= 153600, perf >= 0.9
+  +      # TECH-07 performance budget: LCP <= 3000ms, script bytes <= 184643, perf >= 0.9
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Maintainability & Code Quality]
+  → content/de/pages/about.mdx:26-28
+
+  Tighten the closing clause.
+
+  ... DSGVO-konform in der EU betrieben reads like a sentence fragment in
+  the published bio. Rephrase that clause so the sentence finishes cleanly.
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Functional Correctness]
+  → content/de/career.ts:37-42
+
+  Give the middle role a real date range.
+
+  The Software Engineering entry has both from and to set to null,
+  so the timeline loses its chronology and may render as an ambiguous gap.
+  Add the actual bounds or merge it into the adjacent role.
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Functional Correctness]
+  → src/app/[locale]/page.tsx:27-32
+
+  formatMonth doesn't guard against malformed "YYYY-MM" input.
+
+  If value lacks a - (e.g. a year-only string), month is undefined
+  and the function renders "undefined/YYYY" to users instead of falling
+  back gracefully.
+
+
+  🐛 Proposed fix
+
+   function formatMonth(value: string | null, present: string): string {
+     if (!value) return present;
+     const [year, month] = value.split("-");
+  +  if (!year || !month) return present;
+     return `${month}/${year}`;
+   }
+
+
+────────────────────────────────────────────────────────────────────────
+  major [Stability & Availability]
+  → .planning/phases/01-bilingual-content-foundation/01-VERIFICATION.md:42-43
+
+  Downgrade TECH-07 to “verified with a gap”.
+
+  The report proves CI catches budget regressions, but it also says a direct
+  merge to main can still auto-deploy to production. That means the
+  production gate is not enforced end-to-end yet.
+
+
+  Suggested adjustment
+
+  -| 3 | Every deploy to lsiem.de runs through a pipeline that fails on exceeded performance budget (LCP, initial JS) | ✓ VERIFIED | ...
+  +| 3 | CI enforces the performance budget, but production deploys still need branch protection to make the gate end-to-end | ⚠ VERIFIED WITH GAP | ...
+
+  Also applies to: 101-109
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Maintainability & Code Quality]
+  → .planning/phases/01-bilingual-content-foundation/01-UAT.md:15-18
+
+  Split the Impressum check into Phase 1 vs. Phase 2 criteria.
+
+  The row currently passes while the expected state still says the real
+  postal address is missing. That makes the test ambiguous and hides the
+  actual blocker.
+
+
+  Suggested wording
+
+  - expected: The placeholder in content/{de,en}/pages/impressum.mdx is replaced with a real, contactable postal address before the Phase-2 domain switch. (Legal/content decision — flagged as a Phase-2-launch blocker, confirmed present as a clearly-marked placeholder, not silently missing.)
+  - result: pass
+  + expected: Phase 1: the Impressum placeholder is clearly marked; Phase 2: replace it with a real, contactable postal address before the domain switch.
+  + result: pass
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Maintainability & Code Quality]
+  → README.md:59-60
+
+  Align the CI wording with the workflow trigger.
+
+  The PR stack says .github/workflows/ci.yml triggers on pull_request,
+  not on every push. Update the README so contributors know when the gate
+  actually runs.
+
+
+
+
+  ♻️ Proposed fix
+
+  - CI (`.github/workflows/ci.yml`) runs `check:content` → `build` → Lighthouse CI budget on every push, failing on LCP / initial-JS / performance-score regressions.
+  + CI (`.github/workflows/ci.yml`) runs `check:content` → `build` → Lighthouse CI budget on every pull request, failing on LCP / initial-JS / performance-score regressions.
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Maintainability & Code Quality]
+  → .agents/skills/portfolio/SKILL.md:200
+
+  Fix the markdown table row delimiter.
+
+  The extra leading | makes this row render with an empty first cell and
+  breaks the table layout.
+
+
+
+
+  ♻️ Proposed fix
+
+  -|| /add-test-suite  | Add or extend CI and automated test suites                   |
+  +| /add-test-suite   | Add or extend CI and automated test suites                   |
+
+
+────────────────────────────────────────────────────────────────────────
+  major [Data Integrity & Integration]
+  → .planning/phases/02-recruiter-overview-live/02-UI-SPEC.md:45-50
+
+  Remove the optional header CV mirror.
+
+  D-C is already locked to the contact block only in 02-CONTEXT.md, but
+  this spec still allows a second placement. Keeping both reopens a settled
+  decision and will make the header contract inconsistent.
+
+
+
+
+
+  Also applies to: 207-211
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Maintainability & Code Quality]
+  → .planning/phases/02-recruiter-overview-live/02-06-PLAN.md:71-72
+
+  Add the CSP fallback follow-up to the declared scope.
+
+  The fallback path requires a STATE.md blocker entry, but STATE.md is
+  not in files_modified, so the plan cannot satisfy its own acceptance
+  criteria as written. Please include that file here or drop the fallback
+  bookkeeping requirement.
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Stability & Availability]
+  → .planning/phases/02-recruiter-overview-live/02-01-PLAN.md:134-135
+
+  Don't ship a 404ing CV CTA.
+
+  This plan says the download link will 404 until Plan 02 lands. If the
+  tasks are merged out of order, users get a broken button in the live page.
+  Please make Plan 02 a hard prerequisite or gate the CTA until the PDFs
+  exist.
+
+
+────────────────────────────────────────────────────────────────────────
+  minor [Functional Correctness]
+  → .planning/phases/02-recruiter-overview-live/02-03-PLAN.md:98-99
+
+  Use a single ARIA pattern for the theme toggle.
+  role="group" should pair with aria-pressed, or radiogroup should
+  pair with aria-checked. Mixing both in the same control produces invalid
+  semantics, so choose one pattern and keep it consistent.
+
+
+────────────────────────────────────────────────────────────────────────
+  major [Security & Privacy]
+  → scripts/check-content-parity.ts:83-99
+
+  Only the first blocklist.txt found is scanned; siblings are silently
+  ignored.
+
+  findBlocklist stops at the first
+  .planning/phases/*/reference/blocklist.txt it finds (in readdirSync
+  order, which is not guaranteed sorted). If two phase folders each maintain
+  their own confidentiality blocklist, terms in the non-first file are never
+  checked — a silent gap in the D-03 confidentiality gate this script exists
+  to enforce.
+
+
+
+
+
+  🛡️ Proposed fix: merge terms from all blocklist files
+
+  -/** Resolve the first existing .planning/phases/*\/reference/blocklist.txt, or null. */
+  -function findBlocklist(): string | null {
+  +/** Resolve every existing .planning/phases/*\/reference/blocklist.txt. */
+  +function findBlocklists(): string[] {
+     const phasesDir = join(".planning", "phases");
+     if (!existsSync(phasesDir)) {
+  -    return null;
+  +    return [];
+     }
+  +  const found: string[] = [];
+     for (const phase of readdirSync(phasesDir, { withFileTypes: true })) {
+       if (!phase.isDirectory()) {
+         continue;
+       }
+       const candidate = join(phasesDir, phase.name, "reference", "blocklist.txt");
+       if (existsSync(candidate)) {
+  -      return candidate;
+  +      found.push(candidate);
+       }
+     }
+  -  return null;
+  +  return found;
+   }
+
+  And update main() to merge terms from all findBlocklists() results
+  before calling scanBlocklist.
+
+
+────────────────────────────────────────────────────────────────────────
+  major [Functional Correctness]
+  → scripts/check-content-parity.ts:63-81
+
+  Parity check silently "passes" if both locale roots are missing.
+
+  If {root}/de and {root}/en both don't exist (wrong --root, renamed
+  directory, misconfig), listFilesRelative returns [] for both,
+  parityFailures is empty, and the script prints "[parity] OK" even
+  though nothing was actually verified. This defeats the purpose of the
+  I18N-02 gate in exactly the failure mode it should catch.
+
+
+
+
+
+  🛡️ Proposed fix
+
+   function checkParity(root: string): Failure[] {
+     const deDir = join(root, "de");
+     const enDir = join(root, "en");
+  +  if (!existsSync(deDir) || !existsSync(enDir)) {
+  +    throw new Error(
+  +      `[parity] Expected locale directories not found: ${deDir} and/or ${enDir}.`,
+  +    );
+  +  }
+     const deFiles = new Set(listFilesRelative(deDir));
+     const enFiles = new Set(listFilesRelative(enDir));
+
+
+────────────────────────────────────────
+Review complete
+15 findings ✔
+
+Major    6
+Minor    9
+────────────────────────────────────────
+
+Print all AI prompts: coderabbit review --show-prompts
 ```
 
-No circular dependencies. Plan 04’s dependency on 02-02 for `geist` is the critical path item for Wave 2.
+---
 
-### Overall risk assessment
+## Gemini Review
 
-**MEDIUM**
+**FAILED** — Gemini API returned HTTP 503 ("This model is currently experiencing high demand") on every attempt: default pro model (2 tries) and `gemini-flash-latest` / `gemini-2.5-flash` fallbacks. No review produced. Retry when Google's capacity recovers.
 
-**Justification:** Implementation paths are well researched, scoped to existing architecture, and respect DSGVO/static-first constraints. Wave sequencing is sound. Risk is concentrated in **verification automation** (Playwright absent from CI, dev-vs-prod test split) and **content-model consistency** (hero/CV value prop not in the same source Plan 02 reads). Neither blocks execution if addressed in Plan 01/02/Task amendments before Wave 1 starts; both could cause a “green locally, broken in production” or “CV diverges from site” outcome if ignored.
+---
+
+## Codex Review
+
+**FAILED** — `codex exec` (model `gpt-5.4-pro` via Azure provider) errored with `invalid_payload` / "The provided data does not match the expected schema" after loading the repo and starting the review, on both attempts. Looks like a provider-side payload/schema issue, not a prompt problem. No review produced.
 
 ---
 
 ## Antigravity Review
 
-Antigravity review failed: timed out (>7 min) in its agentic file-reading loop before writing any response to stdout or transcript (watermark unchanged at 12 lines). Excluded from consensus.
+**FAILED** — `agy --print-timeout 300s -p` hung in its agentic Cascade phase (code_search/grep loop) well past the 5-minute cap and never wrote a `PLANNER_RESPONSE` to its transcript (watermark stayed at 12 lines). This is the documented failure mode on large, file-path-rich prompts. Process terminated; no review produced.
 
 ---
 
 ## Consensus Summary
 
-Both grounded reviewers (Gemini, Cursor) independently judged the seven-plan suite **production-grade and coherently sequenced** (functional core → polish → data → hardening → cutover), with correct dependency ordering, no cycles, and faithful adherence to the static-first / DSGVO / single-source-of-truth architecture. Overall risk: **LOW–MEDIUM** (Gemini) / **MEDIUM** (Cursor). Neither found a blocking defect; the concerns are concentrated in two areas — **content-model consistency** and **verification automation** — both fixable before or during Wave 1.
+Only two reviewers ran this round: **Cursor** (full source-grounded plan review) and **CodeRabbit** (diff-only). Where they overlap, agreement is strong; the deep plan-level judgment comes from Cursor, and CodeRabbit independently corroborates several of its concerns from the actual diff.
 
-### Agreed Strengths (2+ reviewers)
+### Agreed Strengths
 
-- **Build-time / zero-runtime-third-party posture** — CV-PDF (`scripts/generate-cv.tsx` via `prebuild`), OG images (`opengraph-image.tsx`), and the GitHub heatmap (`revalidate: 86400`) are all baked at build time using on-disk Geist TTFs; the browser never contacts GitHub, react-pdf registries, or CDNs. DSGVO-clean, no bundle bloat, no CLS.
-- **Single source of truth (SSOT)** — feeding the overview page, CV-PDF, Person JSON-LD, and OG images from one content model is the right architecture (both praise the intent — see the HIGH concern below about where it currently leaks).
-- **Dark mode via token-only flip + blocking inline no-flash script** — attribute-driven `:root[data-theme="dark"]` override with a pre-paint inline script is the industry-standard FOUC-free approach; minimal client surface.
-- **TDD discipline & accurate baseline reading** — RED→GREEN Playwright specs extending `evals/home.spec.ts`; plan file/line references match the actual repo (`page.tsx`, `layout.tsx`, `contact.ts`, `globals.css`, `ci.yml`, `lighthouserc.json`).
-- **Correct dependency ordering** — Wave 1 (01 ∥ 02) parallelism with a documented CV-href contract; Plan 04→02 `geist` dependency; human-gated Plan 07 cutover (`autonomous: false`).
+- **Architecture matches the real repo.** Cursor verified the plans extend `src/app/[locale]/page.tsx` and reuse established content accessors (`src/lib/content.ts:39-61`) rather than rewriting; wave ordering (`prebuild` CV → `next build`) matches `package.json`. CodeRabbit raised no structural objections to the plan design — its findings are localized fixes, which is consistent with a sound overall approach.
+- **DSGVO posture is disciplined** — build-time-only GitHub fetch with `server-only` + graceful fallback, cookieless analytics, script-only react-pdf, static OG images (Cursor).
+- **Concrete per-plan threat models and a real human cutover gate** (02-07) rather than checkbox security (Cursor).
 
-### Agreed Concerns (2+ reviewers — highest priority)
+### Agreed Concerns (highest priority — raised by both, or high-severity)
 
-1. **[HIGH] Value-prop / copy SSOT gap.** Plan 01 authors `home.valueProp` / `about.summary` in `messages/{de,en}.json`, but Plan 02's CV generator imports `content/{de,en}/*.ts` directly (not `messages/` or `src/lib/content.ts`). The CV therefore cannot reach the value prop without **duplicating** the copy or **omitting** it — directly undermining the SSOT that CONT-01/CTX-05 require. **Fix jointly in Plans 01/02 before Wave 1:** add `valueProp` (and derive the About summary) to the content model (`content/shared/types.ts` + `content/{de,en}/contact.ts` or a `profile.ts`) so hero + CV read one field. *(Cursor HIGH, cited `messages/` vs `content/de/contact.ts:9-15` vs Plan 02 imports; Gemini flags the same as Plan 01's "single-source-of-truth gap".)*
-2. **[MEDIUM] Theme-toggle hydration & weak no-flash verification.** The 3-state toggle is a client component that can't know `localStorage` at SSR, risking a hydration mismatch / active-segment flash; and the `theme.spec.ts` eval only checks `data-theme` after reload, not computed background-color **before paint** → false confidence. **Fix:** neutral/`isMounted`-gated active-segment fill, plus a Playwright assertion on `getComputedStyle(document.body).backgroundColor` with `page.addInitScript` setting `localStorage.theme='dark'`.
-3. **[MEDIUM] CSP fragility on the inline theme script.** A hash-based CSP over the inline no-flash script silently breaks dark mode on any whitespace/formatting edit, and collides with Vercel Analytics/Speed-Insights inline chunks. **Fix:** keep the inline script as a stable minified string, record the CSP status in `STATE.md`, and don't let the "TODO/fallback" path ship CSP-less silently.
+1. **Performance budget contradicts the phase's own success criterion (both reviewers).** `lighthouserc.json` allows LCP **3000ms** while ROADMAP criterion 4 / TECH-01 require CWV "good" (LCP **< 2500ms**), and the CI comment in `.github/workflows/ci.yml:41` is out of sync with the actual thresholds. Plans can pass CI while failing the stated goal. **Fix before Wave 4:** set LCP max to 2500 and add an INP (or TBT proxy) assertion; align 02-06 acceptance with the ROADMAP wording verbatim.
+2. **HIGH — Value-prop single-source-of-truth conflict (Cursor).** Plan 01 writes `home.valueProp` to `messages/*.json`, but Plan 02 requires the CV to render the value prop from **content modules only** (`ContactInfo` has no `valueProp` field — `content/shared/types.ts:77-83`). Site and PDF will diverge. **Fix:** add `valueProp` to the content model (schema + `content/{de,en}/contact.ts`) and consume it in hero + CV, or explicitly accept messages as i18n chrome.
+3. **CV CTA can 404 if merged out of order (both reviewers).** Plan 01 ships the download button while Plan 02 produces the PDF; CodeRabbit flags `02-01-PLAN.md:134` explicitly. **Fix:** make Plan 02 a hard prerequisite or gate the CTA until the PDF exists (not just "same PR" by convention).
+4. **UI-SPEC reopens a locked decision (CodeRabbit).** `02-UI-SPEC.md:45` still allows an optional header CV mirror, but D-C is locked to the contact block only in `02-CONTEXT.md`. **Fix:** remove the optional placement from the spec.
+5. **Production `GITHUB_TOKEN` dependency (Cursor).** If the token is absent on the production Vercel build, lsiem.de ships the fallback activity line until the next rebuild. **Fix:** make "token present in Production env" a blocking Plan 06 pre-cutover check, not only a manual step-7 note.
+6. **02-06 plan cannot satisfy its own acceptance (CodeRabbit).** The CSP fallback path requires a `STATE.md` blocker entry, but `STATE.md` is not in `files_modified`. **Fix:** add the file to scope or drop the bookkeeping requirement.
 
-### Divergent / single-reviewer findings worth acting on
+### Lower-priority / mechanical (mostly CodeRabbit diff findings, worth folding into execution)
 
-- **[HIGH — Cursor only, strongly evidenced] Playwright is not in CI.** `.github/workflows/ci.yml` runs only `check:content`, `build`, and `lhci autorun` — no `pnpm test`. The five new spec files (Plans 01–05) will **not gate merge**, yet Plan 07's cutover checklist assumes "green Playwright in CI." **Amend Plan 06** to add `pnpm exec playwright test` after `pnpm build` (production `pnpm start` webServer, or a `playwright.config.ci.ts`). Verify against `ci.yml` before executing Wave 4.
-- **[MEDIUM — Cursor] Dev-vs-prod test split.** Playwright uses `pnpm dev` (`playwright.config.ts:24`) while LHCI tests the production build — SSR output/bundle can differ; run metadata/JSON-LD/static-output evals against a production server.
-- **[MEDIUM — Cursor] Skip-to-content link missing.** `messages/de.json:52` defines `accessibility.skipToContent` but nothing under `src/` uses it; TECH-03 keyboard-nav baseline. Wire it as the first focusable element in `layout.tsx`.
-- **[MEDIUM — Gemini] React 19 × @react-pdf/renderer typing friction.** `tsc --noEmit` in the CV verify block may fail if `@react-pdf/renderer`'s bundled React types collide with `@types/react` v19. Resolve types explicitly; use `require.resolve('geist/package.json')` to locate fonts robustly against pnpm hoisting.
-- **[MEDIUM — Cursor] OG absolute-URL / preview-vs-prod.** `siteMetadataBase` resolves to Vercel/localhost until Plan 07's flip; add an eval asserting `og:image` starts with `http` to catch `metadataBase` misconfig early.
-- **[MEDIUM — Cursor] GitHub PAT scope & rebuild discipline.** Confirm `read:user` scope (public calendars often work unauthenticated); Plan 07 should trigger an explicit Vercel redeploy when `GITHUB_TOKEN` is first added, not just "confirm set."
-- **[LOW] Misc:** generated `public/Lasse-Siemoneit-CV-*.pdf` not gitignored (Cursor); Satori 500KB font-budget with two Geist weights (Gemini); heatmap week-column padding/alignment (Gemini) and undecided section placement vs anchor-nav (Cursor); header control overcrowding at 320px (Gemini); pre-existing `next/font/google` in `layout.tsx` vs AGENTS.md self-host rule — out of Phase 2 scope but DSGVO-relevant (Cursor).
+- **Legal launch blocker:** Impressum still contains placeholder address (`content/en/pages/impressum.mdx:16`) — required under § 5 DDG before cutover.
+- `formatMonth` in `page.tsx:27` doesn't guard malformed `YYYY-MM` input (renders `undefined/YYYY`).
+- `career.ts:37` middle role has `from`/`to` both `null` — breaks timeline chronology.
+- 02-03 theme toggle mixes `role="group"`+`aria-pressed` with `radiogroup`+`aria-checked` — pick one ARIA pattern.
+- `check-content-parity.ts`: only the first `blocklist.txt` is scanned; parity check silently "passes" if both locale roots are missing (Phase 1 code, but it's the confidentiality/i18n gate this phase relies on).
+- Cursor LOW items: add `server-only` to deps; loosen Plan 05 `depends_on` to `[02-01]`; brittle RED-verify greps; per-slug OG build surface; a11y Tab-order eval fragility.
 
-### Recommended pre-execution actions
+### Divergent Views
 
-Fold these into the plans via `/gsd-plan-phase 2 --reviews`:
-- **Before Wave 1:** close the value-prop SSOT gap in Plans 01+02 (content-model field). *(HIGH)*
-- **Before Wave 4:** amend Plan 06 to add Playwright to CI + align eval webServer with the production build. *(HIGH)*
-- Strengthen the dark-mode no-flash eval and CSP handling (Plan 03/06). *(MEDIUM)*
-- Add skip-to-content wiring (Plan 01) and an OG absolute-URL assertion (Plan 04). *(MEDIUM)*
+- **No direct contradictions.** The two reviewers operate at different altitudes (Cursor = plan/architecture, CodeRabbit = line-level diff), so they complement rather than conflict. The one thing to weigh: CodeRabbit's finding to "remove the optional header CV mirror" (treating the locked decision as authoritative) vs. the UI-SPEC still offering it — resolve by editing the spec, not by reopening D-C.
+- **Coverage gap, not disagreement:** three of five reviewers failed this run. If a stronger second grounded opinion is wanted before execution, re-run `/gsd-review --phase 2 --gemini --codex` once those providers recover — the current consensus rests primarily on Cursor.
+
+### Overall Risk: **MEDIUM**
+
+Cursor's assessment stands: architecture and sequencing are strong and repo-accurate; the real risks are content-model drift (value prop / about copy), verification gaps (LCP/INP thresholds), and operational cutover (production token, Impressum). None require structural rewrites — all are small plan amendments best made before or during Wave 1.
