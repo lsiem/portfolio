@@ -35,7 +35,7 @@
 
 ### Technische Basis
 
-- [ ] **TECH-01**: Seite erreicht Core Web Vitals "good" (LCP/INP/CLS) auf Mobilgeräten — erster Viewport ist statisches/SSR-HTML, Wow-Layer lädt nach First Paint
+- [x] **TECH-01**: Seite erreicht Core Web Vitals "good" (LCP/INP/CLS) auf Mobilgeräten — erster Viewport ist statisches/SSR-HTML, Wow-Layer lädt nach First Paint
 - [ ] **TECH-02**: Mobile-Besucher bekommen ein bewusst gestaltetes Erlebnis (kein degradiertes Desktop-Erlebnis, kein Scrolljacking auf Mobile)
 - [x] **TECH-03**: Seite ist zugänglich: semantisches HTML, Tastatur-Navigation, Kontraste, echter DOM-Text unter allen Effekten
 - [x] **TECH-04**: Besucher bekommt Dark Mode (Systemerkennung + Toggle) oder eine dark-first Art Direction — Entscheidung in der Design-Phase
@@ -91,7 +91,7 @@
 | MODE-02 | Phase 3 | Pending |
 | I18N-01 | Phase 1 | Complete |
 | I18N-02 | Phase 1 | Complete |
-| TECH-01 | Phase 2 | Pending |
+| TECH-01 | Phase 2 | Complete |
 | TECH-02 | Phase 3 | Pending |
 | TECH-03 | Phase 2 | Complete |
 | TECH-04 | Phase 2 | Complete |

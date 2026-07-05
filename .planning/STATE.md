@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-07-05T11:11:34.194Z"
+last_updated: "2026-07-05T11:22:50.901Z"
 last_activity: 2026-07-05
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 11
-  completed_plans: 9
+  completed_plans: 10
   percent: 25
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 02 (recruiter-overview-live) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-07-05
 
-Progress: [████████░░] 82%
+Progress: [█████████░] 91%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [████████░░] 82%
 | Phase 02-recruiter-overview-live P03 | ~20min | 3 tasks | 6 files |
 | Phase 02-recruiter-overview-live P04 | 10min | 3 tasks | 6 files |
 | Phase 02-recruiter-overview-live P05 | 20min | 3 tasks | 6 files |
+| Phase 02 P06 | 30 min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase ?]: No @custom-variant dark registered for the theme toggle — The design is fully token-driven (verified zero dark: utilities via grep), so :root[data-theme] overrides alone satisfy TECH-04
 - [Phase 02-recruiter-overview-live]: [02-04] opengraph-image.tsx routes require their own generateStaticParams to be statically optimized (SSG) — without it Next serves them as on-demand dynamic routes even with zero request-time APIs — Discovered via pnpm build route table showing ƒ instead of ● before the fix
 - [Phase 02-05]: GitHubHeatmap uses role="img" + a visually-hidden total instead of a full ARIA table/grid role tree — The heatmap has no interactive cells; a labeled image-role summary satisfies conveying meaning without hover without extra ARIA machinery
+- [Phase 02-06]: No CSP shipped; documented gap in next.config.ts comment + STATE.md — Hash-based CSP proven (via Playwright + browser console) to break the site because Next App Router's per-page RSC hydration scripts have non-deterministic sha256 hashes per build; nonce-based CSP would force dynamic rendering across the whole static site
+- [Phase 02-06]: Tightened LHCI budget to LCP<=2500ms + TBT<=200ms + CLS<=0.1, verified passing on a production build — Matches ROADMAP Success Criterion 4 / TECH-01 'Core Web Vitals good' verbatim instead of the looser 3000ms allowance that let CI pass while failing the phase's own success criterion
 
 ### Pending Todos
 
@@ -107,6 +110,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-05T11:11:34.188Z
+Last session: 2026-07-05T11:22:50.895Z
 Stopped at: Completed 02-05-PLAN.md
 Resume file: None

@@ -63,7 +63,7 @@ Plans:
   4. Site erreicht Core Web Vitals "good" auf Mobilgeräten, ist per Tastatur vollständig bedienbar (semantisches HTML, Kontraste) und bietet Dark Mode (Systemerkennung + Toggle)
   5. Geteilte Links zeigen gestaltete Preview-Cards pro Seite und Locale (OG-Images, Person-JSON-LD), und Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung
 
-**Plans:** 4/7 plans executed
+**Plans:** 6/7 plans executed
 
 Plans:
 **Wave 1**
@@ -82,7 +82,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 02-06-PLAN.md — Launch hardening + verification: security headers, CWV/Lighthouse budget, accessibility eval (Wave 4)
+- [x] 02-06-PLAN.md — Launch hardening + verification: security headers, CWV/Lighthouse budget, accessibility eval (Wave 4)
 
 **Wave 5** *(blocked on Wave 4)*
 
@@ -133,6 +133,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
-| 2. Recruiter Overview Live | 4/7 | In Progress|  |
+| 2. Recruiter Overview Live | 6/7 | In Progress|  |
 | 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
