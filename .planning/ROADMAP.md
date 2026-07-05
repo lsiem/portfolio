@@ -63,7 +63,7 @@ Plans:
   4. Site erreicht Core Web Vitals "good" auf Mobilgeräten, ist per Tastatur vollständig bedienbar (semantisches HTML, Kontraste) und bietet Dark Mode (Systemerkennung + Toggle)
   5. Geteilte Links zeigen gestaltete Preview-Cards pro Seite und Locale (OG-Images, Person-JSON-LD), und Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung
 
-**Plans:** 1/7 plans executed
+**Plans:** 3/7 plans executed
 
 Plans:
 **Wave 1**
@@ -73,7 +73,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 02-03-PLAN.md — 3-state dark-mode toggle (System/Light/Dark), no-flash script, Tailwind 4 attribute tokens (Wave 2)
+- [x] 02-03-PLAN.md — 3-state dark-mode toggle (System/Light/Dark), no-flash script, Tailwind 4 attribute tokens (Wave 2)
 - [ ] 02-04-PLAN.md — SEO share layer: OG images per page/locale (next/og) + Person JSON-LD + openGraph metadata (Wave 2)
 
 **Wave 3** *(blocked on Wave 2)*
@@ -133,6 +133,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
-| 2. Recruiter Overview Live | 1/7 | In Progress|  |
+| 2. Recruiter Overview Live | 3/7 | In Progress|  |
 | 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |

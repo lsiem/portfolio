@@ -38,7 +38,7 @@
 - [ ] **TECH-01**: Seite erreicht Core Web Vitals "good" (LCP/INP/CLS) auf Mobilgeräten — erster Viewport ist statisches/SSR-HTML, Wow-Layer lädt nach First Paint
 - [ ] **TECH-02**: Mobile-Besucher bekommen ein bewusst gestaltetes Erlebnis (kein degradiertes Desktop-Erlebnis, kein Scrolljacking auf Mobile)
 - [x] **TECH-03**: Seite ist zugänglich: semantisches HTML, Tastatur-Navigation, Kontraste, echter DOM-Text unter allen Effekten
-- [ ] **TECH-04**: Besucher bekommt Dark Mode (Systemerkennung + Toggle) oder eine dark-first Art Direction — Entscheidung in der Design-Phase
+- [x] **TECH-04**: Besucher bekommt Dark Mode (Systemerkennung + Toggle) oder eine dark-first Art Direction — Entscheidung in der Design-Phase
 - [ ] **TECH-05**: Geteilte Links zeigen gestaltete Preview-Cards (OG-Images pro Seite/Locale, Person-JSON-LD, Meta-Tags)
 - [x] **TECH-06**: Seitenbetreiber sieht Besucherzahlen über cookieless, DSGVO-freundliche Analytics
 - [x] **TECH-07**: Seite ist live auf lsiem.de (Vercel), Performance-Budget wird im CI geprüft
@@ -94,7 +94,7 @@
 | TECH-01 | Phase 2 | Pending |
 | TECH-02 | Phase 3 | Pending |
 | TECH-03 | Phase 2 | Complete |
-| TECH-04 | Phase 2 | Pending |
+| TECH-04 | Phase 2 | Complete |
 | TECH-05 | Phase 2 | Pending |
 | TECH-06 | Phase 1 | Complete |
 | TECH-07 | Phase 1 | Complete |
