@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { GitHubHeatmap } from "@/components/github-heatmap";
 import {
   getCareer,
   getCaseStudy,
@@ -9,6 +10,7 @@ import {
   getProjects,
   getSkillDomains,
 } from "@/lib/content";
+import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
 import {
   localeAlternates,
   openGraphMetadata,
@@ -56,6 +58,7 @@ export default async function HomePage({ params }: Props) {
   const projectsT = await getTranslations("projects");
   const skillsT = await getTranslations("skills");
   const aboutT = await getTranslations("about");
+  const activityT = await getTranslations("activity");
   const contactT = await getTranslations("contact");
 
   const { intro: careerIntro, entries: career } = getCareer(locale);
@@ -66,6 +69,11 @@ export default async function HomePage({ params }: Props) {
   // Trusted first-party data from the typed content model (no user input),
   // so dangerouslySetInnerHTML is safe here per react/security rules.
   const personLd = personJsonLd(contact, locale);
+  // Build-time-only fetch with daily ISR (src/lib/github.ts) — the shipped
+  // page never calls GitHub at runtime; null degrades to a fallback line.
+  const contributionCalendar = await getContributionCalendar(
+    githubLoginFromUrl(contact.github),
+  );
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-20 px-6 py-20 sm:gap-28 sm:py-28">
@@ -263,6 +271,19 @@ export default async function HomePage({ params }: Props) {
         >
           {aboutT("readMore")} →
         </Link>
+      </section>
+
+      <section id="activity" aria-labelledby="activity-heading" className="flex scroll-mt-24 flex-col gap-6">
+        <h2 id="activity-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          {activityT("title")}
+        </h2>
+        <GitHubHeatmap
+          data={contributionCalendar}
+          labels={{
+            ariaSummary: activityT("ariaSummary"),
+            unavailable: activityT("unavailable"),
+          }}
+        />
       </section>
 
       <section id="contact" aria-labelledby="contact-heading" className="flex scroll-mt-24 flex-col gap-4">
