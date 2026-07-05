@@ -39,7 +39,7 @@
 - [ ] **TECH-02**: Mobile-Besucher bekommen ein bewusst gestaltetes Erlebnis (kein degradiertes Desktop-Erlebnis, kein Scrolljacking auf Mobile)
 - [x] **TECH-03**: Seite ist zugänglich: semantisches HTML, Tastatur-Navigation, Kontraste, echter DOM-Text unter allen Effekten
 - [x] **TECH-04**: Besucher bekommt Dark Mode (Systemerkennung + Toggle) oder eine dark-first Art Direction — Entscheidung in der Design-Phase
-- [ ] **TECH-05**: Geteilte Links zeigen gestaltete Preview-Cards (OG-Images pro Seite/Locale, Person-JSON-LD, Meta-Tags)
+- [x] **TECH-05**: Geteilte Links zeigen gestaltete Preview-Cards (OG-Images pro Seite/Locale, Person-JSON-LD, Meta-Tags)
 - [x] **TECH-06**: Seitenbetreiber sieht Besucherzahlen über cookieless, DSGVO-freundliche Analytics
 - [x] **TECH-07**: Seite ist live auf lsiem.de (Vercel), Performance-Budget wird im CI geprüft
 - [ ] **TECH-08**: Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung (Build-Time/gecachter API-Fetch)
@@ -95,7 +95,7 @@
 | TECH-02 | Phase 3 | Pending |
 | TECH-03 | Phase 2 | Complete |
 | TECH-04 | Phase 2 | Complete |
-| TECH-05 | Phase 2 | Pending |
+| TECH-05 | Phase 2 | Complete |
 | TECH-06 | Phase 1 | Complete |
 | TECH-07 | Phase 1 | Complete |
 | TECH-08 | Phase 2 | Pending |
