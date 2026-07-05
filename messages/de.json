@@ -34,6 +34,11 @@
     "title": "Über mich",
     "readMore": "Mehr über mich"
   },
+  "activity": {
+    "title": "Aktivität",
+    "ariaSummary": "GitHub-Beiträge der letzten 12 Monate",
+    "unavailable": "GitHub-Aktivität derzeit nicht verfügbar."
+  },
   "theme": {
     "label": "Darstellung",
     "system": "System",
