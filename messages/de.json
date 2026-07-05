@@ -41,7 +41,9 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "copyEmail": "E-Mail kopieren",
-    "copied": "Kopiert!"
+    "copied": "Kopiert!",
+    "downloadCv": "Lebenslauf herunterladen",
+    "downloadCvAria": "Lebenslauf herunterladen (PDF, Deutsch)"
   },
   "footer": {
     "builtWith": "Gebaut mit Next.js",

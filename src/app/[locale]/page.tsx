@@ -255,6 +255,14 @@ export default async function HomePage({ params }: Props) {
           {contactT("title")}
         </h2>
         <p className="max-w-xl text-muted">{contactT("intro")}</p>
+        <a
+          href={`/Lasse-Siemoneit-CV-${locale}.pdf`}
+          download
+          aria-label={contactT("downloadCvAria")}
+          className="inline-flex w-fit items-center rounded-md bg-accent px-4 py-2 font-mono text-sm text-background transition-colors hover:bg-foreground focus-visible:outline-offset-4"
+        >
+          {contactT("downloadCv")}
+        </a>
         <ul className="flex flex-col gap-2 font-mono text-sm">
           <li>
             <a href={`mailto:${contact.email}`} className="text-accent transition-colors hover:text-foreground">

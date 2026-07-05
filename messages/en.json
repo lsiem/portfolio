@@ -41,7 +41,9 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "copyEmail": "Copy email",
-    "copied": "Copied!"
+    "copied": "Copied!",
+    "downloadCv": "Download CV",
+    "downloadCvAria": "Download CV (PDF, English)"
   },
   "footer": {
     "builtWith": "Built with Next.js",

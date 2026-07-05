@@ -37,6 +37,7 @@ export default async function LocaleLayout({
   // REQUIRED for static rendering — every layout AND page under [locale]
   setRequestLocale(locale);
   const t = await getTranslations("footer");
+  const nav = await getTranslations("nav");
 
   return (
     <html
@@ -53,7 +54,23 @@ export default async function LocaleLayout({
               >
                 LS<span className="text-accent">.</span>
               </Link>
-              <LocaleSwitcher />
+              {/*
+                Header control cluster (D-A order): logo | spacer | Contact |
+                [ThemeToggle slot — added in Plan 03] | LocaleSwitcher. Stays
+                single-row on narrow viewports; if it ever overflows, Contact
+                may collapse to an icon-only affordance with an aria-label
+                (inline SVG, currentColor — Claude's discretion, not needed
+                yet at this width).
+              */}
+              <div className="flex items-center gap-4">
+                <a
+                  href="#contact"
+                  className="font-mono text-xs text-muted transition-colors hover:text-foreground"
+                >
+                  {nav("contact")}
+                </a>
+                <LocaleSwitcher />
+              </div>
             </div>
           </header>
           <div className="flex flex-1 flex-col">{children}</div>
