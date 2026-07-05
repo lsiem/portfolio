@@ -11,8 +11,10 @@ import {
   getSkillDomains,
 } from "@/lib/content";
 import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
+import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
+import { Reveal } from "@/components/motion/reveal";
 import {
   localeAlternates,
   openGraphMetadata,
@@ -154,25 +156,31 @@ export default async function HomePage({ params }: Props) {
       </section>
 
       {/*
-        Career breaks wide (D-04) and exposes a left-margin column (D-07) that
-        Plan 02 fills with the progress spine rail. In Phase 3 the left column is
-        an empty reserved gutter (lg+ only); the reading content stays anchored.
+        Career breaks wide (D-04) with a left-margin column (D-07) that hosts
+        the CareerSpine progress rail (lg+ only, scoped to this section's
+        scroll range); the reading content stays anchored in the right column.
       */}
       <section
         id="career"
         aria-labelledby="career-heading"
         className="mx-auto w-full max-w-[1440px] scroll-mt-24 px-6"
       >
-        <div className="lg:grid lg:grid-cols-[3rem_minmax(0,48rem)] lg:gap-6">
-          <div aria-hidden="true" className="hidden lg:block" />
+        <div className="lg:grid lg:grid-cols-[5rem_minmax(0,46rem)] lg:gap-6">
+          {/* Progress spine (D-07) — lives in the reserved left margin column,
+              lg+ only, scoped to this section's scroll range. */}
+          <CareerSpine entries={career} />
           <div className="flex flex-col gap-6">
         <h2 id="career-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {careerT("title")}
         </h2>
         <p className="max-w-2xl text-muted">{careerIntro}</p>
         <ol className="flex flex-col gap-8">
-          {career.map((entry) => (
-            <li key={entry.slug} className="flex flex-col gap-3">
+          {career.map((entry) => {
+            // ITSC is the narrative centerpiece (D-06): its SysAdmin → Software
+            // Engineering → Product Owner roles play as emphasized multi-beat
+            // reveals; every other org gets a single lighter reveal (D-05).
+            const isItsc = entry.slug === "itsc";
+            const header = (
               <div className="flex flex-col gap-1">
                 <h3 className="text-lg font-medium tracking-tight">
                   {entry.orgUrl ? (
@@ -188,21 +196,9 @@ export default async function HomePage({ params }: Props) {
                   {entry.location ? ` · ${entry.location}` : ""}
                 </p>
               </div>
-              {entry.intro ? <p className="text-muted">{entry.intro}</p> : null}
-              <ol className="flex flex-col gap-3 border-l border-border pl-4">
-                {entry.roles.map((role, i) => (
-                  <li key={`${entry.slug}-${i}`} className="flex flex-col gap-1">
-                    <p className="font-medium">
-                      {role.title}
-                      <span className="ml-2 font-mono text-xs text-muted">
-                        {formatMonth(role.from, careerT("present"))} – {formatMonth(role.to, careerT("present"))}
-                      </span>
-                    </p>
-                    <p className="text-sm text-muted">{role.description}</p>
-                  </li>
-                ))}
-              </ol>
-              {entry.techStack.length > 0 ? (
+            );
+            const techStack =
+              entry.techStack.length > 0 ? (
                 <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
                   {entry.techStack.map((tech) => (
                     <li key={tech} className="rounded border border-border px-2 py-0.5">
@@ -210,9 +206,58 @@ export default async function HomePage({ params }: Props) {
                     </li>
                   ))}
                 </ul>
-              ) : null}
-            </li>
-          ))}
+              ) : null;
+
+            if (isItsc) {
+              return (
+                <li key={entry.slug} className="flex flex-col gap-3">
+                  <Reveal className="flex flex-col gap-3">
+                    {header}
+                    {entry.intro ? <p className="text-muted">{entry.intro}</p> : null}
+                  </Reveal>
+                  <ol className="flex flex-col gap-3 border-l border-border pl-4">
+                    {entry.roles.map((role, i) => (
+                      <li key={`${entry.slug}-${i}`}>
+                        <Reveal emphasis className="flex flex-col gap-1">
+                          <p className="font-medium">
+                            {role.title}
+                            <span className="ml-2 font-mono text-xs text-muted">
+                              {formatMonth(role.from, careerT("present"))} – {formatMonth(role.to, careerT("present"))}
+                            </span>
+                          </p>
+                          <p className="text-sm text-muted">{role.description}</p>
+                        </Reveal>
+                      </li>
+                    ))}
+                  </ol>
+                  {techStack ? <Reveal>{techStack}</Reveal> : null}
+                </li>
+              );
+            }
+
+            return (
+              <li key={entry.slug} className="flex flex-col gap-3">
+                <Reveal className="flex flex-col gap-3">
+                  {header}
+                  {entry.intro ? <p className="text-muted">{entry.intro}</p> : null}
+                  <ol className="flex flex-col gap-3 border-l border-border pl-4">
+                    {entry.roles.map((role, i) => (
+                      <li key={`${entry.slug}-${i}`} className="flex flex-col gap-1">
+                        <p className="font-medium">
+                          {role.title}
+                          <span className="ml-2 font-mono text-xs text-muted">
+                            {formatMonth(role.from, careerT("present"))} – {formatMonth(role.to, careerT("present"))}
+                          </span>
+                        </p>
+                        <p className="text-sm text-muted">{role.description}</p>
+                      </li>
+                    ))}
+                  </ol>
+                  {techStack}
+                </Reveal>
+              </li>
+            );
+          })}
         </ol>
           </div>
         </div>

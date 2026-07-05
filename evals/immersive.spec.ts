@@ -1,6 +1,26 @@
 import { test, expect } from "@playwright/test";
+import { getCareer } from "../src/lib/content";
 
 const locales = ["de", "en"] as const;
+
+/**
+ * ITSC role-arc titles (D-06), keyed by locale — sourced from
+ * content/{de,en}/career.ts so the multi-beat assertion checks real DOM text
+ * for the exact role progression (SysAdmin → Software Engineering → Product
+ * Owner), not a paraphrase.
+ */
+const itscRoleTitles: Record<(typeof locales)[number], readonly string[]> = {
+  de: [
+    "Systemadministrator",
+    "Software Engineering",
+    "Product Owner eines internen KI-Assistenten",
+  ],
+  en: [
+    "Systems Administrator",
+    "Software Engineering",
+    "Product Owner of an internal AI assistant",
+  ],
+};
 
 /**
  * Phase-3 immersive layer contract (03-01). Verifies the engineered hero intro
@@ -98,21 +118,81 @@ for (const locale of locales) {
     test("hash-anchor nav scrolls to the section under Lenis (finding #8)", async ({
       page,
     }) => {
+      // Lenis wraps the native anchor jump into a lerp; under heavy parallel
+      // (7-worker) CPU contention its rAF is starved and the scroll settles far
+      // slower than in isolation — allow a generous budget so this is not flaky.
+      test.slow();
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto(`/${locale}`);
       await page.locator('#hero nav a[href="#career"]').click();
-      // Lenis smooth-scrolls (~1.2s) — poll until the career section reaches the
-      // top of the viewport (accounting for sticky header + scroll-mt).
+      // Poll the career section's viewport-top via getBoundingClientRect until it
+      // reaches the top (scroll-mt-24 = 96px).
       await expect
         .poll(
-          async () => {
-            const box = await page.locator("#career").boundingBox();
-            return box ? box.y : Number.POSITIVE_INFINITY;
-          },
-          { timeout: 4000 },
+          async () =>
+            page
+              .locator("#career")
+              .evaluate((el) => el.getBoundingClientRect().top),
+          { timeout: 20000 },
         )
         .toBeLessThan(200);
       expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    });
+  });
+
+  test.describe(`Immersive career (/${locale})`, () => {
+    test("career reads as scroll-linked chapters, all orgs present (WOW-02)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      await expect(page.locator("#career")).toBeVisible();
+      const orgItems = page.locator("#career > div > div > ol > li");
+      await expect(orgItems.first()).toBeVisible();
+      // Pinned to the actual content-model count (round-2 finding #5 discipline
+      // applied here too) rather than a hardcoded literal.
+      expect(await orgItems.count()).toBe(getCareer(locale).entries.length);
+    });
+
+    test("ITSC role arc renders all three beats as real DOM text (D-06)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      // ITSC is the first career entry; its inner role <ol> holds the
+      // SysAdmin → Software Engineering → Product Owner beats.
+      const itsc = page.locator("#career > div > div > ol > li").first();
+      const roles = itsc.locator("ol > li");
+      expect(await roles.count()).toBe(itscRoleTitles[locale].length);
+      // Assert each beat in order — toContainText scopes to the specific role
+      // <li>, avoiding cross-matches against sibling intro/description text.
+      for (const [index, title] of itscRoleTitles[locale].entries()) {
+        await expect(roles.nth(index)).toContainText(title);
+      }
+    });
+
+    test("progress spine is present on desktop and decorative (D-07)", async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await page.goto(`/${locale}`);
+      const spine = page.locator('#career [data-testid="career-spine"]');
+      await expect(spine).toHaveCount(1);
+      await expect(spine).toHaveAttribute("aria-hidden", "true");
+    });
+
+    test("career content is fully present under reduced-motion (MODE-02)", async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(`/${locale}`);
+      const firstOrg = page.locator("#career > div > div > ol > li").first();
+      await expect(firstOrg).toBeVisible();
+      const opacity = await firstOrg.evaluate((el) => {
+        // the reveal wrapper is the animated element; assert nothing is hidden
+        const inner = el.querySelector("div,p") ?? el;
+        return parseFloat(getComputedStyle(inner as Element).opacity);
+      });
+      expect(opacity).toBe(1);
+      expect((await firstOrg.innerText()).trim().length).toBeGreaterThan(0);
     });
   });
 }

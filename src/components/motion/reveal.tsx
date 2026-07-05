@@ -28,6 +28,13 @@ type RevealProps = {
   duration?: number;
   /** per-child stagger in seconds; defaults to --motion-stagger-list */
   stagger?: number;
+  /**
+   * Emphasized "chapter" reveal (D-06): larger offset + longer duration.
+   * When true, the unspecified distance/duration default to
+   * --motion-distance-lg / --motion-duration-chapter instead of md / base.
+   * Used for the ITSC role-arc multi-beat sub-sequence.
+   */
+  emphasis?: boolean;
   className?: string;
 };
 
@@ -36,14 +43,23 @@ export function Reveal({
   distance,
   duration,
   stagger,
+  emphasis = false,
   className,
 }: RevealProps) {
   const scope = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      const y = distance ?? getMotionToken("--motion-distance-md");
-      const dur = duration ?? getMotionToken("--motion-duration-base");
+      const y =
+        distance ??
+        getMotionToken(
+          emphasis ? "--motion-distance-lg" : "--motion-distance-md",
+        );
+      const dur =
+        duration ??
+        getMotionToken(
+          emphasis ? "--motion-duration-chapter" : "--motion-duration-base",
+        );
       const stg = stagger ?? getMotionToken("--motion-stagger-list");
 
       const mm = gsap.matchMedia();
