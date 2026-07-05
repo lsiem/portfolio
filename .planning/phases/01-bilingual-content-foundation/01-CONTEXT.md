@@ -29,7 +29,7 @@ Nicht in dieser Phase: Recruiter-Overview-UI, Design/Immersion, CV-PDF, 3D — d
 
 ### Repo-Strategie & Deployment
 - **D-07:** Altes Vite-Rewrite beim Next.js-Scaffold **löschen** — Git-History bewahrt alles; `src/content/`-Rohmaterial vorher extrahieren (siehe D-04).
-- **D-08:** Phase 1 deployt **auf Vercel (Preview-/Deployment-URL)** mit kompletter Pipeline und CI-Performance-Budget. **lsiem.de zeigt weiterhin die alte Live-Seite** — der Domain-Switch auf die neue Site erfolgt erst mit der fertigen Recruiter-Site (Phase 2). Das Phase-1-Erfolgskriterium „lsiem.de/de und lsiem.de/en" gilt entsprechend auf der Vercel-Deployment-URL (`/de`, `/en`); die Domain-Verkabelung ist Phase-2-Arbeit.
+- **D-08 (AMENDED):** Phase 1 deployt **auf Vercel (Preview-/Deployment-URL)** mit kompletter Pipeline und CI-Performance-Budget. *Update: lsiem.de zeigt bereits eine interim Minimal-Version der neuen Next.js-Site.* Dies ist ein bewusstes Vorgehen außerhalb der automatisierten Phase. Das Phase-1-Erfolgskriterium „lsiem.de/de und lsiem.de/en" gilt entsprechend auf der Vercel-Deployment-URL (`/de`, `/en`); der finale Domain-Switch für die *komplette* Recruiter-Site bleibt Phase-2-Arbeit.
 
 ### Locale-Routing & Analytics
 - **D-09:** **Default-Locale: Deutsch.** Root-URL leitet immer nach `/de` (keine Browser-Sprach-Weiche); Englisch über `/en` und den Sprach-Switcher. `x-default` im hreflang-Set zeigt auf die deutsche Default-Variante.
@@ -77,7 +77,7 @@ Nicht in dieser Phase: Recruiter-Overview-UI, Design/Immersion, CV-PDF, 3D — d
 - Keine übernehmbaren Code-Patterns — bewusster Neustart. Die Recherche-Dokumente (nicht der Alt-Code) definieren die Ziel-Patterns.
 
 ### Integration Points
-- Vercel-Projekt/Domain lsiem.de: Domain bleibt in Phase 1 auf der alten Site (D-08); neue Site läuft parallel im selben Vercel-Kontext auf Deployment-URLs.
+- Vercel-Projekt/Domain lsiem.de: lsiem.de zeigt seit einem bewussten User-Merge der interim-live-PR (außerhalb der automatisierten Phase) bereits eine interim Minimal-Version der neuen Next.js-Site (D-08 AMENDED, siehe oben). Die automatisierte Phase-1-Arbeit läuft weiterhin ausschließlich auf Vercel-Deployment-URLs und rührt Produktion nicht an; der finale Domain-Switch für die komplette Recruiter-Site bleibt Phase-2-Arbeit.
 
 </code_context>
 
@@ -93,7 +93,7 @@ Nicht in dieser Phase: Recruiter-Overview-UI, Design/Immersion, CV-PDF, 3D — d
 <deferred>
 ## Deferred Ideas
 
-- Domain-Switch lsiem.de auf die neue Site → Phase 2 (Teil von „Recruiter Overview Live", D-08).
+- Finaler Domain-Switch von lsiem.de auf die *komplette* Recruiter-Site → Phase 2 (Teil von „Recruiter Overview Live", D-08 AMENDED); eine interim Minimal-Version der neuen Site ist bereits live.
 - Werdegang-Timeline-UI und Case-Study-Darstellung → Phase 2 (Inhalte entstehen in Phase 1, Präsentation in Phase 2).
 
 </deferred>

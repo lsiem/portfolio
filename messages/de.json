@@ -4,6 +4,7 @@
     "career": "Werdegang",
     "projects": "Projekte",
     "skills": "Fähigkeiten",
+    "about": "Über mich",
     "contact": "Kontakt"
   },
   "common": {
@@ -29,6 +30,21 @@
     "title": "Fähigkeiten",
     "years": "{years} Jahre"
   },
+  "about": {
+    "title": "Über mich",
+    "readMore": "Mehr über mich"
+  },
+  "activity": {
+    "title": "Aktivität",
+    "ariaSummary": "GitHub-Beiträge der letzten 12 Monate",
+    "unavailable": "GitHub-Aktivität derzeit nicht verfügbar."
+  },
+  "theme": {
+    "label": "Darstellung",
+    "system": "System",
+    "light": "Hell",
+    "dark": "Dunkel"
+  },
   "contact": {
     "title": "Kontakt",
     "intro": "Lass uns zusammenarbeiten — ich freue mich über deine Nachricht.",
@@ -36,7 +52,9 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "copyEmail": "E-Mail kopieren",
-    "copied": "Kopiert!"
+    "copied": "Kopiert!",
+    "downloadCv": "Lebenslauf herunterladen",
+    "downloadCvAria": "Lebenslauf herunterladen (PDF, Deutsch)"
   },
   "footer": {
     "builtWith": "Gebaut mit Next.js",

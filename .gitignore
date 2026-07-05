@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+/playwright/.cache
 
 # next.js
 /.next/
@@ -43,8 +46,18 @@ next-env.d.ts
 # content-collections generated output
 .content-collections
 
+# CV PDFs — generated at build time via prebuild (scripts/generate-cv.tsx);
+# regenerated fresh on every `pnpm build`, never committed (like .next/)
+/public/Lasse-Siemoneit-CV-*.pdf
+
 # Internal reference material — never commit (public repo)
 .planning/phases/*/reference/
 
 # Lighthouse CI local artifacts
 .lighthouseci/
+
+# Local dev tooling — never commit
+google-cloud-sdk/
+google-cloud-cli-*.tar.gz
+.antigravity/
+.serena/

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "check:content": "node scripts/check-content-parity.ts",
-    "prebuild": "pnpm check:content",
+    "generate:cv": "tsx scripts/generate-cv.tsx",
+    "prebuild": "pnpm check:content && pnpm generate:cv",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -18,7 +19,8 @@
     "next": "16.2.10",
     "next-intl": "^4.13.1",
     "react": "~19.2.0",
-    "react-dom": "~19.2.0"
+    "react-dom": "~19.2.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@content-collections/core": "^0.15.2",
@@ -26,13 +28,16 @@
     "@content-collections/next": "^0.2.11",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.61.1",
+    "@react-pdf/renderer": "4.5.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "geist": "1.7.2",
     "tailwindcss": "^4",
+    "tsx": "4.23.0",
     "typescript": "^5",
     "zod": "^4.4.3"
   }

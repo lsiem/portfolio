@@ -9,6 +9,8 @@ import type { ContactInfo } from "../shared/types";
 export const contact = {
   name: "Lasse Siemoneit",
   role: "Software Engineer & Product Owner",
+  valueProp:
+    "Ich bringe Softwareentwicklung, Plattformbetrieb und Produktverantwortung zusammen, um robuste, datenschutzkonforme Systeme zu bauen, die im echten Betrieb bestehen.",
   email: "info@lsiem.de",
   github: "https://github.com/lsiem",
   linkedin: "https://www.linkedin.com/in/lasse-siemoneit/",

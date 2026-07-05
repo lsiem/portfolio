@@ -77,6 +77,12 @@ export const skillDomainSchema = z.object({
 export const contactInfoSchema = z.object({
   name: z.string().min(1),
   role: z.string().min(1),
+  /**
+   * One-sentence value proposition — the single source of truth for the
+   * hero (src/app/[locale]/page.tsx) AND the CV document (Plan 02
+   * CvDocument). Do not duplicate this copy in next-intl messages.
+   */
+  valueProp: z.string().min(1),
   email: z.email(),
   github: z.url(),
   linkedin: z.url(),

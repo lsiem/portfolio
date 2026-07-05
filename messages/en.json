@@ -4,6 +4,7 @@
     "career": "Career",
     "projects": "Projects",
     "skills": "Skills",
+    "about": "About",
     "contact": "Contact"
   },
   "common": {
@@ -29,6 +30,21 @@
     "title": "Skills",
     "years": "{years} yrs"
   },
+  "about": {
+    "title": "About",
+    "readMore": "More about me"
+  },
+  "activity": {
+    "title": "Activity",
+    "ariaSummary": "GitHub contributions, last 12 months",
+    "unavailable": "GitHub activity is currently unavailable."
+  },
+  "theme": {
+    "label": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "contact": {
     "title": "Contact",
     "intro": "Let's work together — I'd love to hear from you.",
@@ -36,7 +52,9 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "copyEmail": "Copy email",
-    "copied": "Copied!"
+    "copied": "Copied!",
+    "downloadCv": "Download CV",
+    "downloadCvAria": "Download CV (PDF, English)"
   },
   "footer": {
     "builtWith": "Built with Next.js",

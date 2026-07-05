@@ -13,7 +13,7 @@ Vier vertikale Slices, jede endet in einem nutzbaren Stand: Zuerst entsteht das 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics
+- [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
 - [ ] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion
 - [ ] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet
 - [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Jeder Deploy nach lsiem.de läuft durch eine Pipeline, die bei überschrittenem Performance-Budget (LCP, Initial-JS) fehlschlägt
   4. Seitenbetreiber sieht Besucherzahlen in cookieless, DSGVO-freundlichen Analytics
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -47,7 +47,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-04-PLAN.md — Prosa-Inhalte: ELIA-Flaggschiff (abstrahiert, Blocklist-Gate), Vidama-Deep-Dive, About + Impressum/Datenschutz, End-to-End-Verifikation auf Preview-URL (Wave 3)
+- [x] 01-04-PLAN.md — Prosa-Inhalte: ELIA-Flaggschiff (abstrahiert, Blocklist-Gate), Vidama-Deep-Dive, About + Impressum/Datenschutz, End-to-End-Verifikation auf Preview-URL (Wave 3)
 
 ### Phase 2: Recruiter Overview Live
 
@@ -63,9 +63,33 @@ Plans:
   4. Site erreicht Core Web Vitals "good" auf Mobilgeräten, ist per Tastatur vollständig bedienbar (semantisches HTML, Kontraste) und bietet Dark Mode (Systemerkennung + Toggle)
   5. Geteilte Links zeigen gestaltete Preview-Cards pro Seite und Locale (OG-Images, Person-JSON-LD), und Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung
 
-**Plans**: TBD
+**Plans:** 6/7 plans executed
+
+Plans:
+**Wave 1**
+
+- [x] 02-01-PLAN.md — Recruiter overview complete: hero value-prop, About (text-first), one-click contact affordance, CV download button, a11y baseline (Wave 1)
+- [x] 02-02-PLAN.md — Build-time CV-PDF generation per locale from the content model (@react-pdf/renderer, embedded Geist, one-column ATS) (Wave 1)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [x] 02-03-PLAN.md — 3-state dark-mode toggle (System/Light/Dark), no-flash script, Tailwind 4 attribute tokens (Wave 2)
+- [x] 02-04-PLAN.md — SEO share layer: OG images per page/locale (next/og) + Person JSON-LD + openGraph metadata (Wave 2)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [x] 02-05-PLAN.md — Build-time GitHub activity heatmap (server-only GraphQL fetch, daily ISR, graceful fallback) (Wave 3)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [x] 02-06-PLAN.md — Launch hardening + verification: security headers, CWV/Lighthouse budget, accessibility eval (Wave 4)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 02-07-PLAN.md — Production cutover: siteMetadataBase → lsiem.de, promote + live verification (Wave 5)
+
 **UI hint**: yes
-**Research flag**: CV-PDF-Generierung aus dem Content-Modell — kein verifiziertes Pattern in der Recherche, beim Planning klären
+**Research flag (resolved):** CV-PDF-Generierung — @react-pdf/renderer build script (RESEARCH §1); build-time static per locale
 
 ### Phase 3: Design Direction & Immersive Experience
 
@@ -108,7 +132,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Bilingual Content Foundation | 3/4 | In Progress|  |
-| 2. Recruiter Overview Live | 0/TBD | Not started | - |
+| 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
+| 2. Recruiter Overview Live | 6/7 | In Progress|  |
 | 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |

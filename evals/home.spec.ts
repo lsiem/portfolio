@@ -17,7 +17,7 @@ for (const locale of locales) {
     });
 
     test("navigation is present", async ({ page }) => {
-      const nav = page.locator("nav");
+      const nav = page.getByRole("navigation").first();
       await expect(nav).toBeVisible();
     });
 
@@ -26,8 +26,8 @@ for (const locale of locales) {
     });
 
     test("case study list renders at least one item", async ({ page }) => {
-      const items = page.locator("#projects ul li");
-      await expect(items).toHaveCount(1);
+      const items = page.locator("#projects > ul > li");
+      await expect(items.first()).toBeVisible();
     });
 
     test("case study link navigates to detail page", async ({ page }) => {
@@ -36,6 +36,48 @@ for (const locale of locales) {
       await expect(page).toHaveURL(
         new RegExp(`/${locale}/case-studies/[^/]+`),
       );
+    });
+
+    test("hero shows a one-sentence value proposition distinct from the role", async ({
+      page,
+    }) => {
+      const hero = page.locator("#hero");
+      await expect(hero).toBeVisible();
+      const valueProp = hero.locator('[data-testid="hero-value-prop"]');
+      await expect(valueProp).toBeVisible();
+      await expect(valueProp).not.toBeEmpty();
+    });
+
+    test("about section is visible and links to the full about page", async ({
+      page,
+    }) => {
+      const about = page.locator("#about");
+      await expect(about).toBeVisible();
+      await expect(
+        about.locator(`a[href="/${locale}/about"]`),
+      ).toBeVisible();
+    });
+
+    test("sticky header exposes a Contact affordance", async ({ page }) => {
+      const headerContact = page.locator('header a[href$="#contact"]');
+      await expect(headerContact).toBeVisible();
+    });
+
+    test("contact block has a CV download button", async ({ page }) => {
+      const cvLink = page.locator("#contact a[download]");
+      await expect(cvLink).toHaveAttribute(
+        "href",
+        `/Lasse-Siemoneit-CV-${locale}.pdf`,
+      );
+      const ariaLabel = await cvLink.getAttribute("aria-label");
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test("first-fold anchor-nav includes an #about link", async ({
+      page,
+    }) => {
+      const aboutNavLink = page.locator('nav a[href="#about"]').first();
+      await expect(aboutNavLink).toBeVisible();
     });
   });
 }
