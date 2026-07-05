@@ -4,6 +4,7 @@
     "career": "Career",
     "projects": "Projects",
     "skills": "Skills",
+    "about": "About",
     "contact": "Contact"
   },
   "common": {
@@ -28,6 +29,10 @@
   "skills": {
     "title": "Skills",
     "years": "{years} yrs"
+  },
+  "about": {
+    "title": "About",
+    "readMore": "More about me"
   },
   "contact": {
     "title": "Contact",

@@ -4,6 +4,7 @@
     "career": "Werdegang",
     "projects": "Projekte",
     "skills": "Fähigkeiten",
+    "about": "Über mich",
     "contact": "Kontakt"
   },
   "common": {
@@ -28,6 +29,10 @@
   "skills": {
     "title": "Fähigkeiten",
     "years": "{years} Jahre"
+  },
+  "about": {
+    "title": "Über mich",
+    "readMore": "Mehr über mich"
   },
   "contact": {
     "title": "Kontakt",

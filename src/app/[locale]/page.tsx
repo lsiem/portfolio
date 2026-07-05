@@ -5,6 +5,7 @@ import {
   getCareer,
   getCaseStudy,
   getContact,
+  getPage,
   getProjects,
   getSkillDomains,
 } from "@/lib/content";
@@ -24,10 +25,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** Render "YYYY-MM" as "MM/YYYY"; null/undefined falls back to the present label. */
+/**
+ * Render "YYYY-MM" as "MM/YYYY"; null/undefined or a malformed value
+ * (missing the "-" separator or the month segment) falls back to the
+ * present label rather than rendering "undefined/YYYY".
+ */
 function formatMonth(value: string | null, present: string): string {
   if (!value) return present;
   const [year, month] = value.split("-");
+  if (!year || !month) return present;
   return `${month}/${year}`;
 }
 
@@ -41,16 +47,18 @@ export default async function HomePage({ params }: Props) {
   const careerT = await getTranslations("career");
   const projectsT = await getTranslations("projects");
   const skillsT = await getTranslations("skills");
+  const aboutT = await getTranslations("about");
   const contactT = await getTranslations("contact");
 
   const { intro: careerIntro, entries: career } = getCareer(locale);
   const projects = getProjects(locale);
   const skillDomains = getSkillDomains(locale);
   const contact = getContact(locale);
+  const aboutPage = getPage(locale, "about");
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-20 px-6 py-20 sm:gap-28 sm:py-28">
-      <section className="flex flex-col gap-5">
+      <section id="hero" className="flex flex-col gap-5">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           Portfolio
         </p>
@@ -58,6 +66,12 @@ export default async function HomePage({ params }: Props) {
           {contact.name}
         </h1>
         <p className="max-w-xl text-lg text-muted sm:text-xl">{t("role")}</p>
+        <p
+          data-testid="hero-value-prop"
+          className="max-w-xl text-lg text-muted sm:text-xl"
+        >
+          {contact.valueProp}
+        </p>
         <nav aria-label={nav("home")} className="mt-2">
           <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
             <li>
@@ -73,6 +87,11 @@ export default async function HomePage({ params }: Props) {
             <li>
               <a href="#skills" className="text-muted transition-colors hover:text-foreground">
                 {nav("skills")}
+              </a>
+            </li>
+            <li>
+              <a href="#about" className="text-muted transition-colors hover:text-foreground">
+                {nav("about")}
               </a>
             </li>
             <li>
@@ -208,6 +227,27 @@ export default async function HomePage({ params }: Props) {
             </div>
           ))}
         </div>
+      </section>
+
+      <section id="about" aria-labelledby="about-heading" className="flex scroll-mt-24 flex-col gap-6">
+        <h2 id="about-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          {aboutT("title")}
+        </h2>
+        {/*
+          Text-first per CTX-03 (02-CONTEXT.md): the profile photo is an
+          owner-supplied asset that slots in later as a non-blocking
+          follow-up (rounded-lg, ~96-160px avatar scale, per D-D). No <img>
+          is rendered here — the section degrades to text-only cleanly.
+        */}
+        {aboutPage?.description ? (
+          <p className="max-w-2xl text-muted">{aboutPage.description}</p>
+        ) : null}
+        <Link
+          href="/about"
+          className="font-mono text-sm text-muted transition-colors hover:text-foreground"
+        >
+          {aboutT("readMore")} →
+        </Link>
       </section>
 
       <section id="contact" aria-labelledby="contact-heading" className="flex scroll-mt-24 flex-col gap-4">
