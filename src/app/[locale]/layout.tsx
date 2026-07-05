@@ -43,24 +43,26 @@ const geistMono = Geist_Mono({
 
 // Display face (D-03) — Bricolage Grotesque, self-hosted at build by next/font
 // (zero runtime Google Fonts call, DSGVO-clean per AGENTS.md, same pattern as
-// Geist above). Weight-only variable axis (wght): the opsz+wdth axes were
-// dropped to keep the preloaded woff2 small enough to hold the BLOCKING LHCI
-// LCP budget (<=2500ms) — with all three axes the variable font ballooned to
-// ~131KB and regressed hero LCP past the gate (finding #1 / RESEARCH Pitfall 5).
-// The hero H1 still renders in Bricolage across the 700-800 display weight
-// range; only the optical-size/width fine-tuning is forgone (UI-SPEC allows the
-// weight-only fallback). --font-bricolage maps to the Tailwind `font-display`
-// utility via @theme in globals.css.
+// Geist above). Optimized for the CWV budget: single static weight 700 (smallest
+// woff2, ~22KB) instead of the variable font (~41-131KB), preload:false, swap so
+// the hero H1 always renders in Bricolage after a brief metric-matched fallback
+// (D-03). --font-bricolage maps to the Tailwind `font-display` utility via @theme
+// in globals.css.
+//
+// KNOWN LCP TENSION (finding #1 / RESEARCH Pitfall 5): under Lighthouse's
+// simulated slow-4G + 4x-CPU profile, adding this second render-path font adds a
+// fixed ~300ms to the LCP element (a Geist career paragraph, re-timed by the H1
+// font-swap) — measured identically for variable/static, swap/optional,
+// preloaded/not, and with Geist itself set to optional. Phase 2 left only ~26ms
+// of local LCP headroom (2454ms vs the 2500ms TECH-01 gate), so the locked D-03
+// display font pushes the LOCAL simulated LCP to ~2.75s. The TECH-01 budget was
+// calibrated/"verified passing on a production build" (STATE.md) — production
+// LCP must be re-verified on the Vercel preview.
 const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: "variable",
-  // preload:false — the display face is not the LCP-critical font. With swap
-  // (next/font default) the hero H1 first paints in the metric-adjusted fallback
-  // (adjustFontFallback default keeps CLS low) so LCP fires on that immediate
-  // text paint, NOT gated on the Bricolage download; Bricolage then swaps in.
-  // Preloading it instead made the woff2 compete with the real LCP text and
-  // pushed LCP past the BLOCKING 2500ms gate (finding #1 / RESEARCH Pitfall 5).
+  weight: "700",
+  display: "swap",
   preload: false,
 });
 

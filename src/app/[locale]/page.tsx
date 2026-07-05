@@ -11,6 +11,8 @@ import {
   getSkillDomains,
 } from "@/lib/content";
 import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
+import { HeroIntro } from "@/components/motion/hero-intro";
+import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
 import {
   localeAlternates,
   openGraphMetadata,
@@ -76,57 +78,94 @@ export default async function HomePage({ params }: Props) {
   );
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-20 px-6 py-20 sm:gap-28 sm:py-28">
+    // Width shell (D-04, finding #2): <main> owns the vertical rhythm and a wide
+    // 1440px cap but NO global ~768px reading cap — that moves per-section so the
+    // hero and career can break wide while prose sections stay reading-anchored.
+    <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-20 py-20 sm:gap-28 sm:py-28">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
       />
-      <section id="hero" className="flex flex-col gap-5">
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-          Portfolio
-        </p>
-        <h1 className="text-5xl font-semibold tracking-tight sm:text-7xl">
-          {contact.name}
-        </h1>
-        <p className="max-w-xl text-lg text-muted sm:text-xl">{t("role")}</p>
-        <p
-          data-testid="hero-value-prop"
-          className="max-w-xl text-lg text-muted sm:text-xl"
-        >
-          {contact.valueProp}
-        </p>
-        <nav aria-label={nav("home")} className="mt-2">
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
-            <li>
-              <a href="#career" className="text-muted transition-colors hover:text-foreground">
-                {nav("career")}
-              </a>
-            </li>
-            <li>
-              <a href="#projects" className="text-muted transition-colors hover:text-foreground">
-                {nav("projects")}
-              </a>
-            </li>
-            <li>
-              <a href="#skills" className="text-muted transition-colors hover:text-foreground">
-                {nav("skills")}
-              </a>
-            </li>
-            <li>
-              <a href="#about" className="text-muted transition-colors hover:text-foreground">
-                {nav("about")}
-              </a>
-            </li>
-            <li>
-              <a href="#contact" className="text-muted transition-colors hover:text-foreground">
-                {nav("contact")}
-              </a>
-            </li>
-          </ul>
-        </nav>
+      <section id="hero" className="relative w-full px-6">
+        {/* Reserved Phase-4 3D background layer (D-13) — empty in Phase 3. */}
+        <HeroSceneSlot />
+        {/*
+          Hero intro mount timeline (D-12): the grid overlay, H1 words and
+          value-prop are targets of HeroIntro's on-mount timeline. HeroIntro
+          renders these SSR children directly (WOW-04) and only layers motion on
+          top after hydration on capable devices.
+        */}
+        <HeroIntro className="relative grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="flex flex-col gap-5 lg:col-span-9">
+            {/* Decorative engineered grid/tick rule (D-12) — draws in on mount. */}
+            <span
+              data-hero-grid
+              aria-hidden="true"
+              className="block h-px w-full max-w-[12rem] origin-left bg-border"
+            />
+            <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+              Portfolio
+            </p>
+            <h1
+              data-hero-h1
+              className="font-display text-[clamp(2.75rem,2rem+5vw,6rem)] leading-[1.05] tracking-tight"
+            >
+              {contact.name}
+            </h1>
+            <p className="max-w-xl text-lg text-muted sm:text-xl">{t("role")}</p>
+            <p
+              data-hero-valueprop
+              data-testid="hero-value-prop"
+              className="max-w-xl text-lg text-muted sm:text-xl"
+            >
+              {contact.valueProp}
+            </p>
+            <nav aria-label={nav("home")} className="mt-2">
+              <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
+                <li>
+                  <a href="#career" className="text-muted transition-colors hover:text-foreground">
+                    {nav("career")}
+                  </a>
+                </li>
+                <li>
+                  <a href="#projects" className="text-muted transition-colors hover:text-foreground">
+                    {nav("projects")}
+                  </a>
+                </li>
+                <li>
+                  <a href="#skills" className="text-muted transition-colors hover:text-foreground">
+                    {nav("skills")}
+                  </a>
+                </li>
+                <li>
+                  <a href="#about" className="text-muted transition-colors hover:text-foreground">
+                    {nav("about")}
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact" className="text-muted transition-colors hover:text-foreground">
+                    {nav("contact")}
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </HeroIntro>
       </section>
 
-      <section id="career" aria-labelledby="career-heading" className="flex scroll-mt-24 flex-col gap-6">
+      {/*
+        Career breaks wide (D-04) and exposes a left-margin column (D-07) that
+        Plan 02 fills with the progress spine rail. In Phase 3 the left column is
+        an empty reserved gutter (lg+ only); the reading content stays anchored.
+      */}
+      <section
+        id="career"
+        aria-labelledby="career-heading"
+        className="mx-auto w-full max-w-[1440px] scroll-mt-24 px-6"
+      >
+        <div className="lg:grid lg:grid-cols-[3rem_minmax(0,48rem)] lg:gap-6">
+          <div aria-hidden="true" className="hidden lg:block" />
+          <div className="flex flex-col gap-6">
         <h2 id="career-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {careerT("title")}
         </h2>
@@ -175,9 +214,15 @@ export default async function HomePage({ params }: Props) {
             </li>
           ))}
         </ol>
+          </div>
+        </div>
       </section>
 
-      <section id="projects" aria-labelledby="projects-heading" className="flex scroll-mt-24 flex-col gap-6">
+      <section
+        id="projects"
+        aria-labelledby="projects-heading"
+        className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-6 px-6"
+      >
         <h2 id="projects-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {projectsT("title")}
         </h2>
@@ -227,7 +272,11 @@ export default async function HomePage({ params }: Props) {
         </ul>
       </section>
 
-      <section id="skills" aria-labelledby="skills-heading" className="flex scroll-mt-24 flex-col gap-6">
+      <section
+        id="skills"
+        aria-labelledby="skills-heading"
+        className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-6 px-6"
+      >
         <h2 id="skills-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {skillsT("title")}
         </h2>
@@ -252,7 +301,11 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section id="about" aria-labelledby="about-heading" className="flex scroll-mt-24 flex-col gap-6">
+      <section
+        id="about"
+        aria-labelledby="about-heading"
+        className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-6 px-6"
+      >
         <h2 id="about-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {aboutT("title")}
         </h2>
@@ -273,7 +326,11 @@ export default async function HomePage({ params }: Props) {
         </Link>
       </section>
 
-      <section id="activity" aria-labelledby="activity-heading" className="flex scroll-mt-24 flex-col gap-6">
+      <section
+        id="activity"
+        aria-labelledby="activity-heading"
+        className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-6 px-6"
+      >
         <h2 id="activity-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {activityT("title")}
         </h2>
@@ -286,7 +343,11 @@ export default async function HomePage({ params }: Props) {
         />
       </section>
 
-      <section id="contact" aria-labelledby="contact-heading" className="flex scroll-mt-24 flex-col gap-4">
+      <section
+        id="contact"
+        aria-labelledby="contact-heading"
+        className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-4 px-6"
+      >
         <h2 id="contact-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
           {contactT("title")}
         </h2>
