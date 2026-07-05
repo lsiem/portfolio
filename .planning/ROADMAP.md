@@ -78,7 +78,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 02-05-PLAN.md — Build-time GitHub activity heatmap (server-only GraphQL fetch, daily ISR, graceful fallback) (Wave 3)
+- [x] 02-05-PLAN.md — Build-time GitHub activity heatmap (server-only GraphQL fetch, daily ISR, graceful fallback) (Wave 3)
 
 **Wave 4** *(blocked on Wave 3)*
 

@@ -42,7 +42,7 @@
 - [x] **TECH-05**: Geteilte Links zeigen gestaltete Preview-Cards (OG-Images pro Seite/Locale, Person-JSON-LD, Meta-Tags)
 - [x] **TECH-06**: Seitenbetreiber sieht Besucherzahlen über cookieless, DSGVO-freundliche Analytics
 - [x] **TECH-07**: Seite ist live auf lsiem.de (Vercel), Performance-Budget wird im CI geprüft
-- [ ] **TECH-08**: Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung (Build-Time/gecachter API-Fetch)
+- [x] **TECH-08**: Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung (Build-Time/gecachter API-Fetch)
 
 ## v2 Requirements (v1.x — nach Launch)
 
@@ -98,7 +98,7 @@
 | TECH-05 | Phase 2 | Complete |
 | TECH-06 | Phase 1 | Complete |
 | TECH-07 | Phase 1 | Complete |
-| TECH-08 | Phase 2 | Pending |
+| TECH-08 | Phase 2 | Complete |
 
 **Coverage:** 24/24 v1 requirements mapped — no orphans, no duplicates.
 
