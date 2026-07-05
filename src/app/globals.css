@@ -16,6 +16,52 @@
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /*
+   * Display face (D-03) — Bricolage Grotesque, self-hosted via next/font in
+   * layout.tsx (variable name --font-bricolage). Mirrors the Geist mapping
+   * above (--font-geist-sans -> --font-sans): the next/font variable is the
+   * source, --font-display is the Tailwind-facing token, so a `font-display`
+   * utility exists for the hero H1. NOT a circular --font-display -> --font-display
+   * self-binding (finding #7).
+   */
+  --font-display: var(--font-bricolage);
+}
+
+/*
+ * Motion tokens (D-08) — the SINGLE source of truth for all animation
+ * durations/easings/distances/staggers. globals.css holds the canonical
+ * values; src/lib/motion-tokens.ts only READS them (via getComputedStyle) and
+ * converts to GSAP-friendly numbers. Values encode the locked medium/expressive
+ * intensity (D-10): noticeably animated but disciplined, never spectacle.
+ *
+ * These are consumed by GSAP through getComputedStyle, NOT by Tailwind
+ * utilities, so they are deliberately NOT mirrored into `@theme inline`
+ * (UI-SPEC "pick one source of truth" — do not duplicate the values).
+ *
+ * All motion animates transform/opacity only (compositor-friendly, project
+ * performance rules) — never width/height/top/left/margin/padding.
+ */
+:root {
+  /* Durations (ms) */
+  --motion-duration-fast: 150ms; /* hover/focus/active micro-transitions */
+  --motion-duration-base: 400ms; /* standard reveal-on-enter */
+  --motion-duration-slow: 800ms; /* hero intro beats, section transitions */
+  --motion-duration-chapter: 1200ms; /* ITSC multi-beat sub-sequence (D-06) */
+
+  /* Easings (cubic-bezier) */
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out entrance/reveal default */
+  --motion-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* section/route transitions */
+  --motion-ease-magnetic: cubic-bezier(0.33, 1, 0.68, 1); /* magnetic pull + snap-back */
+
+  /* Distances (px) */
+  --motion-distance-sm: 8px; /* hover micro-lift */
+  --motion-distance-md: 24px; /* reveal-on-enter slide offset */
+  --motion-distance-lg: 48px; /* chapter-level offset (ITSC sub-scene) */
+
+  /* Staggers (ms) */
+  --motion-stagger-char: 18ms; /* split-text char-by-char */
+  --motion-stagger-word: 40ms; /* split-text word-by-word */
+  --motion-stagger-list: 60ms; /* list/card reveal (career roles, chips, bento) */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -65,6 +111,18 @@
   html {
     scroll-behavior: smooth;
   }
+}
+
+/*
+ * Lenis smooth-scroll collision fix (D-09, finding #2). The @media block above
+ * enables NATIVE smooth scroll, which double-smooths and input-fights Lenis when
+ * Lenis is driving. lenis/react adds the `lenis` class to <html> while active,
+ * so scoping scroll-behavior:auto under html.lenis hands scrolling entirely to
+ * Lenis on the motion path, while the reduced-motion / no-Lenis path keeps the
+ * native smooth scroll above. The two scroll systems must never run at once.
+ */
+html.lenis {
+  scroll-behavior: auto;
 }
 
 body {
