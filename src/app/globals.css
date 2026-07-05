@@ -28,6 +28,39 @@
   }
 }
 
+/*
+ * Explicit theme override (TECH-04 / D-B). An attribute selector on :root
+ * has higher specificity than the plain `:root` media-query block above, so
+ * a user's explicit Light/Dark choice always wins over the System default.
+ * When data-theme is unset (System), the @media block above governs.
+ */
+:root[data-theme="light"] {
+  --background: #fafaf9;
+  --foreground: #1c1917;
+  --muted: #6b6560;
+  --accent: #c2410c;
+  --border: #e7e5e4;
+}
+
+:root[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --muted: #8f8a85;
+  --accent: #fb923c;
+  --border: #262626;
+}
+
+/*
+ * No `@custom-variant dark` is registered: every surface in this codebase
+ * reads color via the `--background`/`--foreground`/`--muted`/`--accent`/
+ * `--border` CSS custom properties (through `@theme inline` above), so
+ * flipping those variables via the :root[data-theme] overrides already
+ * re-themes the whole page. No `dark:`-prefixed Tailwind utility exists in
+ * the codebase (verified via grep) — the token-only approach from
+ * RESEARCH §3 fully covers this design. Register `@custom-variant dark`
+ * only if a `dark:` utility ever becomes genuinely necessary.
+ */
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
