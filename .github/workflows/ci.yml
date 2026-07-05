@@ -38,6 +38,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # TECH-07 performance budget: LCP <= 2500ms, script bytes <= 153600, perf >= 0.9
+      # TECH-01/TECH-07 performance budget (lighthouserc.json): LCP <= 2500ms,
+      # total-blocking-time <= 200ms (INP proxy), cumulative-layout-shift <= 0.1,
+      # script bytes <= 184643, perf >= 0.9
       - name: Lighthouse CI budget
         run: npx lhci autorun
