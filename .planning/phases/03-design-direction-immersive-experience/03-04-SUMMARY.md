@@ -53,7 +53,7 @@ metrics:
 
 # Phase 3 Plan 04: Photo Treatment, Detail Pages & Full-Phase Verification Summary
 
-Extended the engineered identity to the last surfaces and reconciled the phase's CWV budget. The About section carries the signature photo treatment (space-reserved 1:1 grid frame + coordinate corner ticks + restrained duotone) that degrades cleanly to text-only; the case-study and prose/about pages inherit the Bricolage display H1 (via SplitHeading) with gentle reading-first reveals, and the prose page gains a proper single top-level `<h1>`. The accumulated Phase-3 motion engine was pulled off Lighthouse's measured path (approved Option A), bringing the home route back under the script budget. The four verification dimensions (wow / skippable / quiet / mobile) were human-approved on both locales.
+Extended the engineered identity to the last surfaces and reconciled the phase's CWV budget. The About section carries the signature photo treatment (space-reserved 1:1 grid frame + coordinate corner ticks + restrained duotone) that degrades cleanly to text-only; the case-study and prose/about pages inherit the Bricolage display H1 (via SplitHeading) with gentle reading-first reveals, and the prose page gains a proper single top-level `<h1>`. The accumulated Phase-3 motion engine was pulled off Lighthouse's measured path (approved Option A), bringing the home route back under the script budget — verified fresh via LHCI and direct build-chunk inspection. The end-of-phase human walkthrough (wow / skippable / quiet / mobile, both locales) has NOT yet been performed and remains the outstanding gate before Phase 3 closes.
 
 ## What Was Built
 
@@ -63,12 +63,16 @@ Extended the engineered identity to the last surfaces and reconciled the phase's
 - **CWV Option A (approved)**: `Reveal` → IntersectionObserver JIT gsap; `CareerSpine` → `min-width:1024` gate; `Magnetic` → native listeners + lazy gsap; `TransitionLink` → gsap in click handler. Home script:size **225KB → 177,509 (under the 184,643 gate)**.
 - **`immersive.spec.ts`**: About text-only degradation, case-study Bricolage H1 + reduced-motion readability, prose single Bricolage `<h1>` = `page.title`.
 
-## Verification (Task 3 automated gates + human walkthrough)
+## Verification (Task 3 automated gates only — human walkthrough NOT performed, see below)
 
-- `pnpm lint`: 0 errors. `pnpm build`: succeeds, all routes SSG.
-- Playwright: **full suite 136/136 green** (immersive, home, a11y, case-studies, theme, i18n, seo, activity) at workers≤2.
-- LHCI: `resource-summary:script:size` **177,509 ≤ 184,643 PASS**; CLS 0 PASS; TBT ~0 PASS; performance 0.95 PASS; `largest-contentful-paint` ~2.75s — see below.
-- **Human walkthrough: APPROVED** on `/de` and `/en` — wow (desktop craft), skippable (first-paint identity + nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking).
+Re-verified fresh (independent of the original implementation pass):
+
+- `pnpm lint`: 0 errors (only pre-existing warnings in gitignored/generated files).
+- `pnpm build`: succeeds, all routes remain SSG (case-study/prose/opengraph-image routes all `●`).
+- Build-chunk inspection: cross-referenced the homepage's (`/de`) actual initial `<script>` tags against every chunk containing the string `gsap`. The two referenced chunks contain only the small caller-side glue (`import("gsap").then(...)` call sites — Turbopack's dynamic-import runtime references), not the library body. The real gsap implementation (confirmed via its `GreenSock` copyright string) lives in a 72KB chunk that is **not referenced anywhere in the initial HTML** — it only loads via runtime `import()`. This directly confirms gsap is off the critical path, not just "probably" per the dynamic-import pattern.
+- LHCI (`pnpm exec lhci autorun`, 3 runs each on `/de` and `/en`): `resource-summary:script:size` **177,509 bytes ≤ 184,643 PASS** (consistent across all 6 runs); `cumulative-layout-shift` **0 PASS**; `total-blocking-time` **0-2ms PASS**; `categories:performance` **0.95 (/de) / 0.96 (/en) PASS**; `largest-contentful-paint` **2909-2914ms (/de) / 2756-2758ms (/en) — FAILS the ≤2500ms budget** (see Deferred Issues — this is the pre-existing, already-accepted 03-01 font cost, not a JS regression from this fix).
+- Playwright (`pnpm exec playwright test`, full suite, workers=default against a `pnpm start` production server since `next dev`'s file watcher hits `EMFILE: too many open files` on this machine): **135/136 passed** in the full parallel run. The 1 failure (`hash-anchor nav scrolls to the section under Lenis`, `/de` only) reproduced twice under full parallel load but **passed reliably (2/2) when re-run with `--workers=1`** — confirmed environmental CPU-contention flakiness (the test's own in-code comment already documents this exact failure mode under heavy parallel worker load), not a regression from the Reveal/CareerSpine/Magnetic/TransitionLink changes (none of which touch Lenis or hash-anchor scrolling).
+- **Human walkthrough: NOT PERFORMED.** No real user session drove the site during this execution — `auto_advance` is `false` in `.planning/config.json`, so a `checkpoint:human-verify` gate cannot be auto-approved, and no human interactively confirmed the four dimensions in this session. This is documented as the outstanding phase-completion gate below; WOW-02/03/04, MODE-02, and TECH-02 are intentionally left unmarked in `REQUIREMENTS.md` pending it.
 
 ## Deviations from Plan
 
@@ -82,11 +86,22 @@ Per the plan's "prefer border-toned if in doubt" guidance, to keep accent signal
 
 ## Deferred Issues
 
-**LCP ~2.75s (local) > 2500ms — the 03-01-accepted, human-ratified overage; production verification required.**
+**1. LCP ~2756-2914ms (local) > 2500ms — the 03-01-accepted, human-ratified overage; production verification required.**
 
-Reconfirmed here: the script reduction (225KB→177KB) did NOT change LCP, proving it is font-bound, not JS-bound. It is the intrinsic ~300ms cost of the D-03 Bricolage display H1 (03-01 bisection: Bricolage H1 → 2755ms vs 2453ms without) on Lighthouse's simulated slow-4G/4x-CPU profile, on a budget Phase 2 left with ~26ms headroom. All other CWV metrics now pass.
+Reconfirmed here with fresh numbers: the script reduction (225KB→177,509 bytes) did NOT change LCP (it is essentially identical to the 03-01 measurement of ~2755ms), proving it is font-bound, not JS-bound. It is the intrinsic ~300ms cost of the D-03 Bricolage display H1 (03-01 bisection: Bricolage H1 → 2755ms vs 2453ms without) on Lighthouse's simulated slow-4G/4x-CPU profile, on a budget Phase 2 left with ~26ms headroom. All other CWV metrics now pass.
 
 **→ Ship-gate item (carried from 03-01, still open):** verify `largest-contentful-paint ≤ 2500ms` on the Vercel preview for `/de` and `/en` before promoting to production. The TECH-01 budget was calibrated on a production build (STATE.md); production LCP is the source of truth. If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
+
+**2. End-of-phase human walkthrough — NOT performed, the outstanding phase-completion gate.**
+
+Plan 03-04's Task 3 (`checkpoint:human-verify`, `gate="blocking"`) requires a human to confirm four dimensions on both `/de` and `/en` before Phase 3 (and its 5 requirements WOW-02, WOW-03, WOW-04, MODE-02, TECH-02) can be marked complete. This execution ran only the automated portion of Task 3 (lint, build, Playwright, LHCI — see Verification above); no human interactively drove the site. The remaining items, unchanged from the plan:
+
+- **WOW** (desktop, pointer:fine): hero intro, career scroll reveals + ITSC multi-beat + spine fill, bento stagger, magnetic buttons, and crossfade transitions read as intentional "medium/expressive" craft (D-10) — not spectacle, accent stays signal-only.
+- **SKIPPABLE**: identity (name/role/value-prop) + anchor nav visible from first paint, no preloader; anchor nav jumps to any section immediately (WOW-04).
+- **QUIET** (`prefers-reduced-motion: reduce`): every page shows the full, intentionally-designed static content — no motion, no missing content, no broken/empty states, Lenis off (MODE-02).
+- **MOBILE** (narrow viewport / touch): deliberate single column (spine hidden, magnetic absent), native scroll feels good, no scrolljacking and no shrunk-desktop feel (TECH-02).
+
+`REQUIREMENTS.md` intentionally keeps WOW-02/03/04, MODE-02, TECH-02 unmarked (and `ROADMAP.md` keeps Phase 3's top-level checkbox unmarked) until this walkthrough happens.
 
 ## Known Stubs
 
@@ -96,8 +111,8 @@ Reconfirmed here: the script reduction (225KB→177KB) did NOT change LCP, provi
 
 - The whole site (overview, career, projects, case studies, about) now presents one consistent engineered identity across both locales.
 - Home-route motion is uniformly just-in-time; any new home-route animation must follow the same pattern to hold the script budget.
-- Phase 3 is functionally complete and human-verified; the single open item is the production LCP check at ship time.
+- Plan 03-04's automated work is complete and freshly re-verified (build/lint/Playwright/LHCI). Phase 3 is NOT yet closed: the end-of-phase human walkthrough (wow/skippable/quiet/mobile) is the sole outstanding gate — run it before marking WOW-02/03/04, MODE-02, TECH-02 complete or checking off Phase 3 in ROADMAP.md.
 
 ## Self-Check: PASSED
 
-SUMMARY.md exists on disk; both plan-04 impl commits (`748c07c`, `3e04780`) present in git history.
+SUMMARY.md exists on disk; plan-04 commits (`748c07c`, `3e04780`) present in git history. All verification numbers in this SUMMARY were freshly re-measured in this session (not copied from the prior pass): `pnpm build`/`pnpm lint` re-run clean, `pnpm exec lhci autorun` re-run (6/6 runs script:size=177,509), `pnpm exec playwright test` re-run (135/136 parallel, 136/136 confirmed via serial re-run of the one flake).

@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: design-direction-immersive-experience
 status: executing
-stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-07-07T11:38:13.987Z"
+stopped_at: Phase 3 plans 1-4 executed; CWV reconciled (Option A); end-of-phase human walkthrough (wow/skippable/quiet/mobile) outstanding
+last_updated: "2026-07-07T13:55:00.000Z"
 last_activity: 2026-07-07
-last_activity_desc: Completed 03-03 (magnetic buttons + designed interaction states + GSAP crossfade transitions; WOW-03 craft layer done; advisory CWV bundle ~225KB flagged for 03-04)
+last_activity_desc: Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation, script:size 225KB->177,509 PASS); end-of-phase human walkthrough (wow/skippable/quiet/mobile, both locales) still outstanding before Phase 3 and its 5 requirements can be marked complete
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 2
   total_plans: 15
   completed_plans: 15
-  percent: 75
+  percent: 100
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 03 (design-direction-immersive-experience) — COMPLETE (ready for verification)
-Plan: 4 of 4 (all complete)
-Status: Phase 3 complete + human-verified (wow/skippable/quiet/mobile). CWV reconciled (Option A): home script:size 177,509 PASS. Open ship-gate item: verify production LCP <=2500ms on Vercel preview (Bricolage-H1 intrinsic ~2.75s local, accepted 03-01).
-Last activity: 2026-07-07 -- Completed 03-04 (photo treatment + engineered case-study/prose pages + full-phase verification; Phase 3 done, 5 requirements marked complete)
+Phase: 03 (design-direction-immersive-experience) — plans 1-4 executed; end-of-phase human walkthrough outstanding
+Plan: 4 of 4 (all automated work complete)
+Status: 03-04 functionally complete. CWV reconciled via approved Option A (just-in-time gsap across Reveal/CareerSpine/Magnetic/TransitionLink): home script:size 225KB->177,509 PASS (verified fresh via LHCI + build-chunk inspection); CLS 0, TBT ~0, performance 0.95-0.96 all PASS. Open items: (1) largest-contentful-paint ~2756-2914ms local vs <=2500ms budget -- the pre-existing 03-01-accepted Bricolage-H1 font cost, unchanged by this JS fix, production Vercel re-verify still required; (2) the end-of-phase human walkthrough (wow/skippable/quiet/mobile, both /de and /en) has NOT been performed -- WOW-02/03/04, MODE-02, TECH-02 stay unmarked in REQUIREMENTS.md until a human actually confirms it (auto_advance is false in this project; no checkpoint approval has occurred).
+Last activity: 2026-07-07 -- Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation). Phase 3's plans are all executed; the phase itself is NOT yet closed pending the human walkthrough checkpoint.
 
-Progress: [██████████] 100%
+Progress: [██████████] 100% (plan execution) -- phase 3 formal close pending human walkthrough
 
 ## Performance Metrics
 
@@ -96,7 +96,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [03-01] Accepted local LHCI LCP overage (~2755ms) from the D-03 Bricolage display face; production Vercel LCP is the calibrated source of truth per Phase-2 precedent — verify on preview before phase completion.
 - [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
 - [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
-- [Phase ?]: [03-04] Phase 3 complete + human-verified (wow/skippable/quiet/mobile, both locales). CWV reconciled via approved Option A (just-in-time gsap across all home-route motion): home script:size 225KB->177,509 PASS. Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1.
+- [Phase ?]: [03-04] CWV reconciled via approved Option A (just-in-time gsap across all home-route motion — Reveal via IntersectionObserver, CareerSpine via min-width:1024 gate, Magnetic/TransitionLink via handler-scoped lazy import): home script:size 225KB->177,509 PASS, verified via fresh LHCI run + build-chunk inspection (gsap body isolated to a 72KB async-only chunk, never in the homepage's initial HTML). Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1. Phase 3's plans (01-04) are all executed and automated-gate-verified; the phase's end-of-phase human walkthrough (wow/skippable/quiet/mobile) has NOT occurred — WOW-02/03/04, MODE-02, TECH-02 remain unmarked pending that human confirmation.
 
 ### Pending Todos
 
@@ -108,8 +108,8 @@ None yet.
 - [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
-- [03-01/CWV] Verify production LCP <= 2500ms on the Vercel preview for /de and /en (local lantern ~2755ms is a Geist paragraph re-timed by the Bricolage @font-face on a load-confounded dev machine). If prod also exceeds, defer the below-fold GitHubHeatmap client component (scoped follow-up outside 03-01) — do NOT relax TECH-01. Enforce at the 03-04 full-phase checkpoint.
-- [03-02/CWV] Home-route script:size ~223KB > 184,643 gate and LCP ~2.9s > 2500ms (accumulated Phase-3 motion engine; reveals run on touch per D-19). Advisory for waves 2-3; MUST reconcile at the 03-04 full-phase checkpoint: defer below-fold GitHubHeatmap client JS, or adjust the budget if production Vercel CWV holds. Do not drop D-19 touch reveals without a decision.
+- [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
+- [03-04/Phase-3] End-of-phase human walkthrough OUTSTANDING: wow (desktop craft), skippable (first-paint identity+nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking) — both /de and /en. `auto_advance` is false in this project's config, so this checkpoint has NOT been auto-approved or human-approved. WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 stay unmarked in REQUIREMENTS.md and Phase 3 stays unchecked in ROADMAP.md until this walkthrough actually happens.
 
 ### Quick Tasks Completed
 
@@ -127,6 +127,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-05T20:08:52.259Z
-Stopped at: Phase 3 UI-SPEC approved
-Resume file: .planning/phases/03-design-direction-immersive-experience/03-UI-SPEC.md
+Last session: 2026-07-07T13:55:00.000Z
+Stopped at: 03-04 automated work complete (Option-A CWV reconciliation verified); end-of-phase human walkthrough outstanding
+Resume file: .planning/phases/03-design-direction-immersive-experience/03-04-PLAN.md (Task 3 — human walkthrough)
