@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: design-direction-immersive-experience
 status: executing
-stopped_at: Phase 3 plans 1-4 executed; CWV reconciled (Option A); end-of-phase human walkthrough (wow/skippable/quiet/mobile) outstanding
-last_updated: "2026-07-07T13:55:00.000Z"
+stopped_at: Phase 3 COMPLETE & human-verified (UAT 4/4 passed 2026-07-07); open ship-gate = production LCP re-check on Vercel preview
+last_updated: "2026-07-07T12:25:01.410Z"
 last_activity: 2026-07-07
-last_activity_desc: Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation, script:size 225KB->177,509 PASS); end-of-phase human walkthrough (wow/skippable/quiet/mobile, both locales) still outstanding before Phase 3 and its 5 requirements can be marked complete
+last_activity_desc: Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation). Phase 3's plans are all executed; the phase itself is NOT yet closed pending the human walkthrough checkpoint.
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
   completed_plans: 15
-  percent: 100
+  percent: 75
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 03 (design-direction-immersive-experience) — plans 1-4 executed; end-of-phase human walkthrough outstanding
-Plan: 4 of 4 (all automated work complete)
-Status: 03-04 functionally complete. CWV reconciled via approved Option A (just-in-time gsap across Reveal/CareerSpine/Magnetic/TransitionLink): home script:size 225KB->177,509 PASS (verified fresh via LHCI + build-chunk inspection); CLS 0, TBT ~0, performance 0.95-0.96 all PASS. Open items: (1) largest-contentful-paint ~2756-2914ms local vs <=2500ms budget -- the pre-existing 03-01-accepted Bricolage-H1 font cost, unchanged by this JS fix, production Vercel re-verify still required; (2) the end-of-phase human walkthrough (wow/skippable/quiet/mobile, both /de and /en) has NOT been performed -- WOW-02/03/04, MODE-02, TECH-02 stay unmarked in REQUIREMENTS.md until a human actually confirms it (auto_advance is false in this project; no checkpoint approval has occurred).
-Last activity: 2026-07-07 -- Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation). Phase 3's plans are all executed; the phase itself is NOT yet closed pending the human walkthrough checkpoint.
+Phase: 03 (design-direction-immersive-experience) — COMPLETE & VERIFIED
+Plan: 4 of 4 (all complete); phase closed
+Status: Phase 3 fully complete. Human UAT PASSED 4/4 on 2026-07-07 (wow / skippable / quiet / mobile, human-driven on /de and /en — see 03-UAT.md status=passed, 03-VERIFICATION.md status=passed). WOW-02/03/04, MODE-02, TECH-02 marked complete. CWV reconciled via approved Option A (JIT gsap): home script:size 177,509 PASS, CLS 0, TBT ~0, perf 0.95. ONE open ship-gate item (non-blocking for phase closure): production LCP re-check on the Vercel preview for /de and /en (local ~2.76-2.91s is the accepted 03-01 Bricolage-H1 font cost; TECH-01 was production-calibrated; Phase 4 Success Criterion 3 re-verifies on production).
+Last activity: 2026-07-07 -- Phase 3 closed after human UAT passed 4/4. Next: /gsd-ship (opens PR, CI LHCI runs on a production build → surfaces the production LCP for the ship-gate), or begin Phase 4 (signature 3D moment; HeroSceneSlot seam reserved).
 
-Progress: [██████████] 100% (plan execution) -- phase 3 formal close pending human walkthrough
+Progress: [██████████] 100% — Phase 3 complete & human-verified
 
 ## Performance Metrics
 
@@ -97,6 +97,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
 - [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
 - [Phase ?]: [03-04] CWV reconciled via approved Option A (just-in-time gsap across all home-route motion — Reveal via IntersectionObserver, CareerSpine via min-width:1024 gate, Magnetic/TransitionLink via handler-scoped lazy import): home script:size 225KB->177,509 PASS, verified via fresh LHCI run + build-chunk inspection (gsap body isolated to a 72KB async-only chunk, never in the homepage's initial HTML). Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1. Phase 3's plans (01-04) are all executed and automated-gate-verified; the phase's end-of-phase human walkthrough (wow/skippable/quiet/mobile) has NOT occurred — WOW-02/03/04, MODE-02, TECH-02 remain unmarked pending that human confirmation.
+- [Phase ?]: [03-verify] Phase 3 human UAT PASSED 4/4 (wow/skippable/quiet/mobile, /de + /en, human-driven 2026-07-07). 03-UAT.md status=passed, 03-VERIFICATION.md status=passed. Requirements WOW-02/03/04, MODE-02, TECH-02 complete. Open ship-gate: production LCP re-check on Vercel preview (deferred, Phase 4 SC3 re-verifies).
 
 ### Pending Todos
 
@@ -128,5 +129,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-07-07T13:55:00.000Z
-Stopped at: 03-04 automated work complete (Option-A CWV reconciliation verified); end-of-phase human walkthrough outstanding
+Stopped at: Phase 3 complete & human-verified (UAT 4/4 passed); open ship-gate = production LCP re-check on Vercel preview
 Resume file: .planning/phases/03-design-direction-immersive-experience/03-04-PLAN.md (Task 3 — human walkthrough)
