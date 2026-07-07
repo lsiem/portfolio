@@ -6,15 +6,15 @@ current_phase: 03
 current_phase_name: design-direction-immersive-experience
 status: executing
 stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-07-07T10:50:48.764Z"
-last_activity: 2026-07-05
-last_activity_desc: Completed 03-02 (career scroll-storytelling + progress spine + featured bento; advisory CWV bundle breach flagged for 03-04)
+last_updated: "2026-07-07T11:38:13.987Z"
+last_activity: 2026-07-07
+last_activity_desc: Completed 03-03 (magnetic buttons + designed interaction states + GSAP crossfade transitions; WOW-03 craft layer done; advisory CWV bundle ~225KB flagged for 03-04)
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
-  completed_plans: 14
-  percent: 50
+  completed_plans: 15
+  percent: 75
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 03 (design-direction-immersive-experience) — EXECUTING
-Plan: 4 of 4
-Status: Ready to execute (03-01, 03-02, 03-03 complete)
-Last activity: 2026-07-07 -- Completed 03-03 (magnetic buttons + designed interaction states + GSAP crossfade transitions; WOW-03 craft layer done; advisory CWV bundle ~225KB flagged for 03-04)
+Phase: 03 (design-direction-immersive-experience) — COMPLETE (ready for verification)
+Plan: 4 of 4 (all complete)
+Status: Phase 3 complete + human-verified (wow/skippable/quiet/mobile). CWV reconciled (Option A): home script:size 177,509 PASS. Open ship-gate item: verify production LCP <=2500ms on Vercel preview (Bricolage-H1 intrinsic ~2.75s local, accepted 03-01).
+Last activity: 2026-07-07 -- Completed 03-04 (photo treatment + engineered case-study/prose pages + full-phase verification; Phase 3 done, 5 requirements marked complete)
 
-Progress: [█████████░] 93%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Progress: [█████████░] 93%
 | Phase 03 P01 | 59min | 3 tasks | 11 files |
 | Phase 03 P02 | 20min | 2 tasks | 5 files |
 | Phase 03 P03 | 25min | 2 tasks | 6 files |
+| Phase 03 P04 | 40min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [03-01] Accepted local LHCI LCP overage (~2755ms) from the D-03 Bricolage display face; production Vercel LCP is the calibrated source of truth per Phase-2 precedent — verify on preview before phase completion.
 - [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
 - [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
+- [Phase ?]: [03-04] Phase 3 complete + human-verified (wow/skippable/quiet/mobile, both locales). CWV reconciled via approved Option A (just-in-time gsap across all home-route motion): home script:size 225KB->177,509 PASS. Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1.
 
 ### Pending Todos
 
