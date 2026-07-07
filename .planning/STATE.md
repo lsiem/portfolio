@@ -6,14 +6,14 @@ current_phase: 03
 current_phase_name: design-direction-immersive-experience
 status: executing
 stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-07-05T20:09:00.136Z"
+last_updated: "2026-07-05T20:33:22.550Z"
 last_activity: 2026-07-05
-last_activity_desc: Phase 03 execution started
+last_activity_desc: "Completed 03-01 (motion foundation + engineered hero intro; Option A: local LCP overage accepted, verify on prod)"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 15
-  completed_plans: 12
+  completed_plans: 13
   percent: 50
 ---
 
@@ -29,11 +29,11 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 03 (design-direction-immersive-experience) — EXECUTING
-Plan: 2 of 4
-Status: Ready to execute (03-01 complete)
-Last activity: 2026-07-05 -- Completed 03-01 (motion foundation + engineered hero intro; Option A: local LCP overage accepted, verify on prod)
+Plan: 3 of 4
+Status: Ready to execute (03-01, 03-02 complete)
+Last activity: 2026-07-05 -- Completed 03-02 (career scroll-storytelling + progress spine + featured bento; advisory CWV bundle breach flagged for 03-04)
 
-Progress: [████████░░] 80%
+Progress: [█████████░] 87%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [████████░░] 80%
 | Phase 02 P06 | 30 min | 3 tasks | 5 files |
 | Phase 02 P07 | ~15min | 2 tasks | 3 files |
 | Phase 03 P01 | 59min | 3 tasks | 11 files |
+| Phase 03 P02 | 20min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,7 @@ Recent decisions affecting current work:
 - [Phase 02-07]: siteMetadataBase resolves via NODE_ENV==='production' rather than VERCEL_PROJECT_PRODUCTION_URL, keeping the production origin fixed and independent of which Vercel deployment triggers the build
 - [Phase 02-07]: Production cutover complete: PR #12 (phase/02-recruiter-overview-live -> main) promoted to production, lsiem.de live-verified by the human on both locales — all four blocking pre-cutover gates (GITHUB_TOKEN, Impressum address, CV no-404, career chronology) cleared
 - [Phase ?]: [03-01] Accepted local LHCI LCP overage (~2755ms) from the D-03 Bricolage display face; production Vercel LCP is the calibrated source of truth per Phase-2 precedent — verify on preview before phase completion.
+- [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
 
 ### Pending Todos
 
@@ -103,6 +105,7 @@ None yet.
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
 - [03-01/CWV] Verify production LCP <= 2500ms on the Vercel preview for /de and /en (local lantern ~2755ms is a Geist paragraph re-timed by the Bricolage @font-face on a load-confounded dev machine). If prod also exceeds, defer the below-fold GitHubHeatmap client component (scoped follow-up outside 03-01) — do NOT relax TECH-01. Enforce at the 03-04 full-phase checkpoint.
+- [03-02/CWV] Home-route script:size ~223KB > 184,643 gate and LCP ~2.9s > 2500ms (accumulated Phase-3 motion engine; reveals run on touch per D-19). Advisory for waves 2-3; MUST reconcile at the 03-04 full-phase checkpoint: defer below-fold GitHubHeatmap client JS, or adjust the budget if production Vercel CWV holds. Do not drop D-19 touch reveals without a decision.
 
 ### Quick Tasks Completed
 
