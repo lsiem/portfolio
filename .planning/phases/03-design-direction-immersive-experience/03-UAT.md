@@ -1,19 +1,20 @@
 ---
-status: passed
+status: testing
 phase: 03-design-direction-immersive-experience
 source: [03-VERIFICATION.md]
 started: "2026-07-07T12:03:03Z"
-updated: "2026-07-07T12:03:03Z"
+updated: "2026-07-07T12:30:00Z"
 ---
 
 ## Current Test
 
-number: —
-name: All tests complete
+number: 4
+name: MOBILE — deliberate touch experience, both /de and /en
 expected: |
-  All four Phase-3 verification dimensions (wow / skippable / quiet / mobile) were
-  human-driven on /de and /en and passed. UAT status: passed.
-awaiting: none — UAT complete
+  On a narrow/touch viewport, the layout is a deliberate single column (not a shrunk
+  desktop); the progress spine is hidden; magnetic effects are absent; scrolling is
+  native with NO scrolljacking/pinning; content is complete and reads well.
+awaiting: user response
 
 ## Tests
 
@@ -34,15 +35,14 @@ source: human (2026-07-07, /de + /en)
 
 ### 4. MOBILE — deliberate touch experience, both /de and /en
 expected: On a narrow/touch viewport, the layout is a deliberate single column (not a shrunk desktop); the progress spine is hidden; magnetic effects are absent; scrolling is native with NO scrolljacking/pinning; content is complete and reads well.
-result: pass
-source: human (2026-07-07, /de + /en)
+result: [pending]
 
 ## Summary
 
 total: 4
-passed: 4
+passed: 3
 issues: 0
-pending: 0
+pending: 1
 skipped: 0
 blocked: 0
 

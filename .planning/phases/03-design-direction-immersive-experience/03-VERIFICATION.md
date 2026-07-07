@@ -1,9 +1,8 @@
 ---
 phase: 03-design-direction-immersive-experience
 verified: 2026-07-07T00:00:00Z
-status: passed
-human_walkthrough: passed 2026-07-07 — all four dimensions (wow / skippable / quiet / mobile) human-driven on /de and /en, 4/4 pass (see 03-UAT.md)
-score: 5/5 must-haves implemented, test-verified, AND human-walkthrough-confirmed. One deferred ship-gate item remains (production LCP re-check, below) — non-blocking for phase closure, re-verified by Phase 4 Success Criterion 3.
+status: human_needed
+score: 5/5 must-haves implemented and test-verified; phase-closure gate (human walkthrough) not yet performed
 behavior_unverified: 0
 overrides_applied: 0
 gaps: []
