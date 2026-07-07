@@ -56,7 +56,7 @@ function TechChips({ tags }: { tags: readonly string[] }) {
   return (
     <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
       {tags.map((tag) => (
-        <li key={tag} className="rounded border border-border px-2 py-0.5">
+        <li key={tag} className="chip rounded border border-border px-2 py-0.5">
           {tag}
         </li>
       ))}

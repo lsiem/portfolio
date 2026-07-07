@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { GitHubHeatmap } from "@/components/github-heatmap";
 import {
   getCareer,
@@ -13,8 +12,10 @@ import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
 import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
+import { Magnetic } from "@/components/motion/magnetic";
 import { ProjectBento } from "@/components/motion/project-bento";
 import { Reveal } from "@/components/motion/reveal";
+import { TransitionLink } from "@/components/motion/transition-link";
 import {
   localeAlternates,
   openGraphMetadata,
@@ -201,7 +202,7 @@ export default async function HomePage({ params }: Props) {
               entry.techStack.length > 0 ? (
                 <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
                   {entry.techStack.map((tech) => (
-                    <li key={tech} className="rounded border border-border px-2 py-0.5">
+                    <li key={tech} className="chip rounded border border-border px-2 py-0.5">
                       {tech}
                     </li>
                   ))}
@@ -264,10 +265,9 @@ export default async function HomePage({ params }: Props) {
       </section>
 
       {/* Projects break wide (D-04) as an asymmetric bento — ELIA + Vidama
-          featured, the rest compact (D-14). page.tsx passes no LinkComponent, so
-          ProjectBento uses its default locale-aware Link; a later plan can
-          inject TransitionLink for the D-11.4 crossfade with no structural
-          change to ProjectBento. */}
+          featured, the rest compact (D-14). TransitionLink is injected as the
+          bento's LinkComponent so its internal case-study links get the D-11.4
+          crossfade; the external visit link stays a native anchor. */}
       <section
         id="projects"
         aria-labelledby="projects-heading"
@@ -282,6 +282,7 @@ export default async function HomePage({ params }: Props) {
             caseStudy: projectsT("caseStudy"),
             visit: projectsT("visit"),
           }}
+          LinkComponent={TransitionLink}
         />
       </section>
 
@@ -331,12 +332,12 @@ export default async function HomePage({ params }: Props) {
         {aboutPage?.description ? (
           <p className="max-w-2xl text-muted">{aboutPage.description}</p>
         ) : null}
-        <Link
+        <TransitionLink
           href="/about"
           className="font-mono text-sm text-muted transition-colors hover:text-foreground"
         >
           {aboutT("readMore")} →
-        </Link>
+        </TransitionLink>
       </section>
 
       <section
@@ -365,29 +366,39 @@ export default async function HomePage({ params }: Props) {
           {contactT("title")}
         </h2>
         <p className="max-w-xl text-muted">{contactT("intro")}</p>
-        <a
-          href={`/Lasse-Siemoneit-CV-${locale}.pdf`}
-          download
-          aria-label={contactT("downloadCvAria")}
-          className="inline-flex w-fit items-center rounded-md bg-accent px-4 py-2 font-mono text-sm text-background transition-colors hover:bg-foreground focus-visible:outline-offset-4"
-        >
-          {contactT("downloadCv")}
-        </a>
+        {/* Magnetic pull on pointer:fine (D-11.1); absent on touch. Rendered
+            unconditionally — the fine-pointer gate is internal to Magnetic. */}
+        <Magnetic className="w-fit">
+          <a
+            href={`/Lasse-Siemoneit-CV-${locale}.pdf`}
+            download
+            aria-label={contactT("downloadCvAria")}
+            className="cv-button inline-flex w-fit items-center rounded-md bg-accent px-4 py-2 font-mono text-sm text-background transition-colors hover:bg-foreground focus-visible:outline-offset-4"
+          >
+            {contactT("downloadCv")}
+          </a>
+        </Magnetic>
         <ul className="flex flex-col gap-2 font-mono text-sm">
           <li>
-            <a href={`mailto:${contact.email}`} className="text-accent transition-colors hover:text-foreground">
-              {contactT("email")}: {contact.email}
-            </a>
+            <Magnetic>
+              <a href={`mailto:${contact.email}`} className="text-accent transition-colors hover:text-foreground">
+                {contactT("email")}: {contact.email}
+              </a>
+            </Magnetic>
           </li>
           <li>
-            <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
-              {contactT("github")} ↗
-            </a>
+            <Magnetic>
+              <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
+                {contactT("github")} ↗
+              </a>
+            </Magnetic>
           </li>
           <li>
-            <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
-              {contactT("linkedin")} ↗
-            </a>
+            <Magnetic>
+              <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
+                {contactT("linkedin")} ↗
+              </a>
+            </Magnetic>
           </li>
         </ul>
       </section>

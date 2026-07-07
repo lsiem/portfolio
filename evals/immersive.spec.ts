@@ -241,4 +241,125 @@ for (const locale of locales) {
       expect((await firstCell.innerText()).trim().length).toBeGreaterThan(0);
     });
   });
+
+  test.describe(`Immersive craft interactions (/${locale})`, () => {
+    test("CV button pulls magnetically on pointer:fine and snaps back (D-11.1)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const cv = page.locator("#contact a[download]");
+      const wrapper = cv.locator("xpath=.."); // the Magnetic <span>
+      await cv.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(300); // let Lenis settle after scroll
+      const box = await cv.boundingBox();
+      if (!box) throw new Error("CV button has no bounding box");
+      // Move within the element, offset toward the right edge for a non-zero pull.
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2);
+      await expect
+        .poll(async () =>
+          wrapper.evaluate((el) => getComputedStyle(el).transform),
+        )
+        .not.toBe("none");
+      // Leave → snap back to identity.
+      await page.mouse.move(2, 2);
+      await expect
+        .poll(async () =>
+          wrapper.evaluate((el) => {
+            const t = getComputedStyle(el).transform;
+            return t === "none" || t === "matrix(1, 0, 0, 1, 0, 0)";
+          }),
+        )
+        .toBe(true);
+    });
+
+    test("CV button keeps its focus-visible ring and aria-label (TECH-03)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const cv = page.locator("#contact a[download]");
+      await expect(cv).toHaveAttribute("aria-label", /.+/);
+      await cv.focus();
+      const outline = await cv.evaluate((el) => {
+        const s = getComputedStyle(el);
+        return { style: s.outlineStyle, width: s.outlineWidth };
+      });
+      expect(outline.style).not.toBe("none");
+      expect(parseFloat(outline.width)).toBeGreaterThan(0);
+    });
+
+    test("magnetic pull is stripped under reduced-motion (MODE-02)", async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(`/${locale}`);
+      const cv = page.locator("#contact a[download]");
+      const wrapper = cv.locator("xpath=..");
+      const box = await cv.boundingBox();
+      if (!box) throw new Error("CV button has no bounding box");
+      await page.mouse.move(box.x + box.width / 2 + 10, box.y + box.height / 2);
+      await page.waitForTimeout(400);
+      const transform = await wrapper.evaluate(
+        (el) => getComputedStyle(el).transform,
+      );
+      expect(transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)").toBe(
+        true,
+      );
+    });
+
+    test("bento case-study link crossfades then navigates on plain click (D-11.4)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const elia = page.locator(
+        `#projects a[href="/${locale}/case-studies/elia"]`,
+      );
+      await expect(elia).toHaveAttribute("href", /\/case-studies\/elia$/);
+      await elia.click();
+      await page.waitForURL(new RegExp(`/${locale}/case-studies/elia`));
+    });
+
+    test("case-study navigation is instant under reduced-motion (D-11.4)", async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(`/${locale}`);
+      await page
+        .locator(`#projects a[href="/${locale}/case-studies/elia"]`)
+        .click();
+      await page.waitForURL(new RegExp(`/${locale}/case-studies/elia`));
+    });
+
+    test("modifier-click preserves native new-tab (no in-page crossfade) (finding #3)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const before = page.url();
+      await page
+        .locator(`#projects a[href="/${locale}/case-studies/elia"]`)
+        .click({ modifiers: ["Meta"] });
+      // The current tab must NOT navigate — the browser would open a new tab.
+      await page.waitForTimeout(300);
+      expect(page.url()).toBe(before);
+    });
+
+    test("external visit link stays a native new-tab anchor (not a TransitionLink)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const visit = page.locator('#projects a[target="_blank"]').first();
+      await expect(visit).toHaveAttribute("rel", /noopener/);
+    });
+
+    test("exactly one animation engine (no framer-motion/motion) (D-08)", async () => {
+      const fs = await import("node:fs");
+      const path = await import("node:path");
+      const pkg = JSON.parse(
+        fs.readFileSync(path.join(process.cwd(), "package.json"), "utf8"),
+      );
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      expect(deps["framer-motion"]).toBeUndefined();
+      expect(deps["motion"]).toBeUndefined();
+    });
+  });
 }
