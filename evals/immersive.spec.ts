@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getCareer, getProjects } from "../src/lib/content";
+import { getCareer, getPage, getProjects } from "../src/lib/content";
 
 const locales = ["de", "en"] as const;
 
@@ -360,6 +360,62 @@ for (const locale of locales) {
       const deps = { ...pkg.dependencies, ...pkg.devDependencies };
       expect(deps["framer-motion"]).toBeUndefined();
       expect(deps["motion"]).toBeUndefined();
+    });
+  });
+
+  test.describe(`Immersive detail pages (/${locale})`, () => {
+    test("About section degrades to text-only when no photo is supplied (D-16)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      const about = page.locator("#about");
+      await expect(about).toBeVisible();
+      expect((await about.innerText()).trim().length).toBeGreaterThan(0);
+      // No owner photo today → no <img> rendered, section stays text-only.
+      expect(await about.locator("img").count()).toBe(0);
+    });
+
+    test("case-study page: Bricolage display H1 as real text (D-15)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}/case-studies/elia`);
+      const h1 = page.locator("h1");
+      await expect(h1).toHaveCount(1);
+      await expect(h1).toBeVisible();
+      expect((await h1.innerText()).trim().length).toBeGreaterThan(0);
+      const fontFamily = await h1.evaluate(
+        (el) => getComputedStyle(el).fontFamily,
+      );
+      expect(fontFamily.toLowerCase()).toContain("bricolage");
+    });
+
+    test("case-study body is fully readable under reduced-motion (MODE-02)", async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(`/${locale}/case-studies/elia`);
+      const article = page.locator("article");
+      await expect(article).toBeVisible();
+      const opacity = await article.evaluate((el) => {
+        const inner = el.querySelector("div") ?? el;
+        return parseFloat(getComputedStyle(inner as Element).opacity);
+      });
+      expect(opacity).toBe(1);
+    });
+
+    test("prose /about page has exactly one Bricolage H1 = page.title (finding #4)", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}/about`);
+      const h1 = page.locator("h1");
+      await expect(h1).toHaveCount(1);
+      const expectedTitle = getPage(locale, "about")?.title ?? "";
+      expect(expectedTitle.length).toBeGreaterThan(0);
+      expect((await h1.innerText()).trim()).toBe(expectedTitle);
+      const fontFamily = await h1.evaluate(
+        (el) => getComputedStyle(el).fontFamily,
+      );
+      expect(fontFamily.toLowerCase()).toContain("bricolage");
     });
   });
 }

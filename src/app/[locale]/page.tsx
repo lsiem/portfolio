@@ -71,6 +71,11 @@ export default async function HomePage({ params }: Props) {
   const skillDomains = getSkillDomains(locale);
   const contact = getContact(locale);
   const aboutPage = getPage(locale, "about");
+  // Owner-supplied About portrait (D-16) — non-blocking. Set to a public/ path
+  // (e.g. "/lasse.jpg") to enable the framed photo treatment; null keeps the
+  // section text-only exactly as before.
+  const aboutPhotoSrc: string | null = null;
+  const aboutPhotoCaption: string | null = null;
   // Trusted first-party data from the typed content model (no user input),
   // so dangerouslySetInnerHTML is safe here per react/security rules.
   const personLd = personJsonLd(contact, locale);
@@ -324,20 +329,60 @@ export default async function HomePage({ params }: Props) {
           {aboutT("title")}
         </h2>
         {/*
-          Text-first per CTX-03 (02-CONTEXT.md): the profile photo is an
-          owner-supplied asset that slots in later as a non-blocking
-          follow-up (rounded-lg, ~96-160px avatar scale, per D-D). No <img>
-          is rendered here — the section degrades to text-only cleanly.
+          Signature engineered photo treatment (D-16): the framed portrait slots
+          in beside the text on lg+ / stacked on mobile. The image is an
+          owner-supplied asset (aboutPhotoSrc null today) — when absent the
+          section degrades to exactly the prior text-only state; when present it
+          renders in the space-reserved .photo-frame (no CLS) with the coordinate
+          corner ticks. Set aboutPhotoSrc to a public/ path to enable it.
         */}
-        {aboutPage?.description ? (
-          <p className="max-w-2xl text-muted">{aboutPage.description}</p>
-        ) : null}
-        <TransitionLink
-          href="/about"
-          className="font-mono text-sm text-muted transition-colors hover:text-foreground"
-        >
-          {aboutT("readMore")} →
-        </TransitionLink>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+          {aboutPhotoSrc ? (
+            <Reveal className="shrink-0">
+              <figure className="flex flex-col gap-2">
+                <div className="photo-frame">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={aboutPhotoSrc}
+                    alt={aboutT("photoAlt")}
+                    width={200}
+                    height={200}
+                  />
+                  {/* Decorative L-shaped coordinate corner ticks (D-16). */}
+                  <svg
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 h-full w-full"
+                    fill="none"
+                    stroke="var(--muted)"
+                    strokeWidth="1"
+                  >
+                    <path d="M2,10 V2 H10" />
+                    <path d="M-10,2 h8 v8" transform="translate(100%,0)" />
+                    <path d="M2,-10 v8 h8" transform="translate(0,100%)" />
+                    <path d="M-10,-10 h8 v8 h-8 z" transform="translate(100%,100%)" opacity="0" />
+                    <path d="M-2,-10 v8 M-10,-2 h8" transform="translate(100%,100%)" />
+                  </svg>
+                </div>
+                {aboutPhotoCaption ? (
+                  <figcaption className="font-mono text-xs text-muted">
+                    {aboutPhotoCaption}
+                  </figcaption>
+                ) : null}
+              </figure>
+            </Reveal>
+          ) : null}
+          <div className="flex flex-col gap-6">
+            {aboutPage?.description ? (
+              <p className="max-w-2xl text-muted">{aboutPage.description}</p>
+            ) : null}
+            <TransitionLink
+              href="/about"
+              className="w-fit font-mono text-sm text-muted transition-colors hover:text-foreground"
+            >
+              {aboutT("readMore")} →
+            </TransitionLink>
+          </div>
+        </div>
       </section>
 
       <section
