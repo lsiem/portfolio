@@ -6,14 +6,14 @@ current_phase: 03
 current_phase_name: design-direction-immersive-experience
 status: executing
 stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-07-05T20:33:22.550Z"
+last_updated: "2026-07-07T10:50:48.764Z"
 last_activity: 2026-07-05
-last_activity_desc: "Completed 03-01 (motion foundation + engineered hero intro; Option A: local LCP overage accepted, verify on prod)"
+last_activity_desc: Completed 03-02 (career scroll-storytelling + progress spine + featured bento; advisory CWV bundle breach flagged for 03-04)
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 15
-  completed_plans: 13
+  completed_plans: 14
   percent: 50
 ---
 
@@ -29,11 +29,11 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 03 (design-direction-immersive-experience) — EXECUTING
-Plan: 3 of 4
-Status: Ready to execute (03-01, 03-02 complete)
-Last activity: 2026-07-05 -- Completed 03-02 (career scroll-storytelling + progress spine + featured bento; advisory CWV bundle breach flagged for 03-04)
+Plan: 4 of 4
+Status: Ready to execute (03-01, 03-02, 03-03 complete)
+Last activity: 2026-07-07 -- Completed 03-03 (magnetic buttons + designed interaction states + GSAP crossfade transitions; WOW-03 craft layer done; advisory CWV bundle ~225KB flagged for 03-04)
 
-Progress: [█████████░] 87%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [█████████░] 87%
 | Phase 02 P07 | ~15min | 2 tasks | 3 files |
 | Phase 03 P01 | 59min | 3 tasks | 11 files |
 | Phase 03 P02 | 20min | 2 tasks | 5 files |
+| Phase 03 P03 | 25min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,7 @@ Recent decisions affecting current work:
 - [Phase 02-07]: Production cutover complete: PR #12 (phase/02-recruiter-overview-live -> main) promoted to production, lsiem.de live-verified by the human on both locales — all four blocking pre-cutover gates (GITHUB_TOKEN, Impressum address, CV no-404, career chronology) cleared
 - [Phase ?]: [03-01] Accepted local LHCI LCP overage (~2755ms) from the D-03 Bricolage display face; production Vercel LCP is the calibrated source of truth per Phase-2 precedent — verify on preview before phase completion.
 - [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
+- [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
 
 ### Pending Todos
 
