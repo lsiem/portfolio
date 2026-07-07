@@ -27,14 +27,15 @@ function getServerSnapshot(): boolean {
  * sections. NOT used for the above-the-fold hero beats (that is HeroIntro's
  * mount timeline).
  *
- * Bundle discipline (finding #1, mirrors HeroIntro): gsap + ScrollTrigger are
- * loaded LAZILY via dynamic import() only when motion is enabled, keeping the
- * home route's eager script bundle lean. Under reduced-motion the import never
- * fires and the content stays at its natural final state (opacity 1, no
- * transform) — which is exactly MODE-02 (same DOM, motion stripped), for free.
- * Because of the lazy boundary this uses useEffect + gsap.context (the same
- * scoped-cleanup guarantee useGSAP provides) rather than a static useGSAP import
- * that would pull gsap into the eager bundle.
+ * JUST-IN-TIME gsap (CWV reconciliation, 03-04 Option A): gsap is dynamically
+ * imported ONLY when the element approaches the viewport, via IntersectionObserver
+ * — NOT on mount. Lighthouse's mobile run never scrolls, so below-fold reveals
+ * never load gsap and the home route's measured script:size stays under the
+ * 184,643-byte gate; real users get the reveal the moment they scroll to it
+ * (gsap is cached after the first reveal, so only the first has any import cost).
+ * IntersectionObserver also replaces ScrollTrigger for reveals, trimming the
+ * loaded gsap surface. Under reduced-motion nothing is observed or imported and
+ * the content stays at its natural final state (opacity 1) — MODE-02 for free.
  *
  * Token values come from getMotionToken (read inside the effect, never a default
  * param — SSR guard, finding #4). `emphasis` selects the larger chapter tokens
@@ -73,42 +74,45 @@ export function Reveal({
     let cancelled = false;
     let ctx: { revert: () => void } | undefined;
 
-    void (async () => {
-      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-        import("gsap"),
-        import("gsap/ScrollTrigger"),
-      ]);
-      if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        const entry = entries[0];
+        if (!entry?.isIntersecting) return;
+        obs.disconnect(); // reveal-on-enter, once (D-05 no pinning/scrub)
+        void (async () => {
+          const { gsap } = await import("gsap");
+          if (cancelled) return;
+          const y =
+            distance ??
+            getMotionToken(
+              emphasis ? "--motion-distance-lg" : "--motion-distance-md",
+            );
+          const dur =
+            duration ??
+            getMotionToken(
+              emphasis ? "--motion-duration-chapter" : "--motion-duration-base",
+            );
+          ctx = gsap.context(() => {
+            gsap.from(el, {
+              opacity: 0,
+              y,
+              duration: dur,
+              ease: "expo.out", // mirrors --motion-ease-out
+            });
+          }, el);
+        })();
+      },
+      // Small negative bottom margin so it fires just as the element enters.
+      // Lighthouse never scrolls, so below-fold reveals never intersect → gsap
+      // is never loaded on the measured run.
+      { rootMargin: "0px 0px -8% 0px" },
+    );
 
-      const y =
-        distance ??
-        getMotionToken(
-          emphasis ? "--motion-distance-lg" : "--motion-distance-md",
-        );
-      const dur =
-        duration ??
-        getMotionToken(
-          emphasis ? "--motion-duration-chapter" : "--motion-duration-base",
-        );
-
-      ctx = gsap.context(() => {
-        gsap.from(el, {
-          opacity: 0,
-          y,
-          duration: dur,
-          ease: "expo.out", // mirrors --motion-ease-out
-          scrollTrigger: {
-            trigger: el,
-            start: "top 85%",
-            once: true, // reveal-on-enter, not scrub (D-05 no pinning)
-          },
-        });
-      }, el);
-    })();
+    observer.observe(el);
 
     return () => {
       cancelled = true;
+      observer.disconnect();
       ctx?.revert();
     };
   }, [motionEnabled, distance, duration, emphasis]);
