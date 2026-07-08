@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { getMotionToken } from "@/lib/motion-tokens";
 

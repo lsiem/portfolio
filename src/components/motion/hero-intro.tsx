@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import type { SplitText } from "gsap/SplitText";
 import { getMotionToken } from "@/lib/motion-tokens";

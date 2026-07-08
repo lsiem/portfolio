@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useEffect, useSyncExternalStore } from "react";
 
 // --- Motion gate (reduced-motion + pointer) via useSyncExternalStore ---------

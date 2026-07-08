@@ -1,24 +1,19 @@
 ---
 phase: 03-design-direction-immersive-experience
 verified: "2026-07-07T00:00:00Z"
-status: passed
+status: human_needed
 score: 5/5 must-haves implemented and test-verified; phase-closure gate (human walkthrough) not yet performed
 behavior_unverified: 0
 overrides_applied: 0
 gaps: []
 deferred:
-
-  - [object Object]
-
+  - "Production LCP ≤ 2500ms with Bricolage display H1 — deferred to Phase 4"
 behavior_unverified_items: []
 human_verification:
-
-  - [object Object]
-  - [object Object]
-  - [object Object]
-  - [object Object]
-  - [object Object]
-
+  - "WOW: desktop immersive craft (pointer:fine), both /de and /en"
+  - "SKIPPABLE: first-fold identity and nav visible on first paint, both /de and /en"
+  - "QUIET: prefers-reduced-motion delivers full static content, both /de and /en"
+  - "MOBILE: deliberate single-column touch experience, no scrolljacking, both /de and /en"
 ---
 
 # Phase 3: Design Direction & Immersive Experience Verification Report

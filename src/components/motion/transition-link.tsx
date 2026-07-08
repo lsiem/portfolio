@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { getMotionToken } from "@/lib/motion-tokens";
 
@@ -63,15 +64,19 @@ export function TransitionLink({
       return;
     }
 
-    void import("gsap").then(({ gsap }) => {
-      gsap.to(main, {
-        opacity: 0,
-        y: -getMotionToken("--motion-distance-md"),
-        duration: getMotionToken("--motion-duration-base"),
-        ease: "power2.inOut", // named equivalent of --motion-ease-in-out
-        onComplete: () => router.push(href),
+    void import("gsap")
+      .then(({ gsap }) => {
+        gsap.to(main, {
+          opacity: 0,
+          y: -getMotionToken("--motion-distance-md"),
+          duration: getMotionToken("--motion-duration-base"),
+          ease: "power2.inOut", // named equivalent of --motion-ease-in-out
+          onComplete: () => router.push(href),
+        });
+      })
+      .catch(() => {
+        router.push(href);
       });
-    });
   };
 
   return (
