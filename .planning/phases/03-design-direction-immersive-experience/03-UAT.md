@@ -1,20 +1,14 @@
 ---
-status: testing
+status: passed
 phase: 03-design-direction-immersive-experience
 source: [03-VERIFICATION.md]
 started: "2026-07-07T12:03:03Z"
-updated: "2026-07-07T12:30:00Z"
+updated: "2026-07-08T00:00:00Z"
 ---
 
 ## Current Test
 
-number: 4
-name: MOBILE — deliberate touch experience, both /de and /en
-expected: |
-  On a narrow/touch viewport, the layout is a deliberate single column (not a shrunk
-  desktop); the progress spine is hidden; magnetic effects are absent; scrolling is
-  native with NO scrolljacking/pinning; content is complete and reads well.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -35,20 +29,21 @@ source: human (2026-07-07, /de + /en)
 
 ### 4. MOBILE — deliberate touch experience, both /de and /en
 expected: On a narrow/touch viewport, the layout is a deliberate single column (not a shrunk desktop); the progress spine is hidden; magnetic effects are absent; scrolling is native with NO scrolljacking/pinning; content is complete and reads well.
-result: [pending]
+result: pass
+source: human (2026-07-08, /de + /en)
 
 ## Summary
 
 total: 4
-passed: 3
+passed: 4
 issues: 0
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 
 ## Gaps
 
-<!-- Populated by /gsd-verify-work if a walkthrough item fails. -->
+<!-- No gaps — all four dimensions passed by the human on /de + /en. -->
 
 ## Deferred / Ship-gate
 

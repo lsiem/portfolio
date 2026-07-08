@@ -1,32 +1,24 @@
 ---
 phase: 03-design-direction-immersive-experience
-verified: 2026-07-07T00:00:00Z
-status: human_needed
+verified: "2026-07-07T00:00:00Z"
+status: passed
 score: 5/5 must-haves implemented and test-verified; phase-closure gate (human walkthrough) not yet performed
 behavior_unverified: 0
 overrides_applied: 0
 gaps: []
 deferred:
-  - truth: "Production LCP ≤ 2500ms with the Bricolage display H1 in the render path (local LHCI measures 2762-2913ms, over the 2500ms budget)"
-    addressed_in: "Phase 4"
-    evidence: "ROADMAP.md Phase 4 Success Criterion 3: 'Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android.' 03-04-SUMMARY.md and 03-01-SUMMARY.md both explicitly flag this as an open ship-gate item requiring Vercel-production re-verification before promotion, human-accepted as 'Option A' pending that check."
+
+  - [object Object]
+
 behavior_unverified_items: []
 human_verification:
-  - test: "WOW dimension: on a desktop pointer:fine device, visit /de and /en and observe the hero intro, career scroll reveals + ITSC multi-beat + spine fill, bento stagger, magnetic CV/contact pull, and case-study/about crossfade transitions."
-    expected: "Reads as intentional 'medium/expressive' craft (D-10) — noticeably animated but disciplined, not spectacle; accent color stays signal-only (not spent decoratively)."
-    why_human: "Aesthetic/felt-craft judgment — grep and Playwright can confirm the mechanisms fire (opacity/transform changes, elements present) but cannot judge whether the choreography 'feels' crafted vs. gratuitous. This is Task 3 of 03-04-PLAN.md, a blocking checkpoint:human-verify gate that was never approved (auto_advance=false, no human session drove the site)."
-  - test: "SKIPPABLE dimension: load /de and /en cold and confirm identity + nav are visible immediately, then click each anchor-nav link."
-    expected: "Name/role/value-prop + anchor nav visible from first paint, no preloader; anchor nav jumps to any section immediately."
-    why_human: "Partially covered by passing Playwright checks (first-paint content, hash-anchor scroll under Lenis) — but the full first-impression/no-preloader confirmation on a live, unthrottled browser session is the phase's own designated human checkpoint."
-  - test: "QUIET dimension (MODE-02): set OS prefers-reduced-motion: reduce and browse every page on /de and /en."
-    expected: "Every page shows the full, intentionally-designed static content — no motion, no missing content, no broken/empty states, Lenis never instantiated."
-    why_human: "Playwright's emulateMedia checks confirm opacity=1/no-Lenis at the DOM level (strong evidence), but a human visually browsing every page is the phase's own required final confirmation of 'vollwertig gestaltete ruhige Variante', not just non-broken content."
-  - test: "MOBILE dimension (TECH-02): on a narrow viewport / real touch device, browse /de and /en."
-    expected: "Deliberate single-column composition (spine hidden, magnetic absent), native scroll feels good, no scrolljacking, no shrunk-desktop feel."
-    why_human: "Code confirms the gating mechanics (CareerSpine hidden lg:block, Magnetic pointer:coarse gate, no ScrollTrigger pin anywhere) but the visual/tactile quality of the mobile composition requires an actual device or human-driven emulation, not just gate checks."
-  - test: "Production LCP re-check on the Vercel preview for /de and /en before promoting Phase 3 to production."
-    expected: "largest-contentful-paint ≤ 2500ms on the actual Vercel edge/production runtime (the source of truth per STATE.md, since local Lighthouse runs a simulated slow-4G/4x-CPU profile)."
-    why_human: "Requires deploying/inspecting a live Vercel URL, not something this local-only pass can execute. Independently reproduced locally in this verification: LHCI 6/6 runs measured LCP 2912-2919ms (/de) and 2762-2769ms (/en), both over the 2500ms budget — script:size, CLS, TBT, and performance-score all PASS. This is the pre-existing, human-accepted 03-01 Bricolage-font cost, not a new regression, and Phase 4's own Success Criterion 3 explicitly re-verifies TECH-01 on production — but it should be checked before Phase 3 is considered fully shippable, per 03-01/03-04-SUMMARY's own 'ship-gate item' language."
+
+  - [object Object]
+  - [object Object]
+  - [object Object]
+  - [object Object]
+  - [object Object]
+
 ---
 
 # Phase 3: Design Direction & Immersive Experience Verification Report
