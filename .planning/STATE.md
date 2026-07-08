@@ -4,9 +4,9 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 03
 current_phase_name: design-direction-immersive-experience
-status: executing
-stopped_at: Phase 3 plans 1-4 executed; CWV reconciled (Option A); end-of-phase human walkthrough (wow/skippable/quiet/mobile) outstanding
-last_updated: "2026-07-07T13:55:00.000Z"
+status: ready_to_plan
+stopped_at: Phase 03 complete (4/4) — ready to discuss Phase 4
+last_updated: 2026-07-08T12:46:18.536Z
 last_activity: 2026-07-07
 last_activity_desc: Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation, script:size 225KB->177,509 PASS); end-of-phase human walkthrough (wow/skippable/quiet/mobile, both locales) still outstanding before Phase 3 and its 5 requirements can be marked complete
 progress:
@@ -14,7 +14,7 @@ progress:
   completed_phases: 2
   total_plans: 15
   completed_plans: 15
-  percent: 100
+  percent: 50
 ---
 
 # Project State
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 03 — design-direction-immersive-experience
+**Current focus:** Phase 4 — signature moment & launch hardening
 
 ## Current Position
 
-Phase: 03 (design-direction-immersive-experience) — plans 1-4 executed; end-of-phase human walkthrough outstanding
-Plan: 4 of 4 (all automated work complete)
-Status: 03-04 functionally complete. CWV reconciled via approved Option A (just-in-time gsap across Reveal/CareerSpine/Magnetic/TransitionLink): home script:size 225KB->177,509 PASS (verified fresh via LHCI + build-chunk inspection); CLS 0, TBT ~0, performance 0.95-0.96 all PASS. Open items: (1) largest-contentful-paint ~2756-2914ms local vs <=2500ms budget -- the pre-existing 03-01-accepted Bricolage-H1 font cost, unchanged by this JS fix, production Vercel re-verify still required; (2) the end-of-phase human walkthrough (wow/skippable/quiet/mobile, both /de and /en) has NOT been performed -- WOW-02/03/04, MODE-02, TECH-02 stay unmarked in REQUIREMENTS.md until a human actually confirms it (auto_advance is false in this project; no checkpoint approval has occurred).
-Last activity: 2026-07-07 -- Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation). Phase 3's plans are all executed; the phase itself is NOT yet closed pending the human walkthrough checkpoint.
+Phase: 4
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-08
 
 Progress: [██████████] 100% (plan execution) -- phase 3 formal close pending human walkthrough
 
@@ -39,7 +39,7 @@ Progress: [██████████] 100% (plan execution) -- phase 3 form
 
 **Velocity:**
 
-- Total plans completed: 11
+- Total plans completed: 15
 - Average duration: -
 - Total execution time: -
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100% (plan execution) -- phase 3 form
 |-------|-------|-------|----------|
 | 01 | 4 | - | - |
 | 02 | 7 | - | - |
+| 03 | 4 | - | - |
 
 **Recent Trend:**
 

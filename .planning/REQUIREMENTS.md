@@ -19,14 +19,14 @@
 ### Immersives Erlebnis (Wow)
 
 - [ ] **WOW-01**: Besucher erlebt EINEN Signature-3D/WebGL-Moment im Hero, konzeptionell an Lasses Identität gebunden — lazy-loaded, capability-gated, nie im Initial-Bundle
-- [ ] **WOW-02**: Besucher erlebt den Werdegang als Scroll-Storytelling-Reise (scroll-verknüpfte Szenen pro Karriere-Kapitel)
-- [ ] **WOW-03**: Besucher spürt Craft durch Micro-Interactions (Hover-States, magnetische Buttons) und nahtlose Sektions-/Seitenübergänge
-- [ ] **WOW-04**: Besucher kann jede immersive Sequenz überspringen — Identität und Navigation im ersten Fold sichtbar, kein unskippbarer Preloader
+- [x] **WOW-02**: Besucher erlebt den Werdegang als Scroll-Storytelling-Reise (scroll-verknüpfte Szenen pro Karriere-Kapitel)
+- [x] **WOW-03**: Besucher spürt Craft durch Micro-Interactions (Hover-States, magnetische Buttons) und nahtlose Sektions-/Seitenübergänge
+- [x] **WOW-04**: Besucher kann jede immersive Sequenz überspringen — Identität und Navigation im ersten Fold sichtbar, kein unskippbarer Preloader
 
 ### Dual-Mode (Recruiter-Pfad)
 
 - [x] **MODE-01**: Eiliger Besucher erreicht mit einem Klick ab dem ersten Fold einen dichten Überblick (Wer/Was/Skills/Timeline/Kontakt/CV-Download) und hat alle Fakten in unter 30 Sekunden
-- [ ] **MODE-02**: Besucher mit `prefers-reduced-motion` bekommt eine vollwertig gestaltete ruhige Variante (geteilte Implementierung mit Overview-Mode)
+- [x] **MODE-02**: Besucher mit `prefers-reduced-motion` bekommt eine vollwertig gestaltete ruhige Variante (geteilte Implementierung mit Overview-Mode)
 
 ### Internationalisierung
 
@@ -36,7 +36,7 @@
 ### Technische Basis
 
 - [x] **TECH-01**: Seite erreicht Core Web Vitals "good" (LCP/INP/CLS) auf Mobilgeräten — erster Viewport ist statisches/SSR-HTML, Wow-Layer lädt nach First Paint
-- [ ] **TECH-02**: Mobile-Besucher bekommen ein bewusst gestaltetes Erlebnis (kein degradiertes Desktop-Erlebnis, kein Scrolljacking auf Mobile)
+- [x] **TECH-02**: Mobile-Besucher bekommen ein bewusst gestaltetes Erlebnis (kein degradiertes Desktop-Erlebnis, kein Scrolljacking auf Mobile)
 - [x] **TECH-03**: Seite ist zugänglich: semantisches HTML, Tastatur-Navigation, Kontraste, echter DOM-Text unter allen Effekten
 - [x] **TECH-04**: Besucher bekommt Dark Mode (Systemerkennung + Toggle) oder eine dark-first Art Direction — Entscheidung in der Design-Phase
 - [x] **TECH-05**: Geteilte Links zeigen gestaltete Preview-Cards (OG-Images pro Seite/Locale, Person-JSON-LD, Meta-Tags)
@@ -84,15 +84,15 @@
 | CONT-07 | Phase 2 | Complete |
 | CONT-08 | Phase 2 | Complete |
 | WOW-01 | Phase 4 | Pending |
-| WOW-02 | Phase 3 | Implemented, pending end-of-phase human walkthrough |
-| WOW-03 | Phase 3 | Implemented, pending end-of-phase human walkthrough |
-| WOW-04 | Phase 3 | Implemented, pending end-of-phase human walkthrough |
+| WOW-02 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
+| WOW-03 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
+| WOW-04 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
 | MODE-01 | Phase 2 | Complete |
-| MODE-02 | Phase 3 | Implemented, pending end-of-phase human walkthrough |
+| MODE-02 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
 | I18N-01 | Phase 1 | Complete |
 | I18N-02 | Phase 1 | Complete |
 | TECH-01 | Phase 2 | Complete (launch-verified on lsiem.de, 02-07) |
-| TECH-02 | Phase 3 | Implemented, pending end-of-phase human walkthrough |
+| TECH-02 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
 | TECH-03 | Phase 2 | Complete |
 | TECH-04 | Phase 2 | Complete |
 | TECH-05 | Phase 2 | Complete |
