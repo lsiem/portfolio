@@ -12,16 +12,15 @@ Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden d
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Prominenter Skip-/Überblick-Modus für Eilige (Recruiter-Pfad: Fakten in 30 Sekunden) — *validated in Phase 2 (Live-30-Sekunden-Test auf lsiem.de bestanden)*
+- [x] Vollständige Inhalte: Werdegang, Projekte/Case Studies, Skills, Über-mich, Kontakt — *validated in Phase 1–2*
+- [x] Zweisprachig Deutsch + Englisch mit Umschalter (i18n) — *validated in Phase 1–2*
+- [x] Live auf lsiem.de deployed, performant (keine Wow-Effekte auf Kosten der Ladezeit) — *validated in Phase 2 (CWV-Budget in CI via lhci, LCP<2.5s/CLS<0.1)*
+- [x] Stack-Entscheidung auf Basis der Recherche (bester 2026-Stack für immersive Portfolios) — *validated in Phase 1 (Next.js 16 + GSAP-Stack)*
 
 ### Active
 
-- [ ] Immersives Erlebnis als Standard-Modus (Scroll-Storytelling, mutige Animationen, ggf. 3D)
-- [ ] Prominenter Skip-/Überblick-Modus für Eilige (Recruiter-Pfad: Fakten in 30 Sekunden)
-- [ ] Vollständige Inhalte: Werdegang, Projekte/Case Studies, Skills, Über-mich, Kontakt
-- [ ] Zweisprachig Deutsch + Englisch mit Umschalter (i18n)
-- [ ] Live auf lsiem.de deployed, performant (keine Wow-Effekte auf Kosten der Ladezeit)
-- [ ] Stack-Entscheidung auf Basis der Recherche (bester 2026-Stack für immersive Portfolios)
+- [ ] Immersives Erlebnis als Standard-Modus (Scroll-Storytelling, mutige Animationen, ggf. 3D) — Phase 3/4
 
 ### Out of Scope
 
@@ -70,4 +69,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-02 after initialization*
+*Last updated: 2026-07-05 after Phase 2 (Recruiter Overview Live) completion — full recruiter site live in production on lsiem.de*

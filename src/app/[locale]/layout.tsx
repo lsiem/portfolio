@@ -1,11 +1,13 @@
+import type React from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import type { Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { MotionProvider } from "@/components/motion/motion-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -40,6 +42,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Display face (D-03) — Bricolage Grotesque, self-hosted at build by next/font
+// (zero runtime Google Fonts call, DSGVO-clean per AGENTS.md, same pattern as
+// Geist above). Optimized for the CWV budget: single static weight 700 (smallest
+// woff2, ~22KB) instead of the variable font (~41-131KB), preload:false, swap so
+// the hero H1 always renders in Bricolage after a brief metric-matched fallback
+// (D-03). --font-bricolage maps to the Tailwind `font-display` utility via @theme
+// in globals.css.
+//
+// KNOWN LCP TENSION (finding #1 / RESEARCH Pitfall 5): under Lighthouse's
+// simulated slow-4G + 4x-CPU profile, adding this second render-path font adds a
+// fixed ~300ms to the LCP element (a Geist career paragraph, re-timed by the H1
+// font-swap) — measured identically for variable/static, swap/optional,
+// preloaded/not, and with Geist itself set to optional. Phase 2 left only ~26ms
+// of local LCP headroom (2454ms vs the 2500ms TECH-01 gate), so the locked D-03
+// display font pushes the LOCAL simulated LCP to ~2.75s. The TECH-01 budget was
+// calibrated/"verified passing on a production build" (STATE.md) — production
+// LCP must be re-verified on the Vercel preview.
+const bricolageGrotesque = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: "700",
+  display: "swap",
+  preload: false,
+});
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -63,7 +90,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bricolageGrotesque.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME_SCRIPT }} />
@@ -96,7 +123,18 @@ export default async function LocaleLayout({
               </div>
             </div>
           </header>
-          <div className="flex flex-1 flex-col">{children}</div>
+          {/*
+            MotionProvider wraps only {children} (the page body), not the sticky
+            header/footer chrome (finding #8). Lenis runs in `root` mode, so it
+            governs the whole window scroll regardless of this DOM nesting —
+            keeping the header outside the Lenis subtree avoids re-scoping the
+            sticky header while hash-anchor nav (#career etc.) still lands
+            correctly under Lenis on desktop. LenisRef ref shape confirmed via
+            node_modules/lenis/dist/lenis-react.d.ts.
+          */}
+          <MotionProvider>
+            <div className="flex flex-1 flex-col">{children}</div>
+          </MotionProvider>
           <footer className="border-t border-border/60">
             <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
               <span>© {new Date().getFullYear()} Lasse Siemoneit</span>

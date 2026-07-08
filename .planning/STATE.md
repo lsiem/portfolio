@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-07-05T11:22:50.901Z"
-last_activity: 2026-07-05
+status: "Phase 3 shipped — PR #13"
+stopped_at: 03-04 automated work complete (Option-A CWV reconciliation verified); end-of-phase human walkthrough outstanding
+last_updated: "2026-07-08T12:55:49.684Z"
+last_activity: 2026-07-08
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 11
-  completed_plans: 10
-  percent: 25
+  completed_phases: 3
+  total_plans: 15
+  completed_plans: 15
+  percent: 75
 ---
 
 # Project State
@@ -21,22 +21,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 02 — recruiter-overview-live
+**Current focus:** Phase 4 — signature moment & launch hardening
 
 ## Current Position
 
-Phase: 02 (recruiter-overview-live) — EXECUTING
-Plan: 7 of 7
-Status: Ready to execute
-Last activity: 2026-07-05
+Phase: 4
+Plan: Not started
+Status: Phase 3 shipped — PR #13
+Last activity: 2026-07-08
 
-Progress: [█████████░] 91%
+Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 4
+- Total plans completed: 15
 - Average duration: -
 - Total execution time: -
 
@@ -45,6 +45,8 @@ Progress: [█████████░] 91%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 4 | - | - |
+| 02 | 7 | - | - |
+| 03 | 4 | - | - |
 
 **Recent Trend:**
 
@@ -61,6 +63,11 @@ Progress: [█████████░] 91%
 | Phase 02-recruiter-overview-live P04 | 10min | 3 tasks | 6 files |
 | Phase 02-recruiter-overview-live P05 | 20min | 3 tasks | 6 files |
 | Phase 02 P06 | 30 min | 3 tasks | 5 files |
+| Phase 02 P07 | ~15min | 2 tasks | 3 files |
+| Phase 03 P01 | 59min | 3 tasks | 11 files |
+| Phase 03 P02 | 20min | 2 tasks | 5 files |
+| Phase 03 P03 | 25min | 2 tasks | 6 files |
+| Phase 03 P04 | 40min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -82,6 +89,12 @@ Recent decisions affecting current work:
 - [Phase 02-05]: GitHubHeatmap uses role="img" + a visually-hidden total instead of a full ARIA table/grid role tree — The heatmap has no interactive cells; a labeled image-role summary satisfies conveying meaning without hover without extra ARIA machinery
 - [Phase 02-06]: No CSP shipped; documented gap in next.config.ts comment + STATE.md — Hash-based CSP proven (via Playwright + browser console) to break the site because Next App Router's per-page RSC hydration scripts have non-deterministic sha256 hashes per build; nonce-based CSP would force dynamic rendering across the whole static site
 - [Phase 02-06]: Tightened LHCI budget to LCP<=2500ms + TBT<=200ms + CLS<=0.1, verified passing on a production build — Matches ROADMAP Success Criterion 4 / TECH-01 'Core Web Vitals good' verbatim instead of the looser 3000ms allowance that let CI pass while failing the phase's own success criterion
+- [Phase 02-07]: siteMetadataBase resolves via NODE_ENV==='production' rather than VERCEL_PROJECT_PRODUCTION_URL, keeping the production origin fixed and independent of which Vercel deployment triggers the build
+- [Phase 02-07]: Production cutover complete: PR #12 (phase/02-recruiter-overview-live -> main) promoted to production, lsiem.de live-verified by the human on both locales — all four blocking pre-cutover gates (GITHUB_TOKEN, Impressum address, CV no-404, career chronology) cleared
+- [Phase ?]: [03-01] Accepted local LHCI LCP overage (~2755ms) from the D-03 Bricolage display face; production Vercel LCP is the calibrated source of truth per Phase-2 precedent — verify on preview before phase completion.
+- [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
+- [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
+- [Phase ?]: [03-04] CWV reconciled via approved Option A (just-in-time gsap across all home-route motion — Reveal via IntersectionObserver, CareerSpine via min-width:1024 gate, Magnetic/TransitionLink via handler-scoped lazy import): home script:size 225KB->177,509 PASS, verified via fresh LHCI run + build-chunk inspection (gsap body isolated to a 72KB async-only chunk, never in the homepage's initial HTML). Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1. Phase 3's plans (01-04) are all executed and automated-gate-verified; the phase's end-of-phase human walkthrough (wow/skippable/quiet/mobile) completed 2026-07-08 on /de + /en (03-UAT.md 4/4 passed) — WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified.
 
 ### Pending Todos
 
@@ -93,6 +106,8 @@ None yet.
 - [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
+- [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
+- [03-04/Phase-3 — RESOLVED] End-of-phase human walkthrough completed 2026-07-08: wow (desktop craft), skippable (first-paint identity+nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking) — both /de and /en. WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified (03-UAT.md 4/4 passed).
 
 ### Quick Tasks Completed
 
@@ -110,6 +125,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-05T11:22:50.895Z
-Stopped at: Completed 02-05-PLAN.md
-Resume file: None
+Last session: 2026-07-07T13:55:00.000Z
+Stopped at: 03-04 automated work complete (Option-A CWV reconciliation verified); end-of-phase human walkthrough outstanding
+Resume file: .planning/phases/03-design-direction-immersive-experience/03-04-PLAN.md (Task 3 — human walkthrough)

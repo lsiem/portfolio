@@ -14,8 +14,8 @@ Vier vertikale Slices, jede endet in einem nutzbaren Stand: Zuerst entsteht das 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
-- [ ] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion
-- [ ] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet
+- [x] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion (completed 2026-07-05)
+- [x] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet (completed 2026-07-08 - 4/4 plans, human UAT 4/4 on /de + /en; production LCP re-check deferred to Phase 4)
 - [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL
 
 ## Phase Details
@@ -63,7 +63,7 @@ Plans:
   4. Site erreicht Core Web Vitals "good" auf Mobilgeräten, ist per Tastatur vollständig bedienbar (semantisches HTML, Kontraste) und bietet Dark Mode (Systemerkennung + Toggle)
   5. Geteilte Links zeigen gestaltete Preview-Cards pro Seite und Locale (OG-Images, Person-JSON-LD), und Besucher sieht Live-GitHub-Aktivität als Beleg aktiver Entwicklung
 
-**Plans:** 6/7 plans executed
+**Plans:** 7/7 plans complete
 
 Plans:
 **Wave 1**
@@ -86,7 +86,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 02-07-PLAN.md — Production cutover: siteMetadataBase → lsiem.de, promote + live verification (Wave 5)
+- [x] 02-07-PLAN.md — Production cutover: siteMetadataBase → lsiem.de, promote + live verification (Wave 5)
 
 **UI hint**: yes
 **Research flag (resolved):** CV-PDF-Generierung — @react-pdf/renderer build script (RESEARCH §1); build-time static per locale
@@ -105,7 +105,25 @@ Plans:
   4. Besucher mit prefers-reduced-motion bekommt eine vollwertig gestaltete ruhige Variante mit komplettem Inhalt (geteilte Implementierung mit dem Overview-Mode)
   5. Mobile-Besucher bekommt eine bewusst gestaltete Variante — kein Scrolljacking, kein degradiertes Desktop-Layout
 
-**Plans**: TBD
+**Plans:** 4/4 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03-01-PLAN.md — Motion foundation + engineered hero intro: GSAP+Lenis single engine, motion tokens, Bricolage display face, MotionProvider (reduced-motion/touch gated), Reveal/SplitHeading/HeroSceneSlot, hero "system booting" sequence (Wave 1)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [x] 03-02-PLAN.md — Career scroll-storytelling + bento projects: progress spine, progressive reveals, ITSC multi-beat sub-sequence, ELIA+Vidama featured bento (Wave 2)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [x] 03-03-PLAN.md — Craft micro-interactions + seamless transitions: magnetic buttons (pointer-only), designed hover/focus/active states, GSAP crossfade sub-route transitions (Wave 3)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [x] 03-04-PLAN.md — Signature treatments + full immersive verification: engineered photo treatment, reading-first case-study/about pages, wow/quiet/mobile walkthrough checkpoint (Wave 4)
+
 **UI hint**: yes
 
 ### Phase 4: Signature Moment & Launch Hardening
@@ -133,6 +151,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
-| 2. Recruiter Overview Live | 6/7 | In Progress|  |
-| 3. Design Direction & Immersive Experience | 0/TBD | Not started | - |
+| 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
+| 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
 | 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
