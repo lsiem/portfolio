@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 03
-current_phase_name: design-direction-immersive-experience
+current_phase: 04
+current_phase_name: signature-moment-&-launch-hardening
 status: ready_to_plan
 stopped_at: Phase 03 complete (4/4) — ready to discuss Phase 4
 last_updated: 2026-07-08T12:46:18.536Z
-last_activity: 2026-07-07
-last_activity_desc: Completed 03-04 automated work (photo treatment + engineered case-study/prose pages + Option-A CWV reconciliation, script:size 225KB->177,509 PASS); end-of-phase human walkthrough (wow/skippable/quiet/mobile, both locales) still outstanding before Phase 3 and its 5 requirements can be marked complete
+last_activity: 2026-07-08
+last_activity_desc: Phase 3 complete - human UAT 4/4 (wow/skippable/quiet/mobile on /de + /en) genuinely verified; WOW-02/03/04, MODE-02, TECH-02 closed. Deferred: production LCP re-check on Vercel preview (ship-gate, re-verified in Phase 4).
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
   completed_plans: 15
-  percent: 50
+  percent: 75
 ---
 
 # Project State
@@ -33,7 +33,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-07-08
 
-Progress: [██████████] 100% (plan execution) -- phase 3 formal close pending human walkthrough
+Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
 
 ## Performance Metrics
 
