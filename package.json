@@ -38,7 +38,7 @@
     "geist": "1.7.2",
     "tailwindcss": "^4",
     "tsx": "4.23.0",
-    "typescript": "^5",
+    "typescript": "^6",
     "zod": "^4.4.3"
   }
 }
