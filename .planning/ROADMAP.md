@@ -139,9 +139,27 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans**: TBD
+**Plans:** 0/4 plans complete
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Capability gate + lazy R3F mount: three/fiber/drei install (legitimacy gate), `useSyncExternalStore` tiering (D-23), idle-deferred dynamic Canvas shell, `heroSceneProgress` ref, initial Playwright gate tests (Wave 1)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 04-02-PLAN.md — Infrastructure Topology scene (D-20): procedural 12-node/18-edge lattice, accent pulse path, GSAP ScrollTrigger→ref→R3F scroll bridge (D-22), no ScrollControls (Wave 2)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 04-03-PLAN.md — WebGL resilience: context-loss degrade (D-25), geometry disposal, LHCI budget re-check + STATE.md delta (Wave 3)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 04-04-PLAN.md — Launch hardening: production UAT on lsiem.de (TECH-01/MODE-01/MODE-02 re-verify, Android device), WOW-01 + phase close (Wave 4)
+
 **UI hint**: yes
-**Research flag**: Device-Tiering, Asset-Pipeline (Draco/KTX2) und Context-Loss-Handling für das gewählte Szenen-Konzept — Recherche explizit für diese Phase geflaggt
+**Research flag (resolved):** Device tiering, procedural scene (no Draco/KTX2 for v1), context-loss handling — see `04-RESEARCH.md`
 
 ## Progress
 
@@ -153,4 +171,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
+| 4. Signature Moment & Launch Hardening | 0/4 | Planned | - |

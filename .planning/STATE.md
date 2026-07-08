@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: "Phase 3 shipped — PR #13"
-stopped_at: 03-04 automated work complete (Option-A CWV reconciliation verified); end-of-phase human walkthrough outstanding
-last_updated: "2026-07-08T12:55:49.684Z"
+status: "Phase 4 planned — 4/4 plans ready"
+stopped_at: Phase 4 planning complete (04-01–04-04); execution not started
+last_updated: "2026-07-08T14:50:00.000Z"
 last_activity: 2026-07-08
 progress:
   total_phases: 4
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 4 — signature moment & launch hardening
+**Current focus:** Phase 4 — signature moment & launch hardening (plans ready, execute 04-01 next)
 
 ## Current Position
 
 Phase: 4
-Plan: Not started
-Status: Phase 3 shipped — PR #13
+Plan: 04-01 (not started)
+Status: Phase 4 planned — 4/4 plans ready
 Last activity: 2026-07-08
 
-Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
+Progress: 75% - 3/4 phases complete; Phase 4 planned (0/4 plans executed)
 
 ## Performance Metrics
 
@@ -103,7 +103,7 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 2] CV-PDF-Generierung aus dem Content-Modell: kein verifiziertes Pattern — beim Phase-2-Planning recherchieren
-- [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
+- [Phase 4] 3D-Recherche **resolved** in `04-RESEARCH.md`: procedural Infrastructure Topology (no GLB/Draco v1), D-23 tiering, D-25 context-loss degrade — execute 04-01+
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
 - [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
