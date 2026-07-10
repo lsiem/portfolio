@@ -18,7 +18,7 @@
 
 ### Immersives Erlebnis (Wow)
 
-- [ ] **WOW-01**: Besucher erlebt EINEN Signature-3D/WebGL-Moment im Hero, konzeptionell an Lasses Identität gebunden — lazy-loaded, capability-gated, nie im Initial-Bundle
+- [x] **WOW-01**: Besucher erlebt EINEN Signature-3D/WebGL-Moment im Hero, konzeptionell an Lasses Identität gebunden — lazy-loaded, capability-gated, nie im Initial-Bundle
 - [x] **WOW-02**: Besucher erlebt den Werdegang als Scroll-Storytelling-Reise (scroll-verknüpfte Szenen pro Karriere-Kapitel)
 - [x] **WOW-03**: Besucher spürt Craft durch Micro-Interactions (Hover-States, magnetische Buttons) und nahtlose Sektions-/Seitenübergänge
 - [x] **WOW-04**: Besucher kann jede immersive Sequenz überspringen — Identität und Navigation im ersten Fold sichtbar, kein unskippbarer Preloader
@@ -83,7 +83,7 @@
 | CONT-06 | Phase 2 | Complete |
 | CONT-07 | Phase 2 | Complete |
 | CONT-08 | Phase 2 | Complete |
-| WOW-01 | Phase 4 | Pending |
+| WOW-01 | Phase 4 | Complete |
 | WOW-02 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
 | WOW-03 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
 | WOW-04 | Phase 3 | Complete (human UAT 4/4, 2026-07-08) |
