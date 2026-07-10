@@ -139,9 +139,31 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Launch hardening: self-hosted Bricolage via next/font/local (LCP <= 2500ms), restore lighthouserc LCP assertion to error (Wave 1)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 04-02-PLAN.md — Representative CI perf gate (deployed preview URL) + close the ~100KB deployed-bundle overage (resolves phase3-perf-bundle-gap) (Wave 2)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 04-03-PLAN.md — Capability gate + lazy canvas mount into HeroSceneSlot: ?webgl override, D-10 silent fallback, never-in-initial-bundle proof (Wave 3)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 04-04-PLAN.md — The constellation: ELIA-bound graph, drift + message pulses, boot-beat entrance, scroll-linked exit, pointer influence, 3D-active second audit (Wave 4)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 04-05-PLAN.md — Launch verification on the deployed URL: D-14 stopwatch + reduced-motion scripts, production CWV with 3D active, D-13 Android proxy, evidence doc (Wave 5)
+
 **UI hint**: yes
-**Research flag**: Device-Tiering, Asset-Pipeline (Draco/KTX2) und Context-Loss-Handling für das gewählte Szenen-Konzept — Recherche explizit für diese Phase geflaggt
+**Research flag (resolved)**: Device-Tiering (detect-gpu, self-hosted benchmarks), Asset-Pipeline (Draco/KTX2 confirmed unnecessary — procedural points/lines) und Context-Loss-Handling (unmount → Phase-3 hero) — beantwortet in 04-RESEARCH.md
 
 ## Progress
 
@@ -153,4 +175,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
+| 4. Signature Moment & Launch Hardening | 0/5 | Planned | - |
