@@ -514,14 +514,17 @@ test("reduced-motion walkthrough: full content, zero canvas", async ({ page }) =
 | A7 | `@types/three` has a release matching 0.185.x | Standard Stack | Pin nearest available; type-only risk |
 | A8 | Battery API skipped (Chrome-only, declining, low signal value) — deviation from D-07's example signal list, within discretion | Capability gate | If user insists, add `getBattery()` as an optional dimming signal, never a mount blocker |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Which exact script-size policy for the "3D active" audit?** (Pitfall 1)
    - What we know: existing 184,643-byte `error` assertion cannot survive a trace that loads the 3D chunk; CI's SwiftShader path avoids it by default.
    - What's unclear: whether the user prefers (a) a second CI audit with a documented higher budget for `?webgl=force`, or (b) 3D-active verification only on production tooling (PSI/WebPageTest) with the carve-out documented in VERIFICATION.md.
    - Recommendation: (a)+(b) — cheap to run both; planner should put the decision in the plan explicitly.
+   - **RESOLVED — owned by 04-04 Task 3:** the per-scenario 3D-active script-size policy (the `_budget_derivation` number for the `?webgl=force` scenario + the documented carve-out consumed by 04-05's production launch audit) is set there.
 2. **`display: 'optional'` escalation** (Pitfall 5): only if levers 1–3 leave production LCP red; conflicts with locked D-03 — requires explicit user approval before use.
+   - **RESOLVED — owned by 04-01 Task 2 (exception path):** if local LHCI LCP stays > 2500ms after the font levers, the assertion is left at `warn` and `display: "optional"` is surfaced for explicit user sign-off, never auto-applied.
 3. **Pause vs unmount on scroll exit** (D-05 discretion): recommendation is pause-first, profile, unmount only on evidence — planner should encode the profiling step, not pre-decide.
+   - **RESOLVED — owned by 04-04 Task 2:** the profiling step (pause-first via `frameloop="never"`, unmount only on DevTools memory/GPU evidence) is encoded there.
 
 ## Environment Availability
 
