@@ -146,3 +146,46 @@ test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
     expect(dialogOpened).toBe(false);
   });
 });
+
+test.describe("Scene gate — scroll-linked exit pauses rendering (D-05, 04-04)", () => {
+  /**
+   * Deterministic test hook (04-04 Task 2 acceptance): constellation-canvas.tsx
+   * mirrors its live `<Canvas frameloop>` value onto a
+   * `data-frameloop="always"|"never"` attribute on
+   * `[data-testid="constellation-frameloop"]` — WebGL render state itself
+   * isn't directly assertable from Playwright, so this DOM attribute is the
+   * chosen, documented hook.
+   */
+  test("scrolling past the hero pauses the canvas; scrolling back resumes it", async ({
+    page,
+  }) => {
+    await page.goto(`/de?webgl=force`);
+    const canvas = page.locator("#hero canvas");
+    await expect(canvas).toHaveCount(1, { timeout: MOUNT_TIMEOUT });
+    const frameloopNode = page.locator(
+      '[data-testid="constellation-frameloop"]',
+    );
+    await expect(frameloopNode).toHaveAttribute(
+      "data-frameloop",
+      "always",
+      { timeout: MOUNT_TIMEOUT },
+    );
+
+    // Scroll well past the hero (bottom of the document) — the exit must
+    // work whether the ScrollTrigger (pointer:fine) or the passive
+    // scroll-listener fallback (touch) is the active progress source.
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await expect(frameloopNode).toHaveAttribute("data-frameloop", "never", {
+      timeout: MOUNT_TIMEOUT,
+    });
+    // The canvas element itself stays mounted (pause, not unmount — D-05
+    // pause-first) — the Phase-3 hero text is unaffected either way.
+    await expect(canvas).toHaveCount(1);
+
+    // Scrolling back resumes rendering.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(frameloopNode).toHaveAttribute("data-frameloop", "always", {
+      timeout: MOUNT_TIMEOUT,
+    });
+  });
+});
