@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: signature-moment-launch-hardening
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-07-10T19:20:03.509Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-07-11T18:29:44.252Z"
 last_activity: 2026-07-10
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 20
-  completed_plans: 16
+  completed_plans: 17
   percent: 75
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 04 (signature-moment-launch-hardening) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-07-10 — Phase 04 execution started
 
@@ -72,6 +72,7 @@ Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
 | Phase 03 P03 | 25min | 2 tasks | 6 files |
 | Phase 03 P04 | 40min | 3 tasks | 9 files |
 | Phase 04 P01 | 100 min | 2 tasks | 6 files |
+| Phase 04 P02 | 180 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
 - [Phase ?]: [03-04] CWV reconciled via approved Option A (just-in-time gsap across all home-route motion — Reveal via IntersectionObserver, CareerSpine via min-width:1024 gate, Magnetic/TransitionLink via handler-scoped lazy import): home script:size 225KB->177,509 PASS, verified via fresh LHCI run + build-chunk inspection (gsap body isolated to a 72KB async-only chunk, never in the homepage's initial HTML). Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1. Phase 3's plans (01-04) are all executed and automated-gate-verified; the phase's end-of-phase human walkthrough (wow/skippable/quiet/mobile) completed 2026-07-08 on /de + /en (03-UAT.md 4/4 passed) — WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified.
 - [Phase 04]: D-11 exception path: CI LCP assertion stays warn after levers A+B miss the local 2500ms gate (/de ~2693ms, /en ~2609ms); production re-check staged as end-of-phase source of truth in 04-05 — Plan-prescribed branch, user-approved at interactive checkpoint; display:optional escalation forbidden without explicit sign-off
+- [Phase 04]: phase3-perf-bundle-gap root cause: 308KB deployed = ~96KB Vercel bot-mitigation challenge (headless-Chrome only) + ~30KB near-fold GSAP, NOT hidden app JS (app chunks byte-identical localhost==deployed ~177KB). Original debug premise retracted. — CI gate audits local production build (proven representative); mobile GSAP removed via CSS touch reveals; script:size 177680 under budget
 
 ### Pending Todos
 
@@ -130,6 +132,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-10T19:19:36.327Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-07-11T18:29:44.247Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

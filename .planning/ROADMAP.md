@@ -139,7 +139,7 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 **Wave 1**
@@ -148,7 +148,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 04-02-PLAN.md — Representative CI perf gate (deployed preview URL) + close the ~100KB deployed-bundle overage (resolves phase3-perf-bundle-gap) (Wave 2)
+- [x] 04-02-PLAN.md — Representative CI perf gate (deployed preview URL) + close the ~100KB deployed-bundle overage (resolves phase3-perf-bundle-gap) (Wave 2)
 
 **Wave 3** *(blocked on Wave 2)*
 
@@ -175,4 +175,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 1/5 | In Progress|  |
+| 4. Signature Moment & Launch Hardening | 2/5 | In Progress|  |
