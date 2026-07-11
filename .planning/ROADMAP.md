@@ -139,7 +139,7 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 Plans:
 **Wave 1**
@@ -152,7 +152,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 04-03-PLAN.md — Capability gate + lazy canvas mount into HeroSceneSlot: ?webgl override, D-10 silent fallback, never-in-initial-bundle proof (Wave 3)
+- [x] 04-03-PLAN.md — Capability gate + lazy canvas mount into HeroSceneSlot: ?webgl override, D-10 silent fallback, never-in-initial-bundle proof (Wave 3)
 
 **Wave 4** *(blocked on Wave 3)*
 
@@ -175,4 +175,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 2/5 | In Progress|  |
+| 4. Signature Moment & Launch Hardening | 3/5 | In Progress|  |

@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: signature-moment-launch-hardening
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-07-11T18:29:44.252Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-07-11T18:55:00.307Z"
 last_activity: 2026-07-10
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
   percent: 75
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 04 (signature-moment-launch-hardening) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-07-10 — Phase 04 execution started
 
@@ -73,6 +73,7 @@ Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
 | Phase 03 P04 | 40min | 3 tasks | 9 files |
 | Phase 04 P01 | 100 min | 2 tasks | 6 files |
 | Phase 04 P02 | 180 min | 2 tasks | 4 files |
+| Phase 04 P03 | 90 min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [03-04] CWV reconciled via approved Option A (just-in-time gsap across all home-route motion — Reveal via IntersectionObserver, CareerSpine via min-width:1024 gate, Magnetic/TransitionLink via handler-scoped lazy import): home script:size 225KB->177,509 PASS, verified via fresh LHCI run + build-chunk inspection (gsap body isolated to a 72KB async-only chunk, never in the homepage's initial HTML). Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1. Phase 3's plans (01-04) are all executed and automated-gate-verified; the phase's end-of-phase human walkthrough (wow/skippable/quiet/mobile) completed 2026-07-08 on /de + /en (03-UAT.md 4/4 passed) — WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified.
 - [Phase 04]: D-11 exception path: CI LCP assertion stays warn after levers A+B miss the local 2500ms gate (/de ~2693ms, /en ~2609ms); production re-check staged as end-of-phase source of truth in 04-05 — Plan-prescribed branch, user-approved at interactive checkpoint; display:optional escalation forbidden without explicit sign-off
 - [Phase 04]: phase3-perf-bundle-gap root cause: 308KB deployed = ~96KB Vercel bot-mitigation challenge (headless-Chrome only) + ~30KB near-fold GSAP, NOT hidden app JS (app chunks byte-identical localhost==deployed ~177KB). Original debug premise retracted. — CI gate audits local production build (proven representative); mobile GSAP removed via CSS touch reveals; script:size 177680 under budget
+- [Phase 04]: WOW-01 delivery infra landed: capability gate (decideSceneTier) + next/dynamic ssr:false canvas + silent D-10 fallback + ?webgl=off|force. three/fiber (227KB gzip) proven absent from initial HTML; gate closed on SwiftShader keeps CI budget green (script:size 183237) — First visible WOW-01 slice on capable devices; every excluded visitor gets byte-identical Phase-3 hero; 8 e2e assertions green; deletable under src/components/scene/
 
 ### Pending Todos
 
@@ -115,6 +117,7 @@ None yet.
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
 - [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
 - [03-04/Phase-3 — RESOLVED] End-of-phase human walkthrough completed 2026-07-08: wow (desktop craft), skippable (first-paint identity+nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking) — both /de and /en. WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified (03-UAT.md 4/4 passed).
+- 04-04 eager-budget headroom is only ~1.4KB (183237/184643) — constellation code must stay inside the lazy chunk, not the eager bundle
 
 ### Quick Tasks Completed
 
@@ -132,6 +135,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-11T18:29:44.247Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-07-11T18:55:00.302Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
