@@ -13,7 +13,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "playwright test"
+    "test": "playwright test",
+    "lhci:webgl": "lhci autorun --config=lighthouserc.webgl.json"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",
