@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-07-11T19:51:30.002Z"
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-07-11T20:14:36.206Z"
 last_activity: 2026-07-11
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 20
-  completed_plans: 19
-  percent: 75
+  completed_plans: 20
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 04 (signature-moment-launch-hardening) — EXECUTING
-Plan: 2 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-07-11
 
-Progress: [██████████] 95%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [██████████] 95%
 | Phase 04 P02 | 180 min | 2 tasks | 4 files |
 | Phase 04 P03 | 90 min | 3 tasks | 10 files |
 | Phase 04 P04 | 55min | 3 tasks | 9 files |
+| Phase 04 P05 | ~50min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,9 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-04: hub cluster placed in the hero's central reading column, satellites in the outer thirds — one topology satisfies both D-02 (hidden structure) and D-08 (density mask)
 - [Phase 04]: 04-04: D-09 'clusters wake sequentially' approximated as a global two-phase reveal (nodes then edges) rather than per-cluster staggered draw calls
 - [Phase 04]: 04-04: D-05 exit uses pause (frameloop=never), not unmount — profiled sufficient given the scene's small retained GPU buffers
+- [Phase 04]: 04-05: no deployed URL reflects 04-04's constellation (origin 5 commits behind HEAD) — ran full launch verification against a local production build (?webgl=force) instead, documented explicitly in 04-LAUNCH-EVIDENCE.md; production re-run + owner spot-check staged as the end-of-phase gate
+- [Phase 04]: 04-05: D-13 mid-tier Android proxy realized via Chrome DevTools/Lighthouse mobile throttling (4x CPU, 150ms RTT, ~1.6Mbps, 412x823@1.75DPR) after PageSpeed Insights API returned a confirmed quota-exceeded error (no real-device cloud account available)
+- [Phase 04]: 04-05: production LCP (~2755-2758ms with/without 3D active) remains a documented gap owned by 04-01's approved exception path, not a new regression — constellation adds no measurable LCP/script cost locally; production is still the deciding measurement (D-11/D-12)
 
 ### Pending Todos
 
@@ -119,6 +123,7 @@ None yet.
 - [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
 - [03-04/Phase-3 — RESOLVED] End-of-phase human walkthrough completed 2026-07-08: wow (desktop craft), skippable (first-paint identity+nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking) — both /de and /en. WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified (03-UAT.md 4/4 passed).
 - 04-04 eager-budget headroom is only ~1.4KB (183237/184643) — constellation code must stay inside the lazy chunk, not the eager bundle
+- [04-05] End-of-phase launch gate open: push phase/03-design-direction-immersive-experience (currently 5 commits ahead of origin), deploy the Vercel Preview, re-run pnpm test:launch + pnpm lhci:webgl against it, then repeat against https://lsiem.de after production promotion — this closes ROADMAP Phase 4 criteria 3 and 4 for real (04-LAUNCH-EVIDENCE.md documents the local-production-proxy evidence gathered in lieu of this).
 
 ### Quick Tasks Completed
 
@@ -136,6 +141,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-11T19:51:29.995Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-07-11T20:14:36.199Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None
