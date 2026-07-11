@@ -74,6 +74,32 @@ for (const locale of locales) {
   });
 }
 
+test.describe("Scene delivery — no third-party fetch (WOW-01, DSGVO)", () => {
+  test("a forced 3D run issues zero cross-origin requests (detect-gpu benchmarks are same-origin)", async ({
+    page,
+    baseURL,
+  }) => {
+    const foreign: string[] = [];
+    page.on("request", (req) => {
+      const url = req.url();
+      if (!/^https?:/.test(url)) return; // ignore data:/blob:
+      if (baseURL && url.startsWith(baseURL)) return; // same-origin app
+      foreign.push(url);
+    });
+    await page.goto(`/de?webgl=force`);
+    await expect(page.locator("#hero canvas")).toHaveCount(1, {
+      timeout: MOUNT_TIMEOUT,
+    });
+    // No unpkg (detect-gpu default CDN) and nothing else off-origin — the
+    // benchmarks are served from /benchmarks (AGENTS.md DSGVO, T-04-03-02).
+    expect(foreign.filter((u) => /unpkg\.com/.test(u))).toEqual([]);
+    expect(
+      foreign,
+      `unexpected cross-origin requests during forced 3D run: ${foreign.join(", ")}`,
+    ).toEqual([]);
+  });
+});
+
 test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
   test("webglcontextlost unmounts the canvas with no error surfaced", async ({
     page,
