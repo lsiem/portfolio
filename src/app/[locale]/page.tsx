@@ -12,6 +12,7 @@ import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
 import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
+import { HeroSceneGate } from "@/components/scene/hero-scene-gate";
 import { Magnetic } from "@/components/motion/magnetic";
 import { ProjectBento } from "@/components/motion/project-bento";
 import { Reveal } from "@/components/motion/reveal";
@@ -95,8 +96,11 @@ export default async function HomePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
       />
       <section id="hero" className="relative w-full px-6">
-        {/* Reserved Phase-4 3D background layer (D-13) — empty in Phase 3. */}
-        <HeroSceneSlot />
+        {/* Phase-4 3D background layer (D-13): the capability-gated, lazily
+            mounted hero constellation (04-03). Absent for excluded visitors. */}
+        <HeroSceneSlot>
+          <HeroSceneGate />
+        </HeroSceneSlot>
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and
           value-prop are targets of HeroIntro's on-mount timeline. HeroIntro

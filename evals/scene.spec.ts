@@ -78,21 +78,45 @@ test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
   test("webglcontextlost unmounts the canvas with no error surfaced", async ({
     page,
   }) => {
+    // A native dialog would be an error surface — fail if one ever opens.
+    let dialogOpened = false;
+    page.on("dialog", (d) => {
+      dialogOpened = true;
+      void d.dismiss();
+    });
     await page.goto(`/de?webgl=force`);
     const canvas = page.locator("#hero canvas");
     await expect(canvas).toHaveCount(1, { timeout: MOUNT_TIMEOUT });
 
-    // Dispatch the real WebGL context-loss event on the live canvas.
-    await canvas.first().dispatchEvent("webglcontextlost");
+    // Baseline: any alert/status text present BEFORE the loss (framework
+    // elements like Next's route announcer are always-present and empty).
+    const liveRegions = page.locator('[role="alert"], [role="status"]');
+    const announcedBefore = (await liveRegions.allInnerTexts()).join("|");
 
-    // Canvas unmounts silently — the Phase-3 hero remains.
-    await expect(page.locator("#hero canvas")).toHaveCount(0, {
-      timeout: MOUNT_TIMEOUT,
-    });
+    // Dispatch the real WebGL context-loss event on the live canvas, retrying:
+    // the canvas element is in the DOM before R3F's onCreated attaches the
+    // webglcontextlost listener, so re-dispatch (idempotent) until the gate
+    // unmounts. No fixed sleep — the poll IS the wait for the listener.
+    await expect
+      .poll(
+        async () => {
+          await canvas
+            .first()
+            .dispatchEvent("webglcontextlost")
+            .catch(() => {}); // element gone once it unmounts — that's success
+          return page.locator("#hero canvas").count();
+        },
+        { timeout: MOUNT_TIMEOUT },
+      )
+      .toBe(0);
     await expect(page.locator("#hero h1")).toBeVisible();
 
-    // No error/toast/dialog anywhere in the DOM (D-10: nothing surfaces).
-    await expect(page.locator('[role="alert"]')).toHaveCount(0);
-    await expect(page.getByText(/error|failed|unavailable/i)).toHaveCount(0);
+    // Nothing surfaces to the visitor (D-10): the context loss announced no NEW
+    // alert/status text and opened no native dialog. (Comparing before/after
+    // tolerates always-present empty framework live-regions; a DOM-wide text
+    // regex is the wrong tool — it false-positives on RSC payload <script>s.)
+    const announcedAfter = (await liveRegions.allInnerTexts()).join("|");
+    expect(announcedAfter).toBe(announcedBefore);
+    expect(dialogOpened).toBe(false);
   });
 });
