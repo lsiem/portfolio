@@ -28,19 +28,30 @@ function getServerSnapshot(): boolean {
  * sections. NOT used for the above-the-fold hero beats (that is HeroIntro's
  * mount timeline).
  *
- * JUST-IN-TIME gsap (CWV reconciliation, 03-04 Option A): gsap is dynamically
- * imported ONLY when the element approaches the viewport, via IntersectionObserver
- * — NOT on mount. Lighthouse's mobile run never scrolls, so below-fold reveals
- * never load gsap and the home route's measured script:size stays under the
- * 184,643-byte gate; real users get the reveal the moment they scroll to it
- * (gsap is cached after the first reveal, so only the first has any import cost).
- * IntersectionObserver also replaces ScrollTrigger for reveals, trimming the
- * loaded gsap surface. Under reduced-motion nothing is observed or imported and
- * the content stays at its natural final state (opacity 1) — MODE-02 for free.
+ * TECHNIQUE SPLIT BY POINTER (04-02, D-11/D-19). Reveals stay on touch (D-19),
+ * but the DELIVERY differs by pointer so the mobile initial load never pays for
+ * GSAP:
+ *   - pointer:coarse (touch / Lighthouse mobile) -> CSS-ONLY reveal: a
+ *     compositor-friendly opacity+transform transition applied imperatively when
+ *     the element enters the viewport. gsap is NEVER imported on this path, so
+ *     the home route's mobile script payload stays the ~177KB core bundle (under
+ *     the 184,643-byte TECH-01 gate). This closes the deployed-bundle overage
+ *     root-caused in 04-02: the previous just-in-time gsap import fired via
+ *     IntersectionObserver whenever a near-fold reveal entered the (tall) mobile
+ *     viewport, pulling ~30KB of gsap into the initial load.
+ *   - pointer:fine (desktop) -> JUST-IN-TIME gsap: dynamically imported only when
+ *     the element approaches the viewport (03-04 Option A), giving desktop the
+ *     eased expo-out reveal. gsap is cached after the first reveal.
+ * Under reduced-motion nothing is observed, imported, or mutated and the content
+ * stays at its natural final state (opacity 1) — MODE-02 for free.
  *
- * Token values come from getMotionToken (read inside the effect, never a default
- * param — SSR guard, finding #4). `emphasis` selects the larger chapter tokens
- * (--motion-distance-lg / --motion-duration-chapter) for the D-06 ITSC beats.
+ * Both paths animate transform/opacity only (compositor-friendly). Token values
+ * come from getMotionToken (read inside the effect, never a default param — SSR
+ * guard, finding #4); durations are seconds, distances px. `emphasis` selects the
+ * larger chapter tokens (--motion-distance-lg / --motion-duration-chapter) for the
+ * D-06 ITSC beats. The initial hidden state is applied imperatively AFTER the
+ * observer fires — never in SSR/CSS — so server-rendered content is visible
+ * before hydration and there is no no-JS/pre-hydration flash (WOW-04).
  */
 type RevealProps = {
   children: React.ReactNode;
@@ -74,38 +85,67 @@ export function Reveal({
 
     let cancelled = false;
     let ctx: { revert: () => void } | undefined;
+    let onTransitionEnd: (() => void) | undefined;
+
+    const y =
+      distance ??
+      getMotionToken(
+        emphasis ? "--motion-distance-lg" : "--motion-distance-md",
+      );
+    const dur =
+      duration ??
+      getMotionToken(
+        emphasis ? "--motion-duration-chapter" : "--motion-duration-base",
+      );
+
+    // Desktop (pointer:fine) gets the eased gsap reveal; touch/coarse (also
+    // Lighthouse mobile) gets a CSS-only transition with NO gsap import so the
+    // mobile initial-load bundle stays under the TECH-01 script gate (04-02).
+    const usesGsap = window.matchMedia("(pointer: fine)").matches;
 
     const observer = new IntersectionObserver(
       (entries, obs) => {
         const entry = entries[0];
         if (!entry?.isIntersecting) return;
         obs.disconnect(); // reveal-on-enter, once (D-05 no pinning/scrub)
-        void (async () => {
-          const { gsap } = await import("gsap");
-          if (cancelled) return;
-          const y =
-            distance ??
-            getMotionToken(
-              emphasis ? "--motion-distance-lg" : "--motion-distance-md",
-            );
-          const dur =
-            duration ??
-            getMotionToken(
-              emphasis ? "--motion-duration-chapter" : "--motion-duration-base",
-            );
-          ctx = gsap.context(() => {
-            gsap.from(el, {
-              opacity: 0,
-              y,
-              duration: dur,
-              ease: "expo.out", // mirrors --motion-ease-out
-            });
-          }, el);
-        })();
+
+        if (usesGsap) {
+          void (async () => {
+            const { gsap } = await import("gsap");
+            if (cancelled) return;
+            ctx = gsap.context(() => {
+              gsap.from(el, {
+                opacity: 0,
+                y,
+                duration: dur,
+                ease: "expo.out", // mirrors --motion-ease-out
+              });
+            }, el);
+          })();
+          return;
+        }
+
+        // CSS-only reveal (touch path) — set the hidden start state, force a
+        // reflow so the browser registers it, then transition to the resting
+        // state. transform/opacity only (compositor-friendly).
+        const ease = getMotionToken("--motion-ease-out");
+        el.style.willChange = "opacity, transform";
+        el.style.opacity = "0";
+        el.style.transform = `translateY(${y}px)`;
+        void el.offsetHeight; // reflow — commit the hidden state before transition
+        if (cancelled) return;
+        el.style.transition = `opacity ${dur}s ${ease}, transform ${dur}s ${ease}`;
+        el.style.opacity = "1";
+        el.style.transform = "translateY(0)";
+        onTransitionEnd = () => {
+          el.style.willChange = "";
+          el.style.transition = "";
+          el.style.transform = "";
+        };
+        el.addEventListener("transitionend", onTransitionEnd, { once: true });
       },
       // Small negative bottom margin so it fires just as the element enters.
-      // Lighthouse never scrolls, so below-fold reveals never intersect → gsap
-      // is never loaded on the measured run.
+      // Below-fold reveals never intersect on a no-scroll audit.
       { rootMargin: "0px 0px -8% 0px" },
     );
 
@@ -115,6 +155,7 @@ export function Reveal({
       cancelled = true;
       observer.disconnect();
       ctx?.revert();
+      if (onTransitionEnd) el.removeEventListener("transitionend", onTransitionEnd);
     };
   }, [motionEnabled, distance, duration, emphasis]);
 
