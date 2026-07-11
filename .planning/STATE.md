@@ -2,18 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 04
-current_phase_name: signature-moment-launch-hardening
 status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-07-11T18:55:00.307Z"
-last_activity: 2026-07-10
-last_activity_desc: Phase 04 execution started
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-07-11T19:51:30.002Z"
+last_activity: 2026-07-11
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 20
-  completed_plans: 18
+  completed_plans: 19
   percent: 75
 ---
 
@@ -29,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 04 (signature-moment-launch-hardening) — EXECUTING
-Plan: 4 of 5
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-07-10 — Phase 04 execution started
+Last activity: 2026-07-11
 
-Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -74,6 +71,7 @@ Progress: 75% - 3/4 phases complete (Phase 3 closed 2026-07-08); Phase 4 next
 | Phase 04 P01 | 100 min | 2 tasks | 6 files |
 | Phase 04 P02 | 180 min | 2 tasks | 4 files |
 | Phase 04 P03 | 90 min | 3 tasks | 10 files |
+| Phase 04 P04 | 55min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -104,6 +102,9 @@ Recent decisions affecting current work:
 - [Phase 04]: D-11 exception path: CI LCP assertion stays warn after levers A+B miss the local 2500ms gate (/de ~2693ms, /en ~2609ms); production re-check staged as end-of-phase source of truth in 04-05 — Plan-prescribed branch, user-approved at interactive checkpoint; display:optional escalation forbidden without explicit sign-off
 - [Phase 04]: phase3-perf-bundle-gap root cause: 308KB deployed = ~96KB Vercel bot-mitigation challenge (headless-Chrome only) + ~30KB near-fold GSAP, NOT hidden app JS (app chunks byte-identical localhost==deployed ~177KB). Original debug premise retracted. — CI gate audits local production build (proven representative); mobile GSAP removed via CSS touch reveals; script:size 177680 under budget
 - [Phase 04]: WOW-01 delivery infra landed: capability gate (decideSceneTier) + next/dynamic ssr:false canvas + silent D-10 fallback + ?webgl=off|force. three/fiber (227KB gzip) proven absent from initial HTML; gate closed on SwiftShader keeps CI budget green (script:size 183237) — First visible WOW-01 slice on capable devices; every excluded visitor gets byte-identical Phase-3 hero; 8 e2e assertions green; deletable under src/components/scene/
+- [Phase 04]: 04-04: hub cluster placed in the hero's central reading column, satellites in the outer thirds — one topology satisfies both D-02 (hidden structure) and D-08 (density mask)
+- [Phase 04]: 04-04: D-09 'clusters wake sequentially' approximated as a global two-phase reveal (nodes then edges) rather than per-cluster staggered draw calls
+- [Phase 04]: 04-04: D-05 exit uses pause (frameloop=never), not unmount — profiled sufficient given the scene's small retained GPU buffers
 
 ### Pending Todos
 
@@ -135,6 +136,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-11T18:55:00.302Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-07-11T19:51:29.995Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None
