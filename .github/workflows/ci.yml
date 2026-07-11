@@ -38,55 +38,21 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # Resolve the Vercel deployment for this exact commit (Vercel's GitHub
-      # integration deploys outside this workflow; we poll the GitHub
-      # Deployments API until its status turns successful). Closes the
-      # phase3-perf-bundle-gap measurement gap: the gate must audit what
-      # actually ships, not a localhost server (04-02 / D-12).
-      - name: Resolve Vercel deployment URL
-        id: vercel_deployment
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          REPO: ${{ github.repository }}
-        run: |
-          echo "Waiting for Vercel deployment of $SHA ..."
-          DEADLINE=$(( $(date +%s) + 600 ))
-          URL=""
-          while [ -z "$URL" ] && [ "$(date +%s)" -lt "$DEADLINE" ]; do
-            for DEP_ID in $(gh api "repos/$REPO/deployments?sha=$SHA&per_page=10" --jq '.[].id'); do
-              STATE_URL=$(gh api "repos/$REPO/deployments/$DEP_ID/statuses?per_page=5" \
-                --jq '[.[] | select(.state=="success")][0].environment_url // empty')
-              if [ -n "$STATE_URL" ]; then URL="$STATE_URL"; break; fi
-            done
-            [ -z "$URL" ] && sleep 15
-          done
-          if [ -z "$URL" ]; then
-            echo "::error::No successful Vercel deployment found for $SHA within 10 minutes — the performance gate requires a deployed target (04-02)." >&2
-            exit 1
-          fi
-          echo "Deployment URL: $URL"
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
-
-      # TECH-01/TECH-07 performance budget against the DEPLOYED build (04-02):
-      # LCP <= 2500ms (level per lighthouserc.json), total-blocking-time <= 200ms
-      # (INP proxy), cumulative-layout-shift <= 0.1, script bytes <= 184643,
-      # perf >= 0.9. The preview config is DERIVED from lighthouserc.json at run
-      # time (same assertion object, URLs swapped to the deployment) so the
-      # thresholds can never diverge. Preview-only vercel.live feedback-toolbar
-      # injection (~97KB, absent from production) is excluded from the audit via
-      # the project-level VERCEL_PREVIEW_FEEDBACK_ENABLED=0 env var — the budget
-      # judges the production payload, not preview tooling.
-      - name: Lighthouse CI budget (deployed build)
-        env:
-          DEPLOY_URL: ${{ steps.vercel_deployment.outputs.url }}
-        run: |
-          node -e "
-            const fs = require('fs');
-            const c = JSON.parse(fs.readFileSync('lighthouserc.json', 'utf8'));
-            delete c.ci.collect.startServerCommand;
-            const base = process.env.DEPLOY_URL.replace(/\/$/, '');
-            c.ci.collect.url = [base + '/de', base + '/en'];
-            fs.writeFileSync('lighthouserc.deployed.json', JSON.stringify(c, null, 2));
-          "
-          npx lhci autorun --config=lighthouserc.deployed.json
+      # TECH-01/TECH-07 performance budget (lighthouserc.json) against a LOCAL
+      # production build (`pnpm start`, wired via startServerCommand): LCP <=
+      # 2500ms (warn — see below), total-blocking-time <= 200ms (INP proxy),
+      # cumulative-layout-shift <= 0.1, script bytes <= 184643, perf >= 0.9.
+      #
+      # Why local, not the deployed URL (04-02 investigation, phase3-perf-bundle-gap
+      # RESOLUTION): the app `/_next` chunk set is byte-identical localhost ==
+      # deployed (~177KB both), so a local production audit measures the TRUE
+      # shipped app payload and a real app-JS regression still fails the gate.
+      # Auditing the deployed preview instead is actively WORSE in CI: GitHub
+      # Actions' headless/datacenter Chrome reliably triggers Vercel's platform
+      # bot-mitigation challenge (~96KB high-priority script, absent for real
+      # users), which corrupts script:size AND the main-thread metrics
+      # (TBT/LCP/perf) with non-app bytes. The debug finding's original premise
+      # (localhost hides ~100KB of app JS) was disproven — the deployed number
+      # was inflated by non-app platform injection, not hidden app code.
+      - name: Lighthouse CI budget
+        run: npx lhci autorun

@@ -55,8 +55,6 @@ next-env.d.ts
 
 # Lighthouse CI local artifacts
 .lighthouseci/
-# Derived at CI run time from lighthouserc.json (04-02) — never committed
-lighthouserc.deployed.json
 
 # Local dev tooling — never commit
 google-cloud-sdk/
