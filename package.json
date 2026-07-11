@@ -14,6 +14,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "playwright test",
+    "test:launch": "LAUNCH_ONLY=1 playwright test --project=launch",
     "lhci:webgl": "lhci autorun --config=lighthouserc.webgl.json"
   },
   "dependencies": {
