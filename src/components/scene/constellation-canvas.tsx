@@ -156,7 +156,13 @@ export default function ConstellationCanvas({ tier }: { tier: SceneTier }) {
         camera={{ position: [0, 0, 8], fov: 45 }}
         onCreated={({ gl }) => {
           // No preventDefault / no restore — silent unmount only (Pattern 6).
-          gl.domElement.addEventListener("webglcontextlost", () => setLost(true));
+          // once:true — after the first loss the component returns null and the
+          // canvas unmounts, so the listener self-cleans and never re-fires.
+          gl.domElement.addEventListener(
+            "webglcontextlost",
+            () => setLost(true),
+            { once: true },
+          );
         }}
       >
         <Constellation tier={tier} />

@@ -96,9 +96,15 @@ export function HeroSceneGate() {
               window.setTimeout(cb, 1500); // Safari fallback (RESEARCH A3)
             };
       idle(() => {
-        void decideSceneTier().then((resolved) => {
-          if (!cancelled) setTier(resolved);
-        });
+        void decideSceneTier()
+          .then((resolved) => {
+            if (!cancelled) setTier(resolved);
+          })
+          .catch(() => {
+            // Silent D-10 fallback: a failed detect-gpu import or benchmark
+            // fetch must not surface (no unhandled rejection, no console
+            // noise) — tier stays "none", so the Phase-3 hero is unchanged.
+          });
       });
     };
 
