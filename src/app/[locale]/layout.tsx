@@ -8,6 +8,7 @@ import type { Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { AnchorLink } from "@/components/motion/anchor-link";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
@@ -130,12 +131,12 @@ export default async function LocaleLayout({
                 width).
               */}
               <div className="flex items-center gap-4">
-                <a
+                <AnchorLink
                   href="#contact"
                   className="font-mono text-xs text-muted transition-colors hover:text-foreground"
                 >
                   {nav("contact")}
-                </a>
+                </AnchorLink>
                 <ThemeToggle />
                 <LocaleSwitcher />
               </div>
