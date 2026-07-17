@@ -11,6 +11,9 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { AnchorLink } from "@/components/motion/anchor-link";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { PageTransitionEffect } from "@/components/motion/page-transition-effect";
+import { SceneProvider } from "@/components/scene/scene-context";
+import { GlobalCanvasGate } from "@/components/scene/global-canvas-gate";
+import { DOMVisibilityWrapper } from "@/components/scene/dom-visibility-wrapper";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -115,6 +118,7 @@ export default async function LocaleLayout({
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME_SCRIPT }} />
         <NextIntlClientProvider>
+          <SceneProvider>
           <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
             <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4">
               <Link
@@ -154,7 +158,7 @@ export default async function LocaleLayout({
           */}
           <MotionProvider>
             <PageTransitionEffect>
-              <div className="flex flex-1 flex-col">{children}</div>
+              <DOMVisibilityWrapper>{children}</DOMVisibilityWrapper>
             </PageTransitionEffect>
           </MotionProvider>
           <footer className="border-t border-border/60">
@@ -190,7 +194,9 @@ export default async function LocaleLayout({
               </nav>
             </div>
           </footer>
-        </NextIntlClientProvider>
+          <GlobalCanvasGate />
+        </SceneProvider>
+      </NextIntlClientProvider>
         {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner */}
         <Analytics />
         <SpeedInsights />

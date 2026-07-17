@@ -7,6 +7,7 @@ import { getCaseStudies, getCaseStudy } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { localeAlternates, siteMetadataBase } from "@/lib/seo";
+import { SceneDataRegistrar } from "@/components/scene/scene-context";
 
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
 
@@ -48,6 +49,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28">
+      <SceneDataRegistrar data={{ activeCaseStudy: caseStudy }} />
       <article className="flex flex-col gap-10">
         {/* Engineered but reading-first (D-15): Bricolage display H1, gentle
             reveals that support comprehension — no chapter-level drama. */}
