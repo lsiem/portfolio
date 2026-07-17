@@ -56,11 +56,10 @@ export function TransitionLink({
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const isTouch = window.matchMedia("(pointer: coarse)").matches;
     const main = document.querySelector("main");
 
-    // Reduced-motion, touch, or no <main> to animate: instant swap, no transition.
-    if (reduceMotion || isTouch || !main) {
+    // Reduced-motion (or no <main> to animate): instant swap, no crossfade.
+    if (reduceMotion || !main) {
       router.push(href);
       return;
     }
@@ -69,12 +68,9 @@ export function TransitionLink({
       .then(({ gsap }) => {
         gsap.to(main, {
           opacity: 0,
-          transformPerspective: 1200,
-          rotationY: 8,  // subtle 3D swing out
-          z: -80,        // recede slightly in depth
-          x: -20,        // shift horizontally
+          y: -getMotionToken("--motion-distance-md"),
           duration: getMotionToken("--motion-duration-base"),
-          ease: "power2.in",
+          ease: "power2.inOut", // named equivalent of --motion-ease-in-out
           onComplete: () => router.push(href),
         });
       })

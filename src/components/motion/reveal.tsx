@@ -117,9 +117,6 @@ export function Reveal({
               gsap.from(el, {
                 opacity: 0,
                 y,
-                transformPerspective: 1000,
-                rotationX: 10, // subtle 3D tilt
-                z: -30,        // subtle depth offset
                 duration: dur,
                 ease: "expo.out", // mirrors --motion-ease-out
               });
@@ -134,12 +131,12 @@ export function Reveal({
         const ease = getMotionToken("--motion-ease-out");
         el.style.willChange = "opacity, transform";
         el.style.opacity = "0";
-        el.style.transform = `perspective(1000px) translateY(${y}px) rotateX(10deg) translateZ(-30px)`;
+        el.style.transform = `translateY(${y}px)`;
         void el.offsetHeight; // reflow — commit the hidden state before transition
         if (cancelled) return;
         el.style.transition = `opacity ${dur}s ${ease}, transform ${dur}s ${ease}`;
         el.style.opacity = "1";
-        el.style.transform = "perspective(1000px) translateY(0px) rotateX(0deg) translateZ(0px)";
+        el.style.transform = "translateY(0)";
         onTransitionEnd = () => {
           el.style.willChange = "";
           el.style.transition = "";
