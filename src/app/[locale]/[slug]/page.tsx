@@ -7,7 +7,6 @@ import { getPage, getPages } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { localeAlternates, siteMetadataBase } from "@/lib/seo";
-import { SceneDataRegistrar } from "@/components/scene/scene-context";
 
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
 
@@ -47,7 +46,6 @@ export default async function ProsePage({ params }: Props) {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28">
-      <SceneDataRegistrar data={{ activeProsePage: page }} />
       {/* Engineered reading-first (D-15): promote page.title to a single
           top-level Bricolage display <h1> (the MDX body starts at <h2>, so the
           page had no <h1> — WCAG single-h1 + display identity, finding #4). */}

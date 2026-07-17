@@ -1,6 +1,4 @@
----
-description: Portfolio development patterns, coding conventions, commit style, and step-by-step workflows for Next.js/TypeScript.
----
+```markdown
 # portfolio Development Patterns
 
 > Auto-generated skill from repository analysis
@@ -197,4 +195,5 @@ describe('sample', () => {
 | /init-project    | Scaffold, migrate, or rewrite the project foundation         |
 | /add-locale      | Add or extend internationalization features                  |
 | /add-content-type| Add or extend typed content models and schemas               |
-|| /add-test-suite  | Add or extend CI and automated test suites                   |
+| /add-test-suite  | Add or extend CI and automated test suites                   |
+```

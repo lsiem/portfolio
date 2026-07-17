@@ -24,7 +24,6 @@ import {
   personJsonLd,
   siteMetadataBase,
 } from "@/lib/seo";
-import { SceneDataRegistrar } from "@/components/scene/scene-context";
 
 type Props = Readonly<{ params: Promise<{ locale: string }> }>;
 
@@ -93,7 +92,6 @@ export default async function HomePage({ params }: Props) {
     // 1440px cap but NO global ~768px reading cap — that moves per-section so the
     // hero and career can break wide while prose sections stay reading-anchored.
     <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-20 py-20 sm:gap-28 sm:py-28">
-      <SceneDataRegistrar data={{ career, projects, contact }} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
