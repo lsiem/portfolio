@@ -49,16 +49,51 @@ result: blocked
 blocked_by: other
 reason: "Automated portion PASSED on production 2026-07-17: LAUNCH_URL=https://lsiem.de pnpm test:launch — 4/4 (30-second stopwatch /de + /en, reduced-motion walkthrough /de + /en, incl. the 86d175d Lenis anchor fix). Same suite also passed against the Preview pre-merge. Outstanding: at least one real external human tester performing the stopwatch flow + reduced-motion walkthrough by hand — cannot be done by the agent."
 
+### 4. Signature moment (WOW-01) visible on real capable devices
+expected: On a capable desktop/mobile device (no reduced-motion, hardware GL), the hero constellation mounts after first paint: canvas present, boot-beat entrance, scroll-linked exit, pointer influence.
+result: issue
+reported: "Site works but there are missing 3d animation and transitions" (user, on production, 2026-07-17)
+severity: major
+diagnosis: |
+  Reproduced 2026-07-17 in headed Chromium on the user's machine (Apple M5 Pro,
+  deviceMemory 16, no saveData, reduced-motion off) against https://lsiem.de/de:
+  canvas count 0, scene chunk never requested. Elimination through the
+  decideSceneTier pipeline (src/lib/capability.ts):
+  - webgl2 + failIfMajorPerformanceCaveat probe PASSES (hardware GL confirmed)
+  - /benchmarks/d-apple.json fetched with 200 (self-hosted data intact)
+  - getGPUTier returns { gpu: "apple, angle metal renderer: apple m5 pro...",
+    tier: 1, type: "FALLBACK" } — the Apple M5 Pro is newer than detect-gpu's
+    benchmark dataset, so it falls back to tier 1
+  - gate requires tier >= 2 -> "none" -> silent D-10 fallback, no canvas
+  ROOT CAUSE: unknown-to-detect-gpu GPUs (any GPU newer than the shipped
+  benchmark snapshot, e.g. Apple M5 family) are classified FALLBACK tier 1 and
+  excluded — the newest, most capable hardware never gets the signature moment.
+  NOT affected (verified working on production in the same session): scroll
+  reveals (gsap, 163 animation frames observed), TransitionLink crossfade
+  (main opacity 1->0 on internal nav), hero boot-beat (SplitText spans animate
+  y 24->0). The "missing transitions" impression is the absent constellation
+  entrance/exit choreography, which belongs to the unmounted scene.
+
 ## Summary
 
-total: 3
+total: 4
 passed: 1
-issues: 0
+issues: 1
 pending: 0
 skipped: 0
 blocked: 2
 
 ## Gaps
 
-[none — no code issues found; the two blocked items are (a) a D-11 LCP
-acceptance decision owned by the user and (b) an external-human walkthrough]
+```yaml
+- truth: "On a capable device (hardware GL, no reduced-motion), the hero constellation mounts and plays its entrance/exit choreography"
+  status: failed
+  reason: "User reported: Site works but there are missing 3d animation and transitions"
+  severity: major
+  test: 4
+  artifacts:
+    - src/lib/capability.ts (decideSceneTier tier<2 exclusion, lines 74-80)
+    - src/components/scene/hero-scene-gate.tsx (silent none fallback)
+  missing:
+    - "Handling for detect-gpu type: FALLBACK results: a GPU absent from the benchmark data (e.g. Apple M5 Pro, any post-snapshot GPU) lands at tier 1 and is excluded even though the failIfMajorPerformanceCaveat probe already proved hardware GL. Gate must not treat unknown-new hardware as weak hardware."
+```
