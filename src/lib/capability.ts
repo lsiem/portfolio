@@ -19,6 +19,9 @@
 
 export type SceneTier = "none" | "mobile" | "desktop";
 
+import type { TierResult } from "detect-gpu";
+
+
 /**
  * Resolve the scene tier from capability signals + the `?webgl` override.
  *
@@ -34,7 +37,7 @@ export type SceneTier = "none" | "mobile" | "desktop";
  *      absent != weak; Safari/Firefox never implement it)
  *   6. webgl2 + failIfMajorPerformanceCaveat probe fails -> none (excludes
  *      SwiftShader deterministically)
- *   7. detect-gpu tier < 2                 -> none, else mobile|desktop by isMobile
+ *   7. detect-gpu classification: FALLBACK resolves to capable, BENCHMARK tier < 2 resolves to none, otherwise mobile|desktop
  */
 export async function decideSceneTier(): Promise<SceneTier> {
   // SSR guard — the gate never runs server-side, but keep the pipeline pure.
@@ -76,6 +79,35 @@ export async function decideSceneTier(): Promise<SceneTier> {
     benchmarksURL: "/benchmarks", // self-hosted (DSGVO) — never unpkg
     glContext: probe,
   });
-  if (gpu.tier < 2) return "none"; // tier 2 = >=30fps benchmark class (D-07)
+  return sceneTierFromGpu(gpu);
+}
+
+/**
+ * Classifies a GPU tier result into a SceneTier (04-06).
+ *
+ * A detect-gpu result with type "FALLBACK" (unknown/newer GPU not in the benchmark
+ * snapshot, e.g. Apple M5 Pro) is treated as capable ("mobile" or "desktop") once
+ * the caveat probe has already passed, preventing modern hardware from being
+ * incorrectly excluded. Genuinely measured weak GPUs (type "BENCHMARK" with tier < 2)
+ * and unsupported classes (BLOCKLISTED / WEBGL_UNSUPPORTED) still resolve to "none"
+ * to preserve the D-07 weak-GPU exclusion and visitor comfort.
+ *
+ * Reference: D-07, 04-UAT Test 4.
+ */
+export function sceneTierFromGpu(
+  gpu: Pick<TierResult, "tier" | "type" | "isMobile">
+): SceneTier {
+  if (gpu.type === "FALLBACK") {
+    // GPU is newer/absent from benchmark snapshot; the caveat probe already
+    // proved hardware GL, so treat unknown-new hardware as capable.
+    return gpu.isMobile ? "mobile" : "desktop";
+  }
+
+  // Trust measured benchmark/exclusion results.
+  if (gpu.tier < 2) {
+    return "none";
+  }
+
   return gpu.isMobile ? "mobile" : "desktop";
 }
+
