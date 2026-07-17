@@ -10,6 +10,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { AnchorLink } from "@/components/motion/anchor-link";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { PageTransitionEffect } from "@/components/motion/page-transition-effect";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -152,7 +153,9 @@ export default async function LocaleLayout({
             node_modules/lenis/dist/lenis-react.d.ts.
           */}
           <MotionProvider>
-            <div className="flex flex-1 flex-col">{children}</div>
+            <PageTransitionEffect>
+              <div className="flex flex-1 flex-col">{children}</div>
+            </PageTransitionEffect>
           </MotionProvider>
           <footer className="border-t border-border/60">
             <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
