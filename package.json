@@ -40,18 +40,18 @@
     "@playwright/test": "^1.61.1",
     "@react-pdf/renderer": "4.5.1",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/subset-font": "^2.3.0",
     "@types/three": "^0.185.1",
-    "eslint": "^9",
+    "eslint": "^10",
     "eslint-config-next": "16.2.10",
     "geist": "1.7.2",
     "subset-font": "^2.5.0",
     "tailwindcss": "^4",
     "tsx": "4.23.0",
-    "typescript": "^5",
+    "typescript": "^6",
     "zod": "^4.4.3"
   }
 }
