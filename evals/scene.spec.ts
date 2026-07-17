@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { sceneTierFromGpu } from "../src/lib/capability";
 
 const locales = ["de", "en"] as const;
 
@@ -187,5 +188,49 @@ test.describe("Scene gate — scroll-linked exit pauses rendering (D-05, 04-04)"
     await expect(frameloopNode).toHaveAttribute("data-frameloop", "always", {
       timeout: MOUNT_TIMEOUT,
     });
+  });
+});
+
+test.describe("GPU tier classification (04-06, UAT #4)", () => {
+  test("classifies FALLBACK desktop GPU as desktop (M5 Pro reproduction)", () => {
+    expect(
+      sceneTierFromGpu({ tier: 1, type: "FALLBACK", isMobile: false })
+    ).toBe("desktop");
+  });
+
+  test("classifies FALLBACK mobile GPU as mobile", () => {
+    expect(
+      sceneTierFromGpu({ tier: 1, type: "FALLBACK", isMobile: true })
+    ).toBe("mobile");
+  });
+
+  test("classifies BENCHMARK tier < 2 GPU as none (exclusion preserved)", () => {
+    expect(
+      sceneTierFromGpu({ tier: 1, type: "BENCHMARK", isMobile: false })
+    ).toBe("none");
+  });
+
+  test("classifies BENCHMARK tier >= 2 desktop GPU as desktop", () => {
+    expect(
+      sceneTierFromGpu({ tier: 2, type: "BENCHMARK", isMobile: false })
+    ).toBe("desktop");
+  });
+
+  test("classifies BENCHMARK tier >= 2 mobile GPU as mobile", () => {
+    expect(
+      sceneTierFromGpu({ tier: 3, type: "BENCHMARK", isMobile: true })
+    ).toBe("mobile");
+  });
+
+  test("classifies BLOCKLISTED GPU as none", () => {
+    expect(
+      sceneTierFromGpu({ tier: 0, type: "BLOCKLISTED", isMobile: false })
+    ).toBe("none");
+  });
+
+  test("classifies WEBGL_UNSUPPORTED GPU as none", () => {
+    expect(
+      sceneTierFromGpu({ tier: 0, type: "WEBGL_UNSUPPORTED", isMobile: false })
+    ).toBe("none");
   });
 });
