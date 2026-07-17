@@ -204,6 +204,50 @@ test.describe("GPU tier classification (04-06, UAT #4)", () => {
     ).toBe("mobile");
   });
 
+  test("classifies FALLBACK software renderer as none (CI/SwiftShader — PR #21 regression)", () => {
+    expect(
+      sceneTierFromGpu({
+        tier: 1,
+        type: "FALLBACK",
+        isMobile: false,
+        gpu: "google swiftshader",
+      })
+    ).toBe("none");
+    expect(
+      sceneTierFromGpu({
+        tier: 1,
+        type: "FALLBACK",
+        isMobile: false,
+        gpu: "angle (google, vulkan 1.3.0 (swiftshader device (subzero)), swiftshader driver)",
+      })
+    ).toBe("none");
+    expect(
+      sceneTierFromGpu({
+        tier: 1,
+        type: "FALLBACK",
+        isMobile: false,
+        gpu: "mesa llvmpipe (llvm 15.0.7, 256 bits)",
+      })
+    ).toBe("none");
+  });
+
+  test("classifies FALLBACK hardware GPU with known string as capable (M5 Pro string)", () => {
+    expect(
+      sceneTierFromGpu({
+        tier: 1,
+        type: "FALLBACK",
+        isMobile: false,
+        gpu: "apple, angle metal renderer: apple m5 pro, unspecified version",
+      })
+    ).toBe("desktop");
+  });
+
+  test("classifies FALLBACK with masked/absent renderer string as capable (Firefox-masked population)", () => {
+    expect(
+      sceneTierFromGpu({ tier: 1, type: "FALLBACK", isMobile: false, gpu: undefined })
+    ).toBe("desktop");
+  });
+
   test("classifies BENCHMARK tier < 2 GPU as none (exclusion preserved)", () => {
     expect(
       sceneTierFromGpu({ tier: 1, type: "BENCHMARK", isMobile: false })

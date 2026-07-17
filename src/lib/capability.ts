@@ -67,8 +67,13 @@ export async function decideSceneTier(): Promise<SceneTier> {
     .deviceMemory;
   if (typeof deviceMemory === "number" && deviceMemory < 4) return "none";
 
-  // Exclude software rendering (SwiftShader) deterministically rather than by
-  // benchmark luck. The probe context is reused by detect-gpu below.
+  // First software-GL barrier. NOT deterministic on its own: modern Chrome
+  // (SwANGLE-era headless, e.g. the GitHub Actions LHCI runner) can hand out a
+  // SwiftShader-backed webgl2 context WITHOUT flagging a major performance
+  // caveat — proven by PR #21 CI, where the scene mounted on the runner and
+  // blew the eager budget (script 421KB, TBT 358ms). The deterministic CI/
+  // software exclusion is the renderer-string check inside sceneTierFromGpu.
+  // The probe context is reused by detect-gpu below.
   const probe = document
     .createElement("canvas")
     .getContext("webgl2", { failIfMajorPerformanceCaveat: true });
@@ -83,23 +88,39 @@ export async function decideSceneTier(): Promise<SceneTier> {
 }
 
 /**
+ * Identified software rasterizers. detect-gpu classifies these as FALLBACK
+ * (they are absent from its benchmark data), so the FALLBACK-mounts path must
+ * name-check them explicitly — the failIfMajorPerformanceCaveat probe does NOT
+ * reliably exclude them on modern Chrome (see the probe comment above). This
+ * string check is what keeps the CI runner (SwiftShader/SwANGLE) and other
+ * software-GL environments on the Phase-3 hero without ?webgl=force.
+ */
+const SOFTWARE_RENDERER =
+  /swiftshader|llvmpipe|softpipe|software rasterizer|microsoft basic render/i;
+
+/**
  * Classifies a GPU tier result into a SceneTier (04-06).
  *
- * A detect-gpu result with type "FALLBACK" (unknown/newer GPU not in the benchmark
- * snapshot, e.g. Apple M5 Pro) is treated as capable ("mobile" or "desktop") once
- * the caveat probe has already passed, preventing modern hardware from being
- * incorrectly excluded. Genuinely measured weak GPUs (type "BENCHMARK" with tier < 2)
- * and unsupported classes (BLOCKLISTED / WEBGL_UNSUPPORTED) still resolve to "none"
- * to preserve the D-07 weak-GPU exclusion and visitor comfort.
+ * detect-gpu returns type "FALLBACK" for any renderer absent from its benchmark
+ * snapshot. That population is (a) GPUs newer than the shipped data (e.g. Apple
+ * M5 Pro — the 04-UAT Test 4 gap), (b) browsers that mask the renderer string
+ * (Firefox skips WEBGL_debug_renderer_info), and (c) software rasterizers like
+ * SwiftShader. (a) and (b) are treated as capable — hardware GL was already
+ * proven by the caveat probe upstream, and excluding them silently starves the
+ * newest hardware of the signature moment. (c) is excluded by renderer-string
+ * match, because the caveat probe alone no longer catches SwANGLE-era software
+ * GL (proven on the PR #21 CI runner). Genuinely measured weak GPUs (type
+ * "BENCHMARK" with tier < 2) and exclusion classes (BLOCKLISTED /
+ * WEBGL_UNSUPPORTED / SSR, all tier 0) still resolve to "none" — the D-07
+ * weak-GPU exclusion is preserved.
  *
- * Reference: D-07, 04-UAT Test 4.
+ * Reference: D-07, 04-UAT Test 4, PR #21 CI failure.
  */
 export function sceneTierFromGpu(
-  gpu: Pick<TierResult, "tier" | "type" | "isMobile">
+  gpu: Pick<TierResult, "tier" | "type" | "isMobile" | "gpu">
 ): SceneTier {
   if (gpu.type === "FALLBACK") {
-    // GPU is newer/absent from benchmark snapshot; the caveat probe already
-    // proved hardware GL, so treat unknown-new hardware as capable.
+    if (gpu.gpu && SOFTWARE_RENDERER.test(gpu.gpu)) return "none";
     return gpu.isMobile ? "mobile" : "desktop";
   }
 
