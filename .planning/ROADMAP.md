@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
 - [x] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion (completed 2026-07-05)
 - [x] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet (completed 2026-07-08 - 4/4 plans, human UAT 4/4 on /de + /en; production LCP re-check deferred to Phase 4)
-- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL
+- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL (plans 5/5 done — verification human_needed: deploy + production launch re-verify)
 
 ## Phase Details
 
@@ -139,9 +139,31 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans**: TBD
+**Plans:** 5/5 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 04-01-PLAN.md — Launch hardening: self-hosted Bricolage via next/font/local (LCP <= 2500ms), restore lighthouserc LCP assertion to error (Wave 1)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [x] 04-02-PLAN.md — Representative CI perf gate (deployed preview URL) + close the ~100KB deployed-bundle overage (resolves phase3-perf-bundle-gap) (Wave 2)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [x] 04-03-PLAN.md — Capability gate + lazy canvas mount into HeroSceneSlot: ?webgl override, D-10 silent fallback, never-in-initial-bundle proof (Wave 3)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [x] 04-04-PLAN.md — The constellation: ELIA-bound graph, drift + message pulses, boot-beat entrance, scroll-linked exit, pointer influence, 3D-active second audit (Wave 4)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [x] 04-05-PLAN.md — Launch verification on the deployed URL: D-14 stopwatch + reduced-motion scripts, production CWV with 3D active, D-13 Android proxy, evidence doc (Wave 5)
+
 **UI hint**: yes
-**Research flag**: Device-Tiering, Asset-Pipeline (Draco/KTX2) und Context-Loss-Handling für das gewählte Szenen-Konzept — Recherche explizit für diese Phase geflaggt
+**Research flag (resolved)**: Device-Tiering (detect-gpu, self-hosted benchmarks), Asset-Pipeline (Draco/KTX2 confirmed unnecessary — procedural points/lines) und Context-Loss-Handling (unmount → Phase-3 hero) — beantwortet in 04-RESEARCH.md
 
 ## Progress
 
@@ -153,4 +175,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 0/TBD | Not started | - |
+| 4. Signature Moment & Launch Hardening | 5/5 | Verification | —          |

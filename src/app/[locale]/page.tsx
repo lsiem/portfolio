@@ -12,7 +12,9 @@ import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
 import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
+import { HeroSceneGate } from "@/components/scene/hero-scene-gate";
 import { Magnetic } from "@/components/motion/magnetic";
+import { AnchorLink } from "@/components/motion/anchor-link";
 import { ProjectBento } from "@/components/motion/project-bento";
 import { Reveal } from "@/components/motion/reveal";
 import { TransitionLink } from "@/components/motion/transition-link";
@@ -95,8 +97,11 @@ export default async function HomePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
       />
       <section id="hero" className="relative w-full px-6">
-        {/* Reserved Phase-4 3D background layer (D-13) — empty in Phase 3. */}
-        <HeroSceneSlot />
+        {/* Phase-4 3D background layer (D-13): the capability-gated, lazily
+            mounted hero constellation (04-03). Absent for excluded visitors. */}
+        <HeroSceneSlot>
+          <HeroSceneGate />
+        </HeroSceneSlot>
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and
           value-prop are targets of HeroIntro's on-mount timeline. HeroIntro
@@ -131,29 +136,29 @@ export default async function HomePage({ params }: Props) {
             <nav aria-label={nav("home")} className="mt-2">
               <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
                 <li>
-                  <a href="#career" className="text-muted transition-colors hover:text-foreground">
+                  <AnchorLink href="#career" className="text-muted transition-colors hover:text-foreground">
                     {nav("career")}
-                  </a>
+                  </AnchorLink>
                 </li>
                 <li>
-                  <a href="#projects" className="text-muted transition-colors hover:text-foreground">
+                  <AnchorLink href="#projects" className="text-muted transition-colors hover:text-foreground">
                     {nav("projects")}
-                  </a>
+                  </AnchorLink>
                 </li>
                 <li>
-                  <a href="#skills" className="text-muted transition-colors hover:text-foreground">
+                  <AnchorLink href="#skills" className="text-muted transition-colors hover:text-foreground">
                     {nav("skills")}
-                  </a>
+                  </AnchorLink>
                 </li>
                 <li>
-                  <a href="#about" className="text-muted transition-colors hover:text-foreground">
+                  <AnchorLink href="#about" className="text-muted transition-colors hover:text-foreground">
                     {nav("about")}
-                  </a>
+                  </AnchorLink>
                 </li>
                 <li>
-                  <a href="#contact" className="text-muted transition-colors hover:text-foreground">
+                  <AnchorLink href="#contact" className="text-muted transition-colors hover:text-foreground">
                     {nav("contact")}
-                  </a>
+                  </AnchorLink>
                 </li>
               </ul>
             </nav>

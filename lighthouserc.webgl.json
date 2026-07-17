@@ -1,0 +1,25 @@
+{
+  "_budget_derivation": "3D-active script-size budget = baseline eager budget (184643 bytes, lighthouserc.json / 04-02) + the three+fiber lazy chunk transfer size measured in 04-03 (227 KB gzip = 232448 bytes, KiB) + 10% margin. (184643 + 232448) * 1.10 = 458800.1, rounded up to 458801. This is the ONLY assertion widened vs. baseline (RESEARCH Open Question 1 option a) — LCP/TBT/CLS/perf thresholds and severities are identical to lighthouserc.json (T-04-04-01). The default lighthouserc.json stays byte-identical to its 04-02 state; the representative CI gate's URLs carry no ?webgl param, so this config never runs in the blocking CI job — it is a documented lab-audit script (`pnpm lhci:webgl`), evidence for 04-05's production verification, not a merge gate (D-11).",
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm start",
+      "url": [
+        "http://localhost:3000/de?webgl=force",
+        "http://localhost:3000/en?webgl=force"
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 200 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 458801 }],
+        "categories:performance": ["error", { "minScore": 0.9 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

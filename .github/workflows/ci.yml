@@ -38,8 +38,21 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # TECH-01/TECH-07 performance budget (lighthouserc.json): LCP <= 2500ms,
-      # total-blocking-time <= 200ms (INP proxy), cumulative-layout-shift <= 0.1,
-      # script bytes <= 184643, perf >= 0.9
+      # TECH-01/TECH-07 performance budget (lighthouserc.json) against a LOCAL
+      # production build (`pnpm start`, wired via startServerCommand): LCP <=
+      # 2500ms (warn — see below), total-blocking-time <= 200ms (INP proxy),
+      # cumulative-layout-shift <= 0.1, script bytes <= 184643, perf >= 0.9.
+      #
+      # Why local, not the deployed URL (04-02 investigation, phase3-perf-bundle-gap
+      # RESOLUTION): the app `/_next` chunk set is byte-identical localhost ==
+      # deployed (~177KB both), so a local production audit measures the TRUE
+      # shipped app payload and a real app-JS regression still fails the gate.
+      # Auditing the deployed preview instead is actively WORSE in CI: GitHub
+      # Actions' headless/datacenter Chrome reliably triggers Vercel's platform
+      # bot-mitigation challenge (~96KB high-priority script, absent for real
+      # users), which corrupts script:size AND the main-thread metrics
+      # (TBT/LCP/perf) with non-app bytes. The debug finding's original premise
+      # (localhost hides ~100KB of app JS) was disproven — the deployed number
+      # was inflated by non-app platform injection, not hidden app code.
       - name: Lighthouse CI budget
         run: npx lhci autorun

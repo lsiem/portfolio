@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useEffect, useSyncExternalStore } from "react";
+import { setActiveLenis } from "@/lib/lenis-instance";
 
 // --- Motion gate (reduced-motion + pointer) via useSyncExternalStore ---------
 // This codebase forbids the state-hook-in-effect pattern for reading
@@ -87,6 +88,9 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       // autoRaf:false — Lenis does not self-drive; we feed it from gsap.ticker so
       // the two share one RAF loop (canonical Lenis <-> ScrollTrigger recipe).
       const lenis = new Lenis({ lerp: 0.1, duration: 1.2, autoRaf: false });
+      // Publish the instance so AnchorLink drives Lenis directly (no native
+      // anchor jump for Lenis to clobber mid-init — the scroll race).
+      setActiveLenis(lenis);
 
       const onScroll = () => ScrollTrigger.update();
       lenis.on("scroll", onScroll);
@@ -104,7 +108,21 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
         if (!cancelled) ScrollTrigger.refresh();
       });
 
+      // Recover an anchor chosen before Lenis was ready (a click during this
+      // lazy-init window, or a deep-link like /de#career): jump straight to it
+      // so the intended target is honored instead of resting at the top.
+      const hash = window.location.hash;
+      if (hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          const offset =
+            parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+          lenis.scrollTo(target, { offset: -offset, immediate: true });
+        }
+      }
+
       teardown = () => {
+        setActiveLenis(null);
         lenis.off("scroll", onScroll);
         gsap.ticker.remove(raf);
         lenis.destroy();

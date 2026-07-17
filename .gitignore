@@ -50,6 +50,11 @@ next-env.d.ts
 # regenerated fresh on every `pnpm build`, never committed (like .next/)
 /public/Lasse-Siemoneit-CV-*.pdf
 
+# detect-gpu benchmark JSONs — copied from node_modules at build time via
+# prebuild (scripts/copy-benchmarks.ts); regenerated on every build, never
+# committed (same gitignored-build-artifact convention as the CV PDFs)
+/public/benchmarks/
+
 # Internal reference material — never commit (public repo)
 .planning/phases/*/reference/
 

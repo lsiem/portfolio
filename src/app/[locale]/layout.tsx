@@ -1,12 +1,14 @@
 import type React from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import type { Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { AnchorLink } from "@/components/motion/anchor-link";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
@@ -37,34 +39,51 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+// preload:false (Phase-4 launch hardening, RESEARCH lever 3 — critical-window
+// contention): the mono face renders only small eyebrow/label text, but its
+// ~30KB preload sat in the simulated LCP critical window alongside the body
+// and display faces. Dropping the preload changes delivery timing only — the
+// rendered face is identical after load, with next/font's metric-matched
+// fallback covering the gap (same pattern the display face used pre-Phase-4).
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
-// Display face (D-03) — Bricolage Grotesque, self-hosted at build by next/font
-// (zero runtime Google Fonts call, DSGVO-clean per AGENTS.md, same pattern as
-// Geist above). Optimized for the CWV budget: single static weight 700 (smallest
-// woff2, ~22KB) instead of the variable font (~41-131KB), preload:false, swap so
-// the hero H1 always renders in Bricolage after a brief metric-matched fallback
-// (D-03). --font-bricolage maps to the Tailwind `font-display` utility via @theme
-// in globals.css.
+// Display face (D-03) — Bricolage Grotesque, self-hosted via next/font/local
+// (zero runtime Google Fonts call, DSGVO-clean per AGENTS.md). Phase-4 launch
+// hardening (D-11/D-12, levers A+B): the served woff2 is a build-time subset
+// (scripts/subset-bricolage.ts, wired into `prebuild`) of the OFL-licensed
+// weight-700 latin file committed alongside it — the glyph set is the computed
+// union of every display-face string site-wide (hero H1, case-study/prose H1
+// titles, message catalogs; both locales) plus a printable-ASCII + umlaut
+// safety floor. Switching to next/font/local unlocks `preload: true` on this
+// render-path file — display: "swap" retained (locked D-03; "optional" is
+// forbidden without explicit user sign-off), and next/font's default
+// adjustFontFallback ("Arial") keeps the metric-matched fallback so the swap
+// never re-elects the LCP candidate. --font-bricolage maps to the Tailwind
+// `font-display` utility via @theme in globals.css.
 //
-// KNOWN LCP TENSION (finding #1 / RESEARCH Pitfall 5): under Lighthouse's
-// simulated slow-4G + 4x-CPU profile, adding this second render-path font adds a
-// fixed ~300ms to the LCP element (a Geist career paragraph, re-timed by the H1
-// font-swap) — measured identically for variable/static, swap/optional,
-// preloaded/not, and with Geist itself set to optional. Phase 2 left only ~26ms
-// of local LCP headroom (2454ms vs the 2500ms TECH-01 gate), so the locked D-03
-// display font pushes the LOCAL simulated LCP to ~2.75s. The TECH-01 budget was
-// calibrated/"verified passing on a production build" (STATE.md) — production
-// LCP must be re-verified on the Vercel preview.
-const bricolageGrotesque = Bricolage_Grotesque({
+// LCP MEASUREMENTS (local LHCI, production build, slow-4G + 4x-CPU simulation,
+// median of 3 runs, 2500ms TECH-01 gate):
+//   before (next/font/google, preload:false): /de 2909ms, /en 2758ms
+//     — LCP element: a Geist paragraph re-timed by the H1 font-swap
+//     (RESEARCH Pitfall 5 / finding #1: the display face adds a fixed ~300ms).
+//   lever A (next/font/local full latin 22KB, preload:true): /de 2609ms,
+//     /en green — /de still ~110ms over the gate.
+//   levers A+B (subset ~15KB / 115 chars, preload:true): /de 2693–2770ms,
+//     /en 2609–2614ms — both still over the local gate, so the lighthouserc
+//     LCP assertion stays "warn" (exception path, user-approved; the
+//     display:"optional" escalation stays unapplied). Production (Vercel +
+//     CrUX) remains the calibrated source of truth for the D-11 gate —
+//     re-checked end-of-phase in 04-05.
+const bricolageGrotesque = localFont({
+  src: "../fonts/bricolage-grotesque-subset-700.woff2",
   variable: "--font-bricolage",
-  subsets: ["latin"],
   weight: "700",
   display: "swap",
-  preload: false,
+  preload: true,
 });
 
 export function generateStaticParams() {
@@ -112,12 +131,12 @@ export default async function LocaleLayout({
                 width).
               */}
               <div className="flex items-center gap-4">
-                <a
+                <AnchorLink
                   href="#contact"
                   className="font-mono text-xs text-muted transition-colors hover:text-foreground"
                 >
                   {nav("contact")}
-                </a>
+                </AnchorLink>
                 <ThemeToggle />
                 <LocaleSwitcher />
               </div>
