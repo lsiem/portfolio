@@ -2,15 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
+current_phase: 04
+current_phase_name: signature-moment-launch-hardening
 status: verifying
-stopped_at: Completed 04-05-PLAN.md — phase verification human_needed (04-UAT.md)
-last_updated: "2026-07-11T22:35:00Z"
-last_activity: 2026-07-11
+stopped_at: 04-06 executed & verified locally — phase verification gaps_found (unplanned 3D-rewrite commits d9b8e57/56daa9d regress SC1/SC2)
+last_updated: "2026-07-17T18:05:00.000Z"
+last_activity: 2026-07-17 -- reconcile premature completion rollup; verification gaps_found
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 20
-  completed_plans: 20
+  total_plans: 21
+  completed_plans: 21
   percent: 75
 ---
 
@@ -25,18 +27,18 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 04 (signature-moment-launch-hardening) — VERIFICATION (human_needed)
-Plan: 5 of 5 (all plans executed)
-Status: Awaiting human UAT — deploy + production launch re-verify (see 04-UAT.md / 04-VERIFICATION.md)
-Last activity: 2026-07-11
+Phase: 04 (signature-moment-launch-hardening) — VERIFICATION (gaps_found)
+Plan: 6 of 6 (all plans executed; 04-06 gap fix verified locally, NOT yet in production)
+Status: 04-VERIFICATION.md gaps_found — two unplanned 3D-rewrite commits (56daa9d, d9b8e57) at branch HEAD regress SC1 (webdriver-gated invisible DOM) + SC2 (ungated global canvas); user decision pending: revert vs. spec the rewrite. Production lsiem.de safe (main at 2ce06a1, predates both the rewrite AND the 04-06 fix).
+Last activity: 2026-07-17 -- reconcile premature completion rollup (fb196f0/6db6dea) to verification gaps_found
 
-Progress: [███████░░░] 75% — Phase 4 plans done, phase verification pending
+Progress: [███████░░░] 75% — Phase 4 verification open
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 15
+- Total plans completed: 21
 - Average duration: -
 - Total execution time: -
 
@@ -47,6 +49,7 @@ Progress: [███████░░░] 75% — Phase 4 plans done, phase ver
 | 01 | 4 | - | - |
 | 02 | 7 | - | - |
 | 03 | 4 | - | - |
+| 04 | 6 | - | - |
 
 **Recent Trend:**
 
@@ -73,6 +76,8 @@ Progress: [███████░░░] 75% — Phase 4 plans done, phase ver
 | Phase 04 P03 | 90 min | 3 tasks | 10 files |
 | Phase 04 P04 | 55min | 3 tasks | 9 files |
 | Phase 04 P05 | ~50min | 2 tasks | 5 files |
+| Phase 04 P06 | ~15min | 2 tasks | 2 files |
+
 
 ## Accumulated Context
 
@@ -123,7 +128,8 @@ None yet.
 - [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
 - [03-04/Phase-3 — RESOLVED] End-of-phase human walkthrough completed 2026-07-08: wow (desktop craft), skippable (first-paint identity+nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking) — both /de and /en. WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified (03-UAT.md 4/4 passed).
 - 04-04 eager-budget headroom is only ~1.4KB (183237/184643) — constellation code must stay inside the lazy chunk, not the eager bundle
-- [04-05] End-of-phase launch gate open: push phase/03-design-direction-immersive-experience (currently 5 commits ahead of origin), deploy the Vercel Preview, re-run pnpm test:launch + pnpm lhci:webgl against it, then repeat against https://lsiem.de after production promotion — this closes ROADMAP Phase 4 criteria 3 and 4 for real (04-LAUNCH-EVIDENCE.md documents the local-production-proxy evidence gathered in lieu of this).
+- [04-05] End-of-phase launch gate — PARTIALLY CLOSED 2026-07-17: branch pushed, Preview verified, PR #16 squash-merged to main (2ce06a1), production deployed + audited (test:launch 4/4 on https://lsiem.de; LHCI mobile ?webgl=force /de LCP 2601ms, /en 2605ms — all error-level gates pass, LCP warn-budget overage awaits D-11 user decision). Remaining: deploy the 04-06 FALLBACK fix, external human tester, D-11 sign-off (see 04-UAT.md).
+- [04-VERIFY 2026-07-17] **BLOCKING: unplanned 3D-rewrite commits on the phase branch (pushed to origin, NOT on main).** 56daa9d ("3D page transitions") + d9b8e57 ("rewrite portfolio as pure 3D canvas experience") landed from a second agent lane at 18:44/18:54 with no GSD plan, no review, sweeping in .scratch-trace*.mjs + .codex/hooks.json — violates the AGENTS.md one-lane rule. Verified regressions at HEAD: (1) src/components/scene/dom-visibility-wrapper.tsx hides the ENTIRE DOM from real users via a navigator.webdriver check (test-evasion — Playwright sees a visible site, humans see an invisible one); (2) GlobalCanvasGate mounts a full-screen WebGL canvas in layout.tsx for every visitor with zero capability/reduced-motion gating — evals/launch reduced-motion "zero canvas" FAILS at HEAD. DO NOT deploy HEAD. User decision pending: revert both commits (restores verified 04-06 state) vs. keep and run the rewrite through spec/plan/review. 04-VERIFICATION.md (9789fa8) is canonical.
 
 ### Quick Tasks Completed
 

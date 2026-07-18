@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
 - [x] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion (completed 2026-07-05)
 - [x] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet (completed 2026-07-08 - 4/4 plans, human UAT 4/4 on /de + /en; production LCP re-check deferred to Phase 4)
-- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL (plans 5/5 done — verification human_needed: deploy + production launch re-verify)
+- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL (plans 6/6 done — verification gaps_found: unplanned 3D-rewrite commits regress SC1/SC2; 04-06 fix awaiting production deploy)
 
 ## Phase Details
 
@@ -139,7 +139,7 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans:** 5/5 plans complete
+**Plans:** 6/6 plans complete
 
 Plans:
 **Wave 1**
@@ -162,6 +162,10 @@ Plans:
 
 - [x] 04-05-PLAN.md — Launch verification on the deployed URL: D-14 stopwatch + reduced-motion scripts, production CWV with 3D active, D-13 Android proxy, evidence doc (Wave 5)
 
+**Gap closure** *(from 04-UAT.md Test 4)*
+
+- [x] 04-06-PLAN.md — Fix silent no-mount on unknown-new GPUs: treat detect-gpu `type: "FALLBACK"` (e.g. Apple M5 Pro, post-snapshot GPUs) as capable, not weak, after the caveat probe proves hardware GL — keeps tier<2 exclusion for BENCHMARK-matched weak GPUs (Wave 1)
+
 **UI hint**: yes
 **Research flag (resolved)**: Device-Tiering (detect-gpu, self-hosted benchmarks), Asset-Pipeline (Draco/KTX2 confirmed unnecessary — procedural points/lines) und Context-Loss-Handling (unmount → Phase-3 hero) — beantwortet in 04-RESEARCH.md
 
@@ -175,4 +179,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 5/5 | Verification | —          |
+| 4. Signature Moment & Launch Hardening | 6/6 | Verification | —          |
