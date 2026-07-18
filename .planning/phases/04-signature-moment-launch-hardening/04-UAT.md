@@ -3,7 +3,7 @@ status: partial
 phase: 04-signature-moment-launch-hardening
 source: [04-04-SUMMARY.md, 04-05-SUMMARY.md]
 started: 2026-07-11T22:35:00Z
-updated: 2026-07-17T16:05:00Z
+updated: 2026-07-18T01:45:00Z
 ---
 
 ## Current Test
@@ -51,7 +51,9 @@ reason: "Automated portion PASSED on production 2026-07-17: LAUNCH_URL=https://l
 
 ### 4. Signature moment (WOW-01) visible on real capable devices
 expected: On a capable desktop/mobile device (no reduced-motion, hardware GL), the hero constellation mounts after first paint: canvas present, boot-beat entrance, scroll-linked exit, pointer influence.
-result: issue
+result: pass
+source: automated
+resolved: 2026-07-18 — 04-06 (fix e1f5336 + hardening faeb142) deployed to production via PR #21 (merge 6f5383b, deploy qykaejjtx). Verified in headed Chromium on the reporting machine (Apple M5 Pro) against https://lsiem.de/de WITHOUT ?webgl=force — canvas count 1, frameloop "always"; reduced-motion context still gets 0 canvas (D-10 intact); launch suite green against the new deploy. Hardening added after PR #21 CI caught a regression — modern headless Chrome hands out SwiftShader webgl2 WITHOUT the performance caveat, so identified software renderers (swiftshader/llvmpipe/softpipe/software rasterizer/microsoft basic render) are now string-excluded on the FALLBACK path; CI eager budget green (was 421KB/358ms TBT with the unhardened fix).
 reported: "Site works but there are missing 3d animation and transitions" (user, on production, 2026-07-17)
 severity: major
 diagnosis: |
@@ -77,8 +79,8 @@ diagnosis: |
 ## Summary
 
 total: 4
-passed: 1
-issues: 1
+passed: 2
+issues: 0
 pending: 0
 skipped: 0
 blocked: 2
@@ -87,8 +89,8 @@ blocked: 2
 
 ```yaml
 - truth: "On a capable device (hardware GL, no reduced-motion), the hero constellation mounts and plays its entrance/exit choreography"
-  status: failed
-  reason: "User reported: Site works but there are missing 3d animation and transitions"
+  status: resolved
+  reason: "User reported: Site works but there are missing 3d animation and transitions — RESOLVED 2026-07-18 by 04-06 + software-renderer hardening, deployed via PR #21 (6f5383b), verified live on the reporting device"
   severity: major
   test: 4
   artifacts:

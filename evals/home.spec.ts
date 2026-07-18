@@ -26,7 +26,10 @@ for (const locale of locales) {
     });
 
     test("case study list renders at least one item", async ({ page }) => {
-      const items = page.locator("#projects > ul > li");
+      // Phase-5 WP-D: BentoHover (display:contents client boundary feeding
+      // bridge.hoverRect) sits between #projects and the bento <ul> — the
+      // one-<li>-per-project contract is unchanged, only the wrapper depth.
+      const items = page.locator("#projects > div > ul > li");
       await expect(items.first()).toBeVisible();
     });
 

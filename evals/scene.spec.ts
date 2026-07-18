@@ -1,27 +1,45 @@
 import { test, expect } from "@playwright/test";
 import { sceneTierFromGpu } from "../src/lib/capability";
+import { getCaseStudies, getPages } from "../src/lib/content";
 
 const locales = ["de", "en"] as const;
 
 /**
- * WOW-01 delivery-contract spec (04-03). The scene is capability-gated (D-07)
- * and silently absent for excluded visitors (D-10). These properties are
- * provable independent of what the canvas draws, so this spec pins the GATE,
- * not the scene interior:
+ * Kontinuum stage-gate delivery-contract spec (WP-E; DESIGN-SPEC §2.1/§7),
+ * evolved from the 04-03 hero-gate spec. The scene is capability-gated (D-07)
+ * and silently absent for excluded visitors (D-10) — those semantics are
+ * UNCHANGED; what moved is the mount point: the canvas now lives in the
+ * layout-level StageSlot (fixed, -z-10, aria-hidden), persistent across
+ * routes, never inside #hero. These properties are provable independent of
+ * what the canvas draws, so this spec pins the GATE, not the scene interior:
  *
- *   - ?webgl=force mounts a WebGL <canvas> inside the hero background layer
- *     after first paint, WITHOUT displacing the always-present hero text (D-08).
- *     force skips the performance-caveat probe so CI SwiftShader can exercise
- *     the 3D path (RESEARCH Pattern 8 / Pitfall 3b).
- *   - ?webgl=off never mounts a canvas — the Phase-3 hero is byte-identical,
+ *   - ?webgl=force mounts exactly one WebGL <canvas> (layout level) after
+ *     window load + idle, WITHOUT displacing the always-present hero text
+ *     (D-08). force skips the performance-caveat probe so CI SwiftShader can
+ *     exercise the 3D path (RESEARCH Pattern 8 / Pitfall 3b).
+ *   - the mounted stage carries the Contract-3 hook
+ *     `[data-testid="stage-frameloop"][data-frameloop="demand"]` — demand is
+ *     the ONLY steady frameloop (§6.3); "never" appears only when hidden
+ *     (asserted in stage-perf.spec.ts R3).
+ *   - ?webgl=off never mounts a canvas — the DOM site is byte-identical,
  *     no placeholder, no spinner (D-10).
  *   - prefers-reduced-motion wins over ?webgl=force (D-10 is unconditional).
- *   - a WebGL context-loss silently unmounts the canvas — the Phase-3 hero
+ *   - the gate applies on EVERY route class (per-route gating, §3): the
+ *     case-study "halo" and prose/legal "rest" StageFormation markers must
+ *     mount the same single canvas under force and nothing when excluded.
+ *   - NO canvas exists before the idle decision (§7 new check): the gate is
+ *     structurally post-load, guarding the "one review away from ungated"
+ *     hazard that caused the d9b8e57 revert.
+ *   - a WebGL context-loss silently unmounts the canvas — the DOM site
  *     remains and NO error/toast/dialog surfaces to the visitor (D-10).
  *
- * Mirrors immersive.spec.ts (locale loop, #hero / [data-testid="hero-value-prop"]
- * selectors). Retrying web-first assertions only — the mount is idle-scheduled,
- * so no fixed sleeps.
+ * The Phase-4 "scroll past hero pauses canvas" describe (D-05) is NOT here
+ * anymore — it is consciously superseded by the at-rest invariants R1–R3 in
+ * evals/stage-perf.spec.ts (§7 "Consciously rewritten"; see
+ * .planning/phases/05-threejs-kontinuum/DECISIONS.md).
+ *
+ * Retrying web-first assertions only — the mount is idle-scheduled, so no
+ * fixed sleeps (stage-perf.spec.ts documents its own, different rule).
  */
 
 // Generous: the idle-scheduled gate runs decideSceneTier() after load, and on a
@@ -29,8 +47,8 @@ const locales = ["de", "en"] as const;
 const MOUNT_TIMEOUT = 20_000;
 
 for (const locale of locales) {
-  test.describe(`Scene gate (/${locale})`, () => {
-    test("?webgl=force mounts a hero canvas without displacing the hero text (WOW-01, D-08)", async ({
+  test.describe(`Stage gate (/${locale})`, () => {
+    test("?webgl=force mounts the layout-level stage canvas without displacing the hero text (WOW-01, D-08)", async ({
       page,
     }) => {
       await page.goto(`/${locale}?webgl=force`);
@@ -39,10 +57,18 @@ for (const locale of locales) {
       await expect(
         page.locator('#hero [data-testid="hero-value-prop"]'),
       ).toBeVisible();
-      // The gate mounts a canvas into the hero background layer after load+idle.
-      await expect(page.locator("#hero canvas")).toHaveCount(1, {
+      // The gate mounts exactly ONE canvas after load+idle — layout-level
+      // StageSlot, never inside the hero (the Phase-4 in-hero slot is retired).
+      await expect(page.locator("canvas")).toHaveCount(1, {
         timeout: MOUNT_TIMEOUT,
       });
+      await expect(page.locator("#hero canvas")).toHaveCount(0);
+      // Contract 3: the stage wrapper mirrors the live frameloop; "demand" is
+      // the only steady value (§6.3) — "always" would be the reverted
+      // architecture leaking back in.
+      await expect(
+        page.locator('[data-testid="stage-frameloop"]'),
+      ).toHaveAttribute("data-frameloop", "demand", { timeout: MOUNT_TIMEOUT });
       // Text still visible after the canvas is alive (background layer, no reflow).
       await expect(page.locator("#hero h1")).toBeVisible();
       await expect(
@@ -50,14 +76,14 @@ for (const locale of locales) {
       ).toBeVisible();
     });
 
-    test("?webgl=off never mounts a canvas — Phase-3 hero unchanged (D-10)", async ({
+    test("?webgl=off never mounts a canvas — DOM site unchanged (D-10)", async ({
       page,
     }) => {
       await page.goto(`/${locale}?webgl=off`);
       // Wait for the page to settle (hero hydrated) using a retrying assertion,
       // then assert the gate stayed closed — no canvas, no placeholder.
       await expect(page.locator("#hero h1")).toBeVisible();
-      await expect(page.locator("#hero canvas")).toHaveCount(0, {
+      await expect(page.locator("canvas")).toHaveCount(0, {
         timeout: MOUNT_TIMEOUT,
       });
     });
@@ -68,12 +94,104 @@ for (const locale of locales) {
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(`/${locale}?webgl=force`);
       await expect(page.locator("#hero h1")).toBeVisible();
-      await expect(page.locator("#hero canvas")).toHaveCount(0, {
+      await expect(page.locator("canvas")).toHaveCount(0, {
         timeout: MOUNT_TIMEOUT,
       });
     });
   });
 }
+
+test.describe("Stage gate — per-route canvas gating (§3 route registry)", () => {
+  /**
+   * The stage is mounted by the [locale] layout, so EVERY route class must
+   * obey the same gate: case studies (StageFormation "halo") and prose/legal
+   * pages (StageFormation "rest") mount the single canvas under force and
+   * nothing when excluded. Routes derive from the content-model SSOT
+   * (src/lib/content.ts) like evals/launch/stopwatch.spec.ts, so new slugs
+   * are covered automatically.
+   */
+  for (const locale of locales) {
+    const caseStudyPath = `/${locale}/case-studies/${getCaseStudies(locale)[0].slug}`;
+    // First non-about prose page = a legal page (impressum) — legal pages
+    // must not perform (§3 "rest"), but the GATE semantics are identical.
+    const legalSlug = getPages(locale).find(
+      (prosePage) => prosePage.slug !== "about",
+    )?.slug;
+    const legalPath = `/${locale}/${legalSlug}`;
+
+    for (const path of [caseStudyPath, legalPath]) {
+      test(`?webgl=force mounts one canvas on ${path}; ?webgl=off mounts none`, async ({
+        page,
+      }) => {
+        await page.goto(`${path}?webgl=force`);
+        await expect(page.locator("main h1")).toBeVisible();
+        await expect(page.locator("canvas")).toHaveCount(1, {
+          timeout: MOUNT_TIMEOUT,
+        });
+        await expect(
+          page.locator('[data-testid="stage-frameloop"]'),
+        ).toHaveAttribute("data-frameloop", "demand", {
+          timeout: MOUNT_TIMEOUT,
+        });
+
+        await page.goto(`${path}?webgl=off`);
+        await expect(page.locator("main h1")).toBeVisible();
+        await expect(page.locator("canvas")).toHaveCount(0, {
+          timeout: MOUNT_TIMEOUT,
+        });
+      });
+    }
+  }
+});
+
+test.describe("Stage gate — zero canvas before the idle decision (§7 new check)", () => {
+  test("no canvas ever exists before window load — the mount is strictly post-load+idle", async ({
+    page,
+  }) => {
+    // A MutationObserver installed before ANY page script records
+    // document.readyState at the moment the first <canvas> enters the DOM.
+    // This is the structural guard against the reverted d9b8e57 architecture
+    // (a Canvas hoisted above the gate renders during hydration, i.e. before
+    // readyState === "complete") — an after-the-fact count can't catch that.
+    await page.addInitScript(() => {
+      const probe = window as Window & {
+        __canvasReadyStateAtInsert?: string | null;
+      };
+      probe.__canvasReadyStateAtInsert = null;
+      const observer = new MutationObserver(() => {
+        if (
+          probe.__canvasReadyStateAtInsert === null &&
+          document.querySelector("canvas")
+        ) {
+          probe.__canvasReadyStateAtInsert = document.readyState;
+          observer.disconnect();
+        }
+      });
+      observer.observe(document, { childList: true, subtree: true });
+    });
+
+    // goto resolves at the window load event — at that instant the decision
+    // (idle callback -> decideSceneTier -> dynamic chunk fetch) has not run,
+    // so the canvas count must still be 0. Non-retrying on purpose: this is
+    // a point-in-time claim, not a wait-for-condition.
+    await page.goto(`/de?webgl=force`);
+    expect(await page.locator("canvas").count()).toBe(0);
+
+    // The gate then opens normally…
+    await expect(page.locator("canvas")).toHaveCount(1, {
+      timeout: MOUNT_TIMEOUT,
+    });
+
+    // …and the observer proves the first canvas insertion happened strictly
+    // after load ("complete"), never during parse/hydration.
+    const readyStateAtInsert = await page.evaluate(
+      () =>
+        (window as Window & { __canvasReadyStateAtInsert?: string | null })
+          .__canvasReadyStateAtInsert,
+    );
+    expect(readyStateAtInsert).toBe("complete");
+  });
+});
 
 test.describe("Scene delivery — no third-party fetch (WOW-01, DSGVO)", () => {
   test("a forced 3D run issues zero cross-origin requests (detect-gpu benchmarks are same-origin)", async ({
@@ -88,11 +206,13 @@ test.describe("Scene delivery — no third-party fetch (WOW-01, DSGVO)", () => {
       foreign.push(url);
     });
     await page.goto(`/de?webgl=force`);
-    await expect(page.locator("#hero canvas")).toHaveCount(1, {
+    await expect(page.locator("canvas")).toHaveCount(1, {
       timeout: MOUNT_TIMEOUT,
     });
     // No unpkg (detect-gpu default CDN) and nothing else off-origin — the
-    // benchmarks are served from /benchmarks (AGENTS.md DSGVO, T-04-03-02).
+    // benchmarks are served from /benchmarks (AGENTS.md DSGVO, T-04-03-02),
+    // and the Kontinuum stage adds zero new network requests of any kind
+    // (procedural + build-time-sampled geometry, DESIGN-SPEC §6.2).
     expect(foreign.filter((u) => /unpkg\.com/.test(u))).toEqual([]);
     expect(
       foreign,
@@ -101,7 +221,7 @@ test.describe("Scene delivery — no third-party fetch (WOW-01, DSGVO)", () => {
   });
 });
 
-test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
+test.describe("Stage gate — silent context-loss fallback (D-10)", () => {
   test("webglcontextlost unmounts the canvas with no error surfaced", async ({
     page,
   }) => {
@@ -112,7 +232,7 @@ test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
       void d.dismiss();
     });
     await page.goto(`/de?webgl=force`);
-    const canvas = page.locator("#hero canvas");
+    const canvas = page.locator("canvas");
     await expect(canvas).toHaveCount(1, { timeout: MOUNT_TIMEOUT });
 
     // Baseline: any alert/status text present BEFORE the loss (framework
@@ -131,11 +251,13 @@ test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
             .first()
             .dispatchEvent("webglcontextlost")
             .catch(() => {}); // element gone once it unmounts — that's success
-          return page.locator("#hero canvas").count();
+          return page.locator("canvas").count();
         },
         { timeout: MOUNT_TIMEOUT },
       )
       .toBe(0);
+    // The DOM site remains — context loss costs the visitor nothing (D-10:
+    // the DOM is the fallback).
     await expect(page.locator("#hero h1")).toBeVisible();
 
     // Nothing surfaces to the visitor (D-10): the context loss announced no NEW
@@ -145,49 +267,6 @@ test.describe("Scene gate — silent context-loss fallback (D-10)", () => {
     const announcedAfter = (await liveRegions.allInnerTexts()).join("|");
     expect(announcedAfter).toBe(announcedBefore);
     expect(dialogOpened).toBe(false);
-  });
-});
-
-test.describe("Scene gate — scroll-linked exit pauses rendering (D-05, 04-04)", () => {
-  /**
-   * Deterministic test hook (04-04 Task 2 acceptance): constellation-canvas.tsx
-   * mirrors its live `<Canvas frameloop>` value onto a
-   * `data-frameloop="always"|"never"` attribute on
-   * `[data-testid="constellation-frameloop"]` — WebGL render state itself
-   * isn't directly assertable from Playwright, so this DOM attribute is the
-   * chosen, documented hook.
-   */
-  test("scrolling past the hero pauses the canvas; scrolling back resumes it", async ({
-    page,
-  }) => {
-    await page.goto(`/de?webgl=force`);
-    const canvas = page.locator("#hero canvas");
-    await expect(canvas).toHaveCount(1, { timeout: MOUNT_TIMEOUT });
-    const frameloopNode = page.locator(
-      '[data-testid="constellation-frameloop"]',
-    );
-    await expect(frameloopNode).toHaveAttribute(
-      "data-frameloop",
-      "always",
-      { timeout: MOUNT_TIMEOUT },
-    );
-
-    // Scroll well past the hero (bottom of the document) — the exit must
-    // work whether the ScrollTrigger (pointer:fine) or the passive
-    // scroll-listener fallback (touch) is the active progress source.
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await expect(frameloopNode).toHaveAttribute("data-frameloop", "never", {
-      timeout: MOUNT_TIMEOUT,
-    });
-    // The canvas element itself stays mounted (pause, not unmount — D-05
-    // pause-first) — the Phase-3 hero text is unaffected either way.
-    await expect(canvas).toHaveCount(1);
-
-    // Scrolling back resumes rendering.
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await expect(frameloopNode).toHaveAttribute("data-frameloop", "always", {
-      timeout: MOUNT_TIMEOUT,
-    });
   });
 });
 

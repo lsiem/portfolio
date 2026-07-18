@@ -1,8 +1,9 @@
 "use client";
 
 import type React from "react";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { getMotionToken } from "@/lib/motion-tokens";
+import { sceneBridge } from "@/components/scene/scene-bridge";
 
 /**
  * Seamless sub-route transition (D-11.4). An ENHANCED locale-aware anchor: it
@@ -22,7 +23,24 @@ import { getMotionToken } from "@/lib/motion-tokens";
  * and off Lighthouse's measured run. gsap is typically already cached by the time
  * a user clicks (reveals load it on scroll); the reduced-motion path never needs
  * it at all.
+ *
+ * Kontinuum OUT beat (Phase-5 WP-D, DESIGN-SPEC §4): the crossfade additionally
+ * announces itself on the one-way D-08 bridge (`bridge.transition`), so the
+ * persistent particle field scatters in sync with the DOM fade. Without a
+ * mounted canvas the writes are dead letters (`invalidate` is a module-level
+ * no-op) — tier "none" / `?webgl=off` / context-lost behavior stays
+ * byte-identical to today. Reduced-motion and modifier-click paths untouched.
  */
+
+/** OUT is hard-capped at 300ms (§4) — navigation is never hostage to spectacle. */
+const OUT_CAP_S = 0.3;
+/**
+ * Navigation watchdog (§4, Vitrine graft): commit `router.push` at latest this
+ * long after the click, even if the gsap import stalls or the tween is starved
+ * — the out-state can never strand the visitor on the outgoing page.
+ */
+const NAV_WATCHDOG_MS = 700;
+
 type TransitionLinkProps = {
   href: string;
   className?: string;
@@ -35,6 +53,10 @@ export function TransitionLink({
   children,
 }: TransitionLinkProps) {
   const router = useRouter();
+  // Locale-unprefixed, same shape as `href` (both flow through the
+  // @/i18n/navigation wrappers) — the same-path guard below compares like
+  // with like.
+  const pathname = usePathname();
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     // Passthrough: let the browser handle modified / non-primary clicks
@@ -46,6 +68,15 @@ export function TransitionLink({
       event.altKey ||
       event.button !== 0
     ) {
+      return;
+    }
+
+    // Same-path click: router.push(href) would no-op, so the OUT fade would
+    // strand <main> invisible at opacity 0 — bail before any bridge write or
+    // tween. preventDefault keeps the Link's own same-route re-push from
+    // resetting scroll; the click is simply inert.
+    if (href === pathname) {
+      event.preventDefault();
       return;
     }
 
@@ -64,19 +95,44 @@ export function TransitionLink({
       return;
     }
 
+    // Single commit point, guarded — onComplete, the watchdog, and the import
+    // failure path all funnel here; only the first caller navigates.
+    let committed = false;
+    const commit = () => {
+      if (committed) return;
+      committed = true;
+      router.push(href);
+    };
+    window.setTimeout(commit, NAV_WATCHDOG_MS);
+
     void import("gsap")
       .then(({ gsap }) => {
-        gsap.to(main, {
+        // Watchdog already navigated (import stalled >700ms): starting the
+        // tween now would scatter the field mid-IN — skip; the conductor and
+        // its 900ms stale sweep own the field from here.
+        if (committed) return;
+        sceneBridge.transition = {
+          phase: "out",
+          t: 0,
+          startedAt: performance.now(),
+        };
+        const tween = gsap.to(main, {
           opacity: 0,
           y: -getMotionToken("--motion-distance-md"),
-          duration: getMotionToken("--motion-duration-base"),
+          // Hard 300ms OUT cap (§4): quicker than --motion-duration-base wins.
+          duration: Math.min(
+            getMotionToken("--motion-duration-base"),
+            OUT_CAP_S,
+          ),
           ease: "power2.inOut", // named equivalent of --motion-ease-in-out
-          onComplete: () => router.push(href),
+          onUpdate: () => {
+            sceneBridge.transition.t = tween.progress();
+            sceneBridge.invalidate();
+          },
+          onComplete: commit,
         });
       })
-      .catch(() => {
-        router.push(href);
-      });
+      .catch(commit);
   };
 
   return (

@@ -62,9 +62,14 @@ export function GitHubHeatmap({ data, labels }: GitHubHeatmapProps) {
             {week.contributionDays.map((day) => {
               const bucket = intensityBucket(day.contributionCount);
               return (
+                // data-level (Kontinuum WP-D, DESIGN-SPEC §5.1 Contract 4):
+                // the stage chunk reads `#activity [data-level]` once to lift
+                // the REAL contribution levels into the 53×7 grid formation —
+                // gzip-trivial dual-purpose markup, zero JS, zero new fetches.
                 <div
                   key={day.date}
                   title={`${day.date}: ${day.contributionCount}`}
+                  data-level={bucket}
                   className={`${CELL_SIZE} shrink-0 rounded-[2px] ${BUCKET_CLASSNAME[bucket]}`}
                 />
               );

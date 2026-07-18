@@ -201,7 +201,10 @@ for (const locale of locales) {
       page,
     }) => {
       await page.goto(`/${locale}`);
-      const items = page.locator("#projects > ul > li");
+      // Phase-5 WP-D: BentoHover (display:contents client boundary feeding
+      // bridge.hoverRect) sits between #projects and the bento <ul>; the
+      // one-<li>-per-project a11y contract below is unchanged.
+      const items = page.locator("#projects > div > ul > li");
       const headings = page.locator("#projects h3");
       // Pinned to the SAME source the page renders (round-2 LOW finding #5) —
       // never a hardcoded literal, so this does not drift when a project is
@@ -231,7 +234,8 @@ for (const locale of locales) {
     }) => {
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(`/${locale}`);
-      const firstCell = page.locator("#projects > ul > li").first();
+      // WP-D BentoHover wrapper depth — see the bento count spec above.
+      const firstCell = page.locator("#projects > div > ul > li").first();
       await expect(firstCell).toBeVisible();
       const opacity = await firstCell.evaluate((el) => {
         const inner = el.querySelector("div") ?? el;
@@ -250,16 +254,39 @@ for (const locale of locales) {
       const cv = page.locator("#contact a[download]");
       const wrapper = cv.locator("xpath=.."); // the Magnetic <span>
       await cv.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(300); // let Lenis settle after scroll
-      const box = await cv.boundingBox();
-      if (!box) throw new Error("CV button has no bounding box");
-      // Move within the element, offset toward the right edge for a non-zero pull.
-      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-      await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2);
+      // Wait until Lenis has actually settled — a fixed sleep is not enough
+      // under parallel-worker CPU contention (documented flake class,
+      // playwright.config.ts): poll for a stable viewport position instead.
+      let box = await cv.boundingBox();
       await expect
-        .poll(async () =>
-          wrapper.evaluate((el) => getComputedStyle(el).transform),
-        )
+        .poll(async () => {
+          const next = await cv.boundingBox();
+          const stable =
+            box !== null && next !== null && Math.abs(next.y - box.y) < 0.5;
+          box = next;
+          return stable;
+        })
+        .toBe(true);
+      const settled = box;
+      if (!settled) throw new Error("CV button has no bounding box");
+      // Move within the element, offset toward the right edge for a non-zero
+      // pull. Keep nudging between two in-button points while polling — a
+      // single move that lands during a residual scroll frame would otherwise
+      // strand the poll with no further pointermove to react to.
+      await page.mouse.move(
+        settled.x + settled.width / 2,
+        settled.y + settled.height / 2,
+      );
+      let flip = false;
+      await expect
+        .poll(async () => {
+          flip = !flip;
+          await page.mouse.move(
+            settled.x + settled.width - (flip ? 2 : 6),
+            settled.y + settled.height / 2,
+          );
+          return wrapper.evaluate((el) => getComputedStyle(el).transform);
+        })
         .not.toBe("none");
       // Leave → snap back to identity.
       await page.mouse.move(2, 2);

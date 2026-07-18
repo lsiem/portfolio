@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import type { CareerEntry } from "../../../content/shared/types";
+import { sceneBridge } from "@/components/scene/scene-bridge";
 
 // Gate on reduced-motion AND lg+ width: the spine is `hidden lg:block`, so it is
 // never visible below lg. Gating gsap on `(min-width: 1024px)` too means it is
@@ -94,6 +95,10 @@ export function CareerSpine({
         // Transform-only scrub via onUpdate — no `pin`, no scroll hijack (D-05).
         onUpdate: (self) => {
           gsap.set(fill, { scaleY: self.progress });
+          // Kontinuum (WP-D): mirror the rail fill onto the one-way bridge so
+          // the filament's brightness pulse tracks it (dead letter without a
+          // mounted canvas; the scroll director owns invalidation).
+          sceneBridge.sectionProgress = self.progress;
         },
       });
       cleanup = () => trigger.kill();
