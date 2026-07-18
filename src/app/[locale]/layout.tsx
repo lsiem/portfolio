@@ -198,9 +198,16 @@ export default async function LocaleLayout({
           */}
           <StageSlot />
         </NextIntlClientProvider>
-        {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner */}
-        <Analytics />
-        <SpeedInsights />
+        {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner.
+            Gated on the Vercel build env: off-platform (CI LHCI, local `next start`)
+            the loaders 404 and their HTML error pages count as ~1.5KB of script
+            transfer against the TECH-01 eager budget — pure measurement junk. */}
+        {process.env.VERCEL === "1" && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );
