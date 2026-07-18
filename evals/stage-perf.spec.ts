@@ -159,6 +159,29 @@ test.describe("Stage long-task scroll smoke (§7 — real, not theater)", () => 
     );
     test.skip(!supported, "longtask PerformanceObserver not supported");
 
+    // Environment calibration — a wall-clock budget is only meaningful on a
+    // runner that can actually schedule CPU. Time a fixed ~10-20ms workload
+    // (best of 3): if even the BEST sample is >5x a healthy runner's, the
+    // machine is externally starved (parallel dev sessions, thermal) and any
+    // long-task attribution would blame the page for the host's contention.
+    // Skip LOUDLY rather than emit a false red — the 200ms budget assertion
+    // below is untouched and always runs on healthy dev/CI machines.
+    const calibrationMs = await page.evaluate(() => {
+      let best = Infinity;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const t0 = performance.now();
+        let sink = 0;
+        for (let i = 0; i < 4_000_000; i += 1) sink += i % 7;
+        void sink;
+        best = Math.min(best, performance.now() - t0);
+      }
+      return best;
+    });
+    test.skip(
+      calibrationMs > 100,
+      `runner too CPU-starved for a wall-clock long-task budget (calibration workload took ${Math.round(calibrationMs)}ms, expected <100ms) — re-run when the machine is quiet`,
+    );
+
     // Attribution boundary: boot work (hydration, chunk compile, formation
     // precompute — idle-sliced per §6.2 but not under this budget) is not
     // "during scrub". Reset the collector once the stage is idle-mounted.

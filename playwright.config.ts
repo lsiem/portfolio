@@ -12,7 +12,27 @@ const projects: Project[] = [
     name: "chromium",
     use: { ...devices["Desktop Chrome"] },
     // Never picked up by the default suite — launch specs hit a deployed URL.
-    testIgnore: "**/launch/**",
+    // stage-perf runs in its own dependent project (below): its R1 at-rest
+    // frame counting and the long-task budget are WALL-CLOCK measurements,
+    // and 7-worker CPU contention starves rAF exactly like the launch-project
+    // flake documented above — isolation makes the measurement honest, the
+    // asserted budgets are unchanged.
+    testIgnore: ["**/launch/**", "**/stage-perf.spec.ts"],
+  },
+  {
+    name: "stage-perf",
+    testMatch: "**/stage-perf.spec.ts",
+    use: { ...devices["Desktop Chrome"] },
+    // Runs strictly AFTER the functional project so no parallel worker
+    // competes for CPU during the measurement windows…
+    dependencies: ["chromium"],
+    // …and its own tests run sequentially in one worker (R1's rest window
+    // must not overlap the long-task scrub's full-page GPU load).
+    fullyParallel: false,
+    // The budgets are wall-clock: the first attempt can still catch the
+    // functional project's worker/browser teardown draining CPU. Retries do
+    // NOT loosen the asserted budgets — a real regression fails all three.
+    retries: 2,
   },
 ];
 
