@@ -200,11 +200,23 @@ export function resolveSectionAnchors(): SectionAnchor[] {
   return anchors;
 }
 
+/**
+ * Upper bound on idle deferral per slice. Idle slicing is politeness, not a
+ * correctness gate — each slice is a handful of rect reads. Without a
+ * deadline, a starved main thread (CI contention, background tab churn) can
+ * defer requestIdleCallback for SECONDS, landing the layout publish (and the
+ * formation-target rebuild it triggers) long after the field settled — a
+ * late one-shot re-convergence that violates the at-rest invariant R1 (§7).
+ */
+const IDLE_TIMEOUT_MS = 200;
+
 function scheduleIdle(callback: () => void): () => void {
   // typeof probe, not `in` narrowing (lib.dom types the API non-optional, so
   // an `in` guard would narrow `window` to never on the Safari branch).
   if (typeof window.requestIdleCallback === "function") {
-    const id = window.requestIdleCallback(callback);
+    const id = window.requestIdleCallback(callback, {
+      timeout: IDLE_TIMEOUT_MS,
+    });
     return () => window.cancelIdleCallback(id);
   }
   const id = window.setTimeout(callback, IDLE_FALLBACK_MS);

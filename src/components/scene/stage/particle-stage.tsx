@@ -90,12 +90,32 @@ const CAMERA_SPLINE_POINTS: [number, number, number][] = [
   [0.24, -0.14, 7.7],
   [0, 0, 8],
 ];
-/** Smoothing rate toward bridge.pageProgress (per second). */
-const CAMERA_SMOOTH_RATE = 3;
-/** Below this progress delta the camera snaps and stops demanding frames. */
-const CAMERA_EPS = 0.0005;
-/** Clamp pathological first-frame/idle-gap deltas (demand loop). */
-const MAX_DT_S = 0.1;
+/**
+ * Smoothing rate toward bridge.pageProgress (per second). Sized with
+ * CAMERA_EPS for R1's 1500 ms settle window (§7): worst case (full-page jump,
+ * Δprogress = 1) is ln(1 / 0.005) / 6 ≈ 0.9 s of settling frames. The old
+ * 3 / 0.0005 pairing took ~2.4 s and was the longest at-rest leak tail.
+ */
+const CAMERA_SMOOTH_RATE = 6;
+/**
+ * Below this progress delta the camera snaps and stops demanding frames.
+ * 0.005 of the spline is well under a pixel of camera travel — the snap is
+ * invisible; the epsilon exists purely as the demand-loop leak guard (§6.3).
+ */
+const CAMERA_EPS = 0.005;
+/**
+ * Clamp pathological first-frame/idle-gap deltas (demand loop) for ELAPSED
+ * accumulation only — drift phases and pulse timelines must not teleport
+ * after a long idle gap. Convergence math (pool lerp, velocity decay, camera
+ * smoothing) deliberately uses the wall-clock delta instead (MAX_SETTLE_DT_S):
+ * those are exponential approaches where a big dt just completes the
+ * transition — exactly the correct at-rest behavior — and clamping them
+ * stretches the settle window past R1's 1500 ms wall-clock budget (§7)
+ * whenever rAF degrades (throttled/occluded headless, starved CI runners).
+ */
+const MAX_DT_S = 0.25;
+/** Wall-clock delta cap for the convergence exponentials (sanity bound). */
+const MAX_SETTLE_DT_S = 2;
 
 function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
@@ -286,6 +306,8 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
     if (sceneBridge.paused) return;
 
     const dt = Math.min(rawDelta, MAX_DT_S);
+    // Wall-clock delta for the convergence exponentials — see MAX_DT_S note.
+    const dtSettle = Math.min(rawDelta, MAX_SETTLE_DT_S);
     elapsedRef.current += dt;
     const elapsed = elapsedRef.current;
 
@@ -343,8 +365,23 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       "position",
     ) as THREE.BufferAttribute;
     const positions = posAttr.array as Float32Array;
-    const engineResult = engine.step(dt, elapsed, positions, intensity);
+    const engineResult = engine.step(dtSettle, elapsed, positions, intensity);
     const wConst = engineResult.constellationWeight;
+
+    // D-09 is hero furniture: if the visitor scrolls away mid-boot (the field
+    // has morphed off the constellation), do NOT keep the demand loop awake
+    // holding for the boot beat / staging the assemble — degrade to the plain
+    // fade, resumed from the current reveal level so nothing pops. Bounded at
+    // FADE_DURATION_S, which keeps the one-shot boot cost inside R1's 1500 ms
+    // settle window (§7) even for a deep scroll during boot. Takes effect on
+    // the next frame — this frame's reveal values are already computed.
+    if (
+      wConst < 0.5 &&
+      (entrance.phase === "waiting-boot" || entrance.phase === "assembling")
+    ) {
+      entrance.phase = "fading";
+      entrance.phaseStartedAt = elapsed - revealNode * FADE_DURATION_S;
+    }
 
     // --- 3. Scroll-offset group transform (§3 global rule) ------------------
     const wpp = engine.worldPerPixel;
@@ -359,7 +396,7 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       const diff = target - smoothedProgressRef.current;
       if (Math.abs(diff) > CAMERA_EPS) {
         smoothedProgressRef.current +=
-          diff * Math.min(1, dt * CAMERA_SMOOTH_RATE);
+          diff * Math.min(1, dtSettle * CAMERA_SMOOTH_RATE);
         cameraSettling = true;
       } else if (diff !== 0) {
         smoothedProgressRef.current = target; // snap — stop invalidating (§6.3)
@@ -374,7 +411,7 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
           cameraPosRef.current.y * 0.3,
           0,
         ),
-        Math.min(1, dt * CAMERA_SMOOTH_RATE),
+        Math.min(1, dtSettle * CAMERA_SMOOTH_RATE),
       );
       state.camera.lookAt(lookTargetRef.current);
     }

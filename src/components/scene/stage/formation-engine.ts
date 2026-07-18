@@ -53,20 +53,36 @@ import { randomInRange, seededRandom } from "../constellation-data";
  * Pool convergence rate (per second) for the exponential lerp toward targets.
  * Sized together with SETTLE_EPS so a worst-case full-field morph goes silent
  * comfortably inside R1's 1500 ms settle window (§7): from ~10 world units,
- * ln(10/0.003)/6 ≈ 1.35 s of frames, then zero.
+ * ln(10/0.003)/8 ≈ 1.0 s of frames, then zero. (6 gave 1.35 s — measured
+ * ~1.7 s from the scroll landing, over the settle budget once the anchor-jump
+ * offset is added; 8 restores real margin at a barely-perceptible snappier
+ * catch-up, time constant 0.125 s vs 0.167 s.)
  */
-const LERP_RATE = 6;
+const LERP_RATE = 8;
 /** World-unit epsilon below which the pool counts as settled (~0.4 px). */
 const SETTLE_EPS_SQ = 0.003 * 0.003;
 /** Per-particle stagger span as a fraction of the morph timeline (§3). */
 const STAGGER_SPAN = 0.35;
 /** Full-scatter travel distance in world units (§4 OUT burst). */
 const SCATTER_DIST = 6;
-/** Scroll-velocity decay rate (per second) and settle floor. */
-const VELOCITY_DECAY_RATE = 3;
-const VELOCITY_EPS = 0.01;
+/**
+ * Scroll-velocity decay rate (per second) and settle floor. Sized for R1's
+ * 1500 ms settle window (§7): with the write capped at VELOCITY_CAP, the
+ * worst-case decay is ln(VELOCITY_CAP / VELOCITY_EPS) / 10 ≈ 0.48 s of
+ * frames — a slow decay here (or an uncapped Lenis jump velocity in the
+ * thousands) keeps `needsFrame` true for seconds after an anchor jump and
+ * IS the demand-loop leak R1 exists to catch.
+ */
+const VELOCITY_DECAY_RATE = 10;
+const VELOCITY_EPS = 0.5;
 /** Velocity normalization (Lenis |velocity| → 0..1 turbulence input). */
 const VELOCITY_NORM = 40;
+/**
+ * Ceiling applied when reading `bridge.scrollVelocity`: turbulence saturates
+ * at VELOCITY_NORM anyway, so anything above renders identically — capping
+ * only bounds the decay time (page-jump velocities are unbounded).
+ */
+const VELOCITY_CAP = VELOCITY_NORM * 1.5;
 /** Max turbulence displacement in world units at full velocity. */
 const TURBULENCE_MAX = 0.5;
 /** Turbulence oscillation speed multiplier over the drift frequencies. */
@@ -228,6 +244,11 @@ export class FormationEngine {
    * Advance the pool one frame. Reads the bridge, writes world positions into
    * `out` (the live position BufferAttribute array) and brightness 0..1 into
    * `intensityOut` — the caller uploads and colors.
+   *
+   * `dt` is the caller's WALL-CLOCK settle delta (particle-stage `dtSettle`,
+   * loosely capped): it only feeds the exponential lerp/decay below, which
+   * are unconditionally stable — a large dt completes the transition, which
+   * is the correct at-rest behavior under degraded rAF (§7 R1).
    */
   step(
     dt: number,
@@ -274,7 +295,7 @@ export class FormationEngine {
     const transition = sceneBridge.transition;
     const scatter = transition.phase === "idle" ? 0 : clamp01(transition.t) * SCATTER_DIST;
 
-    let velocity = sceneBridge.scrollVelocity;
+    let velocity = Math.min(sceneBridge.scrollVelocity, VELOCITY_CAP);
     if (velocity > VELOCITY_EPS) {
       velocity *= Math.exp(-VELOCITY_DECAY_RATE * dt);
       if (velocity <= VELOCITY_EPS) velocity = 0;
