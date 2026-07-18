@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { getCaseStudies, getCaseStudy } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
+import { StageFormation } from "@/components/scene/stage-formation";
 import { localeAlternates, siteMetadataBase } from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
@@ -48,6 +49,9 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28">
+      {/* Kontinuum (WP-D, DESIGN-SPEC §3): sparse orbital ring behind the h1
+          for capable tiers — a dead-letter bridge write for everyone else. */}
+      <StageFormation id="halo" />
       <article className="flex flex-col gap-10">
         {/* Engineered but reading-first (D-15): Bricolage display H1, gentle
             reveals that support comprehension — no chapter-level drama. */}
