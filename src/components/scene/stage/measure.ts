@@ -24,9 +24,11 @@ import type { SectionAnchor } from "./progress";
  * precompute downstream of `onLayout` is WP-B's to slice).
  *
  * Contract 4 side effect: each completed pass mirrors the defensively-parsed
- * heatmap levels into `sceneBridge.heatmapLevels` (this module is the chunk's
- * designated "reads the DOM once" reader; malformed/absent cells → null → the
- * grid formation's neutral wave-sheet fallback).
+ * heatmap levels into `sceneBridge.heatmapLevels` (this module is the SINGLE
+ * bridge writer). Only a successful parse overwrites the bridge — a route
+ * without #activity (or a malformed pass) keeps the last-known-good levels;
+ * until the first successful parse the initial null means the grid
+ * formation's neutral wave-sheet fallback (§3).
  */
 
 /** Debounce for resize-triggered re-measures (§3 global rule). */
@@ -274,13 +276,15 @@ export function initLayoutMeasurement(
           // Slice 3: heatmap + assemble + publish.
           cancelPending = scheduleIdle(() => {
             if (disposed || gen !== generation) return;
+            // Contract 4, single writer: only a successful parse overwrites
+            // the bridge — routes without #activity keep last-known-good.
             const heatmap = readHeatmapLevels();
-            sceneBridge.heatmapLevels = heatmap;
+            if (heatmap) sceneBridge.heatmapLevels = heatmap;
             onLayout({
               sections,
               bentoCells,
               spineX,
-              heatmap,
+              heatmap: sceneBridge.heatmapLevels,
               viewport: { w: window.innerWidth, h: window.innerHeight },
               worldPerPixel: computeWorldPerPixel(window.innerHeight, camera),
             });

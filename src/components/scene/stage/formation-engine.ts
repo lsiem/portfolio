@@ -165,6 +165,13 @@ export class FormationEngine {
   private mode: "scroll" | "route" = "route";
 
   private idleHandle: number | null = null;
+  /**
+   * Epoch for the idle precompute chain: every chain carries the generation
+   * it was scheduled under and stops itself once a newer schedulePrecompute()
+   * (or dispose()) bumps it — a re-schedule mid-chain can never orphan a
+   * still-self-rescheduling chain (StrictMode's double mount guarantees one).
+   */
+  private precomputeGeneration = 0;
   private readonly stepResult: StepResult = {
     needsFrame: false,
     opacity: 1,
@@ -217,6 +224,14 @@ export class FormationEngine {
     const initial = this.targetsFor(sceneBridge.routeFormation);
     this.base.set(initial.positions);
     this.baseIntensity.set(initial.intensity);
+  }
+
+  /**
+   * Kick off the idle precompute chain (§6.2). Called from an effect — NOT
+   * the constructor — so the useMemo construction in particle-stage.tsx stays
+   * free of render-phase side effects (StrictMode double-invokes render).
+   */
+  start(): void {
     this.schedulePrecompute();
   }
 
@@ -234,6 +249,7 @@ export class FormationEngine {
 
   /** Drop the idle precompute chain (canvas unmount). */
   dispose(): void {
+    this.precomputeGeneration += 1; // any in-flight chain sees itself stale
     if (this.idleHandle !== null && "cancelIdleCallback" in window) {
       window.cancelIdleCallback(this.idleHandle);
     }
@@ -378,10 +394,11 @@ export class FormationEngine {
 
   /** Lazy per-formation targets — built on demand, cached per layout. */
   private targetsFor(id: FormationId): FormationTargets {
-    // Contract-4 late bind: stage-canvas reads the heatmap cells AFTER this
-    // engine (and possibly its interim layout) already exists — patch the
-    // layout once so a lazily-built `grid` sees the real levels instead of
-    // being stuck on the wave-sheet fallback until the next measure pass.
+    // Contract-4 late bind: measure.ts (slice 3, the single bridge writer)
+    // publishes the heatmap AFTER this engine (and possibly its interim
+    // layout) already exists — patch the layout once so a lazily-built `grid`
+    // sees the real levels instead of being stuck on the wave-sheet fallback
+    // until the next measure pass.
     if (
       id === "grid" &&
       this.layout.heatmap === null &&
@@ -405,10 +422,12 @@ export class FormationEngine {
    */
   private schedulePrecompute(): void {
     if (!("requestIdleCallback" in window)) return; // lazy path still covers Safari
+    const gen = ++this.precomputeGeneration;
     const pending: FormationId[] = (
       Object.keys(FORMATION_TUNING) as FormationId[]
     ).filter((id) => !this.targetCache.has(id));
     const buildNext = (): void => {
+      if (gen !== this.precomputeGeneration) return; // superseded — stop
       const id = pending.shift();
       if (!id) {
         this.idleHandle = null;

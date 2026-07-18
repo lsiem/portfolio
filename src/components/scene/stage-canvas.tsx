@@ -64,9 +64,10 @@ const STAGE_CAMERA: StageCameraIntrinsics = {
  *     #contact intersects the viewport and the tab is visible (Vitrine
  *     graft; keeps the field breathing in hero/contact — R2 — while
  *     guaranteeing zero frames at rest mid-page — R1)
- *   - one-shot heatmap read (`#activity [data-level]`, Contract 4) —
- *     defensively parsed; malformed → null → wave-sheet fallback (§3)
  *   - the WP-D transition conductor (IN decay toward `routeFormation`, §4)
+ *
+ * The Contract-4 heatmap read rides WP-C's measurement pass — measure.ts
+ * slice 3 is the SINGLE `sceneBridge.heatmapLevels` writer (see its header).
  */
 
 export default function StageCanvas({ tier }: { tier: SceneTier }) {
@@ -160,27 +161,6 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
       window.cancelAnimationFrame(raf);
       sceneBridge.ambientVisible = false;
     };
-  }, [pathname]);
-
-  // --- Contract 4: one-shot defensive heatmap read ---------------------------
-  // Re-attempted per route until the #activity cells are actually in the DOM
-  // (only the home page has them); once parsed, never re-read.
-  useEffect(() => {
-    if (sceneBridge.heatmapLevels) return;
-    const cells = document.querySelectorAll("#activity [data-level]");
-    if (cells.length === 0) return;
-    const levels = new Uint8Array(cells.length);
-    let valid = true;
-    cells.forEach((cell, index) => {
-      const parsed = Number(cell.getAttribute("data-level"));
-      if (!Number.isInteger(parsed) || parsed < 0 || parsed > 4) {
-        valid = false;
-        return;
-      }
-      levels[index] = parsed;
-    });
-    // Malformed cells ⇒ null ⇒ the grid formation's neutral wave sheet (§3).
-    sceneBridge.heatmapLevels = valid ? levels : null;
   }, [pathname]);
 
   // --- Bridge lifecycle: invalidate reverts to the dead-letter no-op --------

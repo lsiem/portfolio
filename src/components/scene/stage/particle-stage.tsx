@@ -9,7 +9,11 @@ import type {
   PointsMaterial,
 } from "three";
 import { sceneBridge } from "../scene-bridge";
-import { resolveSceneColors, type SceneColors } from "@/lib/theme-color-resolver";
+import {
+  observeThemeColors,
+  resolveSceneColors,
+  type SceneColors,
+} from "@/lib/theme-color-resolver";
 import { getMotionToken } from "@/lib/motion-tokens";
 import { constellationGraphForCount, POOL_COUNT } from "./formations";
 import {
@@ -44,8 +48,11 @@ import { createFrameMonitor } from "./frame-monitor";
  *      demand loop awake mid-page — at-rest invariant R1), D-09 entrance.
  *   6. Colors: border→muted intensity ramp per particle (deep "reserve dust"
  *      sits near border = near-invisible on both themes), boot-flash toward
- *      foreground, pointer blend toward accent — all token-driven, re-read
- *      every frame so theme flips repaint for free (RESEARCH Pattern 5).
+ *      foreground, pointer blend toward accent — all token-driven (D-08:
+ *      theme tokens stay the single color source) through a cached
+ *      SceneColors ref; the observeThemeColors() subscription refreshes it
+ *      and pokes the demand loop on theme flips (RESEARCH Pattern 5), so a
+ *      flip at rest still repaints under frameloop="demand".
  *   7. Demand-loop settling (§6.3): `state.invalidate()` is called at the end
  *      ONLY while something is actually converging (engine, entrance,
  *      camera smoothing, in-flight pulses). Everything snaps below epsilon
@@ -167,7 +174,13 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       ),
     [count],
   );
-  useEffect(() => () => engine.dispose(), [engine]);
+  // Idle precompute kickoff lives here — not in the constructor — so the
+  // useMemo above has no render-phase side effect; dispose stales the chain
+  // via the engine's precompute epoch (StrictMode-safe).
+  useEffect(() => {
+    engine.start();
+    return () => engine.dispose();
+  }, [engine]);
 
   const { nodeGeometry, edgeGeometry } = useMemo(() => {
     const nodeGeo = new THREE.BufferGeometry();
@@ -223,9 +236,21 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
   const pulseDotMaterialRef = useRef<PointsMaterial>(null);
   const pulseTrailMaterialRef = useRef<LineBasicMaterial>(null);
 
-  // Theme colors: read once synchronously (client-only chunk, safe), then
-  // re-read every frame — a theme flip repaints without any subscription.
+  // Theme colors: resolved once synchronously (client-only chunk, safe), then
+  // kept fresh by the observeThemeColors subscription below — resolving per
+  // frame would allocate 4 THREE.Colors + 4 getComputedStyle parses right
+  // after the data-scene-frames write, and a flip at rest would never repaint
+  // under frameloop="demand". The subscription updates the ref and pokes the
+  // demand loop instead; tokens remain the single color source (D-08).
   const colorsRef = useRef<SceneColors>(resolveSceneColors());
+  useEffect(
+    () =>
+      observeThemeColors((colors) => {
+        colorsRef.current = colors;
+        sceneBridge.invalidate();
+      }),
+    [],
+  );
 
   const elapsedRef = useRef(0);
   const framesRef = useRef(0);
@@ -318,8 +343,8 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       state.setDpr(1);
     }
 
-    // Refresh theme colors every frame (cheap; RESEARCH Pattern 5).
-    colorsRef.current = resolveSceneColors();
+    // Theme colors come from the cached ref — refreshed only by the
+    // observeThemeColors subscription above, never per frame.
     const { muted, border, accent, foreground } = colorsRef.current;
 
     // --- D-09 entrance state machine (verbatim from constellation.tsx) -----

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { getMotionToken } from "@/lib/motion-tokens";
 import { sceneBridge } from "@/components/scene/scene-bridge";
 
@@ -53,6 +53,10 @@ export function TransitionLink({
   children,
 }: TransitionLinkProps) {
   const router = useRouter();
+  // Locale-unprefixed, same shape as `href` (both flow through the
+  // @/i18n/navigation wrappers) — the same-path guard below compares like
+  // with like.
+  const pathname = usePathname();
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     // Passthrough: let the browser handle modified / non-primary clicks
@@ -64,6 +68,15 @@ export function TransitionLink({
       event.altKey ||
       event.button !== 0
     ) {
+      return;
+    }
+
+    // Same-path click: router.push(href) would no-op, so the OUT fade would
+    // strand <main> invisible at opacity 0 — bail before any bridge write or
+    // tween. preventDefault keeps the Link's own same-route re-push from
+    // resetting scroll; the click is simply inert.
+    if (href === pathname) {
+      event.preventDefault();
       return;
     }
 
