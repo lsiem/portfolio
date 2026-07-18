@@ -37,9 +37,9 @@ import { decideSceneTier, type SceneTier } from "@/lib/capability";
 
 // ssr:false is illegal in a Server Component (RESEARCH Pattern 1) — this file
 // is "use client", so the boundary is valid and makes the chunk async-only.
-// Wave-1 interim stage: today's constellation, hoisted to layout level.
-// WP-B swaps this import target for ./stage-canvas (the formation engine).
-const StageCanvas = dynamic(() => import("./constellation-canvas"), {
+// WP-B stage: the particle formation engine (Wave-1's interim
+// constellation-canvas is absorbed into it as the `constellation` formation).
+const StageCanvas = dynamic(() => import("./stage-canvas"), {
   ssr: false,
 });
 
