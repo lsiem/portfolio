@@ -11,8 +11,6 @@ import {
 import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
 import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
-import { HeroSceneSlot } from "@/components/motion/hero-scene-slot";
-import { HeroSceneGate } from "@/components/scene/hero-scene-gate";
 import { Magnetic } from "@/components/motion/magnetic";
 import { AnchorLink } from "@/components/motion/anchor-link";
 import { ProjectBento } from "@/components/motion/project-bento";
@@ -97,11 +95,15 @@ export default async function HomePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
       />
       <section id="hero" className="relative w-full px-6">
-        {/* Phase-4 3D background layer (D-13): the capability-gated, lazily
-            mounted hero constellation (04-03). Absent for excluded visitors. */}
-        <HeroSceneSlot>
-          <HeroSceneGate />
-        </HeroSceneSlot>
+        {/* Hero positioning/contrast layer (D-13 successor). The Phase-4
+            in-hero canvas slot is retired — the capability-gated field now
+            lives in the layout-level StageSlot (DESIGN-SPEC §2.1, WP-A). This
+            empty layer keeps the hero's DOM shape unchanged for excluded
+            visitors and stays available for a contrast scrim over the stage. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10"
+        />
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and
           value-prop are targets of HeroIntro's on-mount timeline. HeroIntro

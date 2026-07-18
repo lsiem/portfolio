@@ -6,11 +6,13 @@ import dynamic from "next/dynamic";
 import { decideSceneTier, type SceneTier } from "@/lib/capability";
 
 /**
- * Hero constellation gate (D-07, D-10, WOW-01). Decides — after first paint,
- * on idle — whether a capable device gets the lazily-loaded WebGL scene, and
- * renders NOTHING for everyone else (reduced-motion, weak device, software GL,
- * ?webgl=off, or a WebGL crash): the Phase-3 hero stays byte-identical, no
- * placeholder, no spinner, no message.
+ * Stage gate (D-07, D-10, WOW-01; DESIGN-SPEC §2.1) — the ONLY mount decision
+ * in the app. A direct generalization of the verified hero-scene-gate.tsx
+ * with identical semantics, now hoisted to layout level via StageSlot.
+ * Decides — after first paint, on idle — whether a capable device gets the
+ * lazily-loaded WebGL stage, and renders NOTHING for everyone else
+ * (reduced-motion, weak device, software GL, ?webgl=off, or a WebGL crash):
+ * the DOM stays byte-render-identical, no placeholder, no spinner, no message.
  *
  * Bundle discipline (WOW-01 "nie im Initial-Bundle"): three/@react-three/fiber
  * enter ONLY through `dynamic(() => import(...), { ssr: false })` below, and
@@ -25,6 +27,8 @@ import { decideSceneTier, type SceneTier } from "@/lib/capability";
  * stable value and `tier` starts "none", so SSR and the first client render are
  * always null — no hydration mismatch. The tier itself resolves asynchronously
  * (idle -> decideSceneTier -> setState), which IS an allowed effect.
+ * Reduced-motion is unconditional "none" — it beats ?webgl=force — and the
+ * live matchMedia change listener unmounts the stage mid-session.
  *
  * NOT the motion gate (RESEARCH Pitfall 7): only reduced-motion composes here.
  * Pointer-fineness gates the pointer-influence FEATURE (D-06, in 04-04), never
@@ -33,7 +37,9 @@ import { decideSceneTier, type SceneTier } from "@/lib/capability";
 
 // ssr:false is illegal in a Server Component (RESEARCH Pattern 1) — this file
 // is "use client", so the boundary is valid and makes the chunk async-only.
-const ConstellationCanvas = dynamic(() => import("./constellation-canvas"), {
+// Wave-1 interim stage: today's constellation, hoisted to layout level.
+// WP-B swaps this import target for ./stage-canvas (the formation engine).
+const StageCanvas = dynamic(() => import("./constellation-canvas"), {
   ssr: false,
 });
 
@@ -55,7 +61,7 @@ function getServerSnapshot(): boolean {
 /**
  * ~20-line error boundary (no in-repo analog). Any throw from Canvas creation
  * or the scene subtree collapses to null — the silent D-10 fallback = the
- * Phase-3 hero, never an error surfaced to the visitor (success criterion 2).
+ * DOM-only site, never an error surfaced to the visitor (success criterion 2).
  */
 class SceneErrorBoundary extends Component<
   { children: React.ReactNode },
@@ -71,7 +77,7 @@ class SceneErrorBoundary extends Component<
   }
 }
 
-export function HeroSceneGate() {
+export function StageGate() {
   const reducedMotion = useSyncExternalStore(
     subscribeReducedMotion,
     getReducedMotionSnapshot,
@@ -103,7 +109,7 @@ export function HeroSceneGate() {
           .catch(() => {
             // Silent D-10 fallback: a failed detect-gpu import or benchmark
             // fetch must not surface (no unhandled rejection, no console
-            // noise) — tier stays "none", so the Phase-3 hero is unchanged.
+            // noise) — tier stays "none", so the DOM-only site is unchanged.
           });
       });
     };
@@ -125,7 +131,7 @@ export function HeroSceneGate() {
   if (reducedMotion || tier === "none") return null; // D-10: nothing missing
   return (
     <SceneErrorBoundary>
-      <ConstellationCanvas tier={tier} />
+      <StageCanvas tier={tier} />
     </SceneErrorBoundary>
   );
 }

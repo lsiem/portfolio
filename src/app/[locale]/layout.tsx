@@ -10,6 +10,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { AnchorLink } from "@/components/motion/anchor-link";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { StageSlot } from "@/components/scene/stage-slot";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -187,6 +188,15 @@ export default async function LocaleLayout({
               </nav>
             </div>
           </footer>
+          {/*
+            Phase-5 Kontinuum stage (DESIGN-SPEC §2.1): the layout renders a
+            GATE, never a canvas — StageSlot -> StageGate decides post-idle
+            whether a capable visitor gets the persistent, fixed, behind-DOM
+            WebGL field. Sibling AFTER the footer, outside MotionProvider, so
+            layout persistence keeps the WebGL context alive across route and
+            DE<->EN navigations.
+          */}
+          <StageSlot />
         </NextIntlClientProvider>
         {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner */}
         <Analytics />
