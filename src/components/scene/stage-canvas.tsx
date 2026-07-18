@@ -1,13 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { usePathname } from "next/navigation";
 import type { SceneTier } from "@/lib/capability";
 import { sceneBridge } from "./scene-bridge";
 import { ParticleStage } from "./stage/particle-stage";
 import { useTransitionConductor } from "./stage/transition-conductor";
+import { setStageLayout } from "./stage/formation-engine";
+import { formationForRoute } from "./stage/section-config";
+import {
+  useMeasuredLayout,
+  type StageCameraIntrinsics,
+} from "./stage/measure";
 import { CAMERA_FOV_DEG, CAMERA_Z } from "./stage/formations";
+
+// WP-C scroll producers (§3 "Scroll choreography wiring"), pointer-gated:
+// scroll-director statically imports gsap/ScrollTrigger, so it may ONLY be
+// reached through this pointer:fine-gated lazy() — a static import would pull
+// GSAP into the touch download and break the mobile Lighthouse budget. Touch
+// devices mount the GSAP-free touch producer instead.
+const ScrollDirector = lazy(() => import("./stage/scroll-director"));
+const TouchScrollProducer = lazy(() => import("./stage/touch-scroll-producer"));
+
+// The measure.ts unprojection must use THIS canvas's camera pose (Contract 2:
+// worldPerPixel diverges from doc px otherwise). Module-constant so the
+// measurement lifecycle isn't restarted per render.
+const STAGE_CAMERA: StageCameraIntrinsics = {
+  fovDeg: CAMERA_FOV_DEG,
+  distance: CAMERA_Z,
+};
 
 /**
  * Lazy chunk entry for the Kontinuum stage (WP-B; DESIGN-SPEC §2.1) — the
@@ -53,8 +75,27 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
   const frameHookRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
 
+  // pointer:fine decides the scroll-producer flavor once per canvas lifetime
+  // (§3): fine ⇒ GSAP ScrollTrigger director, coarse ⇒ rAF touch producer.
+  // ssr:false on this chunk guarantees window exists at first render.
+  const [finePointer] = useState(
+    () => window.matchMedia("(pointer: fine)").matches,
+  );
+
   // §4 IN half: pathname-subscribed decay toward bridge.routeFormation.
   useTransitionConductor();
+
+  // §3 Contract 2: WP-C's measurement lifecycle feeds the formation engine
+  // (fonts.ready → idle-sliced pass → debounced resize → per-route re-measure).
+  useMeasuredLayout(setStageLayout, STAGE_CAMERA);
+
+  // Route→formation registry (Weltlinie graft, §5.2): keeps routeFormation
+  // correct on marker-less routes (home ⇒ "constellation") and degrades
+  // unknown routes to "rest". StageFormation markers write the same value for
+  // their routes, so the double write never flips the engine's morph source.
+  useEffect(() => {
+    sceneBridge.routeFormation = formationForRoute(pathname);
+  }, [pathname]);
 
   // --- visibilitychange producer (R3): hidden ⇒ "never" + paused ------------
   useEffect(() => {
@@ -165,6 +206,11 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
       data-scene-frames="0"
       className="contents"
     >
+      {/* WP-C producers live DOM-side (usePathname doesn't cross the R3F
+          reconciler), render null, and lazy-load their own chunk. */}
+      <Suspense fallback={null}>
+        {finePointer ? <ScrollDirector /> : <TouchScrollProducer />}
+      </Suspense>
       <Canvas
         frameloop={frameloop}
         dpr={tier === "mobile" ? [1, 1.25] : [1, 1.5]}

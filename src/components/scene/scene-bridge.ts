@@ -77,18 +77,7 @@ export interface StageBridge {
   invalidate: () => void;
 }
 
-export interface SceneBridgeState extends StageBridge {
-  /**
-   * Wave-1 legacy: hero scroll-exit progress 0..1 (D-05) — 0 = hero fully in
-   * view, 1 = hero fully scrolled past. Written by constellation-canvas's two
-   * progress producers, read by constellation.tsx. Retired together with
-   * those files when WP-B lands the stage chunk (`formation`/`pageProgress`
-   * supersede it).
-   */
-  scrollProgress: number;
-}
-
-export const sceneBridge: SceneBridgeState = {
+export const sceneBridge: StageBridge = {
   // "constellation" is the hero/homepage default; StageFormation markers
   // overwrite it on routes that want a different field shape (halo/rest).
   formation: { from: "constellation", to: "constellation", t: 0 },
@@ -108,5 +97,4 @@ export const sceneBridge: SceneBridgeState = {
     // Intentionally empty: replaced by R3F state.invalidate in StageCanvas
     // onCreated (WP-B). Dead-letter writes before then must cost nothing.
   },
-  scrollProgress: 0,
 };
