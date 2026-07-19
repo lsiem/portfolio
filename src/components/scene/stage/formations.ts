@@ -265,6 +265,7 @@ function buildLattice(layout: MeasuredLayout, count: number): FormationTargets {
   const totalWeight = weights.reduce((sum, w) => sum + w, 0);
 
   const wpp = layout.worldPerPixel;
+  const zDepth = 0.6; // Z-thickness of the 3D bento cards (3D upgrade)
   for (let i = 0; i < count; i += 1) {
     const s = i * 19 + 9;
     // Weighted cell pick via cumulative walk (cells are ~6 entries — cheap).
@@ -296,7 +297,9 @@ function buildLattice(layout: MeasuredLayout, count: number): FormationTargets {
     }
     out.positions[i * 3] = docToWorldX(layout, docX) + jitter(s + 2, 4) * wpp;
     out.positions[i * 3 + 1] = docToWorldY(layout, docY) + jitter(s + 3, 4) * wpp;
-    out.positions[i * 3 + 2] = jitter(s + 4, 0.2);
+    // Distribute bento outline points to front/back Z planes for 3D boxes
+    const side = seededRandom(s + 4) < 0.5 ? -1 : 1;
+    out.positions[i * 3 + 2] = side * zDepth / 2 + jitter(s + 5, 0.05);
     out.intensity[i] = 0.7;
   }
   return out;
@@ -339,12 +342,21 @@ function buildOrbits(layout: MeasuredLayout, count: number): FormationTargets {
     const centerX = rect.left + ((c + 0.5) / clusters) * rect.width;
     const centerY = rect.top + rect.height / 2 + jitter(c * 101 + 41, rect.height * 0.12);
     const radius = randomInRange(s, 0.3, 1) * maxRadius;
-    const angle = seededRandom(s + 1) * Math.PI * 2;
-    out.positions[i * 3] =
-      docToWorldX(layout, centerX + Math.cos(angle) * radius);
-    out.positions[i * 3 + 1] =
-      docToWorldY(layout, centerY + Math.sin(angle) * radius * 0.7);
-    out.positions[i * 3 + 2] = jitter(s + 2, 0.4);
+    const theta = seededRandom(s + 1) * Math.PI * 2;
+    
+    // Model a 3D atomic planetary system: concentric rings tilted along different angles (3D upgrade)
+    const incl = (c * (Math.PI / 4)) + Math.PI / 12; // tilt relative to Z-axis
+    const rx = Math.cos(theta) * radius;
+    const ry = Math.sin(theta) * radius;
+    
+    // Pivot points around X/Y to form tilted 3D circles
+    const worldX = centerX + rx;
+    const worldY = centerY + ry * Math.cos(incl);
+    const worldZ = ry * Math.sin(incl);
+
+    out.positions[i * 3] = docToWorldX(layout, worldX);
+    out.positions[i * 3 + 1] = docToWorldY(layout, worldY);
+    out.positions[i * 3 + 2] = worldZ * layout.worldPerPixel + jitter(s + 2, 0.1);
     out.intensity[i] = 0.45;
   }
   return out;
@@ -388,7 +400,9 @@ function buildFrame(layout: MeasuredLayout, count: number): FormationTargets {
     const docY = cornerY + (horizontal ? 0 : along * dirY) + jitter(s + 5, 3);
     out.positions[i * 3] = docToWorldX(layout, docX);
     out.positions[i * 3 + 1] = docToWorldY(layout, docY);
-    out.positions[i * 3 + 2] = jitter(s + 6, 0.15);
+    // 3D volumetric depth: corners sit on either front or back Z-plane (3D upgrade)
+    const zOffset = (seededRandom(s + 6) < 0.5 ? -1 : 1) * 0.75;
+    out.positions[i * 3 + 2] = zOffset + jitter(s + 7, 0.05);
     out.intensity[i] = 0.35;
   }
   return out;
@@ -476,16 +490,21 @@ function buildGlyph(layout: MeasuredLayout, count: number): FormationTargets {
   const scalePx = Math.min(rect.width, rect.height) * 0.62;
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
+  const zHelixScale = 2.5; // Volumetric depth stretch (3D upgrade)
 
   for (let i = 0; i < count; i += 1) {
     const s = i * 41 + 19;
     const p = i % pointCount;
-    const docX = cx + (points[p * 2] ?? 0) * scalePx + jitter(s, 3);
-    // Glyph points are y-UP; doc space is y-down — flip when placing.
-    const docY = cy - (points[p * 2 + 1] ?? 0) * scalePx + jitter(s + 1, 3);
+    const px = points[p * 2] ?? 0;
+    const py = points[p * 2 + 1] ?? 0;
+    const docX = cx + px * scalePx + jitter(s, 3);
+    const docY = cy - py * scalePx + jitter(s + 1, 3);
     out.positions[i * 3] = docToWorldX(layout, docX);
     out.positions[i * 3 + 1] = docToWorldY(layout, docY);
-    out.positions[i * 3 + 2] = jitter(s + 2, 0.2); // shallow shimmer
+    // Extrude points into a 3D Z-spiral helix depending on the angle around center
+    const angle = Math.atan2(py, px);
+    const helixZ = Math.sin(angle * 3) * zHelixScale;
+    out.positions[i * 3 + 2] = helixZ + jitter(s + 2, 0.1);
     out.intensity[i] = 0.9;
   }
   return out;
@@ -522,12 +541,19 @@ function buildHalo(layout: MeasuredLayout, count: number): FormationTargets {
       out.intensity[i] = 0.06;
       continue;
     }
-    const angle = seededRandom(s + 1) * Math.PI * 2;
-    const docX = cxDoc + Math.cos(angle) * rx + jitter(s + 2, 5);
-    const docY = cyDoc + Math.sin(angle) * ry + jitter(s + 3, 5);
-    out.positions[i * 3] = docToWorldX(layout, docX);
-    out.positions[i * 3 + 1] = docToWorldY(layout, docY);
-    out.positions[i * 3 + 2] = jitter(s + 4, 0.5);
+    // Volumetric Möbius Torus ribbon model (3D upgrade)
+    const u = seededRandom(s + 1) * Math.PI * 2; // Main circle angle
+    const v = seededRandom(s + 2) * Math.PI * 2; // Tube cross section angle
+    const tubeRadius = rx * 0.15; // Width of the ribbon
+    
+    // Torus parametrization with a Möbius twist
+    const wrapX = (rx + tubeRadius * Math.cos(v)) * Math.cos(u);
+    const wrapY = (ry + tubeRadius * Math.cos(v)) * Math.sin(u);
+    const wrapZ = tubeRadius * Math.sin(v);
+
+    out.positions[i * 3] = docToWorldX(layout, cxDoc + wrapX);
+    out.positions[i * 3 + 1] = docToWorldY(layout, cyDoc + wrapY);
+    out.positions[i * 3 + 2] = wrapZ * wpp + jitter(s + 4, 0.1);
     out.intensity[i] = 0.5;
   }
   return out;

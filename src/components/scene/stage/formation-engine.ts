@@ -192,18 +192,18 @@ export class FormationEngine {
     for (let i = 0; i < count; i += 1) {
       this.stagger[i] = seededRandom(i * 13.37 + 0.7);
 
-      // §4: deterministic per-index scatter velocities — a radial-ish unit
-      // direction plus a tangential (curl-noise-flavored) component so the
-      // burst swirls instead of exploding on straight rays.
+      // §4: deterministic per-index scatter velocities — updated to a 3D swirling
+      // vortex/wormhole warp (swirling tangentially and stretching along the Z-axis).
       const theta = seededRandom(i * 3.1 + 1) * Math.PI * 2;
       const zed = randomInRange(i * 3.1 + 2, -0.5, 0.5);
       const swirl = randomInRange(i * 3.1 + 3, 0.4, 1);
       const mag = randomInRange(i * 3.1 + 4, 0.6, 1.4);
       const rx = Math.cos(theta);
       const ry = Math.sin(theta);
-      this.scatterDir[i * 3] = (rx - ry * swirl) * mag;
-      this.scatterDir[i * 3 + 1] = (ry + rx * swirl) * mag;
-      this.scatterDir[i * 3 + 2] = zed * mag;
+      const spiralStrength = 2.0;
+      this.scatterDir[i * 3] = (rx * 0.5 - ry * spiralStrength) * mag;
+      this.scatterDir[i * 3 + 1] = (ry * 0.5 + rx * spiralStrength) * mag;
+      this.scatterDir[i * 3 + 2] = (zed > 0 ? 1 : -1) * (3.5 + swirl * 2.5) * mag;
 
       // Drift params — the shipped per-node derivation, generalized to the pool.
       const s = i * 97 + 13;

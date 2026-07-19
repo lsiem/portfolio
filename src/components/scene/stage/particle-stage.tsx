@@ -230,6 +230,25 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
     [],
   );
 
+  // Dynamically generate a soft glowing circular sprite to avoid CDN/image network requests (Aesthetic upgrade 1)
+  const particleTexture = useMemo(() => {
+    const size = 64;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+      grad.addColorStop(0, "rgba(255, 255, 255, 1)");
+      grad.addColorStop(0.3, "rgba(255, 255, 255, 0.8)");
+      grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    return tex;
+  }, []);
+
   const groupRef = useRef<Group>(null);
   const nodeMaterialRef = useRef<PointsMaterial>(null);
   const edgeMaterialRef = useRef<LineBasicMaterial>(null);
@@ -410,8 +429,44 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
 
     // --- 3. Scroll-offset group transform (§3 global rule) ------------------
     const wpp = engine.worldPerPixel;
+    let rotationSettling = false;
+    let targetRotateX = 0;
+    let targetRotateY = 0;
+    let diffRotX = 0;
+    let diffRotY = 0;
     if (groupRef.current) {
       groupRef.current.position.y = sceneBridge.scrollY * wpp;
+
+      // Volumetric rotation driven by page progress and pointer coordinates (Animation upgrade 4).
+      // This ensures 3D rotation is active during scroll and pointer movement,
+      // but settles to a complete stop at rest to satisfy the R1 at-rest invariant.
+      const isOrbital = sceneBridge.routeFormation === "orbits" || sceneBridge.routeFormation === "halo";
+      const progressRotate = isOrbital 
+        ? smoothedProgressRef.current * Math.PI * 1.5 
+        : smoothedProgressRef.current * Math.PI * 0.4;
+      
+      const pointer = sceneBridge.pointer;
+      targetRotateX = pointer.active ? -pointer.y * 0.05 : 0;
+      targetRotateY = progressRotate + (pointer.active ? pointer.x * 0.05 : 0);
+      
+      diffRotX = targetRotateX - groupRef.current.rotation.x;
+      diffRotY = targetRotateY - groupRef.current.rotation.y;
+      
+      const ROT_EPS = 0.005;
+
+      if (Math.abs(diffRotX) > ROT_EPS) {
+        groupRef.current.rotation.x += diffRotX * Math.min(1, dtSettle * 16);
+        rotationSettling = true;
+      } else if (diffRotX !== 0) {
+        groupRef.current.rotation.x = targetRotateX;
+      }
+
+      if (Math.abs(diffRotY) > ROT_EPS) {
+        groupRef.current.rotation.y += diffRotY * Math.min(1, dtSettle * 16);
+        rotationSettling = true;
+      } else if (diffRotY !== 0) {
+        groupRef.current.rotation.y = targetRotateY;
+      }
     }
 
     // --- 4. Camera spline over smoothed pageProgress ------------------------
@@ -609,6 +664,7 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       engineResult.needsFrame ||
       entrance.phase !== "settled" ||
       cameraSettling ||
+      rotationSettling ||
       pulses.length > 0;
     if (needsFrame) state.invalidate();
   });
@@ -618,6 +674,8 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       <points geometry={nodeGeometry} frustumCulled={false}>
         <pointsMaterial
           ref={nodeMaterialRef}
+          map={particleTexture}
+          alphaTest={0.001}
           vertexColors
           size={tier === "mobile" ? 0.05 : 0.065}
           sizeAttenuation
@@ -637,6 +695,8 @@ export function ParticleStage({ tier, frameHookRef }: ParticleStageProps) {
       <points geometry={pulseGeometries.dotGeo} frustumCulled={false}>
         <pointsMaterial
           ref={pulseDotMaterialRef}
+          map={particleTexture}
+          alphaTest={0.001}
           size={tier === "mobile" ? 0.07 : 0.09}
           sizeAttenuation
           transparent
