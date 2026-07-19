@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import type { Project } from "../../../content/shared/types";
+import { BentoHover } from "./bento-hover";
 import { Reveal } from "./reveal";
 
 /**
@@ -104,59 +105,62 @@ export function ProjectBento({
   LinkComponent = Link,
 }: ProjectBentoProps) {
   return (
-    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12">
-      {projects.map((project) => {
-        if (isFeatured(project)) {
+    // BentoHover (WP-D): boxless client wrapper feeding bridge.hoverRect —
+    // this stays a Server Component; only the hover boundary ships JS.
+    <BentoHover>
+      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12">
+        {projects.map((project) => {
+          if (isFeatured(project)) {
+            return (
+              <li key={project.slug} className="sm:col-span-2 lg:col-span-12">
+                <Reveal className="grid grid-cols-1 gap-6 border-t-2 border-border pt-6 lg:grid-cols-12">
+                  <div className="flex flex-col gap-3 lg:col-span-8">
+                    <h3 className="text-2xl font-medium tracking-tight">
+                      {project.title}
+                    </h3>
+                    {project.period ? (
+                      <p className="font-mono text-xs text-muted">
+                        {project.period}
+                      </p>
+                    ) : null}
+                    <p className="max-w-2xl text-muted">{project.summary}</p>
+                    <ProjectLinks
+                      project={project}
+                      labels={labels}
+                      LinkComponent={LinkComponent}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-3 lg:col-span-4">
+                    <TechChips tags={project.tags} />
+                  </div>
+                </Reveal>
+              </li>
+            );
+          }
+
           return (
-            <li
-              key={project.slug}
-              className="sm:col-span-2 lg:col-span-12"
-            >
-              <Reveal className="grid grid-cols-1 gap-6 border-t-2 border-border pt-6 lg:grid-cols-12">
-                <div className="flex flex-col gap-3 lg:col-span-8">
-                  <h3 className="text-2xl font-medium tracking-tight">
-                    {project.title}
-                  </h3>
-                  {project.period ? (
-                    <p className="font-mono text-xs text-muted">
-                      {project.period}
-                    </p>
-                  ) : null}
-                  <p className="max-w-2xl text-muted">{project.summary}</p>
-                  <ProjectLinks
-                    project={project}
-                    labels={labels}
-                    LinkComponent={LinkComponent}
-                  />
-                </div>
-                <div className="flex flex-col gap-3 lg:col-span-4">
-                  <TechChips tags={project.tags} />
-                </div>
+            <li key={project.slug} className="lg:col-span-4">
+              <Reveal className="flex h-full flex-col gap-2 border-t border-border pt-6">
+                <h3 className="text-lg font-medium tracking-tight">
+                  {project.title}
+                </h3>
+                {project.period ? (
+                  <p className="font-mono text-xs text-muted">
+                    {project.period}
+                  </p>
+                ) : null}
+                <p className="text-muted">{project.summary}</p>
+                <TechChips tags={project.tags} />
+                <ProjectLinks
+                  project={project}
+                  labels={labels}
+                  LinkComponent={LinkComponent}
+                />
               </Reveal>
             </li>
           );
-        }
-
-        return (
-          <li key={project.slug} className="lg:col-span-4">
-            <Reveal className="flex h-full flex-col gap-2 border-t border-border pt-6">
-              <h3 className="text-lg font-medium tracking-tight">
-                {project.title}
-              </h3>
-              {project.period ? (
-                <p className="font-mono text-xs text-muted">{project.period}</p>
-              ) : null}
-              <p className="text-muted">{project.summary}</p>
-              <TechChips tags={project.tags} />
-              <ProjectLinks
-                project={project}
-                labels={labels}
-                LinkComponent={LinkComponent}
-              />
-            </Reveal>
-          </li>
-        );
-      })}
-    </ul>
+        })}
+      </ul>
+    </BentoHover>
   );
 }

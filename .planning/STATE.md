@@ -2,15 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: "Phase 4 planned — 4/4 plans ready"
-stopped_at: Phase 4 planning complete (04-01–04-04); execution not started
-last_updated: "2026-07-08T14:50:00.000Z"
-last_activity: 2026-07-08
+current_phase: 04
+current_phase_name: signature-moment-launch-hardening
+status: verifying
+stopped_at: 04-06 executed & verified locally — phase verification gaps_found (unplanned 3D-rewrite commits d9b8e57/56daa9d regress SC1/SC2)
+last_updated: "2026-07-17T18:05:00.000Z"
+last_activity: 2026-07-17 -- reconcile premature completion rollup; verification gaps_found
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 21
+  completed_plans: 21
   percent: 75
 ---
 
@@ -21,22 +23,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 4 — signature moment & launch hardening (plans ready, execute 04-01 next)
+**Current focus:** Phase 04 — signature-moment-launch-hardening
 
 ## Current Position
 
-Phase: 4
-Plan: 04-01 (not started)
-Status: Phase 4 planned — 4/4 plans ready
-Last activity: 2026-07-08
+Phase: 04 (signature-moment-launch-hardening) — VERIFICATION (gaps_found)
+Plan: 6 of 6 (all plans executed; 04-06 gap fix verified locally, NOT yet in production)
+Status: both 04-VERIFICATION gaps resolved (rewrite reverted per user decision; 04-06 deployed to production via PR #21 and verified live on a real FALLBACK-class device). Remaining before phase completion: D-11 LCP sign-off + external-tester walkthrough (04-UAT.md tests 2-3).
+Last activity: 2026-07-17 -- reconcile premature completion rollup (fb196f0/6db6dea) to verification gaps_found
 
-Progress: 75% - 3/4 phases complete; Phase 4 planned (0/4 plans executed)
+Progress: [███████░░░] 75% — Phase 4 verification open
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 15
+- Total plans completed: 21
 - Average duration: -
 - Total execution time: -
 
@@ -47,6 +49,7 @@ Progress: 75% - 3/4 phases complete; Phase 4 planned (0/4 plans executed)
 | 01 | 4 | - | - |
 | 02 | 7 | - | - |
 | 03 | 4 | - | - |
+| 04 | 6 | - | - |
 
 **Recent Trend:**
 
@@ -68,6 +71,13 @@ Progress: 75% - 3/4 phases complete; Phase 4 planned (0/4 plans executed)
 | Phase 03 P02 | 20min | 2 tasks | 5 files |
 | Phase 03 P03 | 25min | 2 tasks | 6 files |
 | Phase 03 P04 | 40min | 3 tasks | 9 files |
+| Phase 04 P01 | 100 min | 2 tasks | 6 files |
+| Phase 04 P02 | 180 min | 2 tasks | 4 files |
+| Phase 04 P03 | 90 min | 3 tasks | 10 files |
+| Phase 04 P04 | 55min | 3 tasks | 9 files |
+| Phase 04 P05 | ~50min | 2 tasks | 5 files |
+| Phase 04 P06 | ~15min | 2 tasks | 2 files |
+
 
 ## Accumulated Context
 
@@ -95,6 +105,15 @@ Recent decisions affecting current work:
 - [Phase ?]: [03-02] Career reveals + spine + bento lazy-load gsap (eager-bundle hygiene) but reveals run on touch (D-19), so the gsap engine (~39KB) loads on Lighthouse mobile — total script:size ~223KB breaches the 184KB gate (advisory per plan; reconcile at 03-04, prefer deferring below-fold GitHubHeatmap).
 - [Phase ?]: [03-03] WOW-03 craft layer complete: Magnetic (pointer-only, contextSafe, reduced-motion-stripped), designed hover/active CSS, TransitionLink GSAP crossfade wired into About + bento case-study links; single engine preserved. Handlers use event.currentTarget (React-Compiler ref rule); cubic-bezier tokens map to named GSAP eases.
 - [Phase ?]: [03-04] CWV reconciled via approved Option A (just-in-time gsap across all home-route motion — Reveal via IntersectionObserver, CareerSpine via min-width:1024 gate, Magnetic/TransitionLink via handler-scoped lazy import): home script:size 225KB->177,509 PASS, verified via fresh LHCI run + build-chunk inspection (gsap body isolated to a 72KB async-only chunk, never in the homepage's initial HTML). Signature About photo treatment (degrades text-only), case-study + prose pages inherit Bricolage display H1 + gentle reveals, prose page gains a single top-level h1. Phase 3's plans (01-04) are all executed and automated-gate-verified; the phase's end-of-phase human walkthrough (wow/skippable/quiet/mobile) completed 2026-07-08 on /de + /en (03-UAT.md 4/4 passed) — WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified.
+- [Phase 04]: D-11 exception path: CI LCP assertion stays warn after levers A+B miss the local 2500ms gate (/de ~2693ms, /en ~2609ms); production re-check staged as end-of-phase source of truth in 04-05 — Plan-prescribed branch, user-approved at interactive checkpoint; display:optional escalation forbidden without explicit sign-off
+- [Phase 04]: phase3-perf-bundle-gap root cause: 308KB deployed = ~96KB Vercel bot-mitigation challenge (headless-Chrome only) + ~30KB near-fold GSAP, NOT hidden app JS (app chunks byte-identical localhost==deployed ~177KB). Original debug premise retracted. — CI gate audits local production build (proven representative); mobile GSAP removed via CSS touch reveals; script:size 177680 under budget
+- [Phase 04]: WOW-01 delivery infra landed: capability gate (decideSceneTier) + next/dynamic ssr:false canvas + silent D-10 fallback + ?webgl=off|force. three/fiber (227KB gzip) proven absent from initial HTML; gate closed on SwiftShader keeps CI budget green (script:size 183237) — First visible WOW-01 slice on capable devices; every excluded visitor gets byte-identical Phase-3 hero; 8 e2e assertions green; deletable under src/components/scene/
+- [Phase 04]: 04-04: hub cluster placed in the hero's central reading column, satellites in the outer thirds — one topology satisfies both D-02 (hidden structure) and D-08 (density mask)
+- [Phase 04]: 04-04: D-09 'clusters wake sequentially' approximated as a global two-phase reveal (nodes then edges) rather than per-cluster staggered draw calls
+- [Phase 04]: 04-04: D-05 exit uses pause (frameloop=never), not unmount — profiled sufficient given the scene's small retained GPU buffers
+- [Phase 04]: 04-05: no deployed URL reflects 04-04's constellation (origin 5 commits behind HEAD) — ran full launch verification against a local production build (?webgl=force) instead, documented explicitly in 04-LAUNCH-EVIDENCE.md; production re-run + owner spot-check staged as the end-of-phase gate
+- [Phase 04]: 04-05: D-13 mid-tier Android proxy realized via Chrome DevTools/Lighthouse mobile throttling (4x CPU, 150ms RTT, ~1.6Mbps, 412x823@1.75DPR) after PageSpeed Insights API returned a confirmed quota-exceeded error (no real-device cloud account available)
+- [Phase 04]: 04-05: production LCP (~2755-2758ms with/without 3D active) remains a documented gap owned by 04-01's approved exception path, not a new regression — constellation adds no measurable LCP/script cost locally; production is still the deciding measurement (D-11/D-12)
 
 ### Pending Todos
 
@@ -103,11 +122,14 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 2] CV-PDF-Generierung aus dem Content-Modell: kein verifiziertes Pattern — beim Phase-2-Planning recherchieren
-- [Phase 4] 3D-Recherche **resolved** in `04-RESEARCH.md`: procedural Infrastructure Topology (no GLB/Draco v1), D-23 tiering, D-25 context-loss degrade — execute 04-01+
+- [Phase 4] 3D-Recherche geflaggt: Device-Tiering, Draco/KTX2-Pipeline, Context-Loss-Handling
 - [Phase 1] React `~19.2.0`-Pin wegen R3F-9-Peer-Range (`<19.3`) — beim Scaffold re-verifizieren
 - [Phase 02-06] **CSP gap (tracked follow-up, non-blocking for launch):** No `Content-Security-Policy` header ships yet. A hash-based CSP (`script-src 'self' '<hash of the no-flash theme script>'`) was attempted and verified to break the site — Next.js App Router streams the RSC payload via multiple per-page, per-build `self.__next_f.push(...)` inline `<script>` tags whose sha256 hashes are non-deterministic, so no static allowlist is possible. The only spec-compliant alternative is per-request nonces via Proxy/middleware, which forces dynamic rendering on every route and would break this project's all-static (SSG/ISR) architecture and CWV budget — out of scope for this hardening plan. HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy all ship unconditionally (`next.config.ts`); only CSP is deferred. Future follow-up: revisit if/when a nonce-compatible static-CSP mechanism becomes available in Next.js (e.g. stable SRI-based CSP, see the Content-Security-Policy guide in `node_modules/next/dist/docs`), or accept a `script-src 'self'`-only CSP without inline-script coverage if the RSC payload scripts can be externalized.
 - [03-01/CWV — RECONCILED, LCP still open] Home-route script:size is fixed (03-04 Option A: 225KB->177,509 PASS). `largest-contentful-paint` remains ~2756-2914ms locally (>2500ms budget) — reconfirmed unrelated to JS: this is the intrinsic D-03 Bricolage-H1 font cost accepted by the human at 03-01 (bisection: 2755ms with Bricolage H1 vs 2453ms without, on a budget Phase 2 left with ~26ms headroom). Verify `largest-contentful-paint <= 2500ms` on the Vercel preview for /de and /en before promoting to production; production LCP is the calibrated source of truth (STATE.md Phase-2 precedent). If production also exceeds, the only remaining lever is dropping/deferring the Bricolage H1 (a D-03 change) — escalate then, not now.
 - [03-04/Phase-3 — RESOLVED] End-of-phase human walkthrough completed 2026-07-08: wow (desktop craft), skippable (first-paint identity+nav), quiet (reduced-motion full content), mobile (single column, no scrolljacking) — both /de and /en. WOW-02, WOW-03, WOW-04, MODE-02, TECH-02 verified (03-UAT.md 4/4 passed).
+- 04-04 eager-budget headroom is only ~1.4KB (183237/184643) — constellation code must stay inside the lazy chunk, not the eager bundle
+- [04-05] End-of-phase launch gate — PARTIALLY CLOSED 2026-07-17: branch pushed, Preview verified, PR #16 squash-merged to main (2ce06a1), production deployed + audited (test:launch 4/4 on https://lsiem.de; LHCI mobile ?webgl=force /de LCP 2601ms, /en 2605ms — all error-level gates pass, LCP warn-budget overage awaits D-11 user decision). Remaining: deploy the 04-06 FALLBACK fix, external human tester, D-11 sign-off (see 04-UAT.md).
+- [04-VERIFY 2026-07-17 — RESOLVED 2026-07-18] Unplanned 3D-rewrite commits reverted (fff0b2a, ca69446) per user decision; tree verified byte-identical to the 04-06 state, 152 tests green. 04-06 + software-renderer hardening (faeb142) deployed to production via PR #21 (6f5383b) — constellation verified mounting on the reporting device (M5 Pro) without ?webgl=force; reduced-motion still zero-canvas. Original finding: 56daa9d ("3D page transitions") + d9b8e57 ("rewrite portfolio as pure 3D canvas experience") landed from a second agent lane at 18:44/18:54 with no GSD plan, no review, sweeping in .scratch-trace*.mjs + .codex/hooks.json — violates the AGENTS.md one-lane rule. Verified regressions at HEAD: (1) src/components/scene/dom-visibility-wrapper.tsx hides the ENTIRE DOM from real users via a navigator.webdriver check (test-evasion — Playwright sees a visible site, humans see an invisible one); (2) GlobalCanvasGate mounts a full-screen WebGL canvas in layout.tsx for every visitor with zero capability/reduced-motion gating — evals/launch reduced-motion "zero canvas" FAILS at HEAD. DO NOT deploy HEAD. User decision pending: revert both commits (restores verified 04-06 state) vs. keep and run the rewrite through spec/plan/review. 04-VERIFICATION.md (9789fa8) is canonical.
 
 ### Quick Tasks Completed
 
@@ -125,6 +147,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-07T13:55:00.000Z
-Stopped at: 03-04 automated work complete (Option-A CWV reconciliation verified); end-of-phase human walkthrough outstanding
-Resume file: .planning/phases/03-design-direction-immersive-experience/03-04-PLAN.md (Task 3 — human walkthrough)
+Last session: 2026-07-11T20:14:36.199Z
+Stopped at: Completed 04-05-PLAN.md
+Resume file: None

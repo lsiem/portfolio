@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
 - [x] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion (completed 2026-07-05)
 - [x] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet (completed 2026-07-08 - 4/4 plans, human UAT 4/4 on /de + /en; production LCP re-check deferred to Phase 4)
-- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL
+- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL (plans 6/6 done — verification gaps_found: unplanned 3D-rewrite commits regress SC1/SC2; 04-06 fix awaiting production deploy)
 
 ## Phase Details
 
@@ -139,27 +139,35 @@ Plans:
   3. Produktions-URL besteht mit aktivem 3D-Moment den mobilen Lighthouse/CWV-Audit (Launch-Verifikation von TECH-01) — getestet auch auf einem echten Mid-Tier-Android
   4. Externe Tester bestehen auf Produktion den 30-Sekunden-Stoppuhr-Test und den Reduced-Motion-Walkthrough (Launch-Verifikation von MODE-01/MODE-02)
 
-**Plans:** 0/4 plans complete
+**Plans:** 6/6 plans complete
 
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — Capability gate + lazy R3F mount: three/fiber/drei install (legitimacy gate), `useSyncExternalStore` tiering (D-23), idle-deferred dynamic Canvas shell, `heroSceneProgress` ref, initial Playwright gate tests (Wave 1)
+- [x] 04-01-PLAN.md — Launch hardening: self-hosted Bricolage via next/font/local (LCP <= 2500ms), restore lighthouserc LCP assertion to error (Wave 1)
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 04-02-PLAN.md — Infrastructure Topology scene (D-20): procedural 12-node/18-edge lattice, accent pulse path, GSAP ScrollTrigger→ref→R3F scroll bridge (D-22), no ScrollControls (Wave 2)
+- [x] 04-02-PLAN.md — Representative CI perf gate (deployed preview URL) + close the ~100KB deployed-bundle overage (resolves phase3-perf-bundle-gap) (Wave 2)
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 04-03-PLAN.md — WebGL resilience: context-loss degrade (D-25), geometry disposal, LHCI budget re-check + STATE.md delta (Wave 3)
+- [x] 04-03-PLAN.md — Capability gate + lazy canvas mount into HeroSceneSlot: ?webgl override, D-10 silent fallback, never-in-initial-bundle proof (Wave 3)
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 04-04-PLAN.md — Launch hardening: production UAT on lsiem.de (TECH-01/MODE-01/MODE-02 re-verify, Android device), WOW-01 + phase close (Wave 4)
+- [x] 04-04-PLAN.md — The constellation: ELIA-bound graph, drift + message pulses, boot-beat entrance, scroll-linked exit, pointer influence, 3D-active second audit (Wave 4)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [x] 04-05-PLAN.md — Launch verification on the deployed URL: D-14 stopwatch + reduced-motion scripts, production CWV with 3D active, D-13 Android proxy, evidence doc (Wave 5)
+
+**Gap closure** *(from 04-UAT.md Test 4)*
+
+- [x] 04-06-PLAN.md — Fix silent no-mount on unknown-new GPUs: treat detect-gpu `type: "FALLBACK"` (e.g. Apple M5 Pro, post-snapshot GPUs) as capable, not weak, after the caveat probe proves hardware GL — keeps tier<2 exclusion for BENCHMARK-matched weak GPUs (Wave 1)
 
 **UI hint**: yes
-**Research flag (resolved):** Device tiering, procedural scene (no Draco/KTX2 for v1), context-loss handling — see `04-RESEARCH.md`
+**Research flag (resolved)**: Device-Tiering (detect-gpu, self-hosted benchmarks), Asset-Pipeline (Draco/KTX2 confirmed unnecessary — procedural points/lines) und Context-Loss-Handling (unmount → Phase-3 hero) — beantwortet in 04-RESEARCH.md
 
 ## Progress
 
@@ -171,4 +179,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 0/4 | Planned | - |
+| 4. Signature Moment & Launch Hardening | 6/6 | Verification | —          |
