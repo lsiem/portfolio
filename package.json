@@ -9,6 +9,7 @@
     "generate:cv": "tsx scripts/generate-cv.tsx",
     "subset:font": "tsx scripts/subset-bricolage.ts",
     "copy:benchmarks": "tsx scripts/copy-benchmarks.ts",
+    "check:stage-chunk": "tsx scripts/check-stage-chunk.ts",
     "prebuild": "pnpm check:content && pnpm generate:cv && pnpm subset:font && pnpm copy:benchmarks",
     "build": "next build",
     "start": "next start",
