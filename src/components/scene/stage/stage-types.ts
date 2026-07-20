@@ -46,6 +46,17 @@ export interface MeasuredLayout {
    */
   spineX: number;
   /**
+   * Doc-space anchors for the four `orbits` gyroscope rings (§2.5 mapping;
+   * KERN meaning of the frozen `orbits` FormationId). The frozen vocab fixes
+   * the ring COUNT at 4, while the #skills DOM renders one cluster per content
+   * domain (5 today, and free to change per locale/edit) — so these are NOT
+   * one-per-domain rects but four evenly-spaced horizontal bands of the
+   * measured #skills section (deterministic, locale-stable, domain-count
+   * independent; see `measureSkillClusterRects`). Empty on routes without
+   * #skills, exactly like `bentoCells` on routes without #projects.
+   */
+  skillClusterRects: DocRect[];
+  /**
    * Contribution levels 0..4 read once from the SSR heatmap's per-cell
    * `data-level` attributes (Contract 4); null when the cells are absent or
    * malformed — the `grid` formation then uses its neutral wave-sheet fallback.
