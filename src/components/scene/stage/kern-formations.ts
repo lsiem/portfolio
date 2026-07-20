@@ -204,6 +204,33 @@ function placeParked(
 }
 
 /**
+ * Force every target quat to unit length (frozen contract: "Quaternions are
+ * unit orientation", header §Target stride). `seededTilt` chains three float32
+ * `quatMul`s and the monogram/glyph JSON quats are sampled, so raw target quats
+ * drift to |q| ≈ 0.9999 — ~1e-4, three orders over float32 epsilon. That is
+ * fatal to at-rest settling (R1): the engine measures rotation error as
+ * `angleTo(unitState, target)`, whose floor is `2·acos(|q|)` ≈ 0.023 rad for a
+ * 0.9999-length target — permanently above `ROT_SETTLE_EPS` (0.004), so the
+ * demand loop never goes silent. Normalizing here (before hemisphere flipping,
+ * which preserves length) collapses that floor to ~0.
+ */
+function normalizeQuats(data: Float32Array): void {
+  for (let i = 0; i < POOL; i += 1) {
+    const o = i * FLOATS_PER_SHARD + 3;
+    const len = Math.hypot(data[o], data[o + 1], data[o + 2], data[o + 3]);
+    if (len > 0) {
+      const inv = 1 / len;
+      data[o] *= inv;
+      data[o + 1] *= inv;
+      data[o + 2] *= inv;
+      data[o + 3] *= inv;
+    } else {
+      data[o + 3] = 1; // degenerate → identity quaternion
+    }
+  }
+}
+
+/**
  * Hemisphere-normalize every target quat against `prev` (§2.4): if
  * dot(target_i, prev_i) < 0, negate target_i so slerp takes the short arc.
  * No-op on the very first build (`prev === null`).
@@ -242,6 +269,7 @@ function builder(
   return (layout, prev) => {
     const data = new Float32Array(POOL * FLOATS_PER_SHARD);
     fill(layout, data);
+    normalizeQuats(data);
     hemisphereNormalize(data, prev);
     return { version: 0, data };
   };
