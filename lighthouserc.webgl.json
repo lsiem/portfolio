@@ -1,6 +1,7 @@
 {
   "_budget_derivation": "3D-active script-size budget = baseline eager budget (184643 bytes, lighthouserc.json / 04-02) + the three+fiber lazy chunk transfer size measured in 04-03 (227 KB gzip = 232448 bytes, KiB) + 10% margin. (184643 + 232448) * 1.10 = 458800.1, rounded up to 458801. This is the ONLY assertion widened vs. baseline (RESEARCH Open Question 1 option a) — LCP/TBT/CLS/perf thresholds and severities are identical to lighthouserc.json (T-04-04-01). The default lighthouserc.json stays byte-identical to its 04-02 state; the representative CI gate's URLs carry no ?webgl param, so this config never runs in the blocking CI job — it is a documented lab-audit script (`pnpm lhci:webgl`), evidence for 04-05's production verification, not a merge gate (D-11).",
   "_kontinuum_rebaseline": "Re-baselined at 05-integration (2026-07-18, local Lighthouse against the pnpm-start production build with the stage mounted): total script transfer with the Kontinuum stage chunk loaded = 452074 bytes on /de and /en (stable across runs); eager-only (?webgl=off, the CI-blocking condition) = 181165 bytes, so the measured lazy stage payload = 270909 bytes (three+fiber + formation engine + builders + glyph JSON + producers/conductor). Budget per the mandated formula: (184643 eager budget + 270909 measured lazy) * 1.10 = 501107.2, rounded up to 501108. Still a documented lab audit (`pnpm lhci:webgl`), never a blocking merge gate (D-11).",
+  "_kern_rebaseline": "Re-baselined at 06-solid-3d-kern (2026-07-20, local Lighthouse against the pnpm-start production build with the KERN solid-3D stage mounted): total script transfer = 462909 bytes on /de and /en (byte-stable across all 6 runs). Eager (?webgl=off) is UNCHANGED at 181165 bytes — the KERN rewrite is lazy-chunk-only (InstancedMesh + instanceColor + hero morph-skin + dissolve shader + 9 formation builders + monogram/glyph shard JSON, replacing the removed particle pool), so measured lazy stage payload = 281744 bytes. Delta vs. the 05 Kontinuum chunk = +10835 bytes (+10.6 KiB), UNDER the ~25 KB tree-shaking-regression tripwire (DESIGN-SPEC §7.2). Budget per the mandated formula: (184643 eager budget + 281744 measured lazy) * 1.10 = 513025.7, rounded up to 513026. Still a documented lab audit (`pnpm lhci:webgl`), never a blocking merge gate (D-11).",
   "ci": {
     "collect": {
       "startServerCommand": "pnpm start",
@@ -15,7 +16,7 @@
         "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
         "total-blocking-time": ["error", { "maxNumericValue": 200 }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "resource-summary:script:size": ["error", { "maxNumericValue": 501108 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 513026 }],
         "categories:performance": ["error", { "minScore": 0.9 }]
       }
     },
