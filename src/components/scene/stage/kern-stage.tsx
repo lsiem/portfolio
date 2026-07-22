@@ -20,14 +20,19 @@ import {
   type KernTargets,
 } from "./kern-types";
 import { KernEngine, type TargetResolver } from "./kern-engine";
-import { buildKernTargets } from "./kern-formations";
+import {
+  buildKernTargets,
+  ORBITS_Y_SQUASH,
+  RING_COUNT,
+  resolveOrbitRings,
+} from "./kern-formations";
 import { buildPrism, buildPrismLOD } from "./kern-geometry";
 import { CameraRig } from "./camera-rig";
 import { STAGE_CAMERA } from "./camera";
 import { createFrameMonitor } from "./frame-monitor";
 import { buildKernSkin, type KernSkin } from "./kern-skin";
 import { measureLayout } from "./measure";
-import type { MeasuredLayout } from "./stage-types";
+import type { DocRect, MeasuredLayout } from "./stage-types";
 
 /**
  * The KERN stage interior (SOLID-3D v2 WP-D; DESIGN-SPEC §2.4, §7.3-§7.4) —
@@ -92,6 +97,24 @@ const SKIN_BREATHE_MAX = 0.6;
 const HOVER_LIFT_Z = 0.15;
 const HOVER_RATE = 8;
 const HOVER_ACCENT_BLEND = 0.7;
+
+// --- Career knot pulse (§3 #career; scroll-driven via bridge.sectionProgress) -
+/** Career filament knot count — mirrors fillFilament's knotCount (kern-formations). */
+const KNOT_COUNT = 7;
+/** Peak extra uniform scale for the knot nearest the rail fill-front (→ ~1.4×). */
+const KNOT_PULSE_SCALE = 0.4;
+/** Peak --accent blend applied to the pulsing knot band. */
+const KNOT_PULSE_ACCENT = 0.7;
+/** Pulse-band half-height as a fraction of the career rect height (isolates one knot). */
+const KNOT_PULSE_BAND = 0.07;
+
+// --- #skills orbits ring rotation (§3; scroll-scrubbed, static at rest) -------
+/** Ring turns contributed by full-page scroll (page-progress scrubber). */
+const ORBIT_PAGE_TURNS = 2.5;
+/** Extra ring turns contributed by the section-boundary morph (spiral-in). */
+const ORBIT_BOUNDARY_TURNS = 0.5;
+/** Per-ring angular speed + direction — a gyroscope reads as differential spin. */
+const RING_SPEEDS = [1, -0.8, 0.62, -1.18] as const;
 
 // --- Hero skin dissolve ease (§2.4 uDissolve ∉ {0,1} needsFrame term) ---------
 const SKIN_DISSOLVE_RATE = 4;
@@ -224,7 +247,6 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     transitionT: 0,
     scrollVelocity: 0,
     sectionProgress: 0,
-    hoverRect: null,
     pointer: { x: 0, y: 0, active: false },
     heatmapLevels: null,
   });
@@ -258,6 +280,8 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
   } | null>(null);
 
   // Scratch three objects — the ONLY per-frame three touches (zero allocation).
+  // `ringGeom` holds the 4 orbit rings' [worldCx, worldCy, cosθ, sinθ] (§3 ring
+  // rotation); `ringSpins` the matching per-ring z-spin quats; `zAxis` their axis.
   const scratch = useMemo(
     () => ({
       matrix: new THREE.Matrix4(),
@@ -265,6 +289,9 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
       quat: new THREE.Quaternion(),
       scaleVec: new THREE.Vector3(),
       color: new THREE.Color(),
+      zAxis: new THREE.Vector3(0, 0, 1),
+      ringGeom: new Float32Array(RING_COUNT * 4),
+      ringSpins: Array.from({ length: RING_COUNT }, () => new THREE.Quaternion()),
     }),
     [],
   );
@@ -443,15 +470,11 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     inputs.sectionProgress = sceneBridge.sectionProgress;
     inputs.pointer = sceneBridge.pointer;
     inputs.heatmapLevels = sceneBridge.heatmapLevels;
+    // Hover-lift is driven entirely from hoverRectWorldRef + `bridgeHover` below
+    // (world-space, doc-anchored); the engine never reads a hover rect, so no
+    // per-frame rect object is built for it (dead `KernEngineInputs.hoverRect`
+    // removed from the contract).
     const bridgeHover = sceneBridge.hoverRect;
-    inputs.hoverRect = bridgeHover
-      ? {
-          left: bridgeHover.x,
-          top: bridgeHover.y,
-          width: bridgeHover.w,
-          height: bridgeHover.h,
-        }
-      : null;
 
     // 4. Engine step + velocity write-back (§2.1: the engine decays it in place;
     // WP-D must reflect it back and must NOT separately decay the bridge — that
@@ -514,14 +537,97 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     const ambient = sceneBridge.ambientVisible;
     const flash = flashBlend * presence;
 
+    // --- Career knot pulse (§3 #career): the knot band nearest the rail fill-
+    // front swells (~1.4×) + blends --accent, driven by bridge.sectionProgress.
+    // A PURE function of scroll (sectionProgress + the filament morph weight), so
+    // when scroll stops the value is constant and the field freezes — it is NOT a
+    // needsFrame term (scroll itself pumps frames while sectionProgress changes,
+    // exactly as career-spine documents). Gated on the filament weight, so it is
+    // inert on every other beat incl. the #skills R1 park.
+    const filamentWeight = home
+      ? clamp01(
+          (f.from === "filament" ? 1 - f.t : 0) +
+            (f.to === "filament" ? f.t : 0),
+        )
+      : 0;
+    let knotPulse = false;
+    let knotBandY = 0;
+    let knotBandHalf = 0;
+    if (filamentWeight > 0) {
+      const career = layout.sections["career"];
+      if (career) {
+        const progress = clamp01(sceneBridge.sectionProgress);
+        // 7 knots at fractional centers (k+0.5)/7; pick the one nearest the front.
+        const knot = Math.min(
+          KNOT_COUNT - 1,
+          Math.max(0, Math.round(progress * KNOT_COUNT - 0.5)),
+        );
+        const knotDocY =
+          career.top + ((knot + 0.5) / KNOT_COUNT) * career.height;
+        knotBandY = (layout.viewport.h / 2 - knotDocY) * wpp; // doc-space, pre-scroll
+        knotBandHalf = career.height * KNOT_PULSE_BAND * wpp;
+        knotPulse = knotBandHalf > 0;
+      }
+    }
+
+    // --- #skills orbits ring rotation (§3 CRITICAL): rings rotate as a function
+    // of (page progress + boundary morph) ONLY — never elapsed time. Constant at
+    // rest (#skills = R1's park), so the rings are a static sculpture and no frame
+    // is requested when scroll idles (NOT a needsFrame term; scroll pumps frames).
+    // Precompute each ring's world center + z-spin here; the shard loop rotates
+    // orbit shards about it, un-squashing/re-squashing with ORBITS_Y_SQUASH.
+    const orbitsWeight = clamp01(
+      (f.from === "orbits" ? 1 - f.t : 0) + (f.to === "orbits" ? f.t : 0),
+    );
+    let orbitsActive = false;
+    if (orbitsWeight > 0) {
+      const rings = resolveOrbitRings(layout);
+      if (rings.length >= RING_COUNT) {
+        const ringPhase =
+          sceneBridge.pageProgress * ORBIT_PAGE_TURNS +
+          clamp01(f.t) * ORBIT_BOUNDARY_TURNS;
+        const geom = scratch.ringGeom;
+        for (let r = 0; r < RING_COUNT; r += 1) {
+          const band = rings[r] as DocRect;
+          const cx = (band.left + band.width / 2 - layout.viewport.w / 2) * wpp;
+          const cy = (layout.viewport.h / 2 - (band.top + band.height / 2)) * wpp;
+          const theta =
+            ringPhase * RING_SPEEDS[r] * orbitsWeight * Math.PI * 2;
+          const b4 = r * 4;
+          geom[b4] = cx;
+          geom[b4 + 1] = cy;
+          geom[b4 + 2] = Math.cos(theta);
+          geom[b4 + 3] = Math.sin(theta);
+          scratch.ringSpins[r].setFromAxisAngle(scratch.zAxis, theta);
+        }
+        orbitsActive = true;
+      }
+    }
+
     // --- 8/9. Upload matrices + colors from the engine output -----------------
     if (shardMesh) {
-      const { matrix, pos, quat, scaleVec, color } = scratch;
+      const { matrix, pos, quat, scaleVec, color, ringGeom } = scratch;
       for (let i = 0; i < POOL; i += 1) {
         const o = i * FLOATS_PER_SHARD;
         let x = out[o + PX];
         let y = out[o + PY];
         let z = out[o + PZ];
+
+        // #skills orbits ring rotation: rotate this shard about its ring center
+        // in the (un-squashed) ring plane by the scroll-scrubbed angle, then re-
+        // squash. Pure scroll → frozen at rest (see the pre-loop context above).
+        const ring = i % RING_COUNT;
+        if (orbitsActive) {
+          const b4 = ring * 4;
+          const cx = ringGeom[b4];
+          const cy = ringGeom[b4 + 1];
+          const cs = ringGeom[b4 + 2];
+          const sn = ringGeom[b4 + 3];
+          const ux = x - cx;
+          const uy = (y - cy) / ORBITS_Y_SQUASH;
+          x = cx + (ux * cs - uy * sn);
+          y = cy + (ux * sn + uy * cs) * ORBITS_Y_SQUASH;
+        }
 
         // Ambient bob (§3): tiny elapsed sinusoid, ONLY while #hero/#contact is
         // in view — rides the IO pump, so it is never a needsFrame term (R1/R2).
@@ -557,8 +663,23 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
           accentBlend = Math.max(accentBlend, HOVER_ACCENT_BLEND * hoverLift);
         }
 
-        const s = out[o + SCALE];
+        // Career knot pulse: swell + accent the shards in the band nearest the
+        // rail fill-front (proximity-weighted, faded by the filament weight).
+        let scaleMul = 1;
+        if (knotPulse) {
+          const bandDist = Math.abs(y - knotBandY);
+          if (bandDist < knotBandHalf) {
+            const prox = (1 - bandDist / knotBandHalf) * filamentWeight;
+            scaleMul = 1 + KNOT_PULSE_SCALE * prox;
+            accentBlend = Math.max(accentBlend, KNOT_PULSE_ACCENT * prox);
+          }
+        }
+
+        const s = out[o + SCALE] * scaleMul;
         quat.set(out[o + QX], out[o + QY], out[o + QZ], out[o + QW]);
+        // Spin the orbit shard's orientation by the same ring angle so it stays
+        // tangent to the rotating ring (world-frame → premultiply).
+        if (orbitsActive) quat.premultiply(scratch.ringSpins[ring]);
         matrix.compose(pos.set(x, y, z), quat, scaleVec.set(s, s, s));
         shardMesh.setMatrixAt(i, matrix);
 

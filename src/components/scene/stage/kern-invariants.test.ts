@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import * as THREE from "three";
 
 import { KERN_BUILDERS } from "./kern-formations";
 import { KernEngine } from "./kern-engine";
@@ -93,7 +94,6 @@ function baseInputs(routeFormation: FormationId): KernEngineInputs {
     transitionT: 0,
     scrollVelocity: 0,
     sectionProgress: 0,
-    hoverRect: null,
     pointer: { x: 0, y: 0, active: false },
     heatmapLevels: null,
   };
@@ -107,9 +107,9 @@ function allFinite(data: Float32Array): boolean {
 }
 
 // The homepage scroll stations the visitor actually scrubs through, in document
-// order (section-config SECTION_SEQUENCE) — plus the two route formations. These
-// are the adjacent pairs whose quats must stay in one hemisphere so a reverse
-// scrub can never take the 270°-wrong-way arc.
+// order (section-config SECTION_SEQUENCE). These adjacent pairs are exactly what
+// a forward or reverse scrub morphs the pool between (formation.from → to), so
+// their target quats are what the slerp short-arc guarantee below protects.
 const SCROLL_SEQUENCE: readonly FormationId[] = [
   "constellation",
   "filament",
@@ -119,45 +119,70 @@ const SCROLL_SEQUENCE: readonly FormationId[] = [
   "grid",
   "glyph",
 ];
-const ALL_FORMATIONS: readonly FormationId[] = [
-  ...SCROLL_SEQUENCE,
-  "halo",
-  "rest",
-];
 
-// --- §8.1: quaternion hemisphere-normalization --------------------------------
-void test("§8.1 hemisphere-normalization: adjacent formation quats keep dot >= 0", () => {
+// --- §8.1: reverse-scrub flip protection (slerp short-arc negation) -----------
+// The original test asserted the builder hemisphere pass aligns ADJACENT
+// formations (it built the chain with prev = the previous formation). That is
+// NOT the runtime path: the resolver (kern-stage.tsx ~200-214) passes prev = the
+// SAME formation id from the previous layout version, so the builder pass only
+// keeps a formation's own quats continuous across re-measures — it never aligns
+// one formation to the next. What actually guarantees "reverse scrubbing never
+// takes the 270°-wrong-way arc" is three's slerp short-arc negation (Quaternion
+// .slerp/.slerpQuaternions negate the target when cosθ < 0), which the engine
+// relies on in `qTarget.slerpQuaternions(qFrom, qTo, st)` + `qState.slerp(...)`.
+// This test proves THAT invariant, on the real adjacent-formation quats, in both
+// scrub directions — independent of any builder hemisphere pass.
+void test("§8.1 slerp short-arc: adjacent scroll formations never interpolate the long way", () => {
   const layout = mockLayout(validHeatmap());
-
-  // Build the chain in adjacent order, each normalized against its predecessor
-  // (the `prev` the builder hemisphere-normalizes against, §2.4). For every
-  // adjacent pair, EVERY shard's target quat must share a hemisphere with the
-  // previous formation's — dot >= 0 — so slerp always takes the shortest arc.
-  let prev: KernTargets | null = null;
-  for (const id of ALL_FORMATIONS) {
-    const targets = KERN_BUILDERS[id](layout, prev);
+  // Runtime path: each formation resolved with prev = null (as the resolver seeds
+  // its cache on the first layout version); the engine reads exactly these quats.
+  const targetsFor = new Map<FormationId, KernTargets>();
+  for (const id of SCROLL_SEQUENCE) {
+    const targets = KERN_BUILDERS[id](layout, null);
     assert.equal(
       targets.data.length,
       POOL * FLOATS_PER_SHARD,
       `${id} target array must be POOL*stride`,
     );
-    if (prev) {
-      const a = prev.data;
-      const b = targets.data;
-      for (let i = 0; i < POOL; i += 1) {
-        const o = i * FLOATS_PER_SHARD;
-        const dot =
-          a[o + QX] * b[o + QX] +
-          a[o + QY] * b[o + QY] +
-          a[o + QZ] * b[o + QZ] +
-          a[o + QW] * b[o + QW];
-        assert.ok(
-          dot >= -1e-6,
-          `shard ${i} flips hemisphere across → ${id} (dot=${dot.toFixed(4)})`,
-        );
-      }
+    targetsFor.set(id, targets);
+  }
+
+  const qA = new THREE.Quaternion();
+  const qB = new THREE.Quaternion();
+  const qMid = new THREE.Quaternion();
+
+  // A short-arc slerp lands its midpoint at ~half the (≤π) short-arc angle from
+  // EACH endpoint (`half`); a long-arc (wrong-way) slerp lands it at ~(π − half)
+  // from qA — near π and dramatically larger. So the falsifiable signature of a
+  // correct short-arc slerp is simply that BOTH midpoint angles stay at/under
+  // `half` (plus a small absolute slack that a π-scale wrong-way blows past).
+  // A generous absolute tolerance is used deliberately: it stays robust to the
+  // ill-conditioned `acos` at near-identical quats while still catching any
+  // long-way flip, which is π-scale and unmissable.
+  const TOL = 1e-2;
+  const assertShortArc = (from: KernTargets, to: KernTargets, label: string): void => {
+    const a = from.data;
+    const b = to.data;
+    for (let i = 0; i < POOL; i += 1) {
+      const o = i * FLOATS_PER_SHARD;
+      qA.set(a[o + QX], a[o + QY], a[o + QZ], a[o + QW]);
+      qB.set(b[o + QX], b[o + QY], b[o + QZ], b[o + QW]);
+      const half = qA.angleTo(qB) / 2;
+      qMid.copy(qA).slerp(qB, 0.5);
+      assert.ok(
+        qA.angleTo(qMid) <= half + TOL && qMid.angleTo(qB) <= half + TOL,
+        `shard ${i} slerp took the long way (${label}, half=${half.toFixed(4)})`,
+      );
     }
-    prev = targets;
+  };
+
+  for (let k = 0; k < SCROLL_SEQUENCE.length - 1; k += 1) {
+    const fromId = SCROLL_SEQUENCE[k] as FormationId;
+    const toId = SCROLL_SEQUENCE[k + 1] as FormationId;
+    const from = targetsFor.get(fromId) as KernTargets;
+    const to = targetsFor.get(toId) as KernTargets;
+    assertShortArc(from, to, `${fromId}→${toId}`); // forward scrub
+    assertShortArc(to, from, `${toId}→${fromId}`); // reverse scrub
   }
 });
 

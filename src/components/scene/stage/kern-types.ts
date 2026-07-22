@@ -8,13 +8,13 @@
  *
  * FormationId is the frozen vocabulary from scene-bridge.ts (§2.5) — imported
  * type-only, never re-declared here, so the 1:1 rename debt stays in one place.
- * MeasuredLayout/DocRect come from the shipped Contract-2 stage-types.ts (WP-E
- * extends `MeasuredLayout` with `skillClusterRects`; this file stays agnostic
- * to that addition — it only forwards the type).
+ * MeasuredLayout comes from the shipped Contract-2 stage-types.ts (WP-E extends
+ * `MeasuredLayout` with `skillClusterRects`; this file stays agnostic to that
+ * addition — it only forwards the type).
  */
 
 import type { FormationId } from "../scene-bridge";
-import type { DocRect, MeasuredLayout } from "./stage-types";
+import type { MeasuredLayout } from "./stage-types";
 
 /** Pool size (§2.2 hard floor: 53×7 `#activity` voxel grid = 371 + 13 spares). */
 export const POOL = 384;
@@ -39,7 +39,6 @@ export interface KernEngineInputs {
   transitionT: number; // 0..1
   scrollVelocity: number;
   sectionProgress: number;
-  hoverRect: DocRect | null;
   pointer: { x: number; y: number; active: boolean };
   heatmapLevels: Uint8Array | null;
 }

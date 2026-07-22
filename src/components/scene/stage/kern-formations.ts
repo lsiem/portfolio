@@ -63,7 +63,13 @@ const GRID_WEEKS = 53;
 const GRID_DAYS = 7;
 const GRID_CELLS = GRID_WEEKS * GRID_DAYS;
 /** Fixed gyroscope-ring count (§2.5; mirrors measure.ts SKILL_CLUSTER_COUNT). */
-const RING_COUNT = 4;
+export const RING_COUNT = 4;
+/**
+ * Gyroscope-ring vertical squash (§3): rings are ellipses, not circles. Exported
+ * so WP-D's scroll-scrubbed ring rotation (kern-stage.tsx) un-squashes → rotates
+ * → re-squashes against the SAME factor the resting geometry was built with.
+ */
+export const ORBITS_Y_SQUASH = 0.7;
 /**
  * Nominal world-space size of one active shard. The chamfered prism footprint
  * is ~1 world unit (`kern-geometry.ts` hex circumradius 0.5), so this is the
@@ -507,10 +513,7 @@ function synthesizeCells(rect: DocRect): DocRect[] {
  */
 function fillOrbits(layout: MeasuredLayout, data: Float32Array): void {
   const floor = FORMATION_FLOOR.orbits;
-  const rings =
-    layout.skillClusterRects.length >= RING_COUNT
-      ? layout.skillClusterRects.slice(0, RING_COUNT)
-      : fallbackRingBands(sectionRect(layout, "skills"));
+  const rings = resolveOrbitRings(layout);
 
   for (let i = 0; i < POOL; i += 1) {
     const s = i * 23 + 11;
@@ -519,7 +522,7 @@ function fillOrbits(layout: MeasuredLayout, data: Float32Array): void {
     const centerX = band.left + band.width / 2;
     const centerY = band.top + band.height / 2;
     const rx = Math.min(band.width / 2, band.height * 1.6) * randomInRange(s, 0.55, 0.95);
-    const ry = rx * 0.7; // y-squash (§3)
+    const ry = rx * ORBITS_Y_SQUASH; // y-squash (§3)
     const angle = seededRandom(s + 1) * Math.PI * 2;
     const docX = centerX + Math.cos(angle) * rx;
     const docY = centerY + Math.sin(angle) * ry;
@@ -537,6 +540,19 @@ function fillOrbits(layout: MeasuredLayout, data: Float32Array): void {
       floor.colorMix + jitter(s + 6, 0.06),
     );
   }
+}
+
+/**
+ * The four gyroscope-ring anchor rects (§3, §2.5): the measured
+ * `skillClusterRects` when present, else four bands of the skills section rect.
+ * Exported as the single source of ring geometry so WP-D's scroll-scrubbed ring
+ * rotation (kern-stage.tsx) rotates each shard about the SAME center the resting
+ * ring was built around — no divergent duplicate of the anchoring rule.
+ */
+export function resolveOrbitRings(layout: MeasuredLayout): DocRect[] {
+  return layout.skillClusterRects.length >= RING_COUNT
+    ? layout.skillClusterRects.slice(0, RING_COUNT)
+    : fallbackRingBands(sectionRect(layout, "skills"));
 }
 
 /** Four evenly-spaced horizontal bands of a rect (measure.ts fallback shape). */

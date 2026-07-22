@@ -1,8 +1,11 @@
 /**
  * DSGVO CI grep tripwire (DESIGN-SPEC §8.5): the built stage/webgl-lab chunk
  * must contain NO third-party CDN host string. KERN uses three 0.185 core only
- * (no drei, no loaders, no decoders) so nothing should ever reach for gstatic
- * or jsdelivr — this asserts that by construction against the shipped bundle.
+ * (no drei, no loaders, no decoders) so nothing should ever reach for gstatic,
+ * jsdelivr, unpkg or googleapis — this asserts that by construction against the
+ * shipped bundle. The one known INERT occurrence (detect-gpu's default
+ * `unpkg.com/detect-gpu` benchmarksURL, overridden to a same-origin path at the
+ * call site) is stripped via INERT_ALLOWLIST so it cannot false-positive.
  *
  * Runs post-build in CI: `pnpm build && pnpm check:stage-chunk`. Exits non-zero
  * (fails the job) if any forbidden host appears in a built JS chunk.
@@ -12,8 +15,21 @@ import { join } from "node:path";
 
 const CHUNKS_DIR = join(process.cwd(), ".next", "static", "chunks");
 // Cross-origin CDN hosts that must never appear in a shipped chunk (constraint
-// 7: zero new cross-origin; fonts self-hosted via next/font, §5).
-const FORBIDDEN = ["gstatic", "jsdelivr"];
+// 7: zero new cross-origin; fonts self-hosted via next/font, §5). `unpkg` +
+// `googleapis` are defense-in-depth: KERN pulls no CDN glyphs/benchmarks and
+// next/font self-hosts Google Fonts at build time, so neither host should ever
+// survive into a runtime chunk.
+const FORBIDDEN = ["gstatic", "jsdelivr", "unpkg", "googleapis"];
+
+// Documented, narrowly-scoped allowlist of INERT occurrences that must not trip
+// the grep. detect-gpu bakes a default `benchmarksURL` literal of
+// "https://unpkg.com/detect-gpu@<version>/dist/benchmarks" into its bundle, so
+// this substring is present in the stage chunk — but lib/capability.ts OVERRIDES
+// it to the same-origin "/benchmarks" at the only call site, so it is dead config
+// that is never fetched (no cross-origin request is made). We strip exactly this
+// substring before grepping, so the newly-added `unpkg` tripwire still fires on
+// any REAL unpkg reference while staying green on today's compliant build.
+const INERT_ALLOWLIST = ["unpkg.com/detect-gpu"];
 
 function collectJsFiles(dir: string): string[] {
   const out: string[] = [];
@@ -35,7 +51,10 @@ function main(): void {
 
   const offenders: string[] = [];
   for (const file of collectJsFiles(CHUNKS_DIR)) {
-    const content = readFileSync(file, "utf8");
+    let content = readFileSync(file, "utf8");
+    // Neutralize the documented inert occurrences BEFORE grepping so they never
+    // false-positive, without weakening detection of any other match.
+    for (const inert of INERT_ALLOWLIST) content = content.split(inert).join("");
     for (const host of FORBIDDEN) {
       if (content.includes(host)) offenders.push(`${file} → "${host}"`);
     }
