@@ -54,6 +54,29 @@ jobs:
       - name: DSGVO stage-chunk tripwire
         run: pnpm check:stage-chunk
 
+      # GitHub runners ship no browsers. Installed HERE rather than earlier so
+      # the sub-second gates above fail first and the ~40s download is skipped
+      # entirely on an early red.
+      - name: Install Playwright chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      # The 159 cross-phase contract evals (MODE-02, WOW-01/04, TECH-03/05,
+      # D-10 gate semantics) — the specs that encode what phases 02-06 agreed
+      # on. playwright.config.ts starts `pnpm start` under CI, so these run
+      # against the build produced above, matching the condition under which
+      # the v1.0 audit measured 159/159 green.
+      #
+      # `--project=chromium` DELIBERATELY EXCLUDES the `stage-perf` project —
+      # this is a scope choice, not an oversight. Its budgets are wall-clock
+      # frame measurements that assume an uncontended machine; on a shared
+      # GitHub runner they would flake into red builds that train everyone to
+      # ignore CI. stage-perf therefore stays a LOCAL/MANUAL gate: run the
+      # full `pnpm test` (no --project filter) before touching the stage
+      # renderer. The filter is kept inline here, not hidden behind a package
+      # script, so a reader of this file sees which project is excluded.
+      - name: Playwright evals (chromium)
+        run: pnpm exec playwright test --project=chromium
+
       # TECH-01/TECH-07 performance budget (lighthouserc.json) against a LOCAL
       # production build (`pnpm start`, wired via startServerCommand): LCP <=
       # 2500ms (warn — see below), total-blocking-time <= 200ms (INP proxy),

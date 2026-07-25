@@ -69,7 +69,13 @@ export default defineConfig({
   webServer: isLaunchOnly
     ? undefined
     : {
-        command: "pnpm dev",
+        // CI runs the evals against the PRODUCTION build, not the dev server:
+        // the workflow already ran `pnpm build` before the eval step, the
+        // 159/159-green evidence base in .planning/v1.0-MILESTONE-AUDIT.md was
+        // collected against `pnpm start`, and dev-mode on-demand compilation
+        // distorts the timing-sensitive specs. Locally `pnpm dev` stays the
+        // default so the suite is usable without a build first.
+        command: process.env.CI ? "pnpm start" : "pnpm dev",
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
