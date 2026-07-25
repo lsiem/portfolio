@@ -93,5 +93,13 @@ jobs:
       # (TBT/LCP/perf) with non-app bytes. The debug finding's original premise
       # (localhost hides ~100KB of app JS) was disproven — the deployed number
       # was inflated by non-app platform injection, not hidden app code.
+      #
+      # Both URLs now carry `?webgl=off` (src/lib/capability.ts — a hard
+      # override to tier `none`, evaluated before the reduced-motion, save-data
+      # and detect-gpu branches), so the 184643 script budget measures the
+      # EAGER (no-3D) payload by construction on any machine, instead of
+      # relying on the runner's software GL happening to resolve to that tier.
+      # The 3D-active counterpart lives in lighthouserc.webgl.json
+      # (`pnpm lhci:webgl`) and remains a non-blocking lab audit.
       - name: Lighthouse CI budget
         run: npx lhci autorun

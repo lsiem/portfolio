@@ -2,7 +2,10 @@
   "ci": {
     "collect": {
       "startServerCommand": "pnpm start",
-      "url": ["http://localhost:3000/de", "http://localhost:3000/en"],
+      "url": [
+        "http://localhost:3000/de?webgl=off",
+        "http://localhost:3000/en?webgl=off"
+      ],
       "numberOfRuns": 3
     },
     "assert": {
