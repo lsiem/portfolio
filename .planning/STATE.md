@@ -142,6 +142,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260703-flk | Fix PR #1 failing checks: CI pnpm version, Vercel framework preset, ECC follow-ups | 2026-07-03 | b51d9c2 | [260703-flk-fix-pr-1-failing-checks-ci-pnpm-version-](./quick/260703-flk-fix-pr-1-failing-checks-ci-pnpm-version-/) |
+| 260725-tcn | Wire eval suite, stage-chunk tripwire and unit tests into CI; pin LHCI budget to `?webgl=off` | 2026-07-25 | b18b002…d2a1931 | [260725-tcn-wire-eval-suite-stage-chunk-tripwire-and](./quick/260725-tcn-wire-eval-suite-stage-chunk-tripwire-and/) |
 
 ## Deferred Items
 
