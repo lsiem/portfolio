@@ -14,11 +14,11 @@ import {
 
 /**
  * Producer-parity unit tests for the ONE pure progress module (DESIGN-SPEC §7
- * "Shared progress function unit tests"). The repo has no unit-test runner
- * wired (only Playwright, whose testDir is ./evals, so this file is never
- * collected there) — run ad hoc via node:test:
+ * "Shared progress function unit tests"). Playwright's testDir is ./evals, so
+ * this file is never collected there — it runs under node:test via the wired
+ * entrypoint, which CI invokes before the build:
  *
- *   npx tsx --test src/components/scene/stage/progress.test.ts
+ *   pnpm test:unit
  */
 
 // Shared fixture: three stations on a 1000px viewport. Boundary geometry:

@@ -15,11 +15,11 @@ import type { DocRect, MeasuredLayout } from "./stage-types";
 
 /**
  * Mesh-era invariant unit tests (DESIGN-SPEC §8 "New checks for mesh-era
- * invariants" 1/2/7). The repo has no unit-test runner wired (Playwright's
- * testDir is ./evals, so this file is never collected there) — run ad hoc via
- * node:test, same as progress.test.ts:
+ * invariants" 1/2/7). Playwright's testDir is ./evals, so this file is never
+ * collected there — it runs under node:test via the wired entrypoint, same as
+ * progress.test.ts, which CI invokes before the build:
  *
- *   npx tsx --test src/components/scene/stage/kern-invariants.test.ts
+ *   pnpm test:unit
  *
  * These are pure-math checks (no DOM, no WebGL): they exercise the shard-pool
  * geometry contract and the engine's settle-and-go-silent behavior directly,

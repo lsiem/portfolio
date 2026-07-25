@@ -15,6 +15,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "playwright test",
+    "test:unit": "tsx --test src/components/scene/stage/*.test.ts",
     "test:launch": "LAUNCH_ONLY=1 playwright test --project=launch",
     "lhci:webgl": "lhci autorun --config=lighthouserc.webgl.json"
   },

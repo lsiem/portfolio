@@ -35,8 +35,24 @@ jobs:
       - name: Content parity check
         run: pnpm check:content
 
+      # Cheapest gate first: node:test over the pure modules — DESIGN-SPEC §7
+      # progress-module producer parity (browser and worker read the SAME
+      # progress function) and DESIGN-SPEC §8 mesh-era KERN invariants
+      # (shard-pool geometry contract, settle-and-go-silent). No build output
+      # and no browser needed, so a broken invariant reds out in seconds
+      # instead of after a full Next build.
+      - name: Unit tests
+        run: pnpm test:unit
+
       - name: Build
         run: pnpm build
+
+      # DSGVO / TECH-06 + WOW-01: asserts the lazily-loaded stage chunk pulls
+      # no third-party CDN host. The script was documented as a CI gate but no
+      # workflow ever invoked it (gap flagged in .planning/v1.0-MILESTONE-AUDIT.md).
+      # Must follow Build — it reads .next/static/chunks.
+      - name: DSGVO stage-chunk tripwire
+        run: pnpm check:stage-chunk
 
       # TECH-01/TECH-07 performance budget (lighthouserc.json) against a LOCAL
       # production build (`pnpm start`, wired via startServerCommand): LCP <=
