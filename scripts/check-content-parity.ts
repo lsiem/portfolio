@@ -21,7 +21,7 @@
  * Usage: node scripts/check-content-parity.ts [--root <dir>]   (root defaults to 'content')
  */
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import process from "node:process";
 
