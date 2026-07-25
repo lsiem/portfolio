@@ -5,15 +5,11 @@ import { Canvas } from "@react-three/fiber";
 import { usePathname } from "next/navigation";
 import type { SceneTier } from "@/lib/capability";
 import { sceneBridge } from "./scene-bridge";
-import { ParticleStage } from "./stage/particle-stage";
+import KernStage, { setKernLayout } from "./stage/kern-stage";
 import { useTransitionConductor } from "./stage/transition-conductor";
-import { setStageLayout } from "./stage/formation-engine";
 import { formationForRoute } from "./stage/section-config";
-import {
-  useMeasuredLayout,
-  type StageCameraIntrinsics,
-} from "./stage/measure";
-import { CAMERA_FOV_DEG, CAMERA_Z } from "./stage/formations";
+import { useMeasuredLayout } from "./stage/measure";
+import { CAMERA_FOV_DEG, CAMERA_Z, STAGE_CAMERA } from "./stage/camera";
 
 // WP-C scroll producers (§3 "Scroll choreography wiring"), pointer-gated:
 // scroll-director statically imports gsap/ScrollTrigger, so it may ONLY be
@@ -23,13 +19,8 @@ import { CAMERA_FOV_DEG, CAMERA_Z } from "./stage/formations";
 const ScrollDirector = lazy(() => import("./stage/scroll-director"));
 const TouchScrollProducer = lazy(() => import("./stage/touch-scroll-producer"));
 
-// The measure.ts unprojection must use THIS canvas's camera pose (Contract 2:
-// worldPerPixel diverges from doc px otherwise). Module-constant so the
-// measurement lifecycle isn't restarted per render.
-const STAGE_CAMERA: StageCameraIntrinsics = {
-  fovDeg: CAMERA_FOV_DEG,
-  distance: CAMERA_Z,
-};
+// STAGE_CAMERA (measure.ts unprojection, Contract 2) is now the single source
+// in ./stage/camera — same pose the <Canvas camera> prop and kern-stage use.
 
 /**
  * Lazy chunk entry for the Kontinuum stage (WP-B; DESIGN-SPEC §2.1) — the
@@ -56,7 +47,7 @@ const STAGE_CAMERA: StageCameraIntrinsics = {
  * Contract 3 test hooks (§5.1, asserted by WP-E): the wrapper carries
  * `data-testid="stage-frameloop"`, `data-frameloop="demand"|"never"`, and
  * `data-scene-frames` — incremented once per rendered frame by the single
- * `useFrame` in particle-stage.tsx (the falsifiable at-rest counter).
+ * `useFrame` in kern-stage.tsx (the falsifiable at-rest counter).
  *
  * Producers mounted here (all §6.3-enumerated invalidation sources):
  *   - visibilitychange → frameloop "never" + `bridge.paused` (R3)
@@ -88,7 +79,7 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
 
   // §3 Contract 2: WP-C's measurement lifecycle feeds the formation engine
   // (fonts.ready → idle-sliced pass → debounced resize → per-route re-measure).
-  useMeasuredLayout(setStageLayout, STAGE_CAMERA);
+  useMeasuredLayout(setKernLayout, STAGE_CAMERA);
 
   // Route→formation registry (Weltlinie graft, §5.2): keeps routeFormation
   // correct on marker-less routes (home ⇒ "constellation") and degrades
@@ -201,6 +192,21 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
           // The demand loop's poke — replaces the module-level no-op so every
           // producer write can now actually schedule a frame (§5.1 Contract 1).
           sceneBridge.invalidate = () => state.invalidate();
+          // One-shot shader pre-warm in the post-mount idle window (§6 WP-F):
+          // compiles whatever is already in the scene so the first shard/skin
+          // render doesn't stall on shader compilation. Safe if it runs before
+          // kern-stage's idle-sliced meshes land — compile warms the current
+          // scene and the shard material compiles lazily with a negligible
+          // one-frame hitch (WP-D note). requestIdleCallback keeps it off the
+          // mount critical path; setTimeout fallback for Safari.
+          const prewarm = (): void => {
+            state.gl.compile(state.scene, state.camera);
+          };
+          if (typeof window.requestIdleCallback === "function") {
+            window.requestIdleCallback(prewarm);
+          } else {
+            window.setTimeout(prewarm, 0);
+          }
           // §2.1: preventDefault marks the loss as handled (no browser restore
           // attempt we'd ignore anyway), then the gate unmounts silently.
           // once:true — after the first loss this component returns null, so
@@ -215,7 +221,7 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
           );
         }}
       >
-        <ParticleStage tier={tier} frameHookRef={frameHookRef} />
+        <KernStage tier={tier} frameHookRef={frameHookRef} />
       </Canvas>
     </div>
   );

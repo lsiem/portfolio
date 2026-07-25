@@ -129,6 +129,47 @@ function measureSpineX(
 }
 
 /**
+ * Fixed gyroscope-ring count for the `orbits` formation. The frozen
+ * FormationId vocab (§2.5) pins the field at 4 rings regardless of how many
+ * skill-domain clusters the content declares (5 today, and free to change per
+ * locale/edit).
+ */
+const SKILL_CLUSTER_COUNT = 4;
+
+/**
+ * Doc-space anchors for the four `orbits` gyroscope rings (§2.5 KERN mapping,
+ * §3 #skills). The `#skills` DOM renders one cluster `<div>` per content
+ * domain (5 today), but the frozen vocab fixes the ring COUNT at 4 — coupling
+ * a frozen 4-slot geometry contract to a variable content count would be
+ * brittle (adding/removing a domain would silently reshape the formation).
+ *
+ * Deliberate choice: rather than map rings 1:1 to domain `<div>`s, derive
+ * exactly SKILL_CLUSTER_COUNT evenly-spaced horizontal bands from the measured
+ * `#skills` section rect. This is deterministic, locale-stable (both locales
+ * share the section structure), and independent of the domain count. Doc-space
+ * arithmetic on an already-doc-space section rect — no extra scroll read.
+ * Returns [] when #skills is absent from the route (mirrors `measureBentoCells`
+ * on routes without #projects), so the `orbits` builder degrades identically.
+ */
+function measureSkillClusterRects(
+  sections: Record<string, DocRect>,
+): DocRect[] {
+  const skills = sections["skills"];
+  if (!skills) return [];
+  const bandHeight = skills.height / SKILL_CLUSTER_COUNT;
+  const rects: DocRect[] = [];
+  for (let i = 0; i < SKILL_CLUSTER_COUNT; i++) {
+    rects.push({
+      left: skills.left,
+      top: skills.top + i * bandHeight,
+      width: skills.width,
+      height: bandHeight,
+    });
+  }
+  return rects;
+}
+
+/**
  * The bento project cells: every `<li>` under #projects that is NOT nested
  * inside another `<li>` — the one-`<li>`-per-project a11y contract makes the
  * top-level `li`s exactly the cells, while the filter drops the TechChips
@@ -176,6 +217,7 @@ export function measureLayout(
     sections,
     bentoCells: measureBentoCells(scrollX, scrollY),
     spineX: measureSpineX(sections, scrollX),
+    skillClusterRects: measureSkillClusterRects(sections),
     heatmap: readHeatmapLevels(),
     viewport: { w: window.innerWidth, h: window.innerHeight },
     worldPerPixel: computeWorldPerPixel(window.innerHeight, camera),
@@ -272,6 +314,9 @@ export function initLayoutMeasurement(
         cancelPending = scheduleIdle(() => {
           if (disposed || gen !== generation) return;
           const bentoCells = measureBentoCells(window.scrollX, window.scrollY);
+          // Derived from slice-1 `sections` (doc space is scroll-invariant, so
+          // reusing the earlier rect is safe): no DOM read of its own.
+          const skillClusterRects = measureSkillClusterRects(sections);
 
           // Slice 3: heatmap + assemble + publish.
           cancelPending = scheduleIdle(() => {
@@ -284,6 +329,7 @@ export function initLayoutMeasurement(
               sections,
               bentoCells,
               spineX,
+              skillClusterRects,
               heatmap: sceneBridge.heatmapLevels,
               viewport: { w: window.innerWidth, h: window.innerHeight },
               worldPerPixel: computeWorldPerPixel(window.innerHeight, camera),

@@ -1,29 +1,33 @@
 /**
- * Build-time @-glyph point sampler (Kontinuum WP-B, DESIGN-SPEC §3 #contact /
- * §5.2). Dev-only script — NEVER imported by app code and NEVER shipped: it
- * writes the static `src/components/scene/stage/glyph-points.json` that the
- * lazy stage chunk bundles, so the `glyph` formation costs zero network
- * requests and zero runtime path parsing (§6.2 "zero new network requests").
+ * Build-time @-glyph shard sampler (KERN WP-C, DESIGN-SPEC §3 #contact / §5).
+ * Dev-only script — NEVER imported by app code and NEVER shipped: it writes the
+ * static `src/components/scene/stage/glyph-shards.json` the lazy stage chunk
+ * bundles, so the `glyph` formation costs zero network requests and zero
+ * runtime path parsing (§5 "zero new network requests").
  *
  * Run once (and re-run only if GLYPH_PATH changes):
  *   npx tsx scripts/sample-glyph.ts
  *
- * The glyph is a stylized "@" defined as an inline SVG path (§5.2: "@-glyph
- * sampled from an SVG path") in a 100×100 y-down viewBox and sampled at a
- * roughly uniform arc-length step. Points are emitted normalized to a
- * y-UP unit box (x,y ∈ [-0.5, 0.5]) so `formations.ts#buildGlyph` only has to
- * scale + translate into the contact section's document-space rect.
+ * KERN divergence from the v1 `glyph-points.json` (2-float outline points): the
+ * @ is sampled into full shard SLOTS — position + tangent-orientation
+ * quaternion + scale — by the shared `shard-sampler.ts`. The glyph is a
+ * stylized "@" defined as an inline SVG path (a 100×100 y-DOWN viewBox) split
+ * into its three subpaths; each subpath is arc-length sampled into a y-up
+ * centreline STROKE, then handed to the sampler as the shard centrelines
+ * (§5 procedural, no font). Output slots live in a y-up unit box centred on the
+ * glyph so `kern-formations.ts#glyph` only scales + translates into the
+ * contact rect.
  *
- * Hand-rolled sampler on purpose (DESIGN-SPEC §8 devDependency note): only
- * the three commands the path below actually uses (M, L, A) plus C for
- * future-proofing — not a general SVG path engine.
+ * Hand-rolled SVG sampler on purpose (DESIGN-SPEC §5 devDependency note): only
+ * the commands the path below uses (M, L, C, A) — not a general path engine.
  */
 
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { sampleShards, type Point2, type ShardSlot } from "./shard-sampler";
 
-// Stylized "@" (100×100 viewBox, y down, center 50,50):
+// Stylized "@" (100×100 viewBox, y down, centre 50,50):
 //   1. the inner ring (full circle, r=15) — two-arc idiom for a closed circle
 //   2. the descender bar + tail hooking out of the ring toward lower-right
 //   3. the outer sweep (r≈31), open on the right where the tail exits
@@ -37,7 +41,21 @@ const GLYPH_PATH = [
 const SAMPLE_STEP = 0.55;
 /** Subdivisions used to approximate each cubic segment's length before resampling. */
 const CUBIC_SUBDIVISIONS = 64;
-/** Output precision — 4 decimals keeps the JSON gzip-trivial. */
+/** viewBox extent — used to flip y-down → y-up before sampling. */
+const VIEWBOX = 100;
+
+// --- KERN slot-sampling knobs (design-space = 100×100 viewBox) ---------------
+/** Pool instances that converge onto the @ (the full pool forms the glyph). */
+const SLOT_COUNT = 384;
+/** Perpendicular half-thickness of the shard cloud around the @ outline. */
+const STROKE_HALF_WIDTH = 2.4;
+/** Shallow depth so the @ reads as a solid ribbon, not a flat decal. */
+const DEPTH = 2.6;
+const SCALE_MIN = 0.8;
+const SCALE_MAX = 1.15;
+const TILT_SPREAD = 0.34;
+const TWIST_SPREAD = 0.5;
+const SEED = 41;
 const DECIMALS = 4;
 
 interface Point {
@@ -136,8 +154,7 @@ function sampleArc(
   const cry = ry * scale;
 
   const sign = largeArc !== sweep ? 1 : -1;
-  const num =
-    crx * crx * cry * cry - crx * crx * dy * dy - cry * cry * dx * dx;
+  const num = crx * crx * cry * cry - crx * crx * dy * dy - cry * cry * dx * dx;
   const den = crx * crx * dy * dy + cry * cry * dx * dx;
   const coef = sign * Math.sqrt(Math.max(0, num / den));
   const cxPrime = (coef * (crx * dy)) / cry;
@@ -156,31 +173,34 @@ function sampleArc(
   const steps = Math.max(2, Math.round(length / SAMPLE_STEP));
   for (let i = 1; i <= steps; i += 1) {
     const angle = startAngle + deltaAngle * (i / steps);
-    out.push({
-      x: cx + crx * Math.cos(angle),
-      y: cy + cry * Math.sin(angle),
-    });
+    out.push({ x: cx + crx * Math.cos(angle), y: cy + cry * Math.sin(angle) });
   }
   return out[out.length - 1] as Point;
 }
 
-// --- Sample the whole path ------------------------------------------------------
-function samplePath(d: string): Point[] {
-  const points: Point[] = [];
+/**
+ * Sample the path into one stroke (polyline) per subpath — each "M" starts a
+ * fresh stroke, so the shard sampler never bridges the ring, the tail and the
+ * outer sweep with a spurious segment.
+ */
+function samplePathStrokes(d: string): Point[][] {
+  const strokes: Point[][] = [];
+  let current: Point[] = [];
   let cursor: Point = { x: 0, y: 0 };
   for (const { op, args } of parsePath(d)) {
     if (op === "M") {
+      if (current.length > 1) strokes.push(current);
       cursor = { x: args[0] as number, y: args[1] as number };
-      points.push(cursor);
+      current = [cursor];
     } else if (op === "L") {
-      cursor = sampleLine(cursor, { x: args[0] as number, y: args[1] as number }, points);
+      cursor = sampleLine(cursor, { x: args[0] as number, y: args[1] as number }, current);
     } else if (op === "C") {
       cursor = sampleCubic(
         cursor,
         { x: args[0] as number, y: args[1] as number },
         { x: args[2] as number, y: args[3] as number },
         { x: args[4] as number, y: args[5] as number },
-        points,
+        current,
       );
     } else {
       cursor = sampleArc(
@@ -191,30 +211,35 @@ function samplePath(d: string): Point[] {
         args[3] as number,
         args[4] as number,
         { x: args[5] as number, y: args[6] as number },
-        points,
+        current,
       );
     }
   }
-  return points;
+  if (current.length > 1) strokes.push(current);
+  return strokes;
 }
 
-const sampled = samplePath(GLYPH_PATH);
-const round = (value: number): number => Number(value.toFixed(DECIMALS));
-// Normalize 100×100 y-down viewBox → y-up unit box centered on the glyph.
-const flat: number[] = [];
-for (const point of sampled) {
-  flat.push(round((point.x - 50) / 100), round((50 - point.y) / 100));
-}
+// Sample the @ into y-DOWN subpath strokes, then flip to y-UP for the sampler.
+const strokes: Point2[][] = samplePathStrokes(GLYPH_PATH).map((stroke) =>
+  stroke.map((p): Point2 => ({ x: p.x, y: VIEWBOX - p.y })),
+);
+
+const slots: ShardSlot[] = sampleShards(strokes, {
+  count: SLOT_COUNT,
+  strokeHalfWidth: STROKE_HALF_WIDTH,
+  depth: DEPTH,
+  scaleMin: SCALE_MIN,
+  scaleMax: SCALE_MAX,
+  tiltSpread: TILT_SPREAD,
+  twistSpread: TWIST_SPREAD,
+  seed: SEED,
+  decimals: DECIMALS,
+});
 
 const outPath = join(
   dirname(fileURLToPath(import.meta.url)),
   "..",
-  "src/components/scene/stage/glyph-points.json",
+  "src/components/scene/stage/glyph-shards.json",
 );
-writeFileSync(
-  outPath,
-  `${JSON.stringify({ count: sampled.length, points: flat })}\n`,
-);
-process.stdout.write(
-  `sample-glyph: wrote ${sampled.length} points to ${outPath}\n`,
-);
+writeFileSync(outPath, `${JSON.stringify({ slots })}\n`);
+process.stdout.write(`sample-glyph: wrote ${slots.length} shard slots to ${outPath}\n`);

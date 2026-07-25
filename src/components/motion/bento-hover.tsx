@@ -10,10 +10,10 @@ import { sceneBridge } from "@/components/scene/scene-bridge";
  * the one-<li>-per-project a11y contract are untouched) that delegates
  * pointerover/out from the project cells and writes the hovered cell's
  * DOCUMENT-space rect to `bridge.hoverRect` (frozen Contract 1). The consumer
- * — the lattice tighten toward the hovered frame (DESIGN-SPEC §3 #projects) —
- * is deliberately deferred: nothing reads `hoverRect` yet, so this producer
- * does NOT poke the demand loop; the `invalidate()` call returns together
- * with the consumer.
+ * — the lattice hover-lift toward the hovered frame (DESIGN-SPEC §3 #projects)
+ * — is live in KernStage (WP-D), so each hoverRect write pokes the demand loop
+ * once via `bridge.invalidate()` so the lift receives frames on enter/exit
+ * (KERN WP-F: the single eager change).
  *
  * Inert-safe (D-08): without a mounted canvas the writes are dead letters —
  * excluded visitors pay two no-op event handlers, nothing else. pointer:fine
@@ -34,11 +34,13 @@ export function BentoHover({ children }: { children: ReactNode }) {
       w: rect.width,
       h: rect.height,
     };
+    sceneBridge.invalidate();
   };
 
   const handleOut = () => {
     if (sceneBridge.hoverRect === null) return;
     sceneBridge.hoverRect = null;
+    sceneBridge.invalidate();
   };
 
   return (
