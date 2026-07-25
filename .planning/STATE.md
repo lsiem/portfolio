@@ -34,7 +34,11 @@ Last activity: 2026-07-25 -- PR #26 merged + deployed to production; GSD ROADMAP
 
 Progress: [██████████] 100% — all six phases complete & live
 
-Open carry-over items (non-blocking, pre-existing): D-11 production-LCP sign-off (~2.7s warn, unchanged); real-device mid-tier Android profile + two-theme per-formation contrast pass (named UAT); repo-wide ESLint toolchain breakage (eslint-plugin-react vs ESLint 10.7 — predates the 3D work).
+Carry-over items — closed 2026-07-25 (evidence: .planning/phases/06-solid-3d-kern/CARRYOVER-CLOSURE.md):
+- ✅ ESLint toolchain breakage FIXED (commit 48e362a) — pinned eslint ^9 (config-next caps the plugin stack at eslint ^9.7); pnpm lint exits 0.
+- ✅ D-11 production-LCP SIGNED OFF — real prod traces 815ms (desktop) / 768ms (4x CPU + Slow 4G, ?webgl=force), CLS 0.00, both ~3x under the 2500ms budget; the LHCI 2.7s warn is a cold-localhost lab artifact, not production.
+- ✅ Two-theme per-formation contrast PASS — WCAG AA in light + dark across all sections, zero sub-AA failures (identical ratios per theme by token design).
+- ⏳ Real-device mid-tier Android profile REMAINS OPEN — needs physical hardware / device lab (emulated throttling is only a proxy); non-blocking, FALLBACK path eval-covered under SwiftShader.
 
 ## Performance Metrics
 
