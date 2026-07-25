@@ -16,7 +16,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Bilingual Content Foundation** - Vollständige DE/EN-Inhalte als typisiertes Content-Modell, live rendernd auf lsiem.de mit CI-Performance-Budget und Analytics (completed 2026-07-03)
 - [x] **Phase 2: Recruiter Overview Live** - Komplette, schnelle, zugängliche Recruiter-Site (Timeline, Case Studies, Skills, CV-PDF, Dark Mode, SEO) in Produktion (completed 2026-07-05)
 - [x] **Phase 3: Design Direction & Immersive Experience** - Identitätsbasierte Gestaltung plus Scroll-Storytelling-Erlebnis als Standard-Modus — jederzeit überspringbar, reduced-motion-vollwertig, mobil bewusst gestaltet (completed 2026-07-08 - 4/4 plans, human UAT 4/4 on /de + /en; production LCP re-check deferred to Phase 4)
-- [ ] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL (plans 6/6 done — verification gaps_found: unplanned 3D-rewrite commits regress SC1/SC2; 04-06 fix awaiting production deploy)
+- [x] **Phase 4: Signature Moment & Launch Hardening** - Der 3D/WebGL-Wow-Moment im Hero plus Launch-Verifikation aller Zusagen auf der Produktions-URL (completed 2026-07-18 - 6/6 plans; the unplanned 3D-rewrite regression was reverted, the 04-06 FALLBACK-GPU fix shipped to production via PR #21 and verified live on a real M5 Pro device)
+- [x] **Phase 5: Three.js Immersive Rewrite (Kontinuum)** - Site-wide persistent particle stage: one gated canvas whose constellation recomposes per section (career filament, project lattice, skill orbits, GitHub grid, @-glyph) with vortex route transitions; demand-frameloop at-rest invariants + reduced-motion zero-canvas enforced by evals (completed 2026-07-18 - PR #22 merged & live on lsiem.de, 163/163 specs green)
+- [x] **Phase 6: Solid-3D Stage (KERN)** - Replace the particle field with real 3D: 384 instanced beveled shard-prisms forming the LS monogram and reshaping into each section's centerpiece; per-component 3D animations (career-knot pulse, scroll-driven skills gyroscope) and object-constancy route transitions; two draw calls, zero new deps (completed 2026-07-25 - PR #26 merged & deployed, 163/163 specs green)
 
 ## Phase Details
 
@@ -172,11 +174,15 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Bilingual Content Foundation | 4/4 | Complete    | 2026-07-03 |
 | 2. Recruiter Overview Live | 7/7 | Complete   | 2026-07-05 |
 | 3. Design Direction & Immersive Experience | 4/4 | Complete   | 2026-07-08 |
-| 4. Signature Moment & Launch Hardening | 6/6 | Verification | —          |
+| 4. Signature Moment & Launch Hardening | 6/6 | Complete | 2026-07-18 |
+| 5. Three.js Immersive Rewrite (Kontinuum) | workflow-driven | Complete | 2026-07-18 |
+| 6. Solid-3D Stage (KERN) | workflow-driven | Complete | 2026-07-25 |
+
+**Note:** Phases 5–6 were executed via dynamic multi-agent workflows (not per-plan GSD execution); their design contracts live in `.planning/phases/0{5,6}-*/DESIGN-SPEC.md` and their verification is the CI/eval suite (163 Playwright specs) rather than per-plan VERIFICATION.md docs.

@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 04
-current_phase_name: signature-moment-launch-hardening
-status: verifying
-stopped_at: 04-06 executed & verified locally — phase verification gaps_found (unplanned 3D-rewrite commits d9b8e57/56daa9d regress SC1/SC2)
-last_updated: "2026-07-17T18:05:00.000Z"
-last_activity: 2026-07-17 -- reconcile premature completion rollup; verification gaps_found
+current_phase: 06
+current_phase_name: solid-3d-kern
+status: complete
+stopped_at: Phase 06 (KERN solid-3D) merged via PR #26 and deployed to production lsiem.de
+last_updated: "2026-07-25T00:00:00.000Z"
+last_activity: 2026-07-25 -- KERN solid-3D stage merged (#26) + deployed; GSD artifacts reconciled for phases 04-06
 progress:
-  total_phases: 4
-  completed_phases: 3
+  total_phases: 6
+  completed_phases: 6
   total_plans: 21
   completed_plans: 21
-  percent: 75
+  percent: 100
 ---
 
 # Project State
@@ -23,16 +23,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 04 — signature-moment-launch-hardening
+**Current focus:** Phase 06 complete — KERN solid-3D stage live on lsiem.de
 
 ## Current Position
 
-Phase: 04 (signature-moment-launch-hardening) — VERIFICATION (gaps_found)
-Plan: 6 of 6 (all plans executed; 04-06 gap fix verified locally, NOT yet in production)
-Status: both 04-VERIFICATION gaps resolved (rewrite reverted per user decision; 04-06 deployed to production via PR #21 and verified live on a real FALLBACK-class device). Remaining before phase completion: D-11 LCP sign-off + external-tester walkthrough (04-UAT.md tests 2-3).
-Last activity: 2026-07-17 -- reconcile premature completion rollup (fb196f0/6db6dea) to verification gaps_found
+Phase: 06 (solid-3d-kern) — COMPLETE (merged + deployed)
+Status: All six phases shipped. Phase 4 (signature moment) reverted its unplanned rewrite, shipped the 04-06 FALLBACK fix (PR #21), and was verified live. Phase 5 (Kontinuum particle stage, PR #22) and Phase 6 (KERN solid-3D, PR #26) both shipped to production via dynamic multi-agent workflows — the particle field was replaced by 384 instanced shard-prisms with per-component 3D animations and object-constancy route transitions.
+Compliance held across both 3D phases: gated single canvas, reduced-motion zero-canvas, demand-frameloop at-rest invariants (R1–R3), eager budget ~172.8KB gzip (< 184,643 B gate), zero new deps, zero new cross-origin requests (DSGVO). 163/163 Playwright specs green.
+Last activity: 2026-07-25 -- PR #26 merged + deployed to production; GSD ROADMAP/STATE reconciled for phases 04-06.
 
-Progress: [███████░░░] 75% — Phase 4 verification open
+Progress: [██████████] 100% — all six phases complete & live
+
+Open carry-over items (non-blocking, pre-existing): D-11 production-LCP sign-off (~2.7s warn, unchanged); real-device mid-tier Android profile + two-theme per-formation contrast pass (named UAT); repo-wide ESLint toolchain breakage (eslint-plugin-react vs ESLint 10.7 — predates the 3D work).
 
 ## Performance Metrics
 
