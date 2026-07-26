@@ -364,7 +364,14 @@ for (const locale of locales) {
       const before = page.url();
       await page
         .locator(`#projects a[href="/${locale}/case-studies/elia"]`)
-        .click({ modifiers: ["Meta"] });
+        // ControlOrMeta, not a hardcoded "Meta": the new-tab gesture is
+        // Cmd+click on macOS but Ctrl+click on Linux/Windows. On Linux, Meta
+        // is the Super key and does NOT open a new tab, so the browser
+        // navigates in the same tab and this test fails on CI while passing
+        // locally. TransitionLink early-returns on metaKey AND ctrlKey
+        // (transition-link.tsx:65-69), so both platforms exercise the same
+        // "do not intercept" contract.
+        .click({ modifiers: ["ControlOrMeta"] });
       // The current tab must NOT navigate — the browser would open a new tab.
       await page.waitForTimeout(300);
       expect(page.url()).toBe(before);
