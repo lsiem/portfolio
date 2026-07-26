@@ -1,13 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-current_phase: 06
-current_phase_name: solid-3d-kern
-status: complete
-stopped_at: Phase 06 (KERN solid-3D) merged via PR #26 and deployed to production lsiem.de
-last_updated: "2026-07-25T00:00:00.000Z"
-last_activity: 2026-07-25 -- KERN solid-3D stage merged (#26) + deployed; GSD artifacts reconciled for phases 04-06
+milestone: null
+milestone_name: null
+last_milestone: v1.0
+last_milestone_shipped: "2026-07-26"
+current_phase: null
+current_phase_name: null
+status: milestone_complete
+closeout_type: override_closeout
+stopped_at: v1.0 archived and tagged — no active milestone
+last_updated: "2026-07-26T00:00:00.000Z"
+last_activity: 2026-07-26 -- v1.0 milestone closed (override_closeout, 2 accepted gaps); roadmap + requirements archived, PROJECT.md evolved, tagged v1.0
+next_phase_number: 7
 progress:
   total_phases: 6
   completed_phases: 6
@@ -20,25 +24,30 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-02)
+See: .planning/PROJECT.md (updated 2026-07-26)
 
 **Core value:** Wer die Seite besucht, sagt "wow" — und findet trotzdem in unter 30 Sekunden die Fakten (wer, was, Kontakt), wenn er es eilig hat.
-**Current focus:** Phase 06 complete — KERN solid-3D stage live on lsiem.de
+**Current focus:** None — v1.0 shipped and archived. Next milestone not yet scoped.
 
 ## Current Position
 
-Phase: 06 (solid-3d-kern) — COMPLETE (merged + deployed)
-Status: All six phases shipped. Phase 4 (signature moment) reverted its unplanned rewrite, shipped the 04-06 FALLBACK fix (PR #21), and was verified live. Phase 5 (Kontinuum particle stage, PR #22) and Phase 6 (KERN solid-3D, PR #26) both shipped to production via dynamic multi-agent workflows — the particle field was replaced by 384 instanced shard-prisms with per-component 3D animations and object-constancy route transitions.
-Compliance held across both 3D phases: gated single canvas, reduced-motion zero-canvas, demand-frameloop at-rest invariants (R1–R3), eager budget ~172.8KB gzip (< 184,643 B gate), zero new deps, zero new cross-origin requests (DSGVO). 163/163 Playwright specs green.
-Last activity: 2026-07-25 -- PR #26 merged + deployed to production; GSD ROADMAP/STATE reconciled for phases 04-06.
+**Milestone v1.0 CLOSED 2026-07-26** (`override_closeout`, 2 accepted gaps — see Deferred Items).
 
-Progress: [██████████] 100% — all six phases complete & live
+All six phases shipped and live on lsiem.de. Phase 4 reverted its unplanned rewrite and shipped the 04-06 FALLBACK fix (PR #21). Phases 5 (Kontinuum, PR #22) and 6 (KERN solid-3D, PR #26) shipped via dynamic multi-agent workflows — the particle field replaced by 384 instanced shard-prisms with per-component 3D animations and object-constancy route transitions.
+
+Compliance held across both 3D phases: gated single canvas, reduced-motion zero-canvas, demand-frameloop at-rest invariants (R1–R3), zero new deps, zero new cross-origin requests (DSGVO). As of the close, all of that is CI-enforced on every push and PR: 159 Playwright evals + 17 unit assertions + DSGVO chunk tripwire + LHCI eager budget (179,673 B against a 184,643 B ceiling, pinned to `?webgl=off`).
+
+Progress: [██████████] 100% — all six phases complete, live, and archived
+
+**Next:** `/gsd-new-milestone` to scope v1.1. Phase numbering continues from **7**.
+
+Archive: [v1.0-ROADMAP.md](./milestones/v1.0-ROADMAP.md) · [v1.0-REQUIREMENTS.md](./milestones/v1.0-REQUIREMENTS.md) · [v1.0-MILESTONE-AUDIT.md](./v1.0-MILESTONE-AUDIT.md)
 
 Carry-over items — closed 2026-07-25 (evidence: .planning/phases/06-solid-3d-kern/CARRYOVER-CLOSURE.md):
 - ✅ ESLint toolchain breakage FIXED (commit 48e362a) — pinned eslint ^9 (config-next caps the plugin stack at eslint ^9.7); pnpm lint exits 0.
 - ✅ D-11 production-LCP SIGNED OFF — real prod traces 815ms (desktop) / 768ms (4x CPU + Slow 4G, ?webgl=force), CLS 0.00, both ~3x under the 2500ms budget; the LHCI 2.7s warn is a cold-localhost lab artifact, not production.
 - ✅ Two-theme per-formation contrast PASS — WCAG AA in light + dark across all sections, zero sub-AA failures (identical ratios per theme by token design).
-- ⏳ Real-device mid-tier Android profile REMAINS OPEN — needs physical hardware / device lab (emulated throttling is only a proxy); non-blocking, FALLBACK path eval-covered under SwiftShader.
+- ⏳ Real-device mid-tier Android profile REMAINS OPEN — carried into Deferred Items below.
 
 ## Performance Metrics
 
@@ -152,8 +161,22 @@ Items acknowledged and carried forward from previous milestone close:
 |----------|------|--------|-------------|
 | v1.x | AI-Chat "Ask Lasse" (AI-01), Terminal-Easter-Egg (AI-02) | Deferred | Requirements-Scoping 2026-07-02 |
 
+Items acknowledged and deferred at the **v1.0 milestone close on 2026-07-26** (`override_closeout`):
+
+| Category | Item | Status | Why accepted |
+|----------|------|--------|--------------|
+| verification | Phase 04 SC 4 — real external human tester for the 30-second stopwatch flow and reduced-motion walkthrough on production | Open | Automated suite passes 4/4 on lsiem.de in both locales; site live and working for over a week. Verification formality, not a suspected defect. Costs ~5 min of a real person's time whenever convenient. |
+| verification | Phase 04 SC 3 — physical mid-tier Android device measurement | Open | Needs hardware or a device lab; emulated 4× CPU + Slow 4G passes at 768ms LCP and the FALLBACK tier path is eval-covered under SwiftShader. Non-blocking. |
+| artifacts | Phases 05 and 06 have no VERIFICATION.md / SUMMARY.md (workflow-driven) | Open | No REQ-IDs assigned to either phase, so requirements traceability is unaffected. Evidence lives in DESIGN-SPEC.md, CARRYOVER-CLOSURE.md, PRs #22/#26 and the eval suite. Either backfill or codify that workflow-driven phases close on PR + design-spec evidence. |
+| tech debt | `stage-perf` Playwright project excluded from CI | Accepted | Wall-clock frame budgets would flake on a shared runner and train everyone to ignore CI. Stays a local gate — run full `pnpm test` before touching the stage renderer. Documented inline in `.github/workflows/ci.yml`. |
+| tech debt | Stale comments: `lighthouserc.webgl.json` `_budget_derivation` (2 clauses), `stage/seeded.ts:8-10`, `stage-gate.tsx:41`, `stage-canvas.tsx:30` | Open | Cosmetic documentation drift; every conclusion the notes draw remains true. |
+| tech debt | `metadataBase` build warning from routes without `generateMetadata` (e.g. `/_not-found`) | Accepted | No shipped page has a relative OG URL — verified absolute in the prerendered HTML. Cosmetic. |
+
+**Verification overrides at close:** 2 (Phase 04 SC 3 and SC 4). No unsatisfied requirements — all 24 v1 requirements are satisfied.
+
 ## Session Continuity
 
-Last session: 2026-07-11T20:14:36.199Z
-Stopped at: Completed 04-05-PLAN.md
+Last session: 2026-07-26
+Stopped at: v1.0 milestone closed, archived and tagged — clean stopping point
 Resume file: None
+Next command: `/gsd-new-milestone` (phase numbering continues from 7)
