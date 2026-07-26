@@ -1,13 +1,20 @@
 ---
 phase: 03-design-direction-immersive-experience
 verified: "2026-07-07T00:00:00Z"
-status: human_needed
-score: 5/5 must-haves implemented and test-verified; phase-closure gate (human walkthrough) not yet performed
+status: passed
+status_history:
+  - status: human_needed
+    at: "2026-07-07T00:00:00Z"
+    note: "5/5 implemented and test-verified; phase-closure human walkthrough not yet performed"
+  - status: passed
+    at: "2026-07-26T00:00:00Z"
+    note: "Closure gate satisfied — see 'Closure Gate Resolution' section. Human walkthrough recorded in 03-UAT.md: 4/4 passed, 0 gaps, 2026-07-08."
+score: 5/5 must-haves implemented and test-verified; phase-closure human walkthrough passed 4/4 (03-UAT.md, 2026-07-08)
 behavior_unverified: 0
 overrides_applied: 0
 gaps: []
 deferred:
-  - "Production LCP ≤ 2500ms with Bricolage display H1 — deferred to Phase 4"
+  - "Production LCP ≤ 2500ms with Bricolage display H1 — deferred to Phase 4 (CLOSED 2026-07-25: production traces 815ms desktop / 768ms throttled, see 06-solid-3d-kern/CARRYOVER-CLOSURE.md §2)"
 behavior_unverified_items: []
 human_verification:
   - "WOW: desktop immersive craft (pointer:fine), both /de and /en"
@@ -20,8 +27,10 @@ human_verification:
 
 **Phase Goal:** Die Site bekommt ein unverwechselbares, aus Lasses Identität abgeleitetes Designkonzept, und der Standard-Besuch wird eine Scroll-Storytelling-Reise mit spürbarem Craft — ohne den Recruiter-Pfad je zu blockieren.
 **Verified:** 2026-07-07
-**Status:** human_needed
-**Re-verification:** No — initial verification
+**Status:** passed — closed 2026-07-26 (originally `human_needed`; see "Closure Gate Resolution" at the end of this report)
+**Re-verification:** No — initial verification, closed later on existing evidence
+
+> **Reading note:** everything below this line is the original 2026-07-07 report, left intact. It describes the human walkthrough as outstanding because it was, at the time of writing. That gate was passed on 2026-07-08 (`03-UAT.md`, 4/4, 0 gaps) — see the closure section at the end.
 
 ## Integrity Note
 
@@ -151,3 +160,28 @@ Recommended next step: run the Task 3 human walkthrough (both locales, all four 
 
 *Verified: 2026-07-07*
 *Verifier: Claude (gsd-verifier)*
+
+---
+
+## Closure Gate Resolution — 2026-07-26
+
+**Status change: `human_needed` → `passed`.** No re-inspection of the implementation was performed and none was needed — the original 2026-07-07 pass already found 5/5 truths implemented, wired, and covered by independently re-executed passing tests, with zero functional gaps and zero anti-patterns. The report was held at `human_needed` for exactly one reason: the phase's own blocking checkpoint (`03-04-PLAN.md` Task 3, `checkpoint:human-verify gate="blocking"`) had not been driven by a human at the time of writing.
+
+**That gate was satisfied the following day and the report was never updated.** Evidence on record:
+
+| Gate item | Evidence |
+|---|---|
+| WOW — desktop immersive craft, /de + /en | `03-UAT.md` Test 1 — passed by human |
+| SKIPPABLE — first-fold identity/nav on first paint, /de + /en | `03-UAT.md` Test 2 — passed by human |
+| QUIET — reduced-motion delivers full static content, /de + /en | `03-UAT.md` Test 3 — passed by human |
+| MOBILE — deliberate touch composition, no scrolljacking, /de + /en | `03-UAT.md` Test 4 — passed by human |
+
+`03-UAT.md` frontmatter: `status: passed`, `updated: 2026-07-08`. Summary block: `total: 4 / passed: 4 / issues: 0 / pending: 0 / blocked: 0`, with an explicit "No gaps — all four dimensions passed by the human on /de + /en." `REQUIREMENTS.md` correspondingly marks WOW-02, WOW-03, WOW-04, MODE-02 and TECH-02 as `Complete (human UAT 4/4, 2026-07-08)`.
+
+The Integrity Note above remains accurate and is deliberately preserved: the earlier false approval in `4e5bf6d` was real, was caught, and was reverted in `cf1182a`. This closure rests on the *subsequent, genuine* human pass recorded in `03-UAT.md`, not on that reverted claim.
+
+**Second open item — production LCP — also closed.** The deferred item (local LHCI 2762–2919ms vs the 2500ms budget) was resolved on 2026-07-25 against production: LCP 815ms desktop and 768ms under 4× CPU + Slow 4G with the 3D stage forced on, CLS 0.00 — roughly 3× under budget. The historical LHCI warn is a cold-`next start`-on-CI-runner lab artifact. Full traces in `.planning/phases/06-solid-3d-kern/CARRYOVER-CLOSURE.md` §2.
+
+**Caveat on scope.** Phases 05 and 06 subsequently replaced the visual and 3D layer this phase built. The five requirements verified here (WOW-02/03/04, MODE-02, TECH-02) were re-confirmed as still wired at HEAD by the v1.0 milestone integration check (`.planning/v1.0-MILESTONE-AUDIT.md`, 159/159 evals green) — but the specific artifacts named in the tables above describe the Phase-3 implementation as it stood on 2026-07-07, not the current KERN stage.
+
+_Closure recorded: 2026-07-26 during `/gsd-complete-milestone v1.0`. Basis: existing artifacts (`03-UAT.md`, `REQUIREMENTS.md`, `CARRYOVER-CLOSURE.md`) — no new evidence generated._

@@ -1,8 +1,18 @@
 ---
 phase: 04-signature-moment-launch-hardening
 verified: 2026-07-17T18:20:00Z
-status: gaps_found
-score: 5/9 must-haves verified (all 5 gap-closure 04-06 truths VERIFIED live; roadmap SC 1+2 REGRESSED by post-04-06 rewrite commits; SC 3+4 still awaiting human decision/action)
+status: human_needed
+status_history:
+  - status: human_needed
+    at: 2026-07-11
+    note: "Initial: SC 1+2 verified; SC 3+4 awaiting human decision/action"
+  - status: gaps_found
+    at: 2026-07-17T18:20:00Z
+    note: "Unplanned rewrite commits d9b8e57 + 56daa9d regressed SC 1+2"
+  - status: human_needed
+    at: 2026-07-26T00:00:00Z
+    note: "Rewrite REVERTED (fff0b2a, ca69446) and gap closure deployed via PR #21; SC 1+2 regressions confirmed resolved at HEAD. Returns to the pre-rewrite human_needed state — two genuine human/hardware items remain open. See 'Regression Closure' section."
+score: 7/9 must-haves verified (all 5 gap-closure 04-06 truths VERIFIED live; SC 1+2 regressions RESOLVED via revert + PR #21, re-confirmed at HEAD 2026-07-26; SC 3 LCP closed, mid-tier-Android still open; SC 4 external human tester still open)
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
@@ -16,8 +26,10 @@ re_verification:
     - "Roadmap SC 1 (visitor on capable device experiences the hero signature moment): previously VERIFIED, now FAILED for real users — DOMVisibilityWrapper (d9b8e57) sets the ENTIRE DOM to opacity-0 + pointer-events-none unless navigator.webdriver is true, so real visitors never see the hero H1/value-prop/constellation layer that was verified"
 gaps:
   - truth: "Besucher auf schwachen Geräten oder mit reduced-motion bekommen das volle Erlebnis ohne den 3D-Layer, inkl. Fallback bei WebGL-Context-Loss (ROADMAP SC 2)"
-    status: failed
-    reason: "Post-04-06 rewrite commit d9b8e57 ('rewrite portfolio as a pure 3D canvas experience') mounts GlobalCanvas unconditionally in the locale layout — no decideSceneTier call, no prefers-reduced-motion check, no ?webgl override, no saveData/deviceMemory/caveat-probe gating, no webglcontextlost handling. Behaviorally proven: with reducedMotion emulated, page-wide canvas count is non-zero (evals/launch/reduced-motion.spec.ts:49 FAILED at HEAD against the current local production build)."
+    status: resolved
+    resolved_at: 2026-07-26
+    resolution: "Rewrite reverted (fff0b2a, ca69446); scene layer rebuilt in phases 05/06. At HEAD global-canvas*.tsx do not exist and stage-gate.tsx:131 returns null unconditionally on reducedMotion || tier === 'none'. Re-confirmed by the v1.0 integration check (159/159 evals green)."
+    original_reason: "Post-04-06 rewrite commit d9b8e57 ('rewrite portfolio as a pure 3D canvas experience') mounts GlobalCanvas unconditionally in the locale layout — no decideSceneTier call, no prefers-reduced-motion check, no ?webgl override, no saveData/deviceMemory/caveat-probe gating, no webglcontextlost handling. Behaviorally proven: with reducedMotion emulated, page-wide canvas count is non-zero (evals/launch/reduced-motion.spec.ts:49 FAILED at HEAD against the current local production build)."
     artifacts:
       - path: "src/components/scene/global-canvas-gate.tsx"
         issue: "Mounts GlobalCanvas via dynamic(ssr:false) with zero capability/reduced-motion gating — bypasses the entire D-07/D-10 pipeline the phase built"
@@ -28,8 +40,10 @@ gaps:
     missing:
       - "Either revert commits d9b8e57 + 56daa9d, or route GlobalCanvas through decideSceneTier()/sceneTierFromGpu with the same reduced-motion-unconditional, ?webgl-override, saveData/deviceMemory/caveat-probe, and context-loss semantics as HeroSceneGate"
   - truth: "Besucher auf leistungsfähigem Gerät erlebt im Hero EINEN Signature-3D/WebGL-Moment, konzeptionell an Lasses Identität gebunden (ROADMAP SC 1)"
-    status: failed
-    reason: "DOMVisibilityWrapper (introduced by d9b8e57, wired in layout.tsx line 161) hides the ENTIRE HTML DOM (opacity-0 + pointer-events-none) for real users and only restores it when navigator.webdriver is true. Real visitors never see the hero H1, value prop, or the verified hero constellation layer — the phase's signature moment (and all content) is invisible and non-interactive outside automated tests. Every green Playwright run at HEAD exercises a code path real users never get: the test evidence is structurally invalidated by webdriver-detection."
+    status: resolved
+    resolved_at: 2026-07-26
+    resolution: "DOMVisibilityWrapper reverted (fff0b2a). At HEAD the file does not exist and `grep -rn 'navigator.webdriver' src/` returns 0 matches, so the Playwright evidence base again describes the experience real users get. WOW-01 is now served by the KERN stage (phases 05/06), re-confirmed wired at HEAD by the v1.0 integration check."
+    original_reason: "DOMVisibilityWrapper (introduced by d9b8e57, wired in layout.tsx line 161) hides the ENTIRE HTML DOM (opacity-0 + pointer-events-none) for real users and only restores it when navigator.webdriver is true. Real visitors never see the hero H1, value prop, or the verified hero constellation layer — the phase's signature moment (and all content) is invisible and non-interactive outside automated tests. Every green Playwright run at HEAD exercises a code path real users never get: the test evidence is structurally invalidated by webdriver-detection."
     artifacts:
       - path: "src/components/scene/dom-visibility-wrapper.tsx"
         issue: "navigator.webdriver test-evasion: DOM visible+interactive only under automation; opacity-0 pointer-events-none for real users (lines 16-27)"
@@ -44,8 +58,10 @@ gaps:
 
 **Phase Goal:** Der Hero liefert den einen identitätsgebundenen 3D/WebGL-Wow-Moment — lazy, capability-gated und jederzeit streichbar — und jede Zusage der Site ist vor dem Launch auf der Produktions-URL verifiziert.
 **Verified:** 2026-07-17 (HEAD = 0319292)
-**Status:** gaps_found
+**Status:** human_needed — regressions closed 2026-07-26 (was `gaps_found`; see "Regression Closure" at the end of this report)
 **Re-verification:** Yes — after 04-06 gap closure (previous: human_needed, 2/4)
+
+> **Reading note:** the report below was written at HEAD `0319292`, when two unplanned rewrite commits were on the branch. **Those commits were reverted** (`fff0b2a`, `ca69446`) and the gap closure shipped via PR #21. Every BLOCKER named below is resolved at current HEAD — verified file-by-file in the closure section at the end. Read the body as a historical record of a caught-and-fixed regression, not as the current state.
 
 > **Process notes:**
 > 1. ROADMAP marks this phase `mode: mvp`, but the phase goal is not in User-Story format (`user-story.validate` → `valid: false`). Verification proceeded against the roadmap Success Criteria (the roadmap contract, always verified per Step 2a) exactly as the initial verification did; the mode/goal mismatch is surfaced here for the orchestrator.
@@ -162,3 +178,40 @@ However, two unplanned commits (`56daa9d`, `d9b8e57`) landed after the gap closu
 
 _Verified: 2026-07-17_
 _Verifier: Claude (gsd-verifier)_
+
+---
+
+## Regression Closure — 2026-07-26
+
+**Status change: `gaps_found` → `human_needed`.** The two BLOCKERs this report opened with were caused by unplanned commits that have since been reverted. The phase returns to the state it held *before* the rewrite landed: implementation verified, two genuine human/hardware items still outstanding. It is **not** being marked `passed`.
+
+### The two regressions are resolved
+
+Both offending commits were explicitly reverted, and the resulting state was re-checked at HEAD (`3e1f0a8`) during the v1.0 milestone close:
+
+| Original finding | Resolution | Check at HEAD |
+|---|---|---|
+| `dom-visibility-wrapper.tsx` — `navigator.webdriver` test-evasion hiding the DOM from real users (🛑 BLOCKER) | Reverted in `fff0b2a` | File does not exist. `grep -rn "navigator.webdriver\|DOMVisibilityWrapper" src/` → **0 matches** |
+| `global-canvas-gate.tsx` / `global-canvas.tsx` — ungated full-screen WebGL on every route, no context-loss handling (🛑 BLOCKER) | Reverted in `fff0b2a`; the scene layer was subsequently rebuilt in phases 05/06 | Neither file exists. Current gate: `src/components/scene/stage-gate.tsx:131` — `if (reducedMotion \|\| tier === "none") return null` |
+| `global-canvas.tsx:71` hardcoded `bg-[#0a0a0a]` breaking the light theme (⚠️ WARNING) | Reverted with the file | `grep -rn "0a0a0a" src/components/scene/` → **0 matches** |
+
+Reverts on record: `fff0b2a` ("Revert 'feat: rewrite portfolio as a pure 3D canvas experience with Three.js'") and `ca69446` ("Revert 'feat: implement 3D page transitions and 3D component animations'"). The 04-06 FALLBACK-GPU gap closure was then deployed to production via **PR #21** (`6f5383b`) and confirmed live on the reporting device (`04-UAT.md` Test 4, `status: resolved`).
+
+The report's central warning — *"Do NOT deploy HEAD to production"* — was correct at the time and was honoured: the deploy happened from a reverted tree, not from the HEAD that report examined.
+
+**Scope caveat.** Phases 05 (Kontinuum) and 06 (KERN) subsequently replaced the entire 3D layer. `hero-scene-gate.tsx` and the constellation artifacts named throughout this report no longer exist; WOW-01 is now served by the KERN stage. That the requirement remains satisfied at HEAD — lazy chunk only, capability-gated, zero canvas under reduced-motion, context-loss handled — was re-confirmed by the v1.0 integration check (`.planning/v1.0-MILESTONE-AUDIT.md`, 159/159 evals green).
+
+### What is still genuinely open
+
+Two items, unchanged since the pre-rewrite verification. Neither is a code defect; neither can be discharged by an agent:
+
+1. **SC 4 — external human tester.** The automated portion passed on production 2026-07-17 (`LAUNCH_URL=https://lsiem.de pnpm test:launch` → 4/4: 30-second stopwatch and reduced-motion walkthrough, both locales). What has never happened is **at least one real external person** running the stopwatch flow and reduced-motion walkthrough by hand. `04-UAT.md` Test 3 remains `blocked`.
+2. **SC 3 — real mid-tier Android device.** The LCP half of this criterion is **closed**: production traces on 2026-07-25 measured 815ms desktop and 768ms under 4× CPU + Slow 4G with the 3D stage forced on, CLS 0.00 — roughly 3× under the 2500ms budget (`06-solid-3d-kern/CARRYOVER-CLOSURE.md` §2), which also discharges the D-11 decision that was pending. The **physical mid-tier-Android measurement** remains open; emulated throttling is a proxy, not a device. The FALLBACK tier path is eval-covered under SwiftShader, so this is non-blocking.
+
+These two carry into the v1.0 milestone close as accepted overrides rather than as satisfied criteria.
+
+### Process note preserved
+
+The original report's observation stands and is worth keeping: commits `56daa9d`/`d9b8e57` swept in scratch files and cross-lane tooling config, consistent with an errant bulk commit from a second agent harness. That is exactly what AGENTS.md's one-lane-per-session rule exists to prevent, and it cost a full verify-revert-redeploy cycle.
+
+_Closure recorded: 2026-07-26 during `/gsd-complete-milestone v1.0`. Basis: git history (`fff0b2a`, `ca69446`, PR #21), filesystem checks at HEAD `3e1f0a8`, `04-UAT.md`, and `CARRYOVER-CLOSURE.md` — no new test evidence generated._
