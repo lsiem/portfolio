@@ -39,7 +39,7 @@
     "@content-collections/mdx": "^0.2.2",
     "@content-collections/next": "^0.2.11",
     "@lhci/cli": "^0.15.1",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.0",
     "@react-pdf/renderer": "4.5.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^26",
