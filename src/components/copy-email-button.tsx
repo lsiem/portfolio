@@ -18,8 +18,29 @@ export function CopyEmailButton({
     undefined,
   );
 
+  const fallbackCopy = (): boolean => {
+    const textarea = document.createElement("textarea");
+    textarea.value = email;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copiedSuccessfully = document.execCommand("copy");
+    textarea.remove();
+    return copiedSuccessfully;
+  };
+
   const copyEmail = async (): Promise<void> => {
-    await navigator.clipboard.writeText(email);
+    let copiedSuccessfully = false;
+    try {
+      await navigator.clipboard.writeText(email);
+      copiedSuccessfully = true;
+    } catch {
+      copiedSuccessfully = fallbackCopy();
+    }
+    if (!copiedSuccessfully) return;
+
     setCopied(true);
     if (resetTimer.current) clearTimeout(resetTimer.current);
     resetTimer.current = setTimeout(() => setCopied(false), 2_000);
