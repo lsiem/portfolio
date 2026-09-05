@@ -4,7 +4,9 @@
       "startServerCommand": "pnpm start",
       "url": [
         "http://localhost:3000/de?webgl=off",
-        "http://localhost:3000/en?webgl=off"
+        "http://localhost:3000/en?webgl=off",
+        "http://localhost:3000/de/case-studies/vidama-mediathek?webgl=off",
+        "http://localhost:3000/en/case-studies/vidama-mediathek?webgl=off"
       ],
       "numberOfRuns": 3
     },
