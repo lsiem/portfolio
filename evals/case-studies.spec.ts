@@ -59,7 +59,13 @@ for (const locale of ["de", "en"] as const) {
         `/${locale}/case-studies/does-not-exist`,
       );
       expect(response?.status()).toBe(404);
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      const expectedTitle =
+        locale === "de"
+          ? "Diese Seite gibt es nicht."
+          : "This page does not exist.";
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+        expectedTitle,
+      );
     });
 
     test("back-navigation to homepage works", async ({ page }) => {

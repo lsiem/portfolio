@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { appendFileSync } from "node:fs";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXContent } from "@content-collections/mdx/react";
@@ -16,8 +17,6 @@ import {
 } from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
-
-export const dynamicParams = false;
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -52,11 +51,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaseStudyPage({ params }: Props) {
   const { locale, slug } = await params;
+  // #region agent log
+  appendFileSync("/opt/cursor/logs/debug.log", `${JSON.stringify({ hypothesisId: "A,D", location: "src/app/[locale]/case-studies/[slug]/page.tsx:CaseStudyPage", message: "case study page entered", data: { locale, slug }, timestamp: Date.now() })}\n`);
+  // #endregion
   // REQUIRED for static rendering — every layout AND page under [locale]
   setRequestLocale(locale);
 
   const caseStudy = getCaseStudy(locale, slug);
   if (!caseStudy) {
+    // #region agent log
+    appendFileSync("/opt/cursor/logs/debug.log", `${JSON.stringify({ hypothesisId: "A", location: "src/app/[locale]/case-studies/[slug]/page.tsx:notFound", message: "missing case study calls notFound", data: { locale, slug }, timestamp: Date.now() })}\n`);
+    // #endregion
     notFound();
   }
 
