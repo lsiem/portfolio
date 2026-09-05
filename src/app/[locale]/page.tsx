@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { CareerTimeline } from "@/components/career-timeline";
+import { CopyEmailButton } from "@/components/copy-email-button";
 import { GitHubHeatmap } from "@/components/github-heatmap";
 import {
   getCareer,
@@ -9,7 +11,6 @@ import {
   getSkillDomains,
 } from "@/lib/content";
 import { getContributionCalendar, githubLoginFromUrl } from "@/lib/github";
-import { CareerSpine } from "@/components/motion/career-spine";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { Magnetic } from "@/components/motion/magnetic";
 import { AnchorLink } from "@/components/motion/anchor-link";
@@ -36,20 +37,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: localeAlternates("/"),
-    ...openGraphMetadata({ title, description, locale, pathname: "/" }),
+    ...openGraphMetadata({
+      title,
+      description,
+      locale,
+      pathname: "/",
+      type: "profile",
+    }),
   };
-}
-
-/**
- * Render "YYYY-MM" as "MM/YYYY"; null/undefined or a malformed value
- * (missing the "-" separator or the month segment) falls back to the
- * present label rather than rendering "undefined/YYYY".
- */
-function formatMonth(value: string | null, present: string): string {
-  if (!value) return present;
-  const [year, month] = value.split("-");
-  if (!year || !month) return present;
-  return `${month}/${year}`;
 }
 
 export default async function HomePage({ params }: Props) {
@@ -58,6 +53,7 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("home");
+  const commonT = await getTranslations("common");
   const nav = await getTranslations("nav");
   const careerT = await getTranslations("career");
   const projectsT = await getTranslations("projects");
@@ -177,113 +173,13 @@ export default async function HomePage({ params }: Props) {
         </HeroIntro>
       </section>
 
-      {/*
-        Career breaks wide (D-04) with a left-margin column (D-07) that hosts
-        the CareerSpine progress rail (lg+ only, scoped to this section's
-        scroll range); the reading content stays anchored in the right column.
-      */}
-      <section
-        id="career"
-        aria-labelledby="career-heading"
-        className="mx-auto w-full max-w-[1440px] scroll-mt-24 px-6"
-      >
-        <div className="lg:grid lg:grid-cols-[5rem_minmax(0,46rem)] lg:gap-6">
-          {/* Progress spine (D-07) — lives in the reserved left margin column,
-              lg+ only, scoped to this section's scroll range. */}
-          <CareerSpine entries={career} />
-          <div className="flex flex-col gap-6">
-        <h2 id="career-heading" className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-          {careerT("title")}
-        </h2>
-        <p className="max-w-2xl text-muted">{careerIntro}</p>
-        <ol className="flex flex-col gap-8">
-          {career.map((entry) => {
-            // ITSC is the narrative centerpiece (D-06): its SysAdmin → Software
-            // Engineering → Product Owner roles play as emphasized multi-beat
-            // reveals; every other org gets a single lighter reveal (D-05).
-            const isItsc = entry.slug === "itsc";
-            const header = (
-              <div className="flex flex-col gap-1">
-                <h3 className="text-lg font-medium tracking-tight">
-                  {entry.orgUrl ? (
-                    <a href={entry.orgUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent">
-                      {entry.org}
-                    </a>
-                  ) : (
-                    entry.org
-                  )}
-                </h3>
-                <p className="font-mono text-xs text-muted">
-                  {formatMonth(entry.from, careerT("present"))} – {formatMonth(entry.to, careerT("present"))}
-                  {entry.location ? ` · ${entry.location}` : ""}
-                </p>
-              </div>
-            );
-            const techStack =
-              entry.techStack.length > 0 ? (
-                <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
-                  {entry.techStack.map((tech) => (
-                    <li key={tech} className="chip rounded border border-border px-2 py-0.5">
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-              ) : null;
-
-            if (isItsc) {
-              return (
-                <li key={entry.slug} className="flex flex-col gap-3">
-                  <Reveal className="flex flex-col gap-3">
-                    {header}
-                    {entry.intro ? <p className="text-muted">{entry.intro}</p> : null}
-                  </Reveal>
-                  <ol className="flex flex-col gap-3 border-l border-border pl-4">
-                    {entry.roles.map((role, i) => (
-                      <li key={`${entry.slug}-${i}`}>
-                        <Reveal emphasis className="flex flex-col gap-1">
-                          <p className="font-medium">
-                            {role.title}
-                            <span className="ml-2 font-mono text-xs text-muted">
-                              {formatMonth(role.from, careerT("present"))} – {formatMonth(role.to, careerT("present"))}
-                            </span>
-                          </p>
-                          <p className="text-sm text-muted">{role.description}</p>
-                        </Reveal>
-                      </li>
-                    ))}
-                  </ol>
-                  {techStack ? <Reveal>{techStack}</Reveal> : null}
-                </li>
-              );
-            }
-
-            return (
-              <li key={entry.slug} className="flex flex-col gap-3">
-                <Reveal className="flex flex-col gap-3">
-                  {header}
-                  {entry.intro ? <p className="text-muted">{entry.intro}</p> : null}
-                  <ol className="flex flex-col gap-3 border-l border-border pl-4">
-                    {entry.roles.map((role, i) => (
-                      <li key={`${entry.slug}-${i}`} className="flex flex-col gap-1">
-                        <p className="font-medium">
-                          {role.title}
-                          <span className="ml-2 font-mono text-xs text-muted">
-                            {formatMonth(role.from, careerT("present"))} – {formatMonth(role.to, careerT("present"))}
-                          </span>
-                        </p>
-                        <p className="text-sm text-muted">{role.description}</p>
-                      </li>
-                    ))}
-                  </ol>
-                  {techStack}
-                </Reveal>
-              </li>
-            );
-          })}
-        </ol>
-          </div>
-        </div>
-      </section>
+      <CareerTimeline
+        entries={career}
+        intro={careerIntro}
+        title={careerT("title")}
+        presentLabel={careerT("present")}
+        opensInNewTabLabel={commonT("opensInNewTab")}
+      />
 
       {/* Projects break wide (D-04) as an asymmetric bento — ELIA + Vidama
           featured, the rest compact (D-14). TransitionLink is injected as the
@@ -441,16 +337,24 @@ export default async function HomePage({ params }: Props) {
         </Magnetic>
         <ul className="flex flex-col gap-2 font-mono text-sm">
           <li>
-            <Magnetic>
-              <a href={`mailto:${contact.email}`} className="text-accent transition-colors hover:text-foreground">
-                {contactT("email")}: {contact.email}
-              </a>
-            </Magnetic>
+            <div className="flex flex-wrap items-center gap-3">
+              <Magnetic>
+                <a href={`mailto:${contact.email}`} className="text-accent transition-colors hover:text-foreground">
+                  {contactT("email")}: {contact.email}
+                </a>
+              </Magnetic>
+              <CopyEmailButton
+                email={contact.email}
+                copyLabel={contactT("copyEmail")}
+                copiedLabel={contactT("copied")}
+              />
+            </div>
           </li>
           <li>
             <Magnetic>
               <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
                 {contactT("github")} ↗
+                <span className="sr-only"> ({commonT("opensInNewTab")})</span>
               </a>
             </Magnetic>
           </li>
@@ -458,6 +362,7 @@ export default async function HomePage({ params }: Props) {
             <Magnetic>
               <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted transition-colors hover:text-foreground">
                 {contactT("linkedin")} ↗
+                <span className="sr-only"> ({commonT("opensInNewTab")})</span>
               </a>
             </Magnetic>
           </li>

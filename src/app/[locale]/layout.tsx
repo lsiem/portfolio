@@ -10,6 +10,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { StageSlot } from "@/components/scene/stage-slot";
+import { SiteSectionNav } from "@/components/site-section-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -130,6 +131,7 @@ export default async function LocaleLayout({
               >
                 LS<span className="text-accent">.</span>
               </Link>
+              <SiteSectionNav />
               {/*
                 Header control cluster (D-A order): logo | spacer | Contact |
                 ThemeToggle | LocaleSwitcher. Stays single-row on narrow
