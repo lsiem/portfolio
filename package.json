@@ -52,7 +52,7 @@
     "geist": "1.7.2",
     "subset-font": "^2.5.0",
     "tailwindcss": "^4",
-    "tsx": "4.23.0",
+    "tsx": "4.23.13",
     "typescript": "^6",
     "zod": "^4.4.3"
   }
