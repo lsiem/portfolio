@@ -1,44 +1,9 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect } from "react";
+import { useFinePointerMotion } from "@/components/motion/use-motion-gates";
 import { setActiveLenis } from "@/lib/lenis-instance";
-
-// --- Motion gate (reduced-motion + pointer) via useSyncExternalStore ---------
-// This codebase forbids the state-hook-in-effect pattern for reading
-// browser-only media state (eslint-plugin-react-hooks / React-Compiler
-// hard-errors on setState-in-effect, see STATE.md + theme-toggle.tsx). Mirror
-// theme-toggle's module-scope pub/sub + getSnapshot/getServerSnapshot shape
-// verbatim (RESEARCH Pitfall 4).
-
-function subscribeMotionGates(callback: () => void): () => void {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const coarse = window.matchMedia("(pointer: coarse)");
-  reduced.addEventListener("change", callback);
-  coarse.addEventListener("change", callback);
-  return () => {
-    reduced.removeEventListener("change", callback);
-    coarse.removeEventListener("change", callback);
-  };
-}
-
-// true => full motion allowed (Lenis smooth-scroll + gsap.ticker driven).
-// Lenis is active on pointer:fine only (D-09/D-19) and never under
-// prefers-reduced-motion (D-18).
-function getMotionGatesSnapshot(): boolean {
-  return (
-    window.matchMedia("(prefers-reduced-motion: no-preference)").matches &&
-    window.matchMedia("(pointer: fine)").matches
-  );
-}
-
-// Stable, motion-off default on the server so the FIRST client render equals the
-// SSR output before any animation logic runs (WOW-04 / RESEARCH Pitfall 2) —
-// matches theme-toggle's getServerSnapshot convention so hydration never
-// mismatches.
-function getServerSnapshot(): boolean {
-  return false;
-}
 
 /**
  * Root-mounted motion coordinator: owns the single Lenis instance and the
@@ -58,11 +23,7 @@ function getServerSnapshot(): boolean {
  * gate — and Lenis is genuinely never instantiated (D-18).
  */
 export function MotionProvider({ children }: { children: React.ReactNode }) {
-  const motionEnabled = useSyncExternalStore(
-    subscribeMotionGates,
-    getMotionGatesSnapshot,
-    getServerSnapshot,
-  );
+  const motionEnabled = useFinePointerMotion();
 
   useEffect(() => {
     if (!motionEnabled) return;
