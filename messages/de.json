@@ -1,16 +1,20 @@
 {
   "nav": {
     "home": "Start",
+    "sections": "Auf dieser Seite",
     "career": "Werdegang",
     "projects": "Projekte",
     "skills": "Fähigkeiten",
     "about": "Über mich",
+    "activity": "Aktivität",
     "contact": "Kontakt"
   },
   "common": {
-    "languageSwitcher": "English"
+    "languageSwitcher": "English",
+    "opensInNewTab": "öffnet in einem neuen Tab"
   },
   "home": {
+    "eyebrow": "Portfolio",
     "role": "Software Engineer & Product Owner",
     "caseStudies": "Case Studies"
   },
@@ -73,6 +77,14 @@
   "caseStudy": {
     "role": "Rolle",
     "period": "Zeitraum",
-    "stack": "Stack"
+    "stack": "Stack",
+    "backToProjects": "Zurück zu den Projekten",
+    "nextCaseStudy": "Nächste Case Study"
+  },
+  "notFound": {
+    "eyebrow": "Fehler 404",
+    "title": "Diese Seite gibt es nicht.",
+    "description": "Der Link ist möglicherweise veraltet oder die Adresse wurde falsch eingegeben.",
+    "backHome": "Zurück zur Startseite"
   }
 }

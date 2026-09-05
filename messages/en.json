@@ -1,16 +1,20 @@
 {
   "nav": {
     "home": "Home",
+    "sections": "On this page",
     "career": "Career",
     "projects": "Projects",
     "skills": "Skills",
     "about": "About",
+    "activity": "Activity",
     "contact": "Contact"
   },
   "common": {
-    "languageSwitcher": "Deutsch"
+    "languageSwitcher": "Deutsch",
+    "opensInNewTab": "opens in a new tab"
   },
   "home": {
+    "eyebrow": "Portfolio",
     "role": "Software Engineer & Product Owner",
     "caseStudies": "Case studies"
   },
@@ -73,6 +77,14 @@
   "caseStudy": {
     "role": "Role",
     "period": "Period",
-    "stack": "Stack"
+    "stack": "Stack",
+    "backToProjects": "Back to projects",
+    "nextCaseStudy": "Next case study"
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This page does not exist.",
+    "description": "The link may be outdated or the address may have been entered incorrectly.",
+    "backHome": "Back to the homepage"
   }
 }

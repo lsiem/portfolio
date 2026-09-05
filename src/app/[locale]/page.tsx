@@ -27,9 +27,9 @@ type Props = Readonly<{ params: Promise<{ locale: string }> }>;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "home" });
+  const contact = getContact(locale);
   const title = "Lasse Siemoneit";
-  const description = t("role");
+  const description = contact.role;
 
   return {
     metadataBase: siteMetadataBase,
@@ -89,7 +89,11 @@ export default async function HomePage({ params }: Props) {
     // Width shell (D-04, finding #2): <main> owns the vertical rhythm and a wide
     // 1440px cap but NO global ~768px reading cap — that moves per-section so the
     // hero and career can break wide while prose sections stay reading-anchored.
-    <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-20 py-20 sm:gap-28 sm:py-28">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-20 py-20 sm:gap-28 sm:py-28"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
@@ -119,7 +123,7 @@ export default async function HomePage({ params }: Props) {
               className="block h-px w-full max-w-[12rem] origin-left bg-border"
             />
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-              Portfolio
+              {t("eyebrow")}
             </p>
             <h1
               data-hero-h1
@@ -127,7 +131,7 @@ export default async function HomePage({ params }: Props) {
             >
               {contact.name}
             </h1>
-            <p className="max-w-xl text-lg text-muted sm:text-xl">{t("role")}</p>
+            <p className="max-w-xl text-lg text-muted sm:text-xl">{contact.role}</p>
             <p
               data-hero-valueprop
               data-testid="hero-value-prop"
@@ -135,7 +139,7 @@ export default async function HomePage({ params }: Props) {
             >
               {contact.valueProp}
             </p>
-            <nav aria-label={nav("home")} className="mt-2">
+            <nav aria-label={nav("sections")} className="mt-2">
               <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
                 <li>
                   <AnchorLink href="#career" className="text-muted transition-colors hover:text-foreground">
@@ -155,6 +159,11 @@ export default async function HomePage({ params }: Props) {
                 <li>
                   <AnchorLink href="#about" className="text-muted transition-colors hover:text-foreground">
                     {nav("about")}
+                  </AnchorLink>
+                </li>
+                <li>
+                  <AnchorLink href="#activity" className="text-muted transition-colors hover:text-foreground">
+                    {nav("activity")}
                   </AnchorLink>
                 </li>
                 <li>
