@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type CopyEmailButtonProps = {
   email: string;
@@ -17,6 +17,15 @@ export function CopyEmailButton({
   const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    };
+  }, []);
 
   const fallbackCopy = (): boolean => {
     const textarea = document.createElement("textarea");
@@ -39,7 +48,7 @@ export function CopyEmailButton({
     } catch {
       copiedSuccessfully = fallbackCopy();
     }
-    if (!copiedSuccessfully) return;
+    if (!copiedSuccessfully || !mounted.current) return;
 
     setCopied(true);
     if (resetTimer.current) clearTimeout(resetTimer.current);

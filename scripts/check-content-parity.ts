@@ -2,9 +2,9 @@
 /**
  * check-content-parity.ts — I18N-02 locale parity gate + D-03 confidentiality blocklist.
  *
- * Dependency-free: uses only Node built-ins (node:fs, node:path, node:process) and
- * erasable TypeScript syntax so `node scripts/check-content-parity.ts` runs natively
- * on Node >= 22 with no tsx/ts-node/transpile step (supply-chain rule — no new deps).
+ * Runtime dependency-free: uses only Node built-ins (node:fs, node:path,
+ * node:process). Execute it through the repository's existing tsx development
+ * dependency so it works consistently across supported Node versions.
  *
  * Behavior A — locale parity (I18N-02):
  *   Recursively compares the relative file trees under {root}/de and {root}/en.
@@ -19,7 +19,8 @@
  *   content/ and messages/ case-insensitively; any forbidden-term hit prints the
  *   offending path + line number and exits 1.
  *
- * Usage: node scripts/check-content-parity.ts [--root <dir>]   (root defaults to 'content')
+ * Usage: pnpm exec tsx scripts/check-content-parity.ts [--root <dir>]
+ *        (root defaults to 'content')
  */
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";

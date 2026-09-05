@@ -108,6 +108,9 @@ export default async function LocaleLayout({
   const nav = await getTranslations("nav");
   const accessibility = await getTranslations("accessibility");
 
+  // Next.js 16 consumes data-scroll-behavior during route transitions to
+  // temporarily disable CSS smooth scrolling and avoid a jarring double scroll.
+  // See node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md.
   return (
     <html
       lang={locale}
