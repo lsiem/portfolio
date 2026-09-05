@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXContent } from "@content-collections/mdx/react";
 import { routing } from "@/i18n/routing";
 import { getPage, getPages } from "@/lib/content";
-import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { StageFormation } from "@/components/scene/stage-formation";
-import { localeAlternates, siteMetadataBase } from "@/lib/seo";
+import { Link } from "@/i18n/navigation";
+import {
+  localeAlternates,
+  openGraphMetadata,
+  siteMetadataBase,
+} from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
 
@@ -32,6 +36,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: page.title,
     description: page.description,
     alternates: localeAlternates(`/${slug}`),
+    ...openGraphMetadata({
+      title: page.title,
+      description: page.description,
+      locale,
+      pathname: `/${slug}`,
+    }),
   };
 }
 
@@ -44,16 +54,27 @@ export default async function ProsePage({ params }: Props) {
   if (!page) {
     notFound();
   }
+  const nav = await getTranslations("nav");
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28"
+    >
       {/* Kontinuum (WP-D, DESIGN-SPEC §3): near-invisible rest drift — prose
           and legal pages must not perform. Dead letter without a canvas. */}
       <StageFormation id="rest" />
       {/* Engineered reading-first (D-15): promote page.title to a single
           top-level Bricolage display <h1> (the MDX body starts at <h2>, so the
           page had no <h1> — WCAG single-h1 + display identity, finding #4). */}
-      <header className="border-b border-border pb-10">
+      <header className="flex flex-col gap-6 border-b border-border pb-10">
+        <Link
+          href="/"
+          className="w-fit font-mono text-sm text-muted transition-colors hover:text-foreground"
+        >
+          ← {nav("home")}
+        </Link>
         <SplitHeading
           as="h1"
           className="font-display text-[clamp(2.25rem,1.6rem+3vw,4rem)] leading-[1.1] tracking-tight"
@@ -61,11 +82,9 @@ export default async function ProsePage({ params }: Props) {
           {page.title}
         </SplitHeading>
       </header>
-      <Reveal>
-        <article className="flex flex-col text-[15px] leading-relaxed [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:font-semibold [&_li]:mt-2 [&_p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5">
-          <MDXContent code={page.mdx} />
-        </article>
-      </Reveal>
+      <article className="flex flex-col text-[15px] leading-relaxed [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:font-semibold [&_li]:mt-2 [&_p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5">
+        <MDXContent code={page.mdx} />
+      </article>
     </main>
   );
 }

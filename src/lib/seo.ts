@@ -36,6 +36,7 @@ export type OpenGraphMetadataParams = {
   locale: string;
   /** Unprefixed pathname, e.g. "/" or "/case-studies/foo" — mirrors {@link localeAlternates}. */
   pathname: string;
+  type?: "profile" | "article" | "website";
 };
 
 /**
@@ -49,6 +50,7 @@ export function openGraphMetadata({
   description,
   locale,
   pathname,
+  type = "website",
 }: OpenGraphMetadataParams): Pick<Metadata, "openGraph" | "twitter"> {
   const url = new URL(
     getPathname({
@@ -65,7 +67,7 @@ export function openGraphMetadata({
       url,
       siteName: "Lasse Siemoneit",
       locale,
-      type: "profile",
+      type,
     },
     twitter: {
       card: "summary_large_image",
