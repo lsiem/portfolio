@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.1.2",
   "scripts": {
     "dev": "next dev",
-    "check:content": "node scripts/check-content-parity.ts",
+    "check:content": "node --experimental-strip-types scripts/check-content-parity.ts",
     "generate:cv": "tsx scripts/generate-cv.tsx",
     "subset:font": "tsx scripts/subset-bricolage.ts",
     "copy:benchmarks": "tsx scripts/copy-benchmarks.ts",

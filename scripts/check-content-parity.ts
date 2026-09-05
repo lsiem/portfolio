@@ -10,6 +10,7 @@
  *   Recursively compares the relative file trees under {root}/de and {root}/en.
  *   The two sorted path sets must be identical (covers MDX prose AND .ts modules).
  *   On any mismatch, prints one labeled line per missing counterpart and exits 1.
+ *   It also compares the leaf-key paths in messages/de.json and messages/en.json.
  *
  * Behavior B — confidentiality blocklist (D-03):
  *   Resolves the first existing .planning/phases/*\/reference/blocklist.txt.
@@ -26,6 +27,11 @@ import { join, relative, sep } from "node:path";
 import process from "node:process";
 
 type Failure = { locale: "de" | "en"; path: string; presentIn: "de" | "en" };
+type MessageFailure = {
+  locale: "de" | "en";
+  key: string;
+  presentIn: "de" | "en";
+};
 
 const CONTENT_ROOT_DEFAULT = "content";
 const BLOCKLIST_SCAN_DIRS = ["content", "messages"];
@@ -78,6 +84,37 @@ function checkParity(root: string): Failure[] {
     }
   }
   return failures.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+function messageLeafKeys(value: unknown, prefix = ""): string[] {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return prefix ? [prefix] : [];
+  }
+
+  return Object.entries(value).flatMap(([key, child]) =>
+    messageLeafKeys(child, prefix ? `${prefix}.${key}` : key),
+  );
+}
+
+function checkMessageParity(): MessageFailure[] {
+  const de = JSON.parse(readFileSync(join("messages", "de.json"), "utf8"));
+  const en = JSON.parse(readFileSync(join("messages", "en.json"), "utf8"));
+  const deKeys = new Set(messageLeafKeys(de));
+  const enKeys = new Set(messageLeafKeys(en));
+  const failures: MessageFailure[] = [];
+
+  for (const key of deKeys) {
+    if (!enKeys.has(key)) {
+      failures.push({ locale: "en", key, presentIn: "de" });
+    }
+  }
+  for (const key of enKeys) {
+    if (!deKeys.has(key)) {
+      failures.push({ locale: "de", key, presentIn: "en" });
+    }
+  }
+
+  return failures.sort((a, b) => a.key.localeCompare(b.key));
 }
 
 /** Resolve the first existing .planning/phases/*\/reference/blocklist.txt, or null. */
@@ -153,6 +190,21 @@ function main(): void {
     }
   } else {
     console.log(`[parity] OK — de/ and en/ trees match under "${root}/".`);
+  }
+
+  const messageFailures = checkMessageParity();
+  if (messageFailures.length > 0) {
+    failed = true;
+    console.error(
+      "[messages] Locale mismatch — every message key must exist in de and en:",
+    );
+    for (const failure of messageFailures) {
+      console.error(
+        `  [messages] Missing in "${failure.locale}": ${failure.key}  (present in "${failure.presentIn}")`,
+      );
+    }
+  } else {
+    console.log("[messages] OK — de/en message key sets match.");
   }
 
   // --- Behavior B: confidentiality blocklist (local-only, CI skips) ---

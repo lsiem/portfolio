@@ -14,9 +14,7 @@
     "opensInNewTab": "öffnet in einem neuen Tab"
   },
   "home": {
-    "eyebrow": "Portfolio",
-    "role": "Software Engineer & Product Owner",
-    "caseStudies": "Case Studies"
+    "eyebrow": "Portfolio"
   },
   "career": {
     "title": "Werdegang",
@@ -24,9 +22,6 @@
   },
   "projects": {
     "title": "Projekte",
-    "problem": "Problem",
-    "solution": "Lösung",
-    "technologies": "Technologien",
     "visit": "Projekt besuchen",
     "caseStudy": "Case Study lesen"
   },
@@ -61,7 +56,6 @@
     "downloadCvAria": "Lebenslauf herunterladen (PDF, Deutsch)"
   },
   "footer": {
-    "builtWith": "Gebaut mit Next.js",
     "copyright": "© {year} Lasse Siemoneit",
     "legal": {
       "label": "Rechtliches",
@@ -71,10 +65,10 @@
     }
   },
   "accessibility": {
-    "skipToContent": "Zum Inhalt springen",
-    "reducedMotion": "Animationen reduzieren"
+    "skipToContent": "Zum Inhalt springen"
   },
   "caseStudy": {
+    "eyebrow": "Fallstudie",
     "role": "Rolle",
     "period": "Zeitraum",
     "stack": "Stack",
