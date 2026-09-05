@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore, type KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
 
 type ThemeOption = "system" | "light" | "dark";
@@ -88,6 +88,31 @@ function applyTheme(next: ThemeOption): void {
 export function ThemeToggle() {
   const t = useTranslations("theme");
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    currentIndex: number,
+  ): void => {
+    let nextIndex: number | undefined;
+
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % THEME_OPTIONS.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex =
+        (currentIndex - 1 + THEME_OPTIONS.length) % THEME_OPTIONS.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = THEME_OPTIONS.length - 1;
+    }
+
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    applyTheme(THEME_OPTIONS[nextIndex]);
+    optionRefs.current[nextIndex]?.focus();
+  };
 
   return (
     <div
@@ -95,13 +120,18 @@ export function ThemeToggle() {
       aria-label={t("label")}
       className="flex items-center gap-0.5 rounded-full border border-border px-1 py-1 font-mono text-xs"
     >
-      {THEME_OPTIONS.map((option) => (
+      {THEME_OPTIONS.map((option, index) => (
         <button
           key={option}
+          ref={(element) => {
+            optionRefs.current[index] = element;
+          }}
           type="button"
           role="radio"
           aria-checked={theme === option}
+          tabIndex={theme === option ? 0 : -1}
           onClick={() => applyTheme(option)}
+          onKeyDown={(event) => handleKeyDown(event, index)}
           className={`rounded-full border border-transparent px-2 py-0.5 transition-colors hover:border-foreground/40 hover:text-foreground ${
             theme === option ? "text-foreground" : "text-muted"
           }`}

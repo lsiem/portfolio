@@ -70,14 +70,15 @@ for (const locale of locales) {
       );
     });
 
-    test("theme toggle radiogroup options are each individually focusable with a visible ring", async ({
+    test("theme toggle radiogroup exposes one keyboard tab stop", async ({
       page,
     }) => {
       const options = page.getByRole("radiogroup").getByRole("radio");
       await expect(options).toHaveCount(3);
-      for (let i = 0; i < 3; i++) {
-        await expectFocusableWithVisibleRing(options.nth(i));
-      }
+      await expect(options.nth(0)).toHaveAttribute("tabindex", "0");
+      await expect(options.nth(1)).toHaveAttribute("tabindex", "-1");
+      await expect(options.nth(2)).toHaveAttribute("tabindex", "-1");
+      await expectFocusableWithVisibleRing(options.nth(0));
     });
 
     test("locale switcher is keyboard-focusable with a visible ring", async ({
@@ -97,19 +98,16 @@ for (const locale of locales) {
       );
     });
 
-    test("first Tab press from the top of the page lands on a real interactive control", async ({
+    test("first Tab press reveals the skip link and moves focus to main content", async ({
       page,
     }) => {
       await page.locator("body").evaluate((el) => el.focus());
       await page.keyboard.press("Tab");
-      const active = await page.evaluate(() => {
-        const el = document.activeElement;
-        return el
-          ? { tag: el.tagName, hasHref: el.hasAttribute("href") }
-          : null;
-      });
-      expect(active).not.toBeNull();
-      expect(["A", "BUTTON"]).toContain(active?.tag);
+      const skipLink = page.locator('a[href="#main-content"]');
+      await expect(skipLink).toBeFocused();
+      await expect(skipLink).toBeVisible();
+      await page.keyboard.press("Enter");
+      await expect(page.locator("#main-content")).toBeFocused();
     });
 
     test('every target="_blank" anchor carries rel="noopener noreferrer"', async ({

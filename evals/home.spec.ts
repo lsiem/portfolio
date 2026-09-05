@@ -82,5 +82,24 @@ for (const locale of locales) {
       const aboutNavLink = page.locator('nav a[href="#about"]').first();
       await expect(aboutNavLink).toBeVisible();
     });
+
+    test("section navigation includes activity in hero and sticky header", async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      const activityLinks = page.locator('nav a[href="#activity"]');
+      await expect(activityLinks).toHaveCount(2);
+      await expect(activityLinks.nth(0)).toBeVisible();
+      await expect(activityLinks.nth(1)).toBeVisible();
+    });
+
+    test("copy-email control confirms a successful copy", async ({ page }) => {
+      const label = locale === "de" ? "E-Mail kopieren" : "Copy email";
+      const confirmation = locale === "de" ? "Kopiert!" : "Copied!";
+      await page.getByRole("button", { name: label }).click();
+      await expect(
+        page.getByRole("button", { name: confirmation }),
+      ).toBeVisible();
+    });
   });
 }

@@ -47,3 +47,24 @@ for (const locale of locales) {
     });
   });
 }
+
+test("serves robots.txt with the production sitemap", async ({ request }) => {
+  const response = await request.get("/robots.txt");
+  expect(response.status()).toBe(200);
+  const body = await response.text();
+  expect(body).toContain("Allow: /");
+  expect(body).toContain("Sitemap: https://lsiem.de/sitemap.xml");
+});
+
+test("sitemap lists localized pages with reciprocal alternates", async ({
+  request,
+}) => {
+  const response = await request.get("/sitemap.xml");
+  expect(response.status()).toBe(200);
+  const body = await response.text();
+  expect(body).toContain("<loc>https://lsiem.de/de</loc>");
+  expect(body).toContain("<loc>https://lsiem.de/en</loc>");
+  expect(body).toContain('hreflang="de"');
+  expect(body).toContain('hreflang="en"');
+  expect(body).toContain('hreflang="x-default"');
+});

@@ -1,26 +1,9 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
+import { useMotionAllowed } from "@/components/motion/use-motion-gates";
 import { getMotionToken } from "@/lib/motion-tokens";
-
-// Reduced-motion gate via useSyncExternalStore (repo lint convention — no
-// setState-in-effect). NOTE: reveals gate on reduced-motion ONLY, not pointer —
-// the progressive-reveal timeline stays on touch (D-19). Lenis/magnetic gate on
-// pointer:fine elsewhere; reveals do not.
-function subscribeReducedMotion(callback: () => void): () => void {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  mq.addEventListener("change", callback);
-  return () => mq.removeEventListener("change", callback);
-}
-
-function getRevealEnabledSnapshot(): boolean {
-  return window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
-}
-
-function getServerSnapshot(): boolean {
-  return false;
-}
 
 /**
  * Reusable reveal-on-enter primitive (WOW-02) — the scroll-triggered fade/slide
@@ -72,11 +55,7 @@ export function Reveal({
   className,
 }: RevealProps) {
   const scope = useRef<HTMLDivElement>(null);
-  const motionEnabled = useSyncExternalStore(
-    subscribeReducedMotion,
-    getRevealEnabledSnapshot,
-    getServerSnapshot,
-  );
+  const motionEnabled = useMotionAllowed();
 
   useEffect(() => {
     if (!motionEnabled) return;

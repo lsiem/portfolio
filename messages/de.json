@@ -1,18 +1,20 @@
 {
   "nav": {
     "home": "Start",
+    "sections": "Auf dieser Seite",
     "career": "Werdegang",
     "projects": "Projekte",
     "skills": "Fähigkeiten",
     "about": "Über mich",
+    "activity": "Aktivität",
     "contact": "Kontakt"
   },
   "common": {
-    "languageSwitcher": "English"
+    "languageSwitcher": "English",
+    "opensInNewTab": "öffnet in einem neuen Tab"
   },
   "home": {
-    "role": "Software Engineer & Product Owner",
-    "caseStudies": "Case Studies"
+    "eyebrow": "Portfolio"
   },
   "career": {
     "title": "Werdegang",
@@ -20,9 +22,6 @@
   },
   "projects": {
     "title": "Projekte",
-    "problem": "Problem",
-    "solution": "Lösung",
-    "technologies": "Technologien",
     "visit": "Projekt besuchen",
     "caseStudy": "Case Study lesen"
   },
@@ -57,7 +56,6 @@
     "downloadCvAria": "Lebenslauf herunterladen (PDF, Deutsch)"
   },
   "footer": {
-    "builtWith": "Gebaut mit Next.js",
     "copyright": "© {year} Lasse Siemoneit",
     "legal": {
       "label": "Rechtliches",
@@ -67,12 +65,20 @@
     }
   },
   "accessibility": {
-    "skipToContent": "Zum Inhalt springen",
-    "reducedMotion": "Animationen reduzieren"
+    "skipToContent": "Zum Inhalt springen"
   },
   "caseStudy": {
+    "eyebrow": "Fallstudie",
     "role": "Rolle",
     "period": "Zeitraum",
-    "stack": "Stack"
+    "stack": "Stack",
+    "backToProjects": "Zurück zu den Projekten",
+    "nextCaseStudy": "Nächste Case Study"
+  },
+  "notFound": {
+    "eyebrow": "Fehler 404",
+    "title": "Diese Seite gibt es nicht.",
+    "description": "Der Link ist möglicherweise veraltet oder die Adresse wurde falsch eingegeben.",
+    "backHome": "Zurück zur Startseite"
   }
 }

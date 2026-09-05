@@ -8,9 +8,9 @@ import type { Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { AnchorLink } from "@/components/motion/anchor-link";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { StageSlot } from "@/components/scene/stage-slot";
+import { SiteSectionNav } from "@/components/site-section-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -106,23 +106,37 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const t = await getTranslations("footer");
   const nav = await getTranslations("nav");
+  const accessibility = await getTranslations("accessibility");
 
+  // Next.js 16 consumes data-scroll-behavior during route transitions to
+  // temporarily disable CSS smooth scrolling and avoid a jarring double scroll.
+  // See node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md.
   return (
     <html
       lang={locale}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${bricolageGrotesque.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME_SCRIPT }} />
         <NextIntlClientProvider>
+          <a
+            href="#main-content"
+            className="fixed left-4 top-4 z-50 -translate-y-24 rounded-full bg-foreground px-4 py-2 font-mono text-sm text-background transition-transform focus:translate-y-0"
+          >
+            {accessibility("skipToContent")}
+          </a>
           <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
-            <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4">
+            <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-4">
               <Link
                 href="/"
+                aria-label={`Lasse Siemoneit — ${nav("home")}`}
                 className="font-mono text-sm font-semibold tracking-tight transition-opacity hover:opacity-70"
               >
                 LS<span className="text-accent">.</span>
               </Link>
+              <SiteSectionNav />
               {/*
                 Header control cluster (D-A order): logo | spacer | Contact |
                 ThemeToggle | LocaleSwitcher. Stays single-row on narrow
@@ -132,12 +146,12 @@ export default async function LocaleLayout({
                 width).
               */}
               <div className="flex items-center gap-4">
-                <AnchorLink
-                  href="#contact"
+                <Link
+                  href="/#contact"
                   className="font-mono text-xs text-muted transition-colors hover:text-foreground"
                 >
                   {nav("contact")}
-                </AnchorLink>
+                </Link>
                 <ThemeToggle />
                 <LocaleSwitcher />
               </div>
@@ -156,8 +170,8 @@ export default async function LocaleLayout({
             <div className="flex flex-1 flex-col">{children}</div>
           </MotionProvider>
           <footer className="border-t border-border/60">
-            <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-              <span>© {new Date().getFullYear()} Lasse Siemoneit</span>
+            <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+              <span>{t("copyright", { year: new Date().getFullYear() })}</span>
               <nav aria-label={t("legal.label")}>
                 <ul className="flex flex-wrap gap-x-5 gap-y-2">
                   <li>
