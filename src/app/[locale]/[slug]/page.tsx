@@ -30,15 +30,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) {
     return {};
   }
+  const description = page.description ?? page.title;
 
   return {
     metadataBase: siteMetadataBase,
     title: page.title,
-    description: page.description,
+    description,
     alternates: localeAlternates(`/${slug}`),
     ...openGraphMetadata({
       title: page.title,
-      description: page.description,
+      description,
       locale,
       pathname: `/${slug}`,
     }),
