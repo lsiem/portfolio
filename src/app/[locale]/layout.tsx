@@ -1,5 +1,4 @@
 import type React from "react";
-import { appendFileSync } from "node:fs";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -100,9 +99,6 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  // #region agent log
-  appendFileSync("/opt/cursor/logs/debug.log", `${JSON.stringify({ hypothesisId: "B,D", location: "src/app/[locale]/layout.tsx:LocaleLayout", message: "locale layout entered", data: { locale }, timestamp: Date.now() })}\n`);
-  // #endregion
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
