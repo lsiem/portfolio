@@ -29,6 +29,8 @@ export class IconCast {
       color: colors.muted.clone(),
       emissive: colors.accent.clone(),
       emissiveIntensity: 0.08,
+      transparent: true,
+      opacity: 0.72,
     });
 
     for (const [index, raw] of (iconData.icons as IconRecord[]).entries()) {
@@ -136,7 +138,7 @@ export class IconCast {
       if (!hero) return;
       for (let i = 0; i < HERO_VISIBLE; i += 1) {
         const side = i % 2 === 0 ? 1 : -1;
-        const x = hero.left + hero.width * (side > 0 ? 0.76 : 0.22);
+        const x = hero.left + hero.width * (i % 2 === 0 ? 0.88 : 0.72);
         const y = hero.top + hero.height * (0.22 + (i % 3) * 0.25);
         const ambient = bridge.ambientVisible ? Math.sin(elapsed * 0.8 + i) * 0.08 : 0;
         this.targets[i].set(
@@ -144,7 +146,7 @@ export class IconCast {
           worldY(layout, y) + bridge.pointer.y * 0.1 + ambient,
           0.35 + (i % 3) * 0.28,
         );
-        this.targetScale[i] = 0.62 + (i % 3) * 0.1;
+        this.targetScale[i] = 0.4 + (i % 3) * 0.08;
         this.targetRotation[i * 3 + 1] = bridge.pointer.x * 0.3 + i * 0.18;
         this.targetRotation[i * 3] = bridge.pointer.y * 0.2 - 0.18;
       }
@@ -156,13 +158,13 @@ export class IconCast {
       if (!rects.length) return;
       for (let i = 0; i < this.meshes.length; i += 1) {
         const rect = rects[i % rects.length];
-        const side = Math.floor(i / rects.length) % 2 === 0 ? 0.74 : 0.27;
+        const side = Math.floor(i / rects.length) % 2 === 0 ? 0.88 : 0.72;
         this.targets[i].set(
           worldX(layout, rect.left + rect.width * side),
           worldY(layout, rect.top + rect.height / 2),
           0.2 + (i % 3) * 0.18,
         );
-        this.targetScale[i] = 0.5;
+        this.targetScale[i] = 0.36;
         this.targetRotation[i * 3 + 1] = bridge.pageProgress * Math.PI * (i % 2 ? -2 : 2);
         this.targetRotation[i * 3] = (i % 3 - 1) * 0.2;
       }

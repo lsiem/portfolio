@@ -26,7 +26,7 @@ void main() {
   float alpha = 1.0 - smoothstep(0.34, 0.5, d);
   if (alpha <= 0.0) discard;
   vec3 color = mix(uMuted, uAccent, clamp(vColorMix, 0.0, 1.0));
-  gl_FragColor = vec4(color, alpha * 0.88);
+  gl_FragColor = vec4(color, alpha * 0.62);
 }
 `;
 

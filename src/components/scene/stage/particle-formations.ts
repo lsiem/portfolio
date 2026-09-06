@@ -96,8 +96,10 @@ function fillSampledShape(
   id: FormationId,
 ): void {
   const rect = sectionRect(layout, section);
-  const scalePx = Math.min(rect.width, rect.height) * scaleRatio;
-  const cx = rect.left + rect.width / 2;
+  const isHero = section === "hero";
+  const scalePx =
+    Math.min(rect.width, rect.height) * (isHero ? 0.48 : scaleRatio);
+  const cx = rect.left + rect.width * (isHero ? 0.76 : 0.5);
   const cy = rect.top + rect.height / 2;
   for (let i = 0; i < count; i += 1) {
     const slot = slots[i % slots.length];
@@ -187,12 +189,12 @@ function fillOrbits(
   for (let i = 0; i < count; i += 1) {
     const ring = rings[i % rings.length];
     const angle = seededRandom(i * 5.7 + 1) * Math.PI * 2;
-    const rx = Math.min(ring.width * 0.38, 270);
+    const rx = Math.min(ring.width * 0.2, 150);
     const ry = Math.min(ring.height * 0.34, 70);
     write(
       data,
       i,
-      worldX(layout, ring.left + ring.width / 2 + Math.cos(angle) * rx),
+      worldX(layout, ring.left + ring.width * 0.76 + Math.cos(angle) * rx),
       worldY(layout, ring.top + ring.height / 2 + Math.sin(angle) * ry),
       layerDepth(i) + Math.sin(angle * 2) * 0.3,
       3.2 + seededRandom(i * 3.2) * 2.8,
@@ -248,7 +250,7 @@ function fillHalo(
   layout: MeasuredLayout,
   count: number,
 ): void {
-  const cx = layout.viewport.w / 2;
+  const cx = layout.viewport.w * 0.78;
   const cy = layout.viewport.h * 0.34;
   for (let i = 0; i < count; i += 1) {
     const angle = seededRandom(i * 7.3 + 2) * Math.PI * 2;
@@ -256,11 +258,11 @@ function fillHalo(
     write(
       data,
       i,
-      worldX(layout, cx + Math.cos(angle) * layout.viewport.w * 0.34 * radius),
-      worldY(layout, cy + Math.sin(angle) * layout.viewport.w * 0.12 * radius),
+      worldX(layout, cx + Math.cos(angle) * layout.viewport.w * 0.2 * radius),
+      worldY(layout, cy + Math.sin(angle) * layout.viewport.w * 0.1 * radius),
       layerDepth(i),
-      3.2 + seededRandom(i) * 3,
-      FORMATION_INTENSITY.halo,
+      2.4 + seededRandom(i) * 2.2,
+      0.32,
     );
   }
 }
