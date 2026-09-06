@@ -31,7 +31,8 @@
   },
   "about": {
     "title": "Über mich",
-    "readMore": "Mehr über mich"
+    "readMore": "Mehr über mich",
+    "photoAlt": "Comic-Porträt von Lasse Siemoneit"
   },
   "activity": {
     "title": "Aktivität",

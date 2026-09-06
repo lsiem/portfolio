@@ -67,10 +67,8 @@ export default async function HomePage({ params }: Props) {
   const skillDomains = getSkillDomains(locale);
   const contact = getContact(locale);
   const aboutPage = getPage(locale, "about");
-  // Owner-supplied About portrait (D-16) — non-blocking. Set to a public/ path
-  // (e.g. "/lasse.jpg") to enable the framed photo treatment; null keeps the
-  // section text-only exactly as before.
-  const aboutPhotoSrc: string | null = null;
+  // Owner-supplied comic portrait, optimized and self-hosted.
+  const aboutPhotoSrc: string | null = "/lasse-comic-portrait.webp";
   const aboutPhotoCaption: string | null = null;
   // Trusted first-party data from the typed content model (no user input),
   // so dangerouslySetInnerHTML is safe here per react/security rules.
@@ -102,7 +100,8 @@ export default async function HomePage({ params }: Props) {
             visitors and stays available for a contrast scrim over the stage. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
+          data-parallax="10"
+          className="hero-readability-scrim pointer-events-none absolute inset-y-0 left-0 right-[10%] z-0"
         />
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and
@@ -110,11 +109,12 @@ export default async function HomePage({ params }: Props) {
           renders these SSR children directly (WOW-04) and only layers motion on
           top after hydration on capable devices.
         */}
-        <HeroIntro className="relative grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="flex flex-col gap-5 lg:col-span-9">
+        <HeroIntro className="relative z-[1] grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="flex flex-col gap-5 lg:col-span-8">
             {/* Decorative engineered grid/tick rule (D-12) — draws in on mount. */}
             <span
               data-hero-grid
+              data-parallax="18"
               aria-hidden="true"
               className="block h-px w-full max-w-[12rem] origin-left bg-border"
             />
