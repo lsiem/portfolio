@@ -124,6 +124,7 @@ function fillFilament(
   count: number,
 ): void {
   const rect = sectionRect(layout, "career");
+  const railX = rect.left - 34;
   for (let i = 0; i < count; i += 1) {
     const seed = i * 13.3 + 2;
     const knot = i % 7;
@@ -131,7 +132,7 @@ function fillFilament(
     const y = inKnot
       ? rect.top + ((knot + 0.5) / 7) * rect.height + jitter(seed, 24)
       : rect.top + seededRandom(seed) * rect.height;
-    const x = layout.spineX + (inKnot ? jitter(seed + 1, 22) : jitter(seed + 1, 5));
+    const x = railX + (inKnot ? jitter(seed + 1, 14) : jitter(seed + 1, 4));
     write(
       data,
       i,
@@ -250,7 +251,7 @@ function fillHalo(
   layout: MeasuredLayout,
   count: number,
 ): void {
-  const cx = layout.viewport.w * 0.86;
+  const cx = layout.viewport.w * 0.9;
   const cy = layout.viewport.h * 0.34;
   for (let i = 0; i < count; i += 1) {
     const angle = seededRandom(i * 7.3 + 2) * Math.PI * 2;
@@ -258,8 +259,8 @@ function fillHalo(
     write(
       data,
       i,
-      worldX(layout, cx + Math.cos(angle) * layout.viewport.w * 0.13 * radius),
-      worldY(layout, cy + Math.sin(angle) * layout.viewport.w * 0.1 * radius),
+      worldX(layout, cx + Math.cos(angle) * layout.viewport.w * 0.1 * radius),
+      worldY(layout, cy + Math.sin(angle) * layout.viewport.w * 0.08 * radius),
       layerDepth(i),
       2.4 + seededRandom(i) * 2.2,
       0.32,
