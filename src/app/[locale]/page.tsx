@@ -102,6 +102,7 @@ export default async function HomePage({ params }: Props) {
             visitors and stays available for a contrast scrim over the stage. */}
         <div
           aria-hidden="true"
+          data-parallax="10"
           className="pointer-events-none absolute inset-0 -z-10"
         />
         {/*
@@ -115,6 +116,7 @@ export default async function HomePage({ params }: Props) {
             {/* Decorative engineered grid/tick rule (D-12) — draws in on mount. */}
             <span
               data-hero-grid
+              data-parallax="18"
               aria-hidden="true"
               className="block h-px w-full max-w-[12rem] origin-left bg-border"
             />
