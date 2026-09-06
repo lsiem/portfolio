@@ -22,6 +22,11 @@ const itscRoleTitles: Record<(typeof locales)[number], readonly string[]> = {
   ],
 };
 
+const portraitAlts: Record<(typeof locales)[number], string> = {
+  de: "Comic-Porträt von Lasse Siemoneit",
+  en: "Comic portrait of Lasse Siemoneit",
+};
+
 /**
  * Phase-3 immersive layer contract (03-01). Verifies the engineered hero intro
  * (D-12) is a first-paint-safe, reduced-motion-collapsible enhancement:
@@ -398,15 +403,16 @@ for (const locale of locales) {
   });
 
   test.describe(`Immersive detail pages (/${locale})`, () => {
-    test("About section degrades to text-only when no photo is supplied (D-16)", async ({
+    test("About section renders the supplied comic portrait with localized alt text (D-16)", async ({
       page,
     }) => {
       await page.goto(`/${locale}`);
       const about = page.locator("#about");
       await expect(about).toBeVisible();
       expect((await about.innerText()).trim().length).toBeGreaterThan(0);
-      // No owner photo today → no <img> rendered, section stays text-only.
-      expect(await about.locator("img").count()).toBe(0);
+      const portrait = about.locator('img[src="/lasse-comic-portrait.webp"]');
+      await expect(portrait).toBeVisible();
+      await expect(portrait).toHaveAttribute("alt", portraitAlts[locale]);
     });
 
     test("case-study page: Bricolage display H1 as real text (D-15)", async ({
