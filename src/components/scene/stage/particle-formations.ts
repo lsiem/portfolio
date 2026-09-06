@@ -75,7 +75,7 @@ function write(
   z: number,
   size: number,
   colorMix: number,
-  layer = layerFor(i),
+  layer = particleLayerFor(i),
 ): void {
   const o = i * FLOATS_PER_PARTICLE;
   data[o + PX] = x;
@@ -310,13 +310,13 @@ function splitIntoBands(rect: DocRect, count: number): DocRect[] {
   }));
 }
 
-function layerFor(index: number): number {
+export function particleLayerFor(index: number): number {
   const n = seededRandom(index * 4.1 + 6);
   return n < 0.28 ? 0 : n < 0.78 ? 1 : 2;
 }
 
 function layerDepth(index: number): number {
-  const layer = layerFor(index);
+  const layer = particleLayerFor(index);
   return layer === 0 ? -3.8 : layer === 1 ? -1.4 : 0.2;
 }
 

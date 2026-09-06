@@ -14,13 +14,15 @@ import { STAGE_CAMERA } from "./camera";
 import { createFrameMonitor } from "./frame-monitor";
 import { IconCast } from "./icon-cast";
 import { ParticleEngine } from "./particle-engine";
-import { buildParticleTargets } from "./particle-formations";
+import {
+  buildParticleTargets,
+  particleLayerFor,
+} from "./particle-formations";
 import { createParticleMaterial } from "./particle-material";
 import {
   COLOR_MIX,
   DESKTOP_PARTICLES,
   FLOATS_PER_PARTICLE,
-  LAYER,
   MOBILE_PARTICLES,
   PX,
   PY,
@@ -85,11 +87,7 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
   const monitor = useMemo(() => createFrameMonitor(), []);
   const frameCount = useRef(0);
   const elapsed = useRef(0);
-  const entrance = useRef({
-    value: 1,
-    waiting: true,
-    mountedAt: 0,
-  });
+  const entrance = useRef({ value: 0.35 });
   const degraded = useRef(false);
 
   const sceneObjects = useMemo(() => {
@@ -101,12 +99,17 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
     const positions: Float32Array[] = [];
     const sizes: Float32Array[] = [];
     const mixes: Float32Array[] = [];
+    const layerIndices = Array.from({ length: 3 }, () => [] as number[]);
+    for (let i = 0; i < count; i += 1) {
+      layerIndices[particleLayerFor(i)].push(i);
+    }
 
     for (let layer = 0; layer < 3; layer += 1) {
       const geometry = new THREE.BufferGeometry();
-      const position = new Float32Array(count * 3);
-      const size = new Float32Array(count);
-      const mix = new Float32Array(count);
+      const layerCount = layerIndices[layer].length;
+      const position = new Float32Array(layerCount * 3);
+      const size = new Float32Array(layerCount);
+      const mix = new Float32Array(layerCount);
       geometry.setAttribute("position", new THREE.BufferAttribute(position, 3));
       geometry.setAttribute("aSize", new THREE.BufferAttribute(size, 1));
       geometry.setAttribute("aColorMix", new THREE.BufferAttribute(mix, 1));
@@ -124,7 +127,17 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
 
     const icons = new IconCast(colors);
     root.add(icons.group);
-    return { root, layers, geometries, positions, sizes, mixes, material, icons };
+    return {
+      root,
+      layers,
+      geometries,
+      positions,
+      sizes,
+      mixes,
+      layerIndices,
+      material,
+      icons,
+    };
   }, [count, gl]);
 
   const inputs = useMemo<ParticleEngineInputs>(
@@ -196,17 +209,8 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
     );
     elapsed.current += Math.min(delta, 0.25);
     const dt = Math.min(delta, 2);
-    const now = performance.now();
-    if (entrance.current.mountedAt === 0) entrance.current.mountedAt = now;
-
-    if (
-      entrance.current.waiting &&
-      (sceneBridge.introBeatAt > 0 || now - entrance.current.mountedAt > 3000)
-    ) {
-      entrance.current.waiting = false;
-    }
-    if (!entrance.current.waiting && entrance.current.value > 0) {
-      entrance.current.value = Math.max(0, entrance.current.value - dt / 1.1);
+    if (entrance.current.value > 0) {
+      entrance.current.value = Math.max(0, entrance.current.value - dt / 0.5);
     }
 
     inputs.formation = sceneBridge.formation;
@@ -224,14 +228,16 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
       const position = sceneObjects.positions[layer];
       const size = sceneObjects.sizes[layer];
       const mix = sceneObjects.mixes[layer];
-      for (let i = 0; i < count; i += 1) {
+      const indices = sceneObjects.layerIndices[layer];
+      for (let slot = 0; slot < indices.length; slot += 1) {
+        const i = indices[slot];
         const source = i * FLOATS_PER_PARTICLE;
-        const target = i * 3;
+        const target = slot * 3;
         position[target] = output[source + PX];
         position[target + 1] = output[source + PY];
         position[target + 2] = output[source + PZ];
-        size[i] = output[source + LAYER] === layer ? output[source + SIZE] : 0;
-        mix[i] = output[source + COLOR_MIX];
+        size[slot] = output[source + SIZE];
+        mix[slot] = output[source + COLOR_MIX];
       }
       const geometry = sceneObjects.geometries[layer];
       geometry.getAttribute("position").needsUpdate = true;
