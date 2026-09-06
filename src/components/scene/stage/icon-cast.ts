@@ -30,7 +30,7 @@ export class IconCast {
       emissive: colors.accent.clone(),
       emissiveIntensity: 0.08,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.58,
     });
 
     for (const [index, raw] of (iconData.icons as IconRecord[]).entries()) {
@@ -158,7 +158,7 @@ export class IconCast {
       if (!rects.length) return;
       for (let i = 0; i < this.meshes.length; i += 1) {
         const rect = rects[i % rects.length];
-        const side = Math.floor(i / rects.length) % 2 === 0 ? 0.88 : 0.72;
+        const side = Math.floor(i / rects.length) % 2 === 0 ? 0.94 : 0.82;
         this.targets[i].set(
           worldX(layout, rect.left + rect.width * side),
           worldY(layout, rect.top + rect.height / 2),

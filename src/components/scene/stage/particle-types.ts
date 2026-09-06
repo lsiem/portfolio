@@ -11,7 +11,7 @@ export const SIZE = 3;
 export const COLOR_MIX = 4;
 export const LAYER = 5;
 
-export const POSITION_LERP_RATE = 8;
+export const POSITION_LERP_RATE = 12;
 export const POSITION_EPSILON = 0.003;
 export const VELOCITY_DECAY_RATE = 10;
 export const VELOCITY_EPSILON = 0.5;

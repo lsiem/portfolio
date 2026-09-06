@@ -189,12 +189,12 @@ function fillOrbits(
   for (let i = 0; i < count; i += 1) {
     const ring = rings[i % rings.length];
     const angle = seededRandom(i * 5.7 + 1) * Math.PI * 2;
-    const rx = Math.min(ring.width * 0.2, 150);
+    const rx = Math.min(ring.width * 0.12, 85);
     const ry = Math.min(ring.height * 0.34, 70);
     write(
       data,
       i,
-      worldX(layout, ring.left + ring.width * 0.76 + Math.cos(angle) * rx),
+      worldX(layout, ring.left + ring.width * 0.87 + Math.cos(angle) * rx),
       worldY(layout, ring.top + ring.height / 2 + Math.sin(angle) * ry),
       layerDepth(i) + Math.sin(angle * 2) * 0.3,
       3.2 + seededRandom(i * 3.2) * 2.8,
@@ -250,7 +250,7 @@ function fillHalo(
   layout: MeasuredLayout,
   count: number,
 ): void {
-  const cx = layout.viewport.w * 0.78;
+  const cx = layout.viewport.w * 0.86;
   const cy = layout.viewport.h * 0.34;
   for (let i = 0; i < count; i += 1) {
     const angle = seededRandom(i * 7.3 + 2) * Math.PI * 2;
@@ -258,7 +258,7 @@ function fillHalo(
     write(
       data,
       i,
-      worldX(layout, cx + Math.cos(angle) * layout.viewport.w * 0.2 * radius),
+      worldX(layout, cx + Math.cos(angle) * layout.viewport.w * 0.13 * radius),
       worldY(layout, cy + Math.sin(angle) * layout.viewport.w * 0.1 * radius),
       layerDepth(i),
       2.4 + seededRandom(i) * 2.2,

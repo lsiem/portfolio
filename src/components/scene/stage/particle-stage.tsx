@@ -36,6 +36,11 @@ import type { MeasuredLayout } from "./stage-types";
 
 let currentLayout: MeasuredLayout | null = null;
 let layoutVersion = 0;
+const HERO_FORMATION = {
+  from: "constellation",
+  to: "constellation",
+  t: 0,
+} as const;
 
 export function setParticleLayout(layout: MeasuredLayout): void {
   currentLayout = layout;
@@ -213,7 +218,11 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
       entrance.current.value = Math.max(0, entrance.current.value - dt / 0.5);
     }
 
-    inputs.formation = sceneBridge.formation;
+    const layout = getLayout();
+    inputs.formation =
+      layout.sections.hero && sceneBridge.scrollY < 40
+        ? HERO_FORMATION
+        : sceneBridge.formation;
     inputs.routeFormation = sceneBridge.routeFormation;
     inputs.transitionT = Math.max(
       sceneBridge.transition.t,
@@ -245,7 +254,6 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
       geometry.getAttribute("aColorMix").needsUpdate = true;
     }
 
-    const layout = getLayout();
     sceneObjects.root.position.y = sceneBridge.scrollY * layout.worldPerPixel;
     const pointerX = sceneBridge.pointer.active ? sceneBridge.pointer.x : 0;
     const pointerY = sceneBridge.pointer.active ? sceneBridge.pointer.y : 0;
