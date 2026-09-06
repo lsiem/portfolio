@@ -53,7 +53,7 @@ function serializeIcon(id: string, icon: SimpleIcon): SerializedGeometry {
   const parsed = new SVGLoader().parse(icon.svg);
   const geometries: THREE.BufferGeometry[] = [];
   for (const path of parsed.paths) {
-    for (const shape of path.toShapes(true)) {
+    for (const shape of path.toShapes()) {
       geometries.push(
         new THREE.ExtrudeGeometry(shape, {
           depth: 1.2,

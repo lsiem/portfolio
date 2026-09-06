@@ -88,7 +88,7 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
   const entrance = useRef({
     value: 1,
     waiting: true,
-    mountedAt: typeof performance === "undefined" ? 0 : performance.now(),
+    mountedAt: 0,
   });
   const degraded = useRef(false);
 
@@ -197,6 +197,7 @@ export function ParticleStage({ tier, frameHookRef }: Props) {
     elapsed.current += Math.min(delta, 0.25);
     const dt = Math.min(delta, 2);
     const now = performance.now();
+    if (entrance.current.mountedAt === 0) entrance.current.mountedAt = now;
 
     if (
       entrance.current.waiting &&
