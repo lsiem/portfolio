@@ -101,7 +101,7 @@ export default async function HomePage({ params }: Props) {
         <div
           aria-hidden="true"
           data-parallax="10"
-          className="hero-readability-scrim pointer-events-none absolute inset-y-0 left-0 right-[24%] z-0"
+          className="hero-readability-scrim pointer-events-none absolute inset-y-0 left-0 right-[10%] z-0"
         />
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and

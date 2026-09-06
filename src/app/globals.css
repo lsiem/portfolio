@@ -180,10 +180,9 @@ body {
 }
 
 /*
- * Signature photo treatment (D-16) — a 1:1 engineered grid frame with restrained
- * duotone for the About portrait. The box RESERVES its space via aspect-ratio +
- * fixed width + a placeholder background so a late-loading (or owner-supplied,
- * currently absent) image can never shift layout — protecting the 0.1 CLS gate.
+ * Signature photo treatment (D-16) — a 5:7 engineered portrait frame with a
+ * restrained duotone. The box reserves its space via aspect-ratio + fixed width
+ * + a placeholder background so the image cannot shift layout.
  * The four L-shaped coordinate corner ticks are a decorative aria-hidden inline
  * SVG overlay rendered in the JSX (cleaner than pseudo-element corner hacks).
  * Token-only colors (frame = --border; ticks = --muted, accent budget untouched).
@@ -191,7 +190,8 @@ body {
 .photo-frame {
   position: relative;
   width: 160px;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 5 / 7;
+  overflow: hidden;
   border: 1px solid var(--border);
   background: var(--border); /* placeholder before/if the image decodes */
 }
