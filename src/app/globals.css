@@ -193,7 +193,7 @@ body {
   aspect-ratio: 5 / 7;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: var(--border); /* placeholder before/if the image decodes */
+  background: transparent;
 }
 
 @media (min-width: 768px) {

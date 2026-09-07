@@ -413,6 +413,10 @@ for (const locale of locales) {
       const portrait = about.locator('img[src="/lasse-comic-portrait.webp"]');
       await expect(portrait).toBeVisible();
       await expect(portrait).toHaveAttribute("alt", portraitAlts[locale]);
+      const frameBackground = await portrait.locator("xpath=..").evaluate(
+        (frame) => getComputedStyle(frame).backgroundColor,
+      );
+      expect(frameBackground).toBe("rgba(0, 0, 0, 0)");
     });
 
     test("case-study page: Bricolage display H1 as real text (D-15)", async ({
