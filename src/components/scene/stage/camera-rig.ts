@@ -58,6 +58,8 @@ export class CameraRig {
   private readonly lookTarget = new THREE.Vector3(0, 0, 0);
   private readonly scratchLook = new THREE.Vector3();
   private smoothedProgress = 0;
+  private pointerX = 0;
+  private pointerY = 0;
 
   constructor() {
     this.spline = new THREE.CatmullRomCurve3(
@@ -77,6 +79,9 @@ export class CameraRig {
     camera: THREE.Camera,
     targetProgress: number,
     dtSettle: number,
+    pointerX = 0,
+    pointerY = 0,
+    pointerActive = false,
   ): boolean {
     const target = clamp01(targetProgress);
     const diff = target - this.smoothedProgress;
@@ -88,7 +93,28 @@ export class CameraRig {
       this.smoothedProgress = target; // snap — stop invalidating (§6.3)
     }
 
+    const targetPointerX = pointerActive
+      ? THREE.MathUtils.clamp(pointerX * 0.16, -0.7, 0.7)
+      : 0;
+    const targetPointerY = pointerActive
+      ? THREE.MathUtils.clamp(pointerY * 0.12, -0.5, 0.5)
+      : 0;
+    const pointerEase = Math.min(1, dtSettle * CAMERA_SMOOTH_RATE);
+    this.pointerX += (targetPointerX - this.pointerX) * pointerEase;
+    this.pointerY += (targetPointerY - this.pointerY) * pointerEase;
+    if (
+      Math.abs(targetPointerX - this.pointerX) > CAMERA_EPS ||
+      Math.abs(targetPointerY - this.pointerY) > CAMERA_EPS
+    ) {
+      settling = true;
+    } else {
+      this.pointerX = targetPointerX;
+      this.pointerY = targetPointerY;
+    }
+
     this.spline.getPointAt(this.smoothedProgress, this.cameraPos);
+    this.cameraPos.x += this.pointerX;
+    this.cameraPos.y += this.pointerY;
     camera.position.copy(this.cameraPos);
     // Slight counter-look keeps the field pivoting around the viewport center
     // instead of sliding with the dolly.

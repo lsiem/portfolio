@@ -28,13 +28,14 @@
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { POOL } from "../src/components/scene/stage/kern-types";
 import {
   sampleShards,
   splinePolyline,
   type Point2,
   type ShardSlot,
 } from "./shard-sampler";
+
+const POOL = 384;
 
 // --- Letterform strokes (y-UP design box, ~0..100 tall) ----------------------
 // "L": stem top → corner → foot end, one connected polyline.
