@@ -410,7 +410,9 @@ for (const locale of locales) {
       const about = page.locator("#about");
       await expect(about).toBeVisible();
       expect((await about.innerText()).trim().length).toBeGreaterThan(0);
-      const portrait = about.locator('img[src="/lasse-comic-portrait.webp"]');
+      const portrait = about.locator(
+        'img[src="/lasse-comic-portrait-transparent.webp"]',
+      );
       await expect(portrait).toBeVisible();
       await expect(portrait).toHaveAttribute("alt", portraitAlts[locale]);
       const frameBackground = await portrait.locator("xpath=..").evaluate(
