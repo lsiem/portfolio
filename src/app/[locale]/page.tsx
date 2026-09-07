@@ -68,7 +68,7 @@ export default async function HomePage({ params }: Props) {
   const contact = getContact(locale);
   const aboutPage = getPage(locale, "about");
   // Owner-supplied comic portrait, optimized and self-hosted.
-  const aboutPhotoSrc: string | null = "/lasse-comic-portrait-transparent.webp";
+  const aboutPhotoSrc: string | null = "/lasse-comic-portrait-cutout.webp";
   const aboutPhotoCaption: string | null = null;
   // Trusted first-party data from the typed content model (no user input),
   // so dangerouslySetInnerHTML is safe here per react/security rules.

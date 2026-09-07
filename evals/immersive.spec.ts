@@ -411,7 +411,7 @@ for (const locale of locales) {
       await expect(about).toBeVisible();
       expect((await about.innerText()).trim().length).toBeGreaterThan(0);
       const portrait = about.locator(
-        'img[src="/lasse-comic-portrait-transparent.webp"]',
+        'img[src="/lasse-comic-portrait-cutout.webp"]',
       );
       await expect(portrait).toBeVisible();
       await expect(portrait).toHaveAttribute("alt", portraitAlts[locale]);
