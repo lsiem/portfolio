@@ -25,7 +25,7 @@ import { resolveSectionAnchors } from "./measure";
  * Scroll director (DESIGN-SPEC §3 "Scroll choreography wiring", desktop path
  * — WP-C). The pointer:fine choreography producer: resolves SECTION_SEQUENCE
  * against the live DOM and creates ONE scrubbed ScrollTrigger per adjacent
- * section pair — morphs in the boundary zones (`top 80%` → `top 20%`,
+ * section pair — morphs in the boundary zones (`top 88%` → `top 12%`,
  * geometry shared with the touch producer via progress.ts), holds inside
  * sections. Entrance→hold→exit beats, scrubbed not timed; fast anchor jumps
  * (AnchorLink→Lenis) just scrub the morph quickly — no conductor involvement.

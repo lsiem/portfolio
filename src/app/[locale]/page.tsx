@@ -54,7 +54,6 @@ export default async function HomePage({ params }: Props) {
 
   const t = await getTranslations("home");
   const commonT = await getTranslations("common");
-  const nav = await getTranslations("nav");
   const careerT = await getTranslations("career");
   const projectsT = await getTranslations("projects");
   const skillsT = await getTranslations("skills");
@@ -94,15 +93,18 @@ export default async function HomePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
       />
-      <section id="hero" className="relative w-full px-6">
-        {/* Hero positioning/contrast layer (D-13 successor). The Phase-4
-            in-hero canvas slot is retired — the capability-gated field now
-            lives in the layout-level StageSlot (DESIGN-SPEC §2.1, WP-A). This
-            empty layer keeps the hero's DOM shape unchanged for excluded
-            visitors and stays available for a contrast scrim over the stage. */}
+      <section
+        id="hero"
+        className="relative flex min-h-[min(72vh,40rem)] w-full items-center px-6"
+      >
+        {/*
+          Contrast scrim (D-13): soft left-side wash so the constellation mesh
+          (anchored toward the hero's right half on lg+) cannot steal contrast
+          from the H1 / value-prop. Empty when the stage is gated off.
+        */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklab,var(--background)_88%,transparent)_42%,transparent_68%)]"
         />
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and
@@ -110,8 +112,8 @@ export default async function HomePage({ params }: Props) {
           renders these SSR children directly (WOW-04) and only layers motion on
           top after hydration on capable devices.
         */}
-        <HeroIntro className="relative grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="flex flex-col gap-5 lg:col-span-9">
+        <HeroIntro className="relative z-[1] grid w-full grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="flex flex-col gap-5 lg:col-span-6 xl:col-span-5">
             {/* Decorative engineered grid/tick rule (D-12) — draws in on mount. */}
             <span
               data-hero-grid
@@ -123,7 +125,7 @@ export default async function HomePage({ params }: Props) {
             </p>
             <h1
               data-hero-h1
-              className="font-display text-[clamp(2.75rem,2rem+5vw,6rem)] leading-[1.05] tracking-tight"
+              className="font-display text-[clamp(2.75rem,2rem+5vw,6rem)] leading-[1.05] tracking-tight [text-shadow:0_1px_24px_color-mix(in_oklab,var(--background)_75%,transparent)]"
             >
               {contact.name}
             </h1>
@@ -135,41 +137,34 @@ export default async function HomePage({ params }: Props) {
             >
               {contact.valueProp}
             </p>
-            <nav aria-label={nav("sections")} className="mt-2">
-              <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
-                <li>
-                  <AnchorLink href="#career" className="text-muted transition-colors hover:text-foreground">
-                    {nav("career")}
-                  </AnchorLink>
-                </li>
-                <li>
-                  <AnchorLink href="#projects" className="text-muted transition-colors hover:text-foreground">
-                    {nav("projects")}
-                  </AnchorLink>
-                </li>
-                <li>
-                  <AnchorLink href="#skills" className="text-muted transition-colors hover:text-foreground">
-                    {nav("skills")}
-                  </AnchorLink>
-                </li>
-                <li>
-                  <AnchorLink href="#about" className="text-muted transition-colors hover:text-foreground">
-                    {nav("about")}
-                  </AnchorLink>
-                </li>
-                <li>
-                  <AnchorLink href="#activity" className="text-muted transition-colors hover:text-foreground">
-                    {nav("activity")}
-                  </AnchorLink>
-                </li>
-                <li>
-                  <AnchorLink href="#contact" className="text-muted transition-colors hover:text-foreground">
-                    {nav("contact")}
-                  </AnchorLink>
-                </li>
-              </ul>
+            {/*
+              First-fold CTA pair replaces the duplicate section-link row that
+              mirrored the sticky header. Career = dense overview (MODE-01);
+              Contact = primary accent action. Section jumps stay in the header
+              on lg+.
+            */}
+            <nav
+              aria-label={t("ctaLabel")}
+              className="mt-2 flex flex-wrap items-center gap-3"
+            >
+              <AnchorLink
+                href="#career"
+                className="inline-flex items-center rounded-md border border-border px-4 py-2 font-mono text-sm text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/5"
+              >
+                {t("ctaCareer")}
+              </AnchorLink>
+              <Magnetic className="w-fit">
+                <AnchorLink
+                  href="#contact"
+                  className="inline-flex items-center rounded-md bg-accent px-4 py-2 font-mono text-sm text-background transition-colors hover:bg-foreground"
+                >
+                  {t("ctaContact")}
+                </AnchorLink>
+              </Magnetic>
             </nav>
           </div>
+          {/* Breathing room for the constellation on the right half (lg+). */}
+          <div aria-hidden="true" className="hidden lg:col-span-6 lg:block xl:col-span-7" />
         </HeroIntro>
       </section>
 

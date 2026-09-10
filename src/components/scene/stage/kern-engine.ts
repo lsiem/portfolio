@@ -248,7 +248,10 @@ export class KernEngine {
     const scroll = this.mode === "scroll" && formation !== null;
     const fromId = scroll ? formation.from : this.lastRouteFormation;
     const toId = scroll ? formation.to : this.lastRouteFormation;
-    const morphT = scroll ? clamp01(formation.t) : 0;
+    // Ease the scrubbed morph so formation changes ease in/out instead of
+    // tracking scroll linearly (reads smoother without changing settle rates).
+    const rawMorph = scroll ? clamp01(formation.t) : 0;
+    const morphT = rawMorph * rawMorph * (3 - 2 * rawMorph);
 
     const fromTargets = this.resolve(fromId);
     const toTargets = this.resolve(toId);
