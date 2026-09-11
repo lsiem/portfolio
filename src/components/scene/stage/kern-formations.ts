@@ -91,15 +91,18 @@ const DUST_Z_FAR = -26;
  * opacity floors so the field recedes/advances the same way it shipped.
  */
 export const FORMATION_FLOOR: Record<FormationId, { scale: number; colorMix: number }> = {
+  // Signature beats stay readable-bright; reading beats stay deep so shards
+  // never compete with body copy (visual review 2026-09-09).
   constellation: { scale: 1.0, colorMix: 0.85 },
-  filament: { scale: 0.95, colorMix: 0.7 },
-  lattice: { scale: 0.9, colorMix: 0.6 },
-  orbits: { scale: 0.75, colorMix: 0.4 },
-  frame: { scale: 0.7, colorMix: 0.3 },
-  grid: { scale: 0.85, colorMix: 0.5 },
-  glyph: { scale: 0.95, colorMix: 0.9 },
-  halo: { scale: 0.75, colorMix: 0.5 },
-  rest: { scale: 1.0, colorMix: 0.08 },
+  filament: { scale: 0.85, colorMix: 0.42 },
+  // Projects: near-invisible floor; kern-stage also dims by latticeWeight.
+  lattice: { scale: 0.2, colorMix: 0.04 },
+  orbits: { scale: 0.55, colorMix: 0.2 },
+  frame: { scale: 0.55, colorMix: 0.16 },
+  grid: { scale: 0.65, colorMix: 0.22 },
+  glyph: { scale: 0.7, colorMix: 0.32 },
+  halo: { scale: 0.7, colorMix: 0.4 },
+  rest: { scale: 1.0, colorMix: 0.06 },
 };
 
 export { SHARD_BASE_SCALE };
@@ -293,7 +296,11 @@ function fillConstellation(layout: MeasuredLayout, data: Float32Array): void {
   const floor = FORMATION_FLOOR.constellation;
   const hero = sectionRect(layout, "hero");
   const scalePx = Math.min(hero.width, hero.height) * 0.7;
-  const cx = hero.left + hero.width / 2;
+  // On lg+, park the monogram in the open right half so it doesn't sit under
+  // the H1/value-prop column (left ~5–6/12). Narrow viewports stay centered.
+  const cx =
+    hero.left +
+    hero.width * (layout.viewport.w >= LG_BREAKPOINT_PX ? 0.72 : 0.5);
   const cy = hero.top + hero.height / 2;
   const wpp = layout.worldPerPixel;
   const slots = monogramShards.slots;
@@ -325,8 +332,11 @@ function fillConstellation(layout: MeasuredLayout, data: Float32Array): void {
 function fillGlyph(layout: MeasuredLayout, data: Float32Array): void {
   const floor = FORMATION_FLOOR.glyph;
   const rect = sectionRect(layout, "contact");
-  const scalePx = Math.min(rect.width, rect.height) * 0.62;
-  const cx = rect.left + rect.width / 2;
+  // Park the @-glyph on the trailing half so contact CTAs stay unobscured.
+  const scalePx = Math.min(rect.width, rect.height) * 0.42;
+  const cx =
+    rect.left +
+    rect.width * (layout.viewport.w >= LG_BREAKPOINT_PX ? 0.78 : 0.55);
   const cy = rect.top + rect.height / 2;
   const wpp = layout.worldPerPixel;
   const slots = glyphShards.slots;
@@ -403,12 +413,13 @@ function fillFilament(layout: MeasuredLayout, data: Float32Array): void {
     writeShard(
       data,
       i,
-      spineWorldX + jitter(s + 4, 6) * wpp, // ~6px thread width
+      // Bias slightly outside the date rail so knots don't cover mono dates.
+      spineWorldX - 10 * wpp + jitter(s + 4, 5) * wpp,
       docToWorldY(layout, docY),
-      jitter(s + 5, 0.3),
-      seededTilt(s + 7, 0.35),
+      jitter(s + 5, 0.25),
+      seededTilt(s + 7, 0.3),
       floor.scale * scaleMul * SHARD_BASE_SCALE,
-      bright + jitter(s + 9, 0.05),
+      bright + jitter(s + 9, 0.04),
     );
   }
 }
@@ -420,61 +431,22 @@ function fillFilament(layout: MeasuredLayout, data: Float32Array): void {
  * synthesized 2×3 grid inside the projects rect.
  */
 function fillLattice(layout: MeasuredLayout, data: Float32Array): void {
-  const floor = FORMATION_FLOOR.lattice;
-  const cells =
-    layout.bentoCells.length > 0
-      ? layout.bentoCells
-      : synthesizeCells(sectionRect(layout, "projects"));
-
-  const areas = cells.map((c) => c.width * c.height);
-  const featured = [...areas.keys()]
-    .sort((a, b) => (areas[b] ?? 0) - (areas[a] ?? 0))
-    .slice(0, 2);
-  const weights = cells.map(
-    (c, index) => 2 * (c.width + c.height) * (featured.includes(index) ? 2 : 1),
-  );
-  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-  // Per-cell z-tilt: a stable seeded lean so each frame reads as a physical panel.
-  const cellTilt = cells.map((_, index) => randomInRange(index * 53 + 7, -0.3, 0.3));
+  // Projects is a dense reading beat — park the whole pool well past the left
+  // edge (not a near-gutter). Mid-morph leftovers still get crushed by the
+  // lattice dim in kern-stage; targets themselves must not sit under copy.
+  const rect = sectionRect(layout, "projects");
   const wpp = layout.worldPerPixel;
-
+  const parkX = docToWorldX(layout, -layout.viewport.w * 0.35);
+  const parkY = docToWorldY(layout, rect.top + rect.height / 2);
   for (let i = 0; i < POOL; i += 1) {
-    const s = i * 19 + 9;
-    let pick = seededRandom(s) * totalWeight;
-    let cellIndex = 0;
-    for (let c = 0; c < weights.length; c += 1) {
-      pick -= weights[c] ?? 0;
-      if (pick <= 0) {
-        cellIndex = c;
-        break;
-      }
-    }
-    const cell = cells[cellIndex] as DocRect;
-    const perimeter = 2 * (cell.width + cell.height);
-    let along = seededRandom(s + 1) * perimeter;
-    let docX = cell.left;
-    let docY = cell.top;
-    if (along < cell.width) {
-      docX += along;
-    } else if ((along -= cell.width) < cell.height) {
-      docX += cell.width;
-      docY += along;
-    } else if ((along -= cell.height) < cell.width) {
-      docX += cell.width - along;
-      docY += cell.height;
-    } else {
-      docY += along - cell.width;
-    }
-    const tilt = cellTilt[cellIndex] ?? 0;
-    writeShard(
+    placeParked(
       data,
       i,
-      docToWorldX(layout, docX) + jitter(s + 2, 4) * wpp,
-      docToWorldY(layout, docY) + jitter(s + 3, 4) * wpp,
-      jitter(s + 4, 0.2),
-      quatMul(quatFromAxisAngle(0, 1, 0, tilt), seededTilt(s + 6, 0.2)),
-      floor.scale * SHARD_BASE_SCALE,
-      floor.colorMix + jitter(s + 8, 0.08),
+      parkX,
+      parkY,
+      28 * wpp,
+      Math.max(rect.height, 1) * 0.35 * wpp,
+      0.02,
     );
   }
 }
@@ -521,23 +493,23 @@ function fillOrbits(layout: MeasuredLayout, data: Float32Array): void {
     const band = rings[ring] as DocRect;
     const centerX = band.left + band.width / 2;
     const centerY = band.top + band.height / 2;
-    const rx = Math.min(band.width / 2, band.height * 1.6) * randomInRange(s, 0.55, 0.95);
-    const ry = rx * ORBITS_Y_SQUASH; // y-squash (§3)
+    // Keep ellipses inside the gutter band — never reach into the prose column.
+    const rx = Math.min(band.width * 0.42, band.height * 0.55) * randomInRange(s, 0.65, 1);
+    const ry = rx * ORBITS_Y_SQUASH;
     const angle = seededRandom(s + 1) * Math.PI * 2;
     const docX = centerX + Math.cos(angle) * rx;
     const docY = centerY + Math.sin(angle) * ry;
-    // Tangent orientation about the viewer axis + a per-ring lean.
     const tangent = quatFromAxisAngle(0, 0, 1, angle + Math.PI / 2);
-    const ringTilt = quatFromAxisAngle(1, 0, 0, 0.4 + ring * 0.12);
+    const ringTilt = quatFromAxisAngle(1, 0, 0, 0.35 + ring * 0.1);
     writeShard(
       data,
       i,
       docToWorldX(layout, docX),
       docToWorldY(layout, docY),
-      jitter(s + 2, 0.5),
-      quatMul(ringTilt, quatMul(tangent, seededTilt(s + 4, 0.15))),
+      jitter(s + 2, 0.35),
+      quatMul(ringTilt, quatMul(tangent, seededTilt(s + 4, 0.12))),
       floor.scale * SHARD_BASE_SCALE,
-      floor.colorMix + jitter(s + 6, 0.06),
+      floor.colorMix + jitter(s + 6, 0.04),
     );
   }
 }
@@ -550,26 +522,29 @@ function fillOrbits(layout: MeasuredLayout, data: Float32Array): void {
  * ring was built around — no divergent duplicate of the anchoring rule.
  */
 export function resolveOrbitRings(layout: MeasuredLayout): DocRect[] {
-  return layout.skillClusterRects.length >= RING_COUNT
-    ? layout.skillClusterRects.slice(0, RING_COUNT)
-    : fallbackRingBands(sectionRect(layout, "skills"));
-}
-
-/** Four evenly-spaced horizontal bands of a rect (measure.ts fallback shape). */
-function fallbackRingBands(rect: DocRect): DocRect[] {
-  const bandHeight = rect.height / RING_COUNT;
+  const rect = sectionRect(layout, "skills");
+  // Four vertical gutter bands alternate left/right of the max-w-3xl reading
+  // column so ring rotation never sweeps shards through body copy.
+  const contentHalf = Math.min(rect.width * 0.5, 384);
+  const centerX = rect.left + rect.width / 2;
+  const gutterW = 110;
+  const left = centerX - contentHalf - 56 - gutterW / 2;
+  const right = centerX + contentHalf + 56 - gutterW / 2;
+  const bandH = rect.height / RING_COUNT;
   const bands: DocRect[] = [];
-  for (let i = 0; i < RING_COUNT; i += 1) {
+  for (let r = 0; r < RING_COUNT; r += 1) {
+    const sideLeft = r % 2 === 0;
     bands.push({
-      left: rect.left,
-      top: rect.top + i * bandHeight,
-      width: rect.width,
-      height: bandHeight,
+      left: sideLeft ? left : right,
+      top: rect.top + r * bandH,
+      width: gutterW,
+      height: bandH,
     });
   }
   return bands;
 }
 
+/** Four evenly-spaced horizontal bands of a rect (measure.ts fallback shape). */
 /**
  * #about `frame` — ~40% of shards form four thin beveled corner-bracket Ls
  * (arm = 16% of the min rect dimension), the rest parked as deep low-scale dust
@@ -637,6 +612,7 @@ function fillFrame(layout: MeasuredLayout, data: Float32Array): void {
 function fillGrid(layout: MeasuredLayout, data: Float32Array): void {
   const floor = FORMATION_FLOOR.grid;
   const rect = sectionRect(layout, "activity");
+  const wpp = layout.worldPerPixel;
   const levels =
     layout.heatmap && layout.heatmap.length >= GRID_CELLS - GRID_DAYS
       ? layout.heatmap
@@ -650,28 +626,28 @@ function fillGrid(layout: MeasuredLayout, data: Float32Array): void {
   const parkY = docToWorldY(layout, rect.top + rect.height / 2);
 
   for (let i = 0; i < POOL; i += 1) {
-    if (i >= GRID_CELLS) {
-      placeParked(data, i, parkX, parkY, 1.5, 1.5, 0.05);
+    if (i >= GRID_CELLS || !levels) {
+      // No heatmap (or spare slots): park deep dust so fallback copy stays clear.
+      placeParked(data, i, parkX, parkY, 48 * wpp, 36 * wpp, 0.03);
       continue;
     }
     const week = Math.floor(i / GRID_DAYS);
     const day = i % GRID_DAYS;
-    const level = levels ? Number(levels[i] ?? 0) : 0;
+    const level = Number(levels[i] ?? 0);
     const norm = level / 4;
     const s = i * 37 + 17;
     const docX = originX + (week + 0.5) * cell;
     const docY = originY + (day + 0.5) * cell;
-    // Bar height via uniform scale (0.5→1.35 of the floor) + a small z lift.
-    const scaleMul = levels ? 0.5 + norm * 0.85 : 0.7;
+    const scaleMul = 0.5 + norm * 0.85;
     writeShard(
       data,
       i,
       docToWorldX(layout, docX),
       docToWorldY(layout, docY),
-      levels ? norm * 0.6 : Math.sin(docX * 0.02 + docY * 0.035) * 0.3,
+      norm * 0.6,
       seededTilt(s, 0.1),
       floor.scale * scaleMul * SHARD_BASE_SCALE,
-      levels ? 0.2 + norm * 0.8 : floor.colorMix,
+      0.15 + norm * 0.55,
     );
   }
 }

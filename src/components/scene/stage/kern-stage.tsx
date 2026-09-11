@@ -30,22 +30,21 @@ import { buildPrism, buildPrismLOD } from "./kern-geometry";
 import { CameraRig } from "./camera-rig";
 import { STAGE_CAMERA } from "./camera";
 import { createFrameMonitor } from "./frame-monitor";
-import { buildKernSkin, type KernSkin } from "./kern-skin";
 import { measureLayout } from "./measure";
 import type { DocRect, MeasuredLayout } from "./stage-types";
 
 /**
  * The KERN stage interior (SOLID-3D v2 WP-D; DESIGN-SPEC §2.4, §7.3-§7.4) —
- * replaces `particle-stage.tsx`. ONE persistent canvas, TWO render objects (the
- * 384-instance shard `InstancedMesh` + the hero morph-skin), ONE `useFrame`
- * carrying the five CONTENT-AGNOSTIC obligations verbatim in behavior from the
- * v1 loop (§2.4):
+ * replaces `particle-stage.tsx`. ONE persistent canvas, ONE render object (the
+ * 384-instance shard `InstancedMesh` — the hero morph-skin/Kugel is retired),
+ * ONE `useFrame` carrying the five CONTENT-AGNOSTIC obligations verbatim in
+ * behavior from the v1 loop (§2.4):
  *
  *   1. `data-scene-frames` increment via setAttribute per RENDERED frame (never
  *      React state) — the falsifiable at-rest counter (Contract 3, R1/R2/R3).
  *   2. `bridge.paused` early-return (tab hidden; frameloop is already "never").
  *   3. frame-monitor sampling + one-way degrade rung (§7.4): latch → setDpr(1)
- *      → disable skin → swap the chamfered prism for the pre-built 8-tri LOD.
+ *      → swap the chamfered prism for the pre-built 8-tri LOD.
  *   4. `group.position.y = scrollY * worldPerPixel` — the single doc-space
  *      scroll compensation (§3 global rule; targets are y-up doc-anchored).
  *   5. camera-rig update (Weltlinie drift) + end-of-frame CONDITIONAL
@@ -56,11 +55,11 @@ import type { DocRect, MeasuredLayout } from "./stage-types";
  * The engine (WP-B) owns the shard pos/quat/scale/colorMix convergence, the
  * vortex transition and the velocity tumble; its `needsFrame` covers ONLY those.
  * WP-D layers the presentation overlays the engine has no branch for — camera
- * rig, hero skin + dissolve, D-06 pointer pull, bento `hoverRect` lift, the
- * boot/entrance beat, the IO-gated ambient bob — and ORs their settle terms
- * into the composite needsFrame (§2.4). The ambient bob rides the EXISTING
- * hero/contact IO rAF pump (stage-canvas) and is deliberately NOT a needsFrame
- * term, so it can never keep the demand loop awake mid-page (R1/R2).
+ * rig, D-06 pointer pull, bento `hoverRect` lift, the boot/entrance beat, the
+ * IO-gated ambient bob — and ORs their settle terms into the composite
+ * needsFrame (§2.4). The ambient bob rides the EXISTING hero/contact IO rAF
+ * pump (stage-canvas) and is deliberately NOT a needsFrame term, so it can
+ * never keep the demand loop awake mid-page (R1/R2).
  *
  * Nothing allocates per frame: every scratch three object + the persistent
  * `out`/`inputs` buffers live in refs/useMemo; the frame body is index math +
@@ -87,11 +86,9 @@ const ASSEMBLE_FLASH_FRACTION = 0.25;
 
 // --- Ambient bob (§3 #hero/#contact; rides the IO pump, R2) -------------------
 /** Tiny world-space bob amplitude — reads as breathing, never as travel. */
-const BOB_AMPLITUDE = 0.03;
+const BOB_AMPLITUDE = 0.012;
 /** Bob angular frequency (rad/s). */
 const BOB_FREQ = 1.1;
-/** Skin breathing influence ceiling (morph target 0) while hero is in view. */
-const SKIN_BREATHE_MAX = 0.6;
 
 // --- Bento hover lift (§3 #projects; self-terminating, epsilon-snapped) -------
 const HOVER_LIFT_Z = 0.15;
@@ -115,12 +112,6 @@ const ORBIT_PAGE_TURNS = 2.5;
 const ORBIT_BOUNDARY_TURNS = 0.5;
 /** Per-ring angular speed + direction — a gyroscope reads as differential spin. */
 const RING_SPEEDS = [1, -0.8, 0.62, -1.18] as const;
-
-// --- Hero skin dissolve ease (§2.4 uDissolve ∉ {0,1} needsFrame term) ---------
-const SKIN_DISSOLVE_RATE = 4;
-const SKIN_DISSOLVE_EPS = 0.01;
-/** Pointer proximity radius (world) that drives the skin's agitated morph. */
-const SKIN_POINTER_RADIUS = 2.2;
 
 // --- Directional light strength per tier (the only use of `tier`) -------------
 const DIR_LIGHT_INTENSITY: Record<Exclude<SceneTier, "none">, number> = {
@@ -256,7 +247,6 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
   const prismRef = useRef<THREE.BufferGeometry | null>(null);
   const lodPrismRef = useRef<THREE.BufferGeometry | null>(null);
   const [shardMesh, setShardMesh] = useState<THREE.InstancedMesh | null>(null);
-  const [skin, setSkin] = useState<KernSkin | null>(null);
 
   const groupRef = useRef<Group>(null);
   const cameraRef = useRef<THREE.Camera | null>(null);
@@ -296,26 +286,18 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     [],
   );
 
-  // --- Idle-sliced init (§7.3): prism → LOD prism → skin, then teardown -------
+  // --- Idle-sliced init (§7.3): prism → LOD prism, then teardown --------------
   // One effect owns the whole lifecycle so disposal reads closure-captured
-  // locals on UNMOUNT ONLY — never on a state change (disposing the live shard
-  // mesh the moment the skin arrives would be a use-after-free).
+  // locals on UNMOUNT ONLY — never on a state change.
   useEffect(() => {
     let disposed = false;
     let builtMesh: THREE.InstancedMesh | null = null;
-    let builtSkin: KernSkin | null = null;
     const material = new THREE.MeshLambertMaterial();
     const cancels: Array<() => void> = [];
 
-    const buildSkinSlice = (): void => {
-      if (disposed) return;
-      builtSkin = buildKernSkin(colorsRef.current);
-      setSkin(builtSkin);
-    };
     const buildLodSlice = (): void => {
       if (disposed) return;
       lodPrismRef.current = buildPrismLOD();
-      cancels.push(scheduleIdle(buildSkinSlice));
     };
     const buildPrismSlice = (): void => {
       if (disposed) return;
@@ -336,23 +318,21 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
       disposed = true;
       cancels.forEach((cancel) => cancel());
       builtMesh?.dispose();
-      builtSkin?.dispose();
       prismRef.current?.dispose();
       lodPrismRef.current?.dispose();
       material.dispose();
     };
   }, [scratch]);
 
-  // Theme flip → refresh cached colors + repaint the skin + poke the loop once
-  // (RESEARCH Pattern 5): a flip at rest still repaints under frameloop="demand".
+  // Theme flip → refresh cached colors + poke the loop once (RESEARCH Pattern 5):
+  // a flip at rest still repaints under frameloop="demand".
   useEffect(
     () =>
       observeThemeColors((colors) => {
         colorsRef.current = colors;
-        skin?.setColors(colors);
         sceneBridge.invalidate();
       }),
-    [skin],
+    [],
   );
 
   // D-06 pointer producer — pointer:fine ONLY, document-level, unproject against
@@ -415,8 +395,7 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     if (!degradedRef.current && monitorRef.current.sample(rawDelta)) {
       degradedRef.current = true;
       state.setDpr(1); // (1) the real fill-rate win
-      if (skin) skin.mesh.visible = false; // (2) drop the second draw call
-      const lod = lodPrismRef.current; // (3) cosmetic LOD swap
+      const lod = lodPrismRef.current; // (2) cosmetic LOD swap
       if (lod && shardMesh) shardMesh.geometry = lod;
     }
 
@@ -522,7 +501,7 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     const { border, muted, accent, foreground } = colorsRef.current;
     const home = sceneBridge.routeFormation === "constellation";
     // Monogram presence: 1 while the field reads as the hero monogram, 0 away.
-    // Gated on the home route so the skin/pointer never fire on case-study/legal.
+    // Gated on the home route so pointer never fires on case-study/legal.
     const f = sceneBridge.formation;
     const presence = home
       ? clamp01(
@@ -576,6 +555,16 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
     // is requested when scroll idles (NOT a needsFrame term; scroll pumps frames).
     // Precompute each ring's world center + z-spin here; the shard loop rotates
     // orbit shards about it, un-squashing/re-squashing with ORBITS_Y_SQUASH.
+    // #projects lattice: crush rendered scale/mix while this beat owns the
+    // viewport. Targets may still morph across the bento; readability wins.
+    const latticeWeight = home
+      ? clamp01(
+          (f.from === "lattice" ? 1 - f.t : 0) +
+            (f.to === "lattice" ? f.t : 0),
+        )
+      : 0;
+    const latticeDim = 1 - 0.97 * easeOutCubic(latticeWeight);
+
     const orbitsWeight = clamp01(
       (f.from === "orbits" ? 1 - f.t : 0) + (f.to === "orbits" ? f.t : 0),
     );
@@ -675,7 +664,7 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
           }
         }
 
-        const s = out[o + SCALE] * scaleMul;
+        const s = out[o + SCALE] * scaleMul * latticeDim;
         quat.set(out[o + QX], out[o + QY], out[o + QZ], out[o + QW]);
         // Spin the orbit shard's orientation by the same ring angle so it stays
         // tangent to the rotating ring (world-frame → premultiply).
@@ -685,7 +674,7 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
 
         // border→muted by colorMix (deep dust ≈ border ≈ invisible), then
         // flash→foreground (boot), then pointer/hover→accent — v1 color pipeline.
-        const mix = out[o + COLOR_MIX];
+        const mix = out[o + COLOR_MIX] * latticeDim;
         let r = border.r + (muted.r - border.r) * mix;
         let g = border.g + (muted.g - border.g) * mix;
         let b = border.b + (muted.b - border.b) * mix;
@@ -705,66 +694,15 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
       if (shardMesh.instanceColor) shardMesh.instanceColor.needsUpdate = true;
     }
 
-    // --- 10. Hero skin: fit, breathe, agitate, dissolve (§2.2, §3) ------------
-    let skinDissolveActive = false;
-    if (skin && !degradedRef.current) {
-      const hero = layout.sections["hero"];
-      if (hero) {
-        // Fit the skin inside the monogram (constellation uses 0.7 of the hero
-        // min-dimension for the LS silhouette; the skin breathes just within it).
-        const fitPx = Math.min(hero.width, hero.height) * 0.7 * 0.45;
-        skin.mesh.scale.setScalar(Math.max(fitPx * wpp, 0.001));
-        skin.mesh.position.set(
-          (hero.left + hero.width / 2 - layout.viewport.w / 2) * wpp,
-          (layout.viewport.h / 2 - (hero.top + hero.height / 2)) * wpp,
-          0,
-        );
-      }
-
-      // uDissolve target: solid only while the monogram is present and no
-      // transition is running; fully dissolved when leaving home / off-hero.
-      const dissolveTarget =
-        !home || routeTransitionT > 0 ? 1 : clamp01(1 - presence);
-      const d = skin.dissolve.uDissolve;
-      const dDiff = dissolveTarget - d.value;
-      if (Math.abs(dDiff) > SKIN_DISSOLVE_EPS) {
-        d.value += dDiff * Math.min(1, dtSettle * SKIN_DISSOLVE_RATE);
-        skinDissolveActive = true;
-      } else {
-        d.value = dissolveTarget; // snap to 0/1 so the term can settle (R1)
-      }
-      // Fully dissolved → drop the draw call entirely; otherwise it is visible.
-      skin.mesh.visible = d.value < 1;
-
-      // Breathing (morph 0) + pointer agitation (morph 1) ride the IO pump only
-      // — held static at rest, so no time-driven motion keeps the loop awake.
-      const influences = skin.mesh.morphTargetInfluences;
-      if (influences) {
-        influences[0] = ambient
-          ? SKIN_BREATHE_MAX * (0.5 + 0.5 * Math.sin(elapsed * BOB_FREQ))
-          : 0;
-        let agitate = 0;
-        if (pointerActive) {
-          const dx = skin.mesh.position.x - pointer.x;
-          const dy = skin.mesh.position.y + groupY - pointer.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          agitate = clamp01(1 - dist / SKIN_POINTER_RADIUS);
-        }
-        influences[1] = agitate;
-      }
-    }
-
-    // --- 5b. Composite needsFrame (§2.4): engine + WP-D presentation terms ----
+    // --- Composite needsFrame (§2.4): engine + WP-D presentation terms --------
     // Ambient bob is deliberately EXCLUDED — it rides the existing IO pump, so
     // adding it here would re-pin the loop mid-page (R1). Pointer likewise pokes
-    // via its own listener; its per-frame pull is transient (recomputed off the
-    // settled state, never folded in), so it needs no continuous term.
+    // via its own listener; its per-frame pull is transient.
     const needsFrame =
       engine.needsFrame ||
       cameraSettling ||
       entrance.phase !== "settled" ||
-      hoverSettling ||
-      skinDissolveActive;
+      hoverSettling;
     if (needsFrame) state.invalidate();
   });
 
@@ -774,7 +712,6 @@ export function KernStage({ tier, frameHookRef }: KernStageProps) {
       <directionalLight position={[3, 5, 8]} intensity={DIR_LIGHT_INTENSITY[tier]} />
       <group ref={groupRef}>
         {shardMesh ? <primitive object={shardMesh} /> : null}
-        {skin ? <primitive object={skin.mesh} /> : null}
       </group>
     </>
   );

@@ -76,21 +76,20 @@ for (const locale of locales) {
       expect(ariaLabel).toBeTruthy();
     });
 
-    test("first-fold anchor-nav includes an #about link", async ({
-      page,
-    }) => {
-      const aboutNavLink = page.locator('nav a[href="#about"]').first();
-      await expect(aboutNavLink).toBeVisible();
+    test("hero exposes career and contact CTAs", async ({ page }) => {
+      const hero = page.locator("#hero");
+      await expect(hero.locator('nav a[href="#career"]')).toBeVisible();
+      await expect(hero.locator('nav a[href="#contact"]')).toBeVisible();
     });
 
-    test("section navigation includes activity in hero and sticky header", async ({
+    test("section navigation includes activity in sticky header on desktop", async ({
       page,
     }) => {
       await page.setViewportSize({ width: 1280, height: 800 });
-      const activityLinks = page.locator('nav a[href="#activity"]');
-      await expect(activityLinks).toHaveCount(2);
-      await expect(activityLinks.nth(0)).toBeVisible();
-      await expect(activityLinks.nth(1)).toBeVisible();
+      const headerActivity = page.locator('header nav a[href="#activity"]');
+      await expect(headerActivity).toHaveCount(1);
+      await expect(headerActivity).toBeVisible();
+      await expect(page.locator('#hero nav a[href="#activity"]')).toHaveCount(0);
     });
 
     test("copy-email control confirms a successful copy", async ({ page }) => {
