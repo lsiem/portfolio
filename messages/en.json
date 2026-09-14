@@ -14,7 +14,10 @@
     "opensInNewTab": "opens in a new tab"
   },
   "home": {
-    "eyebrow": "Portfolio"
+    "eyebrow": "Portfolio",
+    "ctaLabel": "Continue",
+    "ctaCareer": "Career",
+    "ctaContact": "Contact"
   },
   "career": {
     "title": "Career",

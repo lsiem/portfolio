@@ -6,6 +6,7 @@ import { buildParticleTargets } from "./particle-formations";
 import {
   FLOATS_PER_PARTICLE,
   MOBILE_PARTICLES,
+  PX,
   type ParticleEngineInputs,
   type ParticleTargets,
 } from "./particle-types";
@@ -53,6 +54,22 @@ function layout(): MeasuredLayout {
     worldPerPixel: 0.0092,
   };
 }
+
+function worldLeft(measured: MeasuredLayout): number {
+  return (0 - measured.viewport.w / 2) * measured.worldPerPixel;
+}
+
+test("lattice particles park left of the reading column", () => {
+  const targets = buildParticleTargets("lattice", layout(), MOBILE_PARTICLES, 3);
+  const viewportLeft = worldLeft(layout());
+  for (let i = 0; i < MOBILE_PARTICLES; i += 1) {
+    const x = targets.data[i * FLOATS_PER_PARTICLE + PX];
+    assert.ok(
+      x < viewportLeft,
+      `lattice particle ${i} x=${x} still overlaps the viewport`,
+    );
+  }
+});
 
 test("all particle formations are finite, deterministic, and full-sized", () => {
   for (const id of ids) {

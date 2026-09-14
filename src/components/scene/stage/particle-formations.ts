@@ -16,14 +16,17 @@ import {
 
 type Slot = readonly number[];
 
+const LG_BREAKPOINT_PX = 1024;
+
 const FORMATION_INTENSITY: Record<FormationId, number> = {
   constellation: 0.92,
   filament: 0.72,
-  lattice: 0.62,
+  // Projects is a dense reading beat — park + dim so leftovers never compete.
+  lattice: 0.06,
   orbits: 0.4,
   frame: 0.3,
   grid: 0.58,
-  glyph: 0.92,
+  glyph: 0.45,
   halo: 0.46,
   rest: 0.08,
 };
@@ -55,7 +58,7 @@ export function buildParticleTargets(
       fillGrid(data, layout, count);
       break;
     case "glyph":
-      fillSampledShape(data, layout, count, "contact", glyph.slots, 0.68, id);
+      fillSampledShape(data, layout, count, "contact", glyph.slots, 0.42, id);
       break;
     case "halo":
       fillHalo(data, layout, count);
@@ -97,9 +100,14 @@ function fillSampledShape(
 ): void {
   const rect = sectionRect(layout, section);
   const isHero = section === "hero";
+  const isContact = section === "contact";
+  const wide = layout.viewport.w >= LG_BREAKPOINT_PX;
   const scalePx =
     Math.min(rect.width, rect.height) * (isHero ? 0.48 : scaleRatio);
-  const cx = rect.left + rect.width * (isHero ? 0.76 : 0.5);
+  let anchor = 0.5;
+  if (isHero) anchor = wide ? 0.76 : 0.5;
+  else if (isContact) anchor = wide ? 0.78 : 0.55;
+  const cx = rect.left + rect.width * anchor;
   const cy = rect.top + rect.height / 2;
   for (let i = 0; i < count; i += 1) {
     const slot = slots[i % slots.length];
@@ -150,29 +158,22 @@ function fillLattice(
   layout: MeasuredLayout,
   count: number,
 ): void {
-  const fallback = sectionRect(layout, "projects");
-  const cells = layout.bentoCells.length ? layout.bentoCells : [fallback];
+  // Park the pool past the left edge so mid-morph leftovers never sit under
+  // project copy (visual-clarity port from the kern stage on main).
+  const rect = sectionRect(layout, "projects");
+  const wpp = layout.worldPerPixel;
+  const parkX = worldX(layout, -layout.viewport.w * 0.35);
+  const parkY = worldY(layout, rect.top + rect.height / 2);
+  const spreadY = Math.max(rect.height, 1) * 0.35;
   for (let i = 0; i < count; i += 1) {
-    const cell = cells[i % cells.length];
     const seed = i * 17.1 + 4;
-    const p = seededRandom(seed);
-    const edge = i % 4;
-    let x = cell.left;
-    let y = cell.top;
-    if (edge === 0 || edge === 2) {
-      x += p * cell.width;
-      y += edge === 2 ? cell.height : 0;
-    } else {
-      x += edge === 1 ? cell.width : 0;
-      y += p * cell.height;
-    }
     write(
       data,
       i,
-      worldX(layout, x),
-      worldY(layout, y),
+      parkX + jitter(seed, 28) * wpp,
+      parkY + jitter(seed + 1, spreadY) * wpp,
       layerDepth(i),
-      3.5 + seededRandom(seed + 1) * 3,
+      2.4,
       FORMATION_INTENSITY.lattice,
     );
   }

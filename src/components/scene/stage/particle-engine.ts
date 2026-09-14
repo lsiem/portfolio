@@ -85,7 +85,8 @@ export class ParticleEngine {
     const scroll = this.mode === "scroll" && inputs.formation !== null;
     const from = this.resolve(scroll ? inputs.formation!.from : this.lastRouteFormation);
     const to = this.resolve(scroll ? inputs.formation!.to : this.lastRouteFormation);
-    const morph = scroll ? clamp01(inputs.formation!.t) : 0;
+    const rawMorph = scroll ? clamp01(inputs.formation!.t) : 0;
+    const morph = rawMorph * rawMorph * (3 - 2 * rawMorph);
     const same = from === to;
     const transition = clamp01(inputs.transitionT);
     const transitionActive = transition > TRANSITION_EPSILON;

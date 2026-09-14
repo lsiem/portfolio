@@ -132,8 +132,10 @@ export function ThemeToggle() {
           tabIndex={theme === option ? 0 : -1}
           onClick={() => applyTheme(option)}
           onKeyDown={(event) => handleKeyDown(event, index)}
-          className={`rounded-full border border-transparent px-2 py-0.5 transition-colors hover:border-foreground/40 hover:text-foreground ${
-            theme === option ? "text-foreground" : "text-muted"
+          className={`rounded-full border px-2 py-0.5 transition-colors ${
+            theme === option
+              ? "border-foreground/20 bg-foreground text-background"
+              : "border-transparent text-muted hover:border-foreground/40 hover:text-foreground"
           }`}
         >
           {t(option)}

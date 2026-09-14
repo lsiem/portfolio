@@ -23,7 +23,7 @@ import * as THREE from "three";
  * CAMERA_EPS for R1's settle window (see header). Lives here — the rig owns
  * the camera-smoothing knobs (kern-types.ts owns the shard-engine constants).
  */
-export const CAMERA_SMOOTH_RATE = 6;
+export const CAMERA_SMOOTH_RATE = 4;
 /**
  * Below this progress delta the camera snaps and stops demanding frames.
  * 0.005 of the spline is well under a pixel of camera travel — the snap is

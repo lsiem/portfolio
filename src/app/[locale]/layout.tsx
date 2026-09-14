@@ -128,24 +128,24 @@ export default async function LocaleLayout({
             {accessibility("skipToContent")}
           </a>
           <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
-            <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-4">
+            {/*
+              Explicit flex-1 spacer keeps the control cluster on the trailing
+              edge even when SiteSectionNav is display:none below lg. A bare
+              CSS grid drops display:none children from placement, which used
+              to pack Kontakt against LS. on mobile.
+            */}
+            <div className="mx-auto flex w-full max-w-[1440px] items-center gap-3 px-6 py-4">
               <Link
                 href="/"
                 aria-label={`Lasse Siemoneit — ${nav("home")}`}
-                className="font-mono text-sm font-semibold tracking-tight transition-opacity hover:opacity-70"
+                className="shrink-0 font-mono text-sm font-semibold tracking-tight transition-opacity hover:opacity-70"
               >
                 LS<span className="text-accent">.</span>
               </Link>
-              <SiteSectionNav />
-              {/*
-                Header control cluster (D-A order): logo | spacer | Contact |
-                ThemeToggle | LocaleSwitcher. Stays single-row on narrow
-                viewports; if it ever overflows, Contact may collapse to an
-                icon-only affordance with an aria-label (inline SVG,
-                currentColor — Claude's discretion, not needed yet at this
-                width).
-              */}
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 flex-1 justify-center">
+                <SiteSectionNav />
+              </div>
+              <div className="flex shrink-0 items-center gap-3 sm:gap-4">
                 <Link
                   href="/#contact"
                   className="font-mono text-xs text-muted transition-colors hover:text-foreground"

@@ -21,14 +21,17 @@ import {
  *   pnpm test:unit
  */
 
-// Shared fixture: three stations on a 1000px viewport. Boundary geometry:
-// start at top 80% (viewportTop 800), end at top 20% (viewportTop 200).
+// Shared fixture: three stations on a 1000px viewport. Boundary geometry is
+// derived from BOUNDARY_START/END so choreography retunes stay in lockstep.
 const VH = 1000;
 const ANCHORS: readonly SectionAnchor[] = [
   { formation: "constellation", top: 0 },
   { formation: "filament", top: 2000 },
   { formation: "lattice", top: 4000 },
 ];
+const START_SCROLL = 2000 - VH * BOUNDARY_START;
+const END_SCROLL = 2000 - VH * BOUNDARY_END;
+const MID_SCROLL = (START_SCROLL + END_SCROLL) / 2;
 
 void test("clamp01 clamps below, above, and passes through inside", () => {
   assert.equal(clamp01(-0.5), 0);
@@ -37,29 +40,26 @@ void test("clamp01 clamps below, above, and passes through inside", () => {
 });
 
 void test("boundaryProgress is 0 until the section top reaches BOUNDARY_START", () => {
-  // top at exactly 80% of the viewport (2000 - 1200 = 800)
-  assert.equal(boundaryProgress(2000, 1200, VH), 0);
+  assert.equal(boundaryProgress(2000, START_SCROLL, VH), 0);
   // far below the start line
   assert.equal(boundaryProgress(2000, 0, VH), 0);
 });
 
 void test("boundaryProgress is 1 once the section top reaches BOUNDARY_END", () => {
-  // top at exactly 20% of the viewport (2000 - 1800 = 200)
-  assert.equal(boundaryProgress(2000, 1800, VH), 1);
+  assert.equal(boundaryProgress(2000, END_SCROLL, VH), 1);
   // scrolled far past — clamped, never over 1
   assert.equal(boundaryProgress(2000, 3000, VH), 1);
 });
 
 void test("boundaryProgress scrubs linearly through the zone", () => {
-  // midway between 80% and 20% (viewportTop 500)
-  assert.equal(boundaryProgress(2000, 1500, VH), 0.5);
+  assert.equal(boundaryProgress(2000, MID_SCROLL, VH), 0.5);
 });
 
 void test("boundary constants match the ScrollTrigger geometry contract", () => {
-  // scroll-director derives `start: "top 80%"` / `end: "top 20%"` from these —
-  // a change here MUST be a conscious choreography decision, not drift.
-  assert.equal(BOUNDARY_START, 0.8);
-  assert.equal(BOUNDARY_END, 0.2);
+  // scroll-director derives `start`/`end` from these — a change here MUST be
+  // a conscious choreography decision, not drift.
+  assert.equal(BOUNDARY_START, 0.88);
+  assert.equal(BOUNDARY_END, 0.12);
 });
 
 void test("pageProgress spans 0..1 over the scrollable range", () => {
