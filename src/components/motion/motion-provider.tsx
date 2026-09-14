@@ -4,6 +4,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { useFinePointerMotion } from "@/components/motion/use-motion-gates";
 import { setActiveLenis } from "@/lib/lenis-instance";
+import { initDecorativeParallax } from "./decorative-parallax";
 
 /**
  * Root-mounted motion coordinator: owns the single Lenis instance and the
@@ -45,6 +46,7 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
 
       // Idempotent — safe under React Strict Mode's dev double-invoke.
       gsap.registerPlugin(ScrollTrigger);
+      const stopParallax = initDecorativeParallax(gsap, ScrollTrigger);
 
       // autoRaf:false — Lenis does not self-drive; we feed it from gsap.ticker so
       // the two share one RAF loop (canonical Lenis <-> ScrollTrigger recipe).
@@ -83,6 +85,7 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       }
 
       teardown = () => {
+        stopParallax();
         setActiveLenis(null);
         lenis.off("scroll", onScroll);
         gsap.ticker.remove(raf);
