@@ -76,11 +76,29 @@ for (const locale of locales) {
       expect(ariaLabel).toBeTruthy();
     });
 
-    test("first-fold anchor-nav includes an #about link", async ({
+    test("hero exposes career and contact CTAs", async ({ page }) => {
+      const hero = page.locator("#hero");
+      await expect(hero.locator('nav a[href="#career"]')).toBeVisible();
+      await expect(hero.locator('nav a[href="#contact"]')).toBeVisible();
+    });
+
+    test("section navigation includes activity in sticky header on desktop", async ({
       page,
     }) => {
-      const aboutNavLink = page.locator('nav a[href="#about"]').first();
-      await expect(aboutNavLink).toBeVisible();
+      await page.setViewportSize({ width: 1280, height: 800 });
+      const headerActivity = page.locator('header nav a[href="#activity"]');
+      await expect(headerActivity).toHaveCount(1);
+      await expect(headerActivity).toBeVisible();
+      await expect(page.locator('#hero nav a[href="#activity"]')).toHaveCount(0);
+    });
+
+    test("copy-email control confirms a successful copy", async ({ page }) => {
+      const label = locale === "de" ? "E-Mail kopieren" : "Copy email";
+      const confirmation = locale === "de" ? "Kopiert!" : "Copied!";
+      await page.getByRole("button", { name: label }).click();
+      await expect(
+        page.getByRole("button", { name: confirmation }),
+      ).toBeVisible();
     });
   });
 }

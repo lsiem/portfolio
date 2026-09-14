@@ -1,34 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 import type { CareerEntry } from "../../../content/shared/types";
+import { useLargeViewportMotion } from "@/components/motion/use-motion-gates";
 import { sceneBridge } from "@/components/scene/scene-bridge";
-
-// Gate on reduced-motion AND lg+ width: the spine is `hidden lg:block`, so it is
-// never visible below lg. Gating gsap on `(min-width: 1024px)` too means it is
-// never imported on Lighthouse's mobile run (CWV script budget, 03-04 Option A),
-// while still animating on desktop. useSyncExternalStore per the lint convention.
-function subscribeSpineGates(callback: () => void): () => void {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const lg = window.matchMedia("(min-width: 1024px)");
-  reduced.addEventListener("change", callback);
-  lg.addEventListener("change", callback);
-  return () => {
-    reduced.removeEventListener("change", callback);
-    lg.removeEventListener("change", callback);
-  };
-}
-
-function getSpineEnabledSnapshot(): boolean {
-  return (
-    window.matchMedia("(prefers-reduced-motion: no-preference)").matches &&
-    window.matchMedia("(min-width: 1024px)").matches
-  );
-}
-
-function getServerSnapshot(): boolean {
-  return false;
-}
 
 /**
  * Progress spine (D-07) — a vertical coordinate rail with per-chapter tick
@@ -65,11 +40,7 @@ export function CareerSpine({
   targetId = "career",
 }: CareerSpineProps) {
   const fillRef = useRef<HTMLSpanElement>(null);
-  const motionEnabled = useSyncExternalStore(
-    subscribeSpineGates,
-    getSpineEnabledSnapshot,
-    getServerSnapshot,
-  );
+  const motionEnabled = useLargeViewportMotion();
 
   useEffect(() => {
     if (!motionEnabled) return;

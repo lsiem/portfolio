@@ -6,7 +6,7 @@ import type { FormationId } from "../scene-bridge";
  * scroll-director.ts (pointer:fine, per-boundary ScrollTriggers) and
  * touch-scroll-producer.ts (pointer:coarse, rAF-throttled listener) — so
  * section stations can never misalign between the two paths: the desktop
- * trigger geometry (`start: "top 80%"`, `end: "top 20%"`) and the touch math
+ * trigger geometry (`start: "top 88%"`, `end: "top 12%"`) and the touch math
  * are both derived from BOUNDARY_START/BOUNDARY_END below.
  *
  * Deliberately DOM-free, GSAP-free, and side-effect-free: every function is a
@@ -20,14 +20,14 @@ import type { FormationId } from "../scene-bridge";
  * A section's morph boundary starts when its top edge crosses this viewport
  * fraction (ScrollTrigger `start: "top 80%"`).
  */
-export const BOUNDARY_START = 0.8;
+export const BOUNDARY_START = 0.88;
 /**
  * ...and completes when the top edge reaches this fraction
- * (ScrollTrigger `end: "top 20%"`). Between BOUNDARY_END and the next
+ * (ScrollTrigger `end: "top 12%"`). Between BOUNDARY_END and the next
  * section's BOUNDARY_START the formation HOLDS — entrance→hold→exit beats,
- * scrubbed not timed (§3).
+ * scrubbed not timed (§3). Wider start→end span = longer, smoother morph.
  */
-export const BOUNDARY_END = 0.2;
+export const BOUNDARY_END = 0.12;
 /**
  * Demand-frameloop discipline (§3, §6.3): no `bridge.invalidate()` unless the
  * gated progress value moved by more than this — Lenis settle ticks must not

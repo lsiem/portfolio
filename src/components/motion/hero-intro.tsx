@@ -1,36 +1,11 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 import type { SplitText } from "gsap/SplitText";
+import { useFinePointerMotion } from "@/components/motion/use-motion-gates";
 import { getMotionToken } from "@/lib/motion-tokens";
 import { sceneBridge } from "@/components/scene/scene-bridge";
-
-// --- Motion gate (reduced-motion + pointer), mirrors MotionProvider ----------
-// useSyncExternalStore (not setState-in-effect) per the repo lint convention
-// (theme-toggle.tsx / RESEARCH Pitfall 4).
-
-function subscribeMotionGates(callback: () => void): () => void {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const coarse = window.matchMedia("(pointer: coarse)");
-  reduced.addEventListener("change", callback);
-  coarse.addEventListener("change", callback);
-  return () => {
-    reduced.removeEventListener("change", callback);
-    coarse.removeEventListener("change", callback);
-  };
-}
-
-function getMotionGatesSnapshot(): boolean {
-  return (
-    window.matchMedia("(prefers-reduced-motion: no-preference)").matches &&
-    window.matchMedia("(pointer: fine)").matches
-  );
-}
-
-function getServerSnapshot(): boolean {
-  return false;
-}
 
 /**
  * Hero intro ORCHESTRATOR (D-12, finding #6). Runs a single on-mount timeline
@@ -69,11 +44,7 @@ type HeroIntroProps = {
 
 export function HeroIntro({ children, className }: HeroIntroProps) {
   const scope = useRef<HTMLDivElement>(null);
-  const motionEnabled = useSyncExternalStore(
-    subscribeMotionGates,
-    getMotionGatesSnapshot,
-    getServerSnapshot,
-  );
+  const motionEnabled = useFinePointerMotion();
 
   useEffect(() => {
     if (!motionEnabled) return;

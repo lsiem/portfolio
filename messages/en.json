@@ -1,18 +1,23 @@
 {
   "nav": {
     "home": "Home",
+    "sections": "On this page",
     "career": "Career",
     "projects": "Projects",
     "skills": "Skills",
     "about": "About",
+    "activity": "Activity",
     "contact": "Contact"
   },
   "common": {
-    "languageSwitcher": "Deutsch"
+    "languageSwitcher": "Deutsch",
+    "opensInNewTab": "opens in a new tab"
   },
   "home": {
-    "role": "Software Engineer & Product Owner",
-    "caseStudies": "Case studies"
+    "eyebrow": "Portfolio",
+    "ctaLabel": "Continue",
+    "ctaCareer": "Career",
+    "ctaContact": "Contact"
   },
   "career": {
     "title": "Career",
@@ -20,9 +25,6 @@
   },
   "projects": {
     "title": "Projects",
-    "problem": "Problem",
-    "solution": "Solution",
-    "technologies": "Technologies",
     "visit": "Visit project",
     "caseStudy": "Read case study"
   },
@@ -32,7 +34,8 @@
   },
   "about": {
     "title": "About",
-    "readMore": "More about me"
+    "readMore": "More about me",
+    "photoAlt": "Comic portrait of Lasse Siemoneit"
   },
   "activity": {
     "title": "Activity",
@@ -57,7 +60,6 @@
     "downloadCvAria": "Download CV (PDF, English)"
   },
   "footer": {
-    "builtWith": "Built with Next.js",
     "copyright": "© {year} Lasse Siemoneit",
     "legal": {
       "label": "Legal",
@@ -67,12 +69,20 @@
     }
   },
   "accessibility": {
-    "skipToContent": "Skip to content",
-    "reducedMotion": "Reduce motion"
+    "skipToContent": "Skip to content"
   },
   "caseStudy": {
+    "eyebrow": "Case study",
     "role": "Role",
     "period": "Period",
-    "stack": "Stack"
+    "stack": "Stack",
+    "backToProjects": "Back to projects",
+    "nextCaseStudy": "Next case study"
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This page does not exist.",
+    "description": "The link may be outdated or the address may have been entered incorrectly.",
+    "backHome": "Back to the homepage"
   }
 }

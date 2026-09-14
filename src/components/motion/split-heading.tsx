@@ -1,13 +1,10 @@
 "use client";
 
 import type React from "react";
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText";
+import { useEffect, useRef } from "react";
+import type { SplitText } from "gsap/SplitText";
 import { getMotionToken } from "@/lib/motion-tokens";
-
-gsap.registerPlugin(SplitText);
+import { useFinePointerMotion } from "@/components/motion/use-motion-gates";
 
 /**
  * Reusable SplitText headline primitive (D-11.2) for plans 02-04 (case-study
@@ -35,43 +32,46 @@ export function SplitHeading({
   as: Tag = "h2",
 }: SplitHeadingProps) {
   const ref = useRef<HTMLHeadingElement>(null);
+  const motionEnabled = useFinePointerMotion();
 
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
+  useEffect(() => {
+    if (!motionEnabled) return;
+    const element = ref.current;
+    if (!element) return;
 
-      const dur = getMotionToken("--motion-duration-base");
-      const stg = getMotionToken("--motion-stagger-word");
+    let cancelled = false;
+    let context: { revert: () => void } | undefined;
+    let split: SplitText | undefined;
 
-      const mm = gsap.matchMedia();
-      let split: SplitText | undefined;
+    void (async () => {
+      const [{ gsap }, splitModule] = await Promise.all([
+        import("gsap"),
+        import("gsap/SplitText"),
+      ]);
+      if (cancelled) return;
 
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Wait for the display face so word boundaries measure against Bricolage.
-        void document.fonts.ready.then(() => {
-          if (!ref.current) return;
-          split = SplitText.create(el, { type: "words" });
-          gsap.from(split.words, {
-            opacity: 0,
-            yPercent: 100,
-            duration: dur,
-            stagger: stg,
-            ease: "expo.out",
-          });
+      const SplitTextRuntime = splitModule.SplitText;
+      gsap.registerPlugin(SplitTextRuntime);
+      await document.fonts.ready;
+      if (cancelled || !ref.current) return;
+
+      context = gsap.context(() => {
+        split = SplitTextRuntime.create(element, { type: "words" });
+        gsap.from(split.words, {
+          yPercent: 100,
+          duration: getMotionToken("--motion-duration-base"),
+          stagger: getMotionToken("--motion-stagger-word"),
+          ease: "expo.out",
         });
-      });
+      }, element);
+    })();
 
-      // Reduced-motion branch intentionally creates no SplitText — the heading
-      // renders at its final state (real DOM text).
-
-      return () => {
-        split?.revert();
-        mm.revert();
-      };
-    },
-    { scope: ref },
-  );
+    return () => {
+      cancelled = true;
+      split?.revert();
+      context?.revert();
+    };
+  }, [motionEnabled]);
 
   return (
     <Tag ref={ref} className={className}>

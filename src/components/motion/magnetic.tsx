@@ -1,33 +1,9 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
+import { useFinePointerMotion } from "@/components/motion/use-motion-gates";
 import { getMotionToken } from "@/lib/motion-tokens";
-
-// Gate via useSyncExternalStore (repo lint convention — no setState-in-effect).
-// Magnetic pull is a pointer-only affordance (D-11.1): absent, not degraded, on
-// touch/keyboard (D-19), and stripped under prefers-reduced-motion (MODE-02).
-function subscribeMagneticGates(callback: () => void): () => void {
-  const coarse = window.matchMedia("(pointer: coarse)");
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  coarse.addEventListener("change", callback);
-  reduced.addEventListener("change", callback);
-  return () => {
-    coarse.removeEventListener("change", callback);
-    reduced.removeEventListener("change", callback);
-  };
-}
-
-function getMagneticEnabledSnapshot(): boolean {
-  return (
-    window.matchMedia("(pointer: fine)").matches &&
-    window.matchMedia("(prefers-reduced-motion: no-preference)").matches
-  );
-}
-
-function getServerSnapshot(): boolean {
-  return false;
-}
 
 const MAX_PULL_PX = 12; // clamp displacement (UI-SPEC D-11.1)
 const PULL_FACTOR = 0.3;
@@ -57,11 +33,7 @@ type MagneticProps = {
 
 export function Magnetic({ children, className }: MagneticProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const magneticEnabled = useSyncExternalStore(
-    subscribeMagneticGates,
-    getMagneticEnabledSnapshot,
-    getServerSnapshot,
-  );
+  const magneticEnabled = useFinePointerMotion();
 
   useEffect(() => {
     if (!magneticEnabled) return;

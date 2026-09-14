@@ -74,5 +74,22 @@ for (const locale of locales) {
       );
       expect(stored).toBeNull();
     });
+
+    test("arrow keys move focus and selection within one tab stop", async ({
+      page,
+    }) => {
+      const options = page.getByRole("radiogroup").getByRole("radio");
+      await options.nth(0).focus();
+      await page.keyboard.press("ArrowRight");
+
+      await expect(options.nth(1)).toBeFocused();
+      await expect(options.nth(1)).toHaveAttribute("aria-checked", "true");
+      await expect(options.nth(1)).toHaveAttribute("tabindex", "0");
+      await expect(options.nth(0)).toHaveAttribute("tabindex", "-1");
+
+      await page.keyboard.press("End");
+      await expect(options.nth(2)).toBeFocused();
+      await expect(options.nth(2)).toHaveAttribute("aria-checked", "true");
+    });
   });
 }

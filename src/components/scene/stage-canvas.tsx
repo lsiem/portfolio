@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { usePathname } from "next/navigation";
 import type { SceneTier } from "@/lib/capability";
 import { sceneBridge } from "./scene-bridge";
-import KernStage, { setKernLayout } from "./stage/kern-stage";
+import ParticleStage, { setParticleLayout } from "./stage/particle-stage";
 import { useTransitionConductor } from "./stage/transition-conductor";
 import { formationForRoute } from "./stage/section-config";
 import { useMeasuredLayout } from "./stage/measure";
@@ -79,7 +79,7 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
 
   // §3 Contract 2: WP-C's measurement lifecycle feeds the formation engine
   // (fonts.ready → idle-sliced pass → debounced resize → per-route re-measure).
-  useMeasuredLayout(setKernLayout, STAGE_CAMERA);
+  useMeasuredLayout(setParticleLayout, STAGE_CAMERA);
 
   // Route→formation registry (Weltlinie graft, §5.2): keeps routeFormation
   // correct on marker-less routes (home ⇒ "constellation") and degrades
@@ -221,7 +221,7 @@ export default function StageCanvas({ tier }: { tier: SceneTier }) {
           );
         }}
       >
-        <KernStage tier={tier} frameHookRef={frameHookRef} />
+        <ParticleStage tier={tier} frameHookRef={frameHookRef} />
       </Canvas>
     </div>
   );

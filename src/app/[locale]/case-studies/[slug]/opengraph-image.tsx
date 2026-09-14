@@ -46,7 +46,11 @@ export default async function Image({ params }: Props) {
 
   // Fall back to the overview composition (name/role) if the slug is
   // unknown — never render a broken/empty card.
-  const eyebrow = caseStudy ? "Case Study" : "Portfolio";
+  const eyebrow = caseStudy
+    ? locale === "de"
+      ? "Fallstudie"
+      : "Case Study"
+    : "Portfolio";
   const title = truncate(caseStudy ? caseStudy.title : contact.name, 70);
   const subtitle = truncate(
     caseStudy ? caseStudy.summary : contact.role,
