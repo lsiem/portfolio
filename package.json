@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@gsap/react": "2.1.2",
-    "@react-three/fiber": "9.6.1",
+    "@react-three/fiber": "9.7.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "detect-gpu": "5.0.70",
