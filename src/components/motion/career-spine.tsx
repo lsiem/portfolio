@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import type { CareerEntry } from "../../../content/shared/types";
 import { useLargeViewportMotion } from "@/components/motion/use-motion-gates";
-import { sceneBridge } from "@/components/scene/scene-bridge";
 
 /**
  * Progress spine (D-07) — a vertical coordinate rail with per-chapter tick
@@ -66,10 +65,6 @@ export function CareerSpine({
         // Transform-only scrub via onUpdate — no `pin`, no scroll hijack (D-05).
         onUpdate: (self) => {
           gsap.set(fill, { scaleY: self.progress });
-          // Kontinuum (WP-D): mirror the rail fill onto the one-way bridge so
-          // the filament's brightness pulse tracks it (dead letter without a
-          // mounted canvas; the scroll director owns invalidation).
-          sceneBridge.sectionProgress = self.progress;
         },
       });
       cleanup = () => trigger.kill();

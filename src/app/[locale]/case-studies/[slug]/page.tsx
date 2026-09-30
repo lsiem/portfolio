@@ -7,7 +7,6 @@ import { getCaseStudies, getCaseStudy } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { TransitionLink } from "@/components/motion/transition-link";
-import { StageFormation } from "@/components/scene/stage-formation";
 import { Link } from "@/i18n/navigation";
 import {
   localeAlternates,
@@ -72,9 +71,6 @@ export default async function CaseStudyPage({ params }: Props) {
       tabIndex={-1}
       className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28"
     >
-      {/* Kontinuum (WP-D, DESIGN-SPEC §3): sparse orbital ring behind the h1
-          for capable tiers — a dead-letter bridge write for everyone else. */}
-      <StageFormation id="halo" />
       <article className="flex flex-col gap-10">
         {/* Engineered but reading-first (D-15): Bricolage display H1, gentle
             reveals that support comprehension — no chapter-level drama. */}

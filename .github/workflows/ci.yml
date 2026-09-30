@@ -35,12 +35,8 @@ jobs:
       - name: Content parity check
         run: pnpm check:content
 
-      # Cheapest gate first: node:test over the pure modules — DESIGN-SPEC §7
-      # progress-module producer parity (browser and worker read the SAME
-      # progress function) and DESIGN-SPEC §8 mesh-era KERN invariants
-      # (shard-pool geometry contract, settle-and-go-silent). No build output
-      # and no browser needed, so a broken invariant reds out in seconds
-      # instead of after a full Next build.
+      # The particle-stage unit suite was removed with the canvas. The script
+      # stays so this step still runs and exits cleanly.
       - name: Unit tests
         run: pnpm test:unit
 
@@ -60,20 +56,10 @@ jobs:
       - name: Install Playwright chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      # The 159 cross-phase contract evals (MODE-02, WOW-01/04, TECH-03/05,
-      # D-10 gate semantics) — the specs that encode what phases 02-06 agreed
-      # on. playwright.config.ts starts `pnpm start` under CI, so these run
-      # against the build produced above, matching the condition under which
-      # the v1.0 audit measured 159/159 green.
-      #
-      # `--project=chromium` DELIBERATELY EXCLUDES the `stage-perf` project —
-      # this is a scope choice, not an oversight. Its budgets are wall-clock
-      # frame measurements that assume an uncontended machine; on a shared
-      # GitHub runner they would flake into red builds that train everyone to
-      # ignore CI. stage-perf therefore stays a LOCAL/MANUAL gate: run the
-      # full `pnpm test` (no --project filter) before touching the stage
-      # renderer. The filter is kept inline here, not hidden behind a package
-      # script, so a reader of this file sees which project is excluded.
+      # Cross-phase contract evals. playwright.config.ts starts `pnpm start`
+      # under CI, so these run against the build produced above. The particle
+      # stage-perf project was removed with the canvas; `--project=chromium`
+      # still skips the launch specs, which hit a deployed URL.
       - name: Playwright evals (chromium)
         run: pnpm exec playwright test --project=chromium
 
@@ -94,12 +80,8 @@ jobs:
       # (localhost hides ~100KB of app JS) was disproven — the deployed number
       # was inflated by non-app platform injection, not hidden app code.
       #
-      # Both URLs now carry `?webgl=off` (src/lib/capability.ts — a hard
-      # override to tier `none`, evaluated before the reduced-motion, save-data
-      # and detect-gpu branches), so the 184643 script budget measures the
-      # EAGER (no-3D) payload by construction on any machine, instead of
-      # relying on the runner's software GL happening to resolve to that tier.
-      # The 3D-active counterpart lives in lighthouserc.webgl.json
-      # (`pnpm lhci:webgl`) and remains a non-blocking lab audit.
+      # The particle / WebGL stage is gone, so every URL is the full page.
+      # The audited paths still carry `?webgl=off` so the measured URLs stay
+      # stable; the query no longer selects a scene tier.
       - name: Lighthouse CI budget
         run: npx lhci autorun
