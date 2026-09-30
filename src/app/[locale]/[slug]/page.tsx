@@ -5,7 +5,6 @@ import { MDXContent } from "@content-collections/mdx/react";
 import { routing } from "@/i18n/routing";
 import { getPage, getPages } from "@/lib/content";
 import { SplitHeading } from "@/components/motion/split-heading";
-import { StageFormation } from "@/components/scene/stage-formation";
 import { Link } from "@/i18n/navigation";
 import {
   localeAlternates,
@@ -63,9 +62,6 @@ export default async function ProsePage({ params }: Props) {
       tabIndex={-1}
       className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28"
     >
-      {/* Kontinuum (WP-D, DESIGN-SPEC §3): near-invisible rest drift — prose
-          and legal pages must not perform. Dead letter without a canvas. */}
-      <StageFormation id="rest" />
       {/* Engineered reading-first (D-15): promote page.title to a single
           top-level Bricolage display <h1> (the MDX body starts at <h2>, so the
           page had no <h1> — WCAG single-h1 + display identity, finding #4). */}

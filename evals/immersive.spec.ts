@@ -206,10 +206,7 @@ for (const locale of locales) {
       page,
     }) => {
       await page.goto(`/${locale}`);
-      // Phase-5 WP-D: BentoHover (display:contents client boundary feeding
-      // bridge.hoverRect) sits between #projects and the bento <ul>; the
-      // one-<li>-per-project a11y contract below is unchanged.
-      const items = page.locator("#projects > div > ul > li");
+      const items = page.locator("#projects > ul > li");
       const headings = page.locator("#projects h3");
       // Pinned to the SAME source the page renders (round-2 LOW finding #5) —
       // never a hardcoded literal, so this does not drift when a project is
@@ -239,8 +236,7 @@ for (const locale of locales) {
     }) => {
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(`/${locale}`);
-      // WP-D BentoHover wrapper depth — see the bento count spec above.
-      const firstCell = page.locator("#projects > div > ul > li").first();
+      const firstCell = page.locator("#projects > ul > li").first();
       await expect(firstCell).toBeVisible();
       const opacity = await firstCell.evaluate((el) => {
         const inner = el.querySelector("div") ?? el;

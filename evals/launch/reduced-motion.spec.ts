@@ -6,8 +6,7 @@ const locales = ["de", "en"] as const;
 /**
  * Every top-level home section, in document order. Walked in full under
  * reduced-motion to assert SSR-final content is visible everywhere and the
- * WOW-01 3D gate never mounts a canvas (D-10 — reduced-motion is composed
- * unconditionally by the capability gate, ahead of any tier/force override).
+ * The particle canvas is gone, so a reduced-motion walk never mounts one.
  */
 const sectionIds = [
   "hero",
@@ -57,13 +56,10 @@ for (const locale of locales) {
 }
 
 /**
- * Kontinuum extension (WP-E; DESIGN-SPEC §7): the stage canvas is mounted by
- * the [locale] LAYOUT, so the reduced-motion zero-canvas guarantee must hold
- * on every route class, not just the home walkthrough — a case-study route
- * (StageFormation "halo") and a legal route ("rest") are walked per locale.
+ * The zero-canvas guarantee holds on every route class, not just the home
+ * walkthrough — a case-study route and a legal route are walked per locale.
  * Route paths derive from the content-model SSOT (src/lib/content.ts),
- * mirroring the per-route gating spec in evals/scene.spec.ts, so new slugs
- * are covered automatically.
+ * mirroring evals/scene.spec.ts, so new slugs are covered automatically.
  */
 for (const locale of locales) {
   const caseStudyPath = `/${locale}/case-studies/${getCaseStudies(locale)[0].slug}`;

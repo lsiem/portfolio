@@ -95,11 +95,7 @@ export default async function HomePage({ params }: Props) {
         id="hero"
         className="relative flex min-h-[min(72vh,40rem)] w-full items-center px-6"
       >
-        {/*
-          Contrast scrim (D-13): soft left-side wash so the constellation mesh
-          (anchored toward the hero's right half on lg+) cannot steal contrast
-          from the H1 / value-prop. Empty when the stage is gated off.
-        */}
+        {/* Soft left wash so the hero type stays readable. */}
         <div
           aria-hidden="true"
           data-parallax="10"
@@ -163,7 +159,7 @@ export default async function HomePage({ params }: Props) {
               </Magnetic>
             </nav>
           </div>
-          {/* Breathing room for the constellation on the right half (lg+). */}
+          {/* Right-half spacer on lg+ — hero type stays in the left columns. */}
           <div aria-hidden="true" className="hidden lg:col-span-6 lg:block xl:col-span-7" />
         </HeroIntro>
       </section>

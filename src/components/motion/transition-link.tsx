@@ -3,7 +3,6 @@
 import type React from "react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { getMotionToken } from "@/lib/motion-tokens";
-import { sceneBridge } from "@/components/scene/scene-bridge";
 
 /**
  * Seamless sub-route transition (D-11.4). An ENHANCED locale-aware anchor: it
@@ -22,14 +21,7 @@ import { sceneBridge } from "@/components/scene/scene-bridge";
  * via a static useGSAP import — so it stays out of the home route's eager bundle
  * and off Lighthouse's measured run. gsap is typically already cached by the time
  * a user clicks (reveals load it on scroll); the reduced-motion path never needs
- * it at all.
- *
- * Kontinuum OUT beat (Phase-5 WP-D, DESIGN-SPEC §4): the crossfade additionally
- * announces itself on the one-way D-08 bridge (`bridge.transition`), so the
- * persistent particle field scatters in sync with the DOM fade. Without a
- * mounted canvas the writes are dead letters (`invalidate` is a module-level
- * no-op) — tier "none" / `?webgl=off` / context-lost behavior stays
- * byte-identical to today. Reduced-motion and modifier-click paths untouched.
+ * it at all. Reduced-motion and modifier-click paths swap instantly.
  */
 
 /** OUT is hard-capped at 300ms (§4) — navigation is never hostage to spectacle. */
@@ -72,8 +64,8 @@ export function TransitionLink({
     }
 
     // Same-path click: router.push(href) would no-op, so the OUT fade would
-    // strand <main> invisible at opacity 0 — bail before any bridge write or
-    // tween. preventDefault keeps the Link's own same-route re-push from
+    // strand <main> invisible at opacity 0 — bail before the tween.
+    // preventDefault keeps the Link's own same-route re-push from
     // resetting scroll; the click is simply inert.
     if (href === pathname) {
       event.preventDefault();
@@ -107,28 +99,17 @@ export function TransitionLink({
 
     void import("gsap")
       .then(({ gsap }) => {
-        // Watchdog already navigated (import stalled >700ms): starting the
-        // tween now would scatter the field mid-IN — skip; the conductor and
-        // its 900ms stale sweep own the field from here.
+        // Watchdog already navigated (import stalled >700ms): skip the tween.
         if (committed) return;
-        sceneBridge.transition = {
-          phase: "out",
-          t: 0,
-          startedAt: performance.now(),
-        };
-        const tween = gsap.to(main, {
+        gsap.to(main, {
           opacity: 0,
           y: -getMotionToken("--motion-distance-md"),
-          // Hard 300ms OUT cap (§4): quicker than --motion-duration-base wins.
+          // Hard 300ms OUT cap: quicker than --motion-duration-base wins.
           duration: Math.min(
             getMotionToken("--motion-duration-base"),
             OUT_CAP_S,
           ),
           ease: "power2.inOut", // named equivalent of --motion-ease-in-out
-          onUpdate: () => {
-            sceneBridge.transition.t = tween.progress();
-            sceneBridge.invalidate();
-          },
           onComplete: commit,
         });
       })

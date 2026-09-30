@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 import type { SplitText } from "gsap/SplitText";
 import { useFinePointerMotion } from "@/components/motion/use-motion-gates";
 import { getMotionToken } from "@/lib/motion-tokens";
-import { sceneBridge } from "@/components/scene/scene-bridge";
 
 /**
  * Hero intro ORCHESTRATOR (D-12, finding #6). Runs a single on-mount timeline
@@ -29,13 +28,6 @@ import { sceneBridge } from "@/components/scene/scene-bridge";
  *
  * Single split owner: HeroIntro owns the hero H1 SplitText directly; the H1 is
  * NOT wrapped in <SplitHeading> (which would double-split it).
- *
- * D-09 boot-beat handshake (04-04): the timeline's `onComplete` stamps
- * `sceneBridge.introBeatAt = performance.now()` — the ONLY signal the Phase-4
- * constellation reads to know whether to assemble as the final boot beat or
- * (chunk arrived late / touch device where this timeline never runs) fade in
- * gracefully instead. `scene-bridge.ts` is a few bytes of plain object, NOT a
- * three/fiber import — it adds nothing to this component's eager weight.
  */
 type HeroIntroProps = {
   children: React.ReactNode;
@@ -84,12 +76,6 @@ export function HeroIntro({ children, className }: HeroIntroProps) {
 
         const tl = gsap.timeline({
           defaults: { ease: "expo.out" }, // mirrors --motion-ease-out
-          onComplete: () => {
-            // D-09 handshake — the constellation (if mounted) assembles as
-            // the final boot beat from this instant; if it mounts later, it
-            // sees introBeatAt > 0 already and runs the graceful fade-in.
-            sceneBridge.introBeatAt = performance.now();
-          },
         });
 
         // 0-400ms: decorative grid overlay draws in (opacity ok — aria-hidden).
