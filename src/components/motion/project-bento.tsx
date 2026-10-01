@@ -135,7 +135,7 @@ export function ProjectBento({
         }
 
         return (
-          <li key={project.slug} className="lg:col-span-4">
+          <li key={project.slug} className="lg:col-span-6">
             <Reveal className="flex h-full flex-col gap-2 border-t border-border pt-6">
               <h3 className="text-lg font-medium tracking-tight">
                 {project.title}
