@@ -75,6 +75,17 @@ for (const locale of locales) {
       expect(stored).toBeNull();
     });
 
+    test("locale switcher stays inside the header at 360px", async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 360, height: 800 });
+      const link = page.locator("header a[hreflang]");
+      const box = await link.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(360 - 24);
+    });
+
     test("arrow keys move focus and selection within one tab stop", async ({
       page,
     }) => {
