@@ -91,76 +91,65 @@ export default async function HomePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
       />
-      <section
-        id="hero"
-        className="relative flex min-h-[min(72vh,40rem)] w-full items-center px-6"
-      >
-        {/* Soft left wash so the hero type stays readable. */}
-        <div
-          aria-hidden="true"
-          data-parallax="10"
-          className="hero-readability-scrim pointer-events-none absolute inset-0 -z-10"
-        />
+      <section id="hero" className="relative w-full px-6">
         {/*
           Hero intro mount timeline (D-12): the grid overlay, H1 words and
           value-prop are targets of HeroIntro's on-mount timeline. HeroIntro
           renders these SSR children directly (WOW-04) and only layers motion on
-          top after hydration on capable devices.
+          top after hydration on capable devices. The empty right-hand stage
+          and the 72vh min-height were the particle slot; both are gone so the
+          type sits on the text it actually needs.
         */}
-        <HeroIntro className="relative z-[1] grid w-full grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="flex flex-col gap-5 lg:col-span-6 xl:col-span-5">
-            {/* Decorative engineered grid/tick rule (D-12) — draws in on mount. */}
-            <span
-              data-hero-grid
-              data-parallax="18"
-              aria-hidden="true"
-              className="block h-px w-full max-w-[12rem] origin-left bg-border"
-            />
-            <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-              {t("eyebrow")}
-            </p>
-            <h1
-              data-hero-h1
-              className="font-display text-[clamp(2.75rem,2rem+5vw,6rem)] leading-[1.05] tracking-tight [text-shadow:0_1px_24px_color-mix(in_oklab,var(--background)_75%,transparent)]"
+        <HeroIntro className="relative z-[1] flex w-full max-w-xl flex-col gap-5">
+          {/* Decorative engineered grid/tick rule (D-12) — draws in on mount. */}
+          <span
+            data-hero-grid
+            data-parallax="18"
+            aria-hidden="true"
+            className="block h-px w-full max-w-[12rem] origin-left bg-border"
+          />
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+            {t("eyebrow")}
+          </p>
+          <h1
+            data-hero-h1
+            className="font-display text-[clamp(2.75rem,2rem+5vw,6rem)] leading-[1.05] tracking-tight [text-shadow:0_1px_24px_color-mix(in_oklab,var(--background)_75%,transparent)]"
+          >
+            {contact.name}
+          </h1>
+          <p className="max-w-xl text-lg text-muted sm:text-xl">{contact.role}</p>
+          <p
+            data-hero-valueprop
+            data-testid="hero-value-prop"
+            className="max-w-xl text-lg text-foreground sm:text-xl"
+          >
+            {contact.valueProp}
+          </p>
+          {/*
+            First-fold CTA pair replaces the duplicate section-link row that
+            mirrored the sticky header. Career = dense overview (MODE-01);
+            Contact = primary accent action. Section jumps stay in the header
+            on lg+.
+          */}
+          <nav
+            aria-label={t("ctaLabel")}
+            className="mt-2 flex flex-wrap items-center gap-3"
+          >
+            <AnchorLink
+              href="#career"
+              className="inline-flex items-center rounded-md border border-border px-4 py-2 font-mono text-sm text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/5"
             >
-              {contact.name}
-            </h1>
-            <p className="max-w-xl text-lg text-muted sm:text-xl">{contact.role}</p>
-            <p
-              data-hero-valueprop
-              data-testid="hero-value-prop"
-              className="max-w-xl text-lg text-muted sm:text-xl"
-            >
-              {contact.valueProp}
-            </p>
-            {/*
-              First-fold CTA pair replaces the duplicate section-link row that
-              mirrored the sticky header. Career = dense overview (MODE-01);
-              Contact = primary accent action. Section jumps stay in the header
-              on lg+.
-            */}
-            <nav
-              aria-label={t("ctaLabel")}
-              className="mt-2 flex flex-wrap items-center gap-3"
-            >
+              {t("ctaCareer")}
+            </AnchorLink>
+            <Magnetic className="w-fit">
               <AnchorLink
-                href="#career"
-                className="inline-flex items-center rounded-md border border-border px-4 py-2 font-mono text-sm text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/5"
+                href="#contact"
+                className="inline-flex items-center rounded-md bg-accent px-4 py-2 font-mono text-sm text-background transition-colors hover:bg-foreground"
               >
-                {t("ctaCareer")}
+                {t("ctaContact")}
               </AnchorLink>
-              <Magnetic className="w-fit">
-                <AnchorLink
-                  href="#contact"
-                  className="inline-flex items-center rounded-md bg-accent px-4 py-2 font-mono text-sm text-background transition-colors hover:bg-foreground"
-                >
-                  {t("ctaContact")}
-                </AnchorLink>
-              </Magnetic>
-            </nav>
-          </div>
-          {/* Right-half spacer on lg+ — hero type stays in the left columns. */}
-          <div aria-hidden="true" className="hidden lg:col-span-6 lg:block xl:col-span-7" />
+            </Magnetic>
+          </nav>
         </HeroIntro>
       </section>
 
@@ -206,10 +195,13 @@ export default async function HomePage({ params }: Props) {
           {skillDomains.map((domain) => (
             <div key={domain.domain} className="flex flex-col gap-3">
               <h3 className="text-lg font-medium tracking-tight">{domain.domain}</h3>
-              <ul className="flex flex-col gap-2">
+              <ul className="flex flex-wrap gap-2">
                 {domain.skills.map((skill) => (
-                  <li key={skill.name} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="font-medium">{skill.name}</span>
+                  <li
+                    key={skill.name}
+                    className="chip inline-flex items-baseline gap-2 rounded border border-border px-2 py-0.5"
+                  >
+                    <span className="text-sm font-medium">{skill.name}</span>
                     {typeof skill.years === "number" ? (
                       <span className="font-mono text-xs text-muted">
                         {skillsT("years", { years: skill.years })}
@@ -280,7 +272,7 @@ export default async function HomePage({ params }: Props) {
             ) : null}
             <TransitionLink
               href="/about"
-              className="w-fit font-mono text-sm text-muted transition-colors hover:text-foreground"
+              className="w-fit font-mono text-sm text-foreground transition-opacity hover:opacity-70"
             >
               {aboutT("readMore")} →
             </TransitionLink>
@@ -301,6 +293,11 @@ export default async function HomePage({ params }: Props) {
           labels={{
             ariaSummary: activityT("ariaSummary"),
             unavailable: activityT("unavailable"),
+            total: contributionCalendar
+              ? activityT("total", {
+                  count: contributionCalendar.totalContributions,
+                })
+              : "",
           }}
         />
       </section>

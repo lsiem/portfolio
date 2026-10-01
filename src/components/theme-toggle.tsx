@@ -79,11 +79,48 @@ function applyTheme(next: ThemeOption): void {
   for (const listener of listeners) listener();
 }
 
+function ThemeIcon({ option }: { option: ThemeOption }) {
+  const common = {
+    viewBox: "0 0 16 16",
+    "aria-hidden": true as const,
+    className: "size-3.5 sm:hidden",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+  };
+
+  if (option === "light") {
+    return (
+      <svg {...common}>
+        <circle cx="8" cy="8" r="2.25" />
+        <path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.4 3.4l1.06 1.06M11.54 11.54l1.06 1.06M3.4 12.6l1.06-1.06M11.54 4.46l1.06-1.06" />
+      </svg>
+    );
+  }
+
+  if (option === "dark") {
+    return (
+      <svg {...common}>
+        <path d="M10.2 2.2a5.2 5.2 0 1 0 3.6 8.9 4.4 4.4 0 0 1-3.6-8.9Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...common}>
+      <rect x="2" y="2.5" width="12" height="8" rx="1" />
+      <path d="M6 13.25h4M8 10.5v2.75" />
+    </svg>
+  );
+}
+
 /**
  * Three-state System / Light / Dark control (TECH-04, D-B). Renders a
  * `role="radiogroup"` with three `role="radio"` options — a single,
  * consistent ARIA pattern (no grouping role or pressed-state attribute
- * mixed in, per REVIEW finding 9).
+ * mixed in, per REVIEW finding 9). Below `sm` the words collapse to icons
+ * so the locale switcher stays inside the header padding; the accessible
+ * name stays the full label.
  */
 export function ThemeToggle() {
   const t = useTranslations("theme");
@@ -132,13 +169,15 @@ export function ThemeToggle() {
           tabIndex={theme === option ? 0 : -1}
           onClick={() => applyTheme(option)}
           onKeyDown={(event) => handleKeyDown(event, index)}
-          className={`rounded-full border px-2 py-0.5 transition-colors ${
+          aria-label={t(option)}
+          className={`inline-flex items-center justify-center rounded-full border px-1.5 py-1 transition-colors sm:px-2 sm:py-0.5 ${
             theme === option
               ? "border-foreground/20 bg-foreground text-background"
               : "border-transparent text-muted hover:border-foreground/40 hover:text-foreground"
           }`}
         >
-          {t(option)}
+          <ThemeIcon option={option} />
+          <span className="hidden sm:inline">{t(option)}</span>
         </button>
       ))}
     </div>

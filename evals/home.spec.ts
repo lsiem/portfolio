@@ -30,6 +30,13 @@ for (const locale of locales) {
       await expect(items.first()).toBeVisible();
     });
 
+    test("case study link uses the locale label", async ({ page }) => {
+      const label = locale === "de" ? "Fallstudie lesen" : "Read case study";
+      await expect(
+        page.locator("#projects").getByRole("link", { name: label }).first(),
+      ).toBeVisible();
+    });
+
     test("case study link navigates to detail page", async ({ page }) => {
       const firstLink = page.locator("#projects ul li a").first();
       await firstLink.click();

@@ -210,11 +210,3 @@ body {
   filter: grayscale(20%) contrast(105%);
 }
 
-.hero-readability-scrim {
-  background: linear-gradient(
-    90deg,
-    var(--background) 0%,
-    color-mix(in oklab, var(--background) 88%, transparent) 42%,
-    transparent 68%
-  );
-}

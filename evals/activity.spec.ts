@@ -28,5 +28,21 @@ for (const locale of locales) {
       const fallback = activity.locator("p");
       await expect(grid.or(fallback)).toBeVisible();
     });
+
+    test("shows the contribution total when the grid is present", async ({
+      page,
+    }) => {
+      const activity = page.locator("#activity");
+      const grid = activity.locator('[role="img"]');
+      const total =
+        locale === "de"
+          ? /Beiträge in 12 Monaten/
+          : /contributions in 12 months/;
+      if ((await grid.count()) === 0) {
+        await expect(activity.locator("p")).toBeVisible();
+        return;
+      }
+      await expect(activity.getByText(total)).toBeVisible();
+    });
   });
 }

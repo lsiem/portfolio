@@ -459,5 +459,20 @@ for (const locale of locales) {
       );
       expect(fontFamily.toLowerCase()).toContain("bricolage");
     });
+
+    test("prose pages do not repeat the H1 as the first H2", async ({
+      page,
+    }) => {
+      for (const slug of ["about", "impressum", "datenschutz"] as const) {
+        await page.goto(`/${locale}/${slug}`);
+        const h1 = (await page.locator("h1").innerText()).trim();
+        const headings = page.locator("h2, h3");
+        const count = await headings.count();
+        expect(count).toBeGreaterThan(0);
+        for (let index = 0; index < count; index += 1) {
+          expect((await headings.nth(index).innerText()).trim()).not.toBe(h1);
+        }
+      }
+    });
   });
 }
