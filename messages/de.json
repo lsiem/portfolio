@@ -26,7 +26,7 @@
   "projects": {
     "title": "Projekte",
     "visit": "Projekt besuchen",
-    "caseStudy": "Case Study lesen"
+    "caseStudy": "Fallstudie lesen"
   },
   "skills": {
     "title": "Fähigkeiten",
@@ -40,6 +40,7 @@
   "activity": {
     "title": "Aktivität",
     "ariaSummary": "GitHub-Beiträge der letzten 12 Monate",
+    "total": "{count} Beiträge in 12 Monaten",
     "unavailable": "GitHub-Aktivität derzeit nicht verfügbar."
   },
   "theme": {

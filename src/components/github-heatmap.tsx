@@ -5,15 +5,14 @@ type GitHubHeatmapLabels = {
   ariaSummary: string;
   /** Localized fallback line shown when `data` is null. */
   unavailable: string;
+  /** Localized visible total, e.g. "661 contributions in 12 months". */
+  total: string;
 };
 
 type GitHubHeatmapProps = {
   data: ContributionCalendar | null;
   labels: GitHubHeatmapLabels;
 };
-
-/** Fixed cell size in px — kept constant regardless of data so the grid never causes CLS. */
-const CELL_SIZE = "h-[11px] w-[11px]";
 
 /**
  * Bucket a day's contribution count into one of 5 intensity steps using
@@ -28,14 +27,16 @@ function intensityBucket(count: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 /**
- * Monochrome foreground-opacity ramp — never the accent color (UI-SPEC:
- * accent stays scarce and the grid must stay theme-adaptive).
+ * Monochrome foreground/background mixes — never the accent color (UI-SPEC:
+ * accent stays scarce and the grid must stay theme-adaptive). Bucket 0 is
+ * mixed strongly enough to clear ~3:1 against the page background in both
+ * themes; fixed 11px cells used to overflow the reading column.
  */
 const BUCKET_CLASSNAME: Record<0 | 1 | 2 | 3 | 4, string> = {
-  0: "bg-border",
-  1: "bg-foreground/20",
-  2: "bg-foreground/40",
-  3: "bg-foreground/70",
+  0: "bg-[color-mix(in_oklab,var(--foreground)_44%,var(--background))]",
+  1: "bg-[color-mix(in_oklab,var(--foreground)_60%,var(--background))]",
+  2: "bg-[color-mix(in_oklab,var(--foreground)_74%,var(--background))]",
+  3: "bg-[color-mix(in_oklab,var(--foreground)_88%,var(--background))]",
   4: "bg-foreground",
 };
 
@@ -51,30 +52,31 @@ export function GitHubHeatmap({ data, labels }: GitHubHeatmapProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-3">
+      <p className="font-mono text-xs text-muted">{labels.total}</p>
       <div
         role="img"
-        aria-label={labels.ariaSummary}
-        className="flex w-fit gap-1 overflow-x-auto"
+        aria-label={`${labels.total}. ${labels.ariaSummary}`}
+        className="grid w-full gap-[2px]"
+        style={{
+          gridTemplateColumns: `repeat(${data.weeks.length}, minmax(0, 1fr))`,
+        }}
       >
         {data.weeks.map((week, weekIndex) => (
-          <div key={weekIndex} className="flex flex-col gap-1">
+          <div key={weekIndex} className="flex min-w-0 flex-col gap-[2px]">
             {week.contributionDays.map((day) => {
               const bucket = intensityBucket(day.contributionCount);
               return (
                 <div
                   key={day.date}
                   title={`${day.date}: ${day.contributionCount}`}
-                  className={`${CELL_SIZE} shrink-0 rounded-[2px] ${BUCKET_CLASSNAME[bucket]}`}
+                  className={`aspect-square w-full rounded-[1px] ${BUCKET_CLASSNAME[bucket]}`}
                 />
               );
             })}
           </div>
         ))}
       </div>
-      <span className="sr-only">
-        {data.totalContributions} — {labels.ariaSummary}
-      </span>
     </div>
   );
 }
