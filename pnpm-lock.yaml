@@ -40,14 +40,14 @@ importers:
         version: 0.0.1
     devDependencies:
       '@content-collections/core':
-        specifier: ^0.15.2
-        version: 0.15.2(typescript@6.0.3)
+        specifier: ^0.15.3
+        version: 0.15.3(typescript@6.0.3)
       '@content-collections/mdx':
         specifier: ^0.2.2
-        version: 0.2.2(@content-collections/core@0.15.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 0.2.2(@content-collections/core@0.15.3(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@content-collections/next':
         specifier: ^0.2.11
-        version: 0.2.11(@content-collections/core@0.15.2(typescript@6.0.3))(next@16.3.4(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
+        version: 0.2.11(@content-collections/core@0.15.3(typescript@6.0.3))(next@16.3.4(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
       '@lhci/cli':
         specifier: ^0.15.1
         version: 0.15.1
@@ -98,6 +98,10 @@ importers:
         version: 4.4.3
 
 packages:
+
+  '@11ty/gray-matter@3.0.0':
+    resolution: {integrity: sha512-mi6KB36DZCpCfCb9XP3NtDDNXe1N0jKtuFj9mTCZNy5H7vTabODyMgFmmOiGIGJKt+i8mJqEb/REtK+JTEzlpQ==}
+    engines: {node: '>=11'}
 
   '@alloc/quick-lru@5.3.0':
     resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
@@ -174,8 +178,8 @@ packages:
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
-  '@content-collections/core@0.15.2':
-    resolution: {integrity: sha512-Oaz3J3lw/8NXxmV/YSsTl8tTmxscTiotNp1wUNDHvRqW0MtNU8a0h843XYCFWSrlW5q6dcVoM0rGb2UF8kX5Ig==}
+  '@content-collections/core@0.15.3':
+    resolution: {integrity: sha512-0tdMU9I6U1wQWh8/TcKbcSKWOzICujaWFpogltiZ7trDh8q7RSAEmO4QOs4+wrd2QtMgRmOcFgmT7P8iElH3jw==}
     peerDependencies:
       typescript: ^5.0.2 || ^6.0.0 || ^7.0.0
 
@@ -2901,6 +2905,10 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
+  js-yaml@5.4.2:
+    resolution: {integrity: sha512-m+aqu+LwO1O6sIopafj8HUVl5aawITwZQe/yHpMCKjaWBaA/d07B/QdMb3529REftiU+RMMHL3Vlsw3hON7vWg==}
+    hasBin: true
+
   jsesc@3.1.0:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
@@ -3539,8 +3547,8 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.4:
-    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
+  picomatch@4.0.7:
+    resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
   playwright-core@1.63.0:
@@ -3644,8 +3652,8 @@ packages:
     resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
     engines: {node: '>=0.10.0'}
 
-  readdirp@5.0.0:
-    resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
+  readdirp@5.1.1:
+    resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
 
   recma-build-jsx@1.0.0:
@@ -3797,8 +3805,8 @@ packages:
     resolution: {integrity: sha512-VMbMxbDeehAxpOtWJXlcUS5E8iXh6QmN+BkRX1GARS3wRaXEEgzCcB10gTQazO42tpNIya8xIyNx8fll1OFPrg==}
     engines: {node: '>= 0.8.0'}
 
-  serialize-javascript@7.0.7:
-    resolution: {integrity: sha512-YAy8Od6KV+uuwUuU50np8fGB/Aues6Y0nAhA9y/hId74PlKUcme4pXcBD46NWKr1Q4osN/iseZ17YqO1XfmI8g==}
+  serialize-javascript@7.1.2:
+    resolution: {integrity: sha512-GL2BWwVa6JydKO6l/ljVgjAZF4QJ3S7dWDWi53s5GZT8PJzD2fNxi67HANQGKAqPrwEpL5ba7gUBGi0Ls/sEoQ==}
     engines: {node: '>=20.0.0'}
 
   serve-static@1.16.3:
@@ -4332,8 +4340,8 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  yaml@2.9.0:
-    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+  yaml@2.9.1:
+    resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -4386,6 +4394,11 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@11ty/gray-matter@3.0.0':
+    dependencies:
+      js-yaml: 5.4.2
+      section-matter: 1.0.0
 
   '@alloc/quick-lru@5.3.0': {}
 
@@ -4491,28 +4504,28 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@content-collections/core@0.15.2(typescript@6.0.3)':
+  '@content-collections/core@0.15.3(typescript@6.0.3)':
     dependencies:
+      '@11ty/gray-matter': 3.0.0
       '@standard-schema/spec': 1.1.0
       camelcase: 8.0.0
       chokidar: 5.0.0
       esbuild: 0.25.12
-      gray-matter: 4.0.3
       p-limit: 6.2.0
-      picomatch: 4.0.4
+      picomatch: 4.0.7
       pluralize: 8.0.0
-      serialize-javascript: 7.0.7
+      serialize-javascript: 7.1.2
       tinyglobby: 0.2.17
       typescript: 6.0.3
-      yaml: 2.9.0
+      yaml: 2.9.1
 
-  '@content-collections/integrations@0.5.0(@content-collections/core@0.15.2(typescript@6.0.3))':
+  '@content-collections/integrations@0.5.0(@content-collections/core@0.15.3(typescript@6.0.3))':
     dependencies:
-      '@content-collections/core': 0.15.2(typescript@6.0.3)
+      '@content-collections/core': 0.15.3(typescript@6.0.3)
 
-  '@content-collections/mdx@0.2.2(@content-collections/core@0.15.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@content-collections/mdx@0.2.2(@content-collections/core@0.15.3(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@content-collections/core': 0.15.2(typescript@6.0.3)
+      '@content-collections/core': 0.15.3(typescript@6.0.3)
       esbuild: 0.25.12
       mdx-bundler: 10.1.1(esbuild@0.25.12)
       react: 19.3.0
@@ -4521,10 +4534,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@content-collections/next@0.2.11(@content-collections/core@0.15.2(typescript@6.0.3))(next@16.3.4(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
+  '@content-collections/next@0.2.11(@content-collections/core@0.15.3(typescript@6.0.3))(next@16.3.4(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
     dependencies:
-      '@content-collections/core': 0.15.2(typescript@6.0.3)
-      '@content-collections/integrations': 0.5.0(@content-collections/core@0.15.2(typescript@6.0.3))
+      '@content-collections/core': 0.15.3(typescript@6.0.3)
+      '@content-collections/integrations': 0.5.0(@content-collections/core@0.15.3(typescript@6.0.3))
       next: 16.3.4(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
 
   '@eloqnt/config@0.1.0': {}
@@ -5148,7 +5161,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.4
+      picomatch: 4.0.7
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -5991,7 +6004,7 @@ snapshots:
 
   chokidar@5.0.0:
     dependencies:
-      readdirp: 5.0.0
+      readdirp: 5.1.1
 
   chrome-launcher@0.13.4:
     dependencies:
@@ -6777,9 +6790,9 @@ snapshots:
     dependencies:
       pend: 1.2.0
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.7
 
   fflate@0.8.3: {}
 
@@ -7327,6 +7340,10 @@ snapshots:
       esprima: 4.0.1
 
   js-yaml@4.3.0:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@5.4.2:
     dependencies:
       argparse: 2.0.1
 
@@ -8164,7 +8181,7 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  picomatch@4.0.4: {}
+  picomatch@4.0.7: {}
 
   playwright-core@1.63.0: {}
 
@@ -8281,7 +8298,7 @@ snapshots:
 
   react@19.3.0: {}
 
-  readdirp@5.0.0: {}
+  readdirp@5.1.1: {}
 
   recma-build-jsx@1.0.0:
     dependencies:
@@ -8356,7 +8373,7 @@ snapshots:
       estree-util-value-to-estree: 3.5.0
       toml: 3.0.0
       unified: 11.0.5
-      yaml: 2.9.0
+      yaml: 2.9.1
 
   remark-mdx@3.1.1:
     dependencies:
@@ -8493,7 +8510,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  serialize-javascript@7.0.7: {}
+  serialize-javascript@7.1.2: {}
 
   serve-static@1.16.3:
     dependencies:
@@ -8825,8 +8842,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   tldts-core@6.1.86: {}
 
@@ -9174,7 +9191,7 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yaml@2.9.0: {}
+  yaml@2.9.1: {}
 
   yargs-parser@13.1.2:
     dependencies:

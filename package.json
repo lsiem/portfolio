@@ -31,7 +31,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@content-collections/core": "^0.15.2",
+    "@content-collections/core": "^0.15.3",
     "@content-collections/mdx": "^0.2.2",
     "@content-collections/next": "^0.2.11",
     "@lhci/cli": "^0.15.1",
