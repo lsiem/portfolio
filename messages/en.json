@@ -1,72 +1,117 @@
 {
+  "meta": {
+    "title": "Lasse Siemoneit – Product Owner & Software Engineer",
+    "skillsTitle": "Skill matrix",
+    "skillsDescription": "Every rated technology from software engineering and IT infrastructure, searchable and filterable by proficiency."
+  },
   "nav": {
     "home": "Home",
-    "sections": "On this page",
+    "label": "Main navigation",
     "career": "Career",
     "projects": "Projects",
     "skills": "Skills",
     "about": "About",
-    "activity": "Activity",
-    "contact": "Contact"
+    "contact": "Contact",
+    "matrix": "Skill matrix"
   },
   "common": {
-    "languageSwitcher": "Deutsch",
-    "opensInNewTab": "opens in a new tab"
+    "switchLocale": "Deutsch",
+    "switchLocaleAria": "Auf Deutsch wechseln",
+    "opensInNewTab": "opens in a new tab",
+    "present": "present"
   },
-  "home": {
-    "eyebrow": "Portfolio",
-    "ctaLabel": "Continue",
-    "ctaCareer": "Career",
-    "ctaContact": "Contact"
+  "theme": {
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "hero": {
+    "ctaProjects": "View projects",
+    "ctaCv": "CV (PDF, German)",
+    "ctaContact": "Contact",
+    "terminalLabel": "Profile at a glance",
+    "keyRole": "role",
+    "keyFocus": "focus",
+    "keyLocation": "location",
+    "keyExperience": "experience",
+    "keyStatus": "status",
+    "focus": "AI agents, platform operations, full-stack",
+    "experience": "5+ years",
+    "statYears": "years of experience",
+    "statProjects": "projects",
+    "statSkills": "rated skills",
+    "statCerts": "Red Hat certificates"
   },
   "career": {
     "title": "Career",
-    "present": "Present"
+    "stack": "Stack"
   },
   "projects": {
     "title": "Projects",
+    "intro": "From a multi-agent assistant to live media control: systems that run in real-world operation.",
     "visit": "Visit project",
-    "caseStudy": "Read case study"
+    "caseStudy": "Read case study",
+    "flagship": "Current product"
   },
   "skills": {
     "title": "Skills",
-    "years": "{years} yrs"
+    "intro": "Core skills with years of experience. The full matrix with every rated technology lives on its own page.",
+    "years": "{years} y",
+    "yearsAria": "{years, plural, one {# year} other {# years}} of experience",
+    "matrixTitle": "Full skill matrix",
+    "matrixText": "{count} rated entries from software engineering and IT infrastructure, searchable and filterable by proficiency.",
+    "matrixCta": "Open matrix"
+  },
+  "matrix": {
+    "eyebrow": "Skill matrix",
+    "title": "Every technology, honestly rated",
+    "intro": "Based on two self-assessment matrices for software engineering and IT infrastructure. Only entries with a rating are listed.",
+    "search": "Search technology",
+    "searchPlaceholder": "e.g. Spring, OpenShift, Python …",
+    "area": "Area",
+    "areaAll": "All",
+    "areaSoftware": "Software engineering",
+    "areaInfra": "Infrastructure",
+    "minLevel": "At least",
+    "result": "{count, plural, =0 {No entries} one {# entry} other {# entries}}",
+    "empty": "No matches. Adjust the search term or filters.",
+    "reset": "Reset filters",
+    "levelAria": "Proficiency {level} of 4",
+    "legendTitle": "Proficiency levels",
+    "level1": "Understands the fundamentals; needs support from others.",
+    "level2": "Good skills, works independently; support needed for hard problems. At least 2 years of practice.",
+    "level3": "At least 3 years of practical experience.",
+    "level4": "At least 5 years of practical experience.",
+    "back": "Back to overview"
+  },
+  "credentials": {
+    "title": "Certificates & methods",
+    "certificates": "Certificates",
+    "methods": "Product & methods"
   },
   "about": {
     "title": "About",
     "readMore": "More about me",
-    "photoAlt": "Comic portrait of Lasse Siemoneit"
+    "photoAlt": "Comic-style portrait of Lasse Siemoneit"
   },
   "activity": {
-    "title": "Activity",
-    "ariaSummary": "GitHub contributions, last 12 months",
-    "unavailable": "GitHub activity is currently unavailable."
-  },
-  "theme": {
-    "label": "Theme",
-    "system": "System",
-    "light": "Light",
-    "dark": "Dark"
+    "title": "GitHub activity",
+    "summary": "{count} contributions in the last 12 months"
   },
   "contact": {
     "title": "Contact",
-    "intro": "Let's work together — I'd love to hear from you.",
-    "email": "Email",
-    "github": "GitHub",
-    "linkedin": "LinkedIn",
+    "headline": "Let's talk about what you're building.",
+    "intro": "Product ownership, platform or software: I'm happy to hear from you.",
     "copyEmail": "Copy email",
-    "copied": "Copied!",
+    "copied": "Copied",
     "downloadCv": "Download CV",
-    "downloadCvAria": "Download CV (PDF, English)"
+    "downloadCvNote": "PDF, German"
   },
   "footer": {
     "copyright": "© {year} Lasse Siemoneit",
-    "legal": {
-      "label": "Legal",
-      "about": "About",
-      "impressum": "Legal Notice",
-      "datenschutz": "Privacy"
-    }
+    "legalLabel": "Legal",
+    "about": "About",
+    "impressum": "Legal notice",
+    "datenschutz": "Privacy"
   },
   "accessibility": {
     "skipToContent": "Skip to content"
@@ -76,13 +121,12 @@
     "role": "Role",
     "period": "Period",
     "stack": "Stack",
-    "backToProjects": "Back to projects",
-    "nextCaseStudy": "Next case study"
+    "backToProjects": "Back to projects"
   },
   "notFound": {
     "eyebrow": "Error 404",
     "title": "This page does not exist.",
-    "description": "The link may be outdated or the address may have been entered incorrectly.",
-    "backHome": "Back to the homepage"
+    "description": "The link may be outdated or the address was mistyped.",
+    "backHome": "Back to home"
   }
 }

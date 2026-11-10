@@ -48,15 +48,15 @@ type GraphQlResponse = {
 };
 
 /**
- * Build-time-only GitHub contribution calendar fetch (TECH-08 / CTX-04).
+ * Build-time-only GitHub contribution calendar fetch.
  *
  * Reads the unprefixed, server-only `GITHUB_TOKEN` env var — it must never
- * carry the client-exposed env-var prefix Next.js bundles into the browser
- * — and POSTs to the GitHub GraphQL API with `next.revalidate: 86400`
- * (daily ISR), so the shipped page never makes a runtime request to
- * GitHub. Every failure mode (missing token, non-OK response, thrown
- * error) resolves to `null` so callers can render a graceful static
- * fallback instead of a broken grid.
+ * carry the client-exposed env-var prefix Next.js bundles into the browser.
+ * The request is cached without revalidation, so it runs once while the
+ * page is prerendered and the deployed site never calls GitHub at runtime;
+ * the calendar is as fresh as the last deploy. Every failure mode (missing
+ * token, non-OK response, thrown error) resolves to `null` so callers can
+ * leave the section out.
  */
 export async function getContributionCalendar(
   login: string,
@@ -75,7 +75,7 @@ export async function getContributionCalendar(
         query: CONTRIBUTIONS_QUERY,
         variables: { login },
       }),
-      next: { revalidate: 86400, tags: ["github-contributions"] },
+      cache: "force-cache",
     });
 
     if (!res.ok) return null;
@@ -92,7 +92,7 @@ export async function getContributionCalendar(
 /**
  * Derive a GitHub login from a profile URL (e.g.
  * "https://github.com/lsiem" -> "lsiem") so callers never hardcode it —
- * the login always tracks `getContact(locale).github`.
+ * the login always tracks the `github` URL in the contact content.
  */
 export function githubLoginFromUrl(githubUrl: string): string {
   const segments = githubUrl.split("/").filter(Boolean);

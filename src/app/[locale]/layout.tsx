@@ -1,90 +1,27 @@
-import type React from "react";
+import type { ReactNode } from "react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
-import { notFound } from "next/navigation";
-import type { Viewport } from "next";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { MotionProvider } from "@/components/motion/motion-provider";
-import { SiteSectionNav } from "@/components/site-section-nav";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { CopyrightNotice } from "@/components/copyright-notice";
+import { SiteHeader } from "@/components/site-header";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { siteMetadataBase } from "@/lib/seo";
+import { THEME_COLORS } from "@/lib/theme";
 import "../globals.css";
 
-// System theme-color meta (TECH-04) — matches the --background token in
-// globals.css for each media case. The ThemeToggle client control updates
-// this meta live when the visitor picks an explicit Light/Dark override.
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafaf9" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
-};
+export const metadata: Metadata = { metadataBase: siteMetadataBase };
 
-// No-flash inline theme script (TECH-04 / D-B, RESEARCH §3). A static
-// string literal — no interpolation of request/user data, no external
-// call (DSGVO) — so it is XSS-safe and safe to run before hydration. Reads
-// localStorage key "theme"; if "light"/"dark", sets documentElement's
-// data-theme attribute before first paint so there is no flash. System
-// (unset/anything else) leaves data-theme unset so the
-// @media(prefers-color-scheme) block in globals.css governs.
-const NO_FLASH_THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-// preload:false (Phase-4 launch hardening, RESEARCH lever 3 — critical-window
-// contention): the mono face renders only small eyebrow/label text, but its
-// ~30KB preload sat in the simulated LCP critical window alongside the body
-// and display faces. Dropping the preload changes delivery timing only — the
-// rendered face is identical after load, with next/font's metric-matched
-// fallback covering the gap (same pattern the display face used pre-Phase-4).
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  preload: false,
-});
-
-// Display face (D-03) — Bricolage Grotesque, self-hosted via next/font/local
-// (zero runtime Google Fonts call, DSGVO-clean per AGENTS.md). Phase-4 launch
-// hardening (D-11/D-12, levers A+B): the served woff2 is a build-time subset
-// (scripts/subset-bricolage.ts, wired into `prebuild`) of the OFL-licensed
-// weight-700 latin file committed alongside it — the glyph set is the computed
-// union of every display-face string site-wide (hero H1, case-study/prose H1
-// titles, message catalogs; both locales) plus a printable-ASCII + umlaut
-// safety floor. Switching to next/font/local unlocks `preload: true` on this
-// render-path file — display: "swap" retained (locked D-03; "optional" is
-// forbidden without explicit user sign-off), and next/font's default
-// adjustFontFallback ("Arial") keeps the metric-matched fallback so the swap
-// never re-elects the LCP candidate. --font-bricolage maps to the Tailwind
-// `font-display` utility via @theme in globals.css.
-//
-// LCP MEASUREMENTS (local LHCI, production build, slow-4G + 4x-CPU simulation,
-// median of 3 runs, 2500ms TECH-01 gate):
-//   before (next/font/google, preload:false): /de 2909ms, /en 2758ms
-//     — LCP element: a Geist paragraph re-timed by the H1 font-swap
-//     (RESEARCH Pitfall 5 / finding #1: the display face adds a fixed ~300ms).
-//   lever A (next/font/local full latin 22KB, preload:true): /de 2609ms,
-//     /en green — /de still ~110ms over the gate.
-//   levers A+B (subset ~15KB / 115 chars, preload:true): /de 2693–2770ms,
-//     /en 2609–2614ms — both still over the local gate, so the lighthouserc
-//     LCP assertion stays "warn" (exception path, user-approved; the
-//     display:"optional" escalation stays unapplied). Production (Vercel +
-//     CrUX) remains the calibrated source of truth for the D-11 gate —
-//     re-checked end-of-phase in 04-05.
-const bricolageGrotesque = localFont({
-  src: "../fonts/bricolage-grotesque-subset-700.woff2",
-  variable: "--font-bricolage",
-  weight: "700",
-  display: "swap",
-  preload: true,
-});
+// Applies a stored theme choice before first paint and sets the browser
+// chrome colour to match. The `theme-color` meta is created here instead of
+// via the `viewport` export: React would re-insert its own tag next to one
+// this script had changed. Static string, no user input, no external request.
+const THEME_SCRIPT = `(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}var m=document.createElement('meta');m.name='theme-color';m.content=t==='light'?'${THEME_COLORS.light}':'${THEME_COLORS.dark}';document.head.appendChild(m);})();`;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -94,118 +31,52 @@ export default async function LocaleLayout({
   children,
   params,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  // REQUIRED for static rendering — every layout AND page under [locale]
   setRequestLocale(locale);
   const t = await getTranslations("footer");
-  const nav = await getTranslations("nav");
-  const accessibility = await getTranslations("accessibility");
+  const a11y = await getTranslations("accessibility");
 
-  // Next.js 16 consumes data-scroll-behavior during route transitions to
-  // temporarily disable CSS smooth scrolling and avoid a jarring double scroll.
-  // See node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md.
   return (
     <html
       lang={locale}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${bricolageGrotesque.variable} h-full antialiased`}
+      className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
-        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME_SCRIPT }} />
+      <body className="flex min-h-dvh flex-col font-sans">
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <NextIntlClientProvider>
           <a
             href="#main-content"
-            className="fixed left-4 top-4 z-50 -translate-y-24 rounded-full bg-foreground px-4 py-2 font-mono text-sm text-background transition-transform focus:translate-y-0"
+            className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-accent px-4 py-2 font-mono text-sm text-accent-fg transition-transform focus:translate-y-0"
           >
-            {accessibility("skipToContent")}
+            {a11y("skipToContent")}
           </a>
-          <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
-            {/*
-              Explicit flex-1 spacer keeps the control cluster on the trailing
-              edge even when SiteSectionNav is display:none below lg. A bare
-              CSS grid drops display:none children from placement, which used
-              to pack Kontakt against LS. on mobile.
-            */}
-            <div className="mx-auto flex w-full max-w-[1440px] items-center gap-3 px-6 py-4">
-              <Link
-                href="/"
-                aria-label={`Lasse Siemoneit — ${nav("home")}`}
-                className="shrink-0 font-mono text-sm font-semibold tracking-tight transition-opacity hover:opacity-70"
-              >
-                LS<span className="text-accent">.</span>
-              </Link>
-              <div className="flex min-w-0 flex-1 justify-center">
-                <SiteSectionNav />
-              </div>
-              <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-                <Link
-                  href="/#contact"
-                  className="font-mono text-xs text-muted transition-colors hover:text-foreground"
-                >
-                  {nav("contact")}
-                </Link>
-                <ThemeToggle />
-                <LocaleSwitcher />
-              </div>
-            </div>
-          </header>
-          {/*
-            MotionProvider wraps only {children} (the page body), not the sticky
-            header/footer chrome (finding #8). Lenis runs in `root` mode, so it
-            governs the whole window scroll regardless of this DOM nesting —
-            keeping the header outside the Lenis subtree avoids re-scoping the
-            sticky header while hash-anchor nav (#career etc.) still lands
-            correctly under Lenis on desktop. LenisRef ref shape confirmed via
-            node_modules/lenis/dist/lenis-react.d.ts.
-          */}
-          <MotionProvider>
-            <div className="flex flex-1 flex-col">{children}</div>
-          </MotionProvider>
-          <footer className="border-t border-border/60">
-            <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-              <span>{t("copyright", { year: new Date().getFullYear() })}</span>
-              <nav aria-label={t("legal.label")}>
+          <SiteHeader />
+          <div className="flex flex-1 flex-col">{children}</div>
+          <footer className="border-t border-border">
+            <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 font-mono text-xs text-faint sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <CopyrightNotice buildYear={new Date().getFullYear()} />
+              <nav aria-label={t("legalLabel")}>
                 <ul className="flex flex-wrap gap-x-5 gap-y-2">
-                  <li>
-                    <Link
-                      href="/about"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      {t("legal.about")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/impressum"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      {t("legal.impressum")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/datenschutz"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      {t("legal.datenschutz")}
-                    </Link>
-                  </li>
+                  {(["about", "impressum", "datenschutz"] as const).map((slug) => (
+                    <li key={slug}>
+                      <Link href={`/${slug}`} className="transition-colors hover:text-fg">
+                        {t(slug)}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </nav>
             </div>
           </footer>
         </NextIntlClientProvider>
-        {/* Cookieless, GDPR-friendly analytics (TECH-06, D-10) — no consent banner.
-            Gated on the Vercel build env: off-platform (CI LHCI, local `next start`)
-            the loaders 404 and their HTML error pages count as ~1.5KB of script
-            transfer against the TECH-01 eager budget — pure measurement junk. */}
         {process.env.VERCEL === "1" && (
           <>
             <Analytics />

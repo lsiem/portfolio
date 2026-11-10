@@ -1,15 +1,13 @@
 import type { ContactInfo } from "../shared/types";
 
-/**
- * Contact (EN) — role-relevant facts only. No phone, birthdate or address
- * (public repo, data minimization — the shared contract has no such fields).
- * The role reflects the broader D-02 arc (engineering + product ownership).
- */
+/** Contact (EN): role-relevant facts only, no phone, no address. */
 export const contact = {
   name: "Lasse Siemoneit",
-  role: "Software Engineer & Product Owner",
+  role: "Product Owner & Software Engineer",
   valueProp:
-    "I bring together software engineering, platform operations, and product ownership to build robust, privacy-compliant systems that hold up in real-world operation.",
+    "I bring together software engineering, platform operations and product ownership to build robust, privacy-compliant systems that hold up in real-world operation.",
+  location: "Bremen area · Remote / Hybrid",
+  status: "Product Owner Agent Services @ ITSC",
   email: "info@lsiem.de",
   github: "https://github.com/lsiem",
   linkedin: "https://www.linkedin.com/in/lasse-siemoneit/",

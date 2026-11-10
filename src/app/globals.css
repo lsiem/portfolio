@@ -1,220 +1,280 @@
 @import "tailwindcss";
 
+/* Dark is the default; [data-theme="light"] is the opt-in override. */
 :root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
-  --muted: #6b6560;
-  --accent: #c2410c;
-  --border: #e7e5e4;
+  color-scheme: dark;
+  --bg: #07090b;
+  --surface: #0c1013;
+  --surface-2: #12181c;
+  --border: #1b242a;
+  --border-strong: #2b3941;
+  --fg: #e7eef1;
+  --muted: #8b9ba4;
+  --faint: #5d6c75;
+  --accent: #35d6c6;
+  --accent-soft: rgb(53 214 198 / 0.12);
+  --accent-fg: #03201d;
+  --grid-line: rgb(255 255 255 / 0.045);
+  --glow: rgb(53 214 198 / 0.16);
+  --ok: #4ade80;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f8f8;
+  --surface: #ffffff;
+  --surface-2: #edf2f3;
+  --border: #d9e2e5;
+  --border-strong: #b9c7cc;
+  --fg: #0e1a1f;
+  --muted: #4d5f68;
+  --faint: #7a8a92;
+  --accent: #0d6876;
+  --accent-soft: rgb(13 104 118 / 0.1);
+  --accent-fg: #ffffff;
+  --grid-line: rgb(14 26 31 / 0.06);
+  --glow: rgb(13 104 118 / 0.14);
+  --ok: #15803d;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  /*
-   * Display face (D-03) — Bricolage Grotesque, self-hosted via next/font in
-   * layout.tsx (variable name --font-bricolage). Mirrors the Geist mapping
-   * above (--font-geist-sans -> --font-sans): the next/font variable is the
-   * source, --font-display is the Tailwind-facing token, so a `font-display`
-   * utility exists for the hero H1. NOT a circular --font-display -> --font-display
-   * self-binding (finding #7).
-   */
-  --font-display: var(--font-bricolage);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-ok: var(--ok);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
 }
 
-/*
- * Motion tokens (D-08) — the SINGLE source of truth for all animation
- * durations/easings/distances/staggers. globals.css holds the canonical
- * values; src/lib/motion-tokens.ts only READS them (via getComputedStyle) and
- * converts to GSAP-friendly numbers. Values encode the locked medium/expressive
- * intensity (D-10): noticeably animated but disciplined, never spectacle.
- *
- * These are consumed by GSAP through getComputedStyle, NOT by Tailwind
- * utilities, so they are deliberately NOT mirrored into `@theme inline`
- * (UI-SPEC "pick one source of truth" — do not duplicate the values).
- *
- * All motion animates transform/opacity only (compositor-friendly, project
- * performance rules) — never width/height/top/left/margin/padding.
- */
-:root {
-  /* Durations (ms) */
-  --motion-duration-fast: 150ms; /* hover/focus/active micro-transitions */
-  --motion-duration-base: 400ms; /* standard reveal-on-enter */
-  --motion-duration-slow: 800ms; /* hero intro beats, section transitions */
-  --motion-duration-chapter: 1200ms; /* ITSC multi-beat sub-sequence (D-06) */
-
-  /* Easings (cubic-bezier) */
-  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out entrance/reveal default */
-  --motion-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* section/route transitions */
-  --motion-ease-magnetic: cubic-bezier(0.33, 1, 0.68, 1); /* magnetic pull + snap-back */
-
-  /* Distances (px) */
-  --motion-distance-sm: 8px; /* hover micro-lift */
-  --motion-distance-md: 24px; /* reveal-on-enter slide offset */
-  --motion-distance-lg: 48px; /* chapter-level offset (ITSC sub-scene) */
-
-  /* Staggers (ms) */
-  --motion-stagger-char: 18ms; /* split-text char-by-char */
-  --motion-stagger-word: 40ms; /* split-text word-by-word */
-  --motion-stagger-list: 60ms; /* list/card reveal (career roles, chips, bento) */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --muted: #8f8a85;
-    --accent: #fb923c;
-    --border: #262626;
-  }
-}
-
-/*
- * Explicit theme override (TECH-04 / D-B). An attribute selector on :root
- * has higher specificity than the plain `:root` media-query block above, so
- * a user's explicit Light/Dark choice always wins over the System default.
- * When data-theme is unset (System), the @media block above governs.
- */
-:root[data-theme="light"] {
-  --background: #fafaf9;
-  --foreground: #1c1917;
-  --muted: #6b6560;
-  --accent: #c2410c;
-  --border: #e7e5e4;
-}
-
-:root[data-theme="dark"] {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --muted: #8f8a85;
-  --accent: #fb923c;
-  --border: #262626;
-}
-
-/*
- * No `@custom-variant dark` is registered: every surface in this codebase
- * reads color via the `--background`/`--foreground`/`--muted`/`--accent`/
- * `--border` CSS custom properties (through `@theme inline` above), so
- * flipping those variables via the :root[data-theme] overrides already
- * re-themes the whole page. No `dark:`-prefixed Tailwind utility exists in
- * the codebase (verified via grep) — the token-only approach from
- * RESEARCH §3 fully covers this design. Register `@custom-variant dark`
- * only if a `dark:` utility ever becomes genuinely necessary.
- */
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-/*
- * Lenis smooth-scroll collision fix (D-09, finding #2). The @media block above
- * enables NATIVE smooth scroll, which double-smooths and input-fights Lenis when
- * Lenis is driving. lenis/react adds the `lenis` class to <html> while active,
- * so scoping scroll-behavior:auto under html.lenis hands scrolling entirely to
- * Lenis on the motion path, while the reduced-motion / no-Lenis path keeps the
- * native smooth scroll above. The two scroll systems must never run at once.
- */
-html.lenis {
-  scroll-behavior: auto;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  background: var(--bg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--background);
+  color: var(--accent-fg);
 }
 
-/*
- * Global focus-visible ring (TECH-03) — every interactive element gets a
- * visible 2px accent ring with a 2px offset so it clears filled surfaces
- * (e.g. the accent-filled CV download button). Never removed without this
- * replacement.
- */
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-/*
- * Designed hover/focus/active states (D-11.3, WOW-03). State changes are instant
- * (accessible); only the TRANSITION animation is gated under
- * prefers-reduced-motion, following the scroll-behavior precedent above. Colors
- * are token-backed only (no new palette, D-02); accent budget is untouched (the
- * tech-chip hover uses a foreground tint, not accent).
- */
-.chip:hover {
-  border-color: var(--foreground);
-  background: color-mix(in oklab, var(--foreground) 5%, transparent);
+/* Fine engineering grid that fades out towards the edges. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 30%, transparent 85%);
+}
+
+.bg-glow {
+  background: radial-gradient(
+    ellipse 60% 50% at 70% 0%,
+    var(--glow),
+    transparent 70%
+  );
+}
+
+/* Panel: 1px frame that lights up on hover. */
+.panel {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+a.panel:hover,
+.panel-hover:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  box-shadow:
+    0 0 0 1px var(--accent-soft),
+    0 12px 40px -18px var(--glow);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .chip {
-    transition:
-      border-color var(--motion-duration-fast),
-      background-color var(--motion-duration-fast);
+  .status-dot {
+    animation: pulse-dot 2.4s ease-in-out infinite;
   }
-
-  /* CV download button press feedback (D-11.3). */
-  .cv-button {
-    transition:
-      transform var(--motion-duration-fast),
-      background-color var(--motion-duration-fast);
+  .caret {
+    animation: blink 1.1s steps(1) infinite;
   }
-
-  .cv-button:active {
-    transform: scale(0.98);
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  /* Scroll-driven reveal: pure CSS, content stays visible where unsupported. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
   }
 }
 
-/*
- * Signature photo treatment (D-16) — a 5:7 engineered portrait frame with a
- * restrained duotone. The box reserves its space via aspect-ratio + fixed width
- * + a placeholder background so the image cannot shift layout.
- * The four L-shaped coordinate corner ticks are a decorative aria-hidden inline
- * SVG overlay rendered in the JSX (cleaner than pseudo-element corner hacks).
- * Token-only colors (frame = --border; ticks = --muted, accent budget untouched).
- */
-.photo-frame {
-  position: relative;
-  width: 160px;
-  aspect-ratio: 5 / 7;
-  overflow: hidden;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Long-form MDX (case studies, about, legal). */
+.prose {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.prose > * + * {
+  margin-top: 1.1rem;
+}
+.prose h2 {
+  margin-top: 2.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--fg);
+}
+.prose h2:first-child {
+  margin-top: 0;
+}
+.prose h3 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+.prose strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose li + li {
+  margin-top: 0.4rem;
+}
+.prose li::marker {
+  color: var(--accent);
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  background: transparent;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--fg);
 }
-
-@media (min-width: 768px) {
-  .photo-frame {
-    width: 200px;
-  }
+.prose blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 1rem;
+  color: var(--fg);
 }
-
-.photo-frame img {
+.prose table {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 12%;
-  filter: grayscale(20%) contrast(105%);
+  border-collapse: collapse;
+  font-size: 0.9rem;
 }
-
-.hero-readability-scrim {
-  background: linear-gradient(
-    90deg,
-    var(--background) 0%,
-    color-mix(in oklab, var(--background) 88%, transparent) 42%,
-    transparent 68%
-  );
+.prose th,
+.prose td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  text-align: left;
 }

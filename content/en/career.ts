@@ -1,86 +1,83 @@
 import type { CareerEntry } from "../shared/types";
 
-/**
- * Career (EN) — English adaptation of the final German text (D-05), written
- * for international tech leads rather than translated literally, and kept in
- * lock-step with content/de/career.ts (I18N-02). Same structure, satisfies
- * the shared contract so tsc is the parity check.
- *
- * D-02: the ITSC station models the role progression Systems Administrator
- * (OpenShift) → Software Engineering → Product Owner of an internal AI
- * assistant. D-03: internal system names, roadmap dates and model names stay
- * abstracted (public repo).
- */
+/** Career (EN). Source: CV as of 11/2026, kept in step with content/de/career.ts. */
 
 export const careerIntro =
-  "My path started at 16 as a consultant in a start-up. For over five years I have worked as a full-stack developer and in the operation of digital infrastructure — from the first draft through implementation to running it in production. My focus is planning and delivering software projects and container platforms.";
+  "Self-taught software engineer with more than five years of experience along the whole chain: as a full-stack developer and CTO I took custom software from idea to production, as a systems administrator I ran container platforms for public health insurers – today I am a product owner for AI agents. I make architecture decisions from operational reality: what can actually be run, does it keep the privacy promise, and where is complexity worth it?";
 
 export const career = [
   {
     slug: "itsc",
     org: "ITSC GmbH",
     orgUrl: "https://www.itsc.de",
-    location: "Hannover, Remote",
+    location: "Hanover · Remote",
     from: "2024-06",
     to: null,
-    intro:
-      "IT service provider for public health insurers. Inside ITSC my role has grown from platform operations through software engineering to product ownership of an internal AI assistant.",
     roles: [
       {
-        title: "Systems Administrator",
-        from: "2024-06",
-        to: null,
-        description:
-          "Operating and optimizing the container platform of public health insurers: OpenShift/Kubernetes clusters, Linux servers, networks and microservices running in cluster mode.",
-      },
-      {
-        title: "Software Engineering",
-        from: null,
-        to: null,
-        description:
-          "Moving from platform operations into software engineering — building internal applications and integrations on top of the existing cluster infrastructure.",
-      },
-      {
-        title: "Product Owner of an internal AI assistant",
+        title: "Product Owner Agent Services",
         from: "2026-04",
         to: null,
-        description:
-          "Product ownership for an internal AI assistant: multi-agent architecture, MCP-based tool calling instead of classic RAG, EU data residency and GDPR compliance, plus Teams integration. Prioritization, architecture decisions and trade-offs from a product perspective.",
+        points: [
+          "End-to-end product ownership for the internal AI assistant ELIA and AI agents that relieve teams of ticket handling, knowledge research and routine tasks",
+          "Roadmap, release planning and acceptance criteria; prioritizing requirements from support, operations and business units",
+          "Architecture guardrails: multi-agent architecture, MCP-based tool calling instead of classic RAG, EU data residency and GDPR compliance",
+          "Enablement through roadshows, trainings and best practices; coordination of security and data protection",
+        ],
+        stack: [
+          "AI agents",
+          "MCP",
+          "RPA",
+          "Low-/no-code",
+          "Azure DevOps",
+          "MS Teams",
+          "Confluence",
+        ],
       },
-    ],
-    techStack: [
-      "OpenShift",
-      "Kubernetes",
-      "Linux",
-      "Docker",
-      "Microservices",
-      "Multi-agent architecture",
-      "MCP",
+      {
+        title: "Systems Administrator & Software Engineer",
+        from: "2024-06",
+        to: "2026-04",
+        points: [
+          "Operating and optimizing the container platform of public health insurers: OpenShift/Kubernetes clusters, Linux servers, networks and microservices",
+          "Transition into software engineering: building internal applications and integrations on the existing cluster infrastructure",
+        ],
+        stack: [
+          "OpenShift",
+          "Kubernetes",
+          "Podman/Docker",
+          "Linux",
+          "Ansible",
+          "Bash",
+        ],
+      },
     ],
   },
   {
     slug: "just-relate",
-    org: "Just Relate Group GmbH",
+    org: "JustRelate Group GmbH",
     orgUrl: "https://www.justrelate.de",
-    location: "Berlin, Remote",
+    location: "Berlin · Remote",
     from: "2024-01",
-    to: null,
+    to: "2024-06",
     roles: [
       {
         title: "Software Engineer",
         from: "2024-01",
-        to: null,
-        description:
-          "Customizing the Pisa Sales CRM for individual client requirements. Initiated and implemented an AI integration to raise CRM efficiency and lay the groundwork for future product connections.",
+        to: "2024-06",
+        points: [
+          "Customizing the Pisa Sales CRM for individual client requirements",
+          "Initiated and implemented an AI integration to raise CRM efficiency – the basis for further product integrations",
+        ],
+        stack: ["Java", "Spring Boot", "REST APIs", "SQL"],
       },
     ],
-    techStack: ["Java", "Spring Boot", "CRM", "AI integration", "REST APIs"],
   },
   {
     slug: "vidama",
     org: "Vidama GmbH",
     orgUrl: "https://www.vidama.de",
-    location: "Oldenburg, Remote",
+    location: "Oldenburg",
     from: "2021-12",
     to: "2024-01",
     roles: [
@@ -88,17 +85,26 @@ export const career = [
         title: "Chief Technology Officer",
         from: "2021-12",
         to: "2024-01",
-        description:
-          "As the sole developer, responsible for all custom software development — from planning through implementation to maintenance of complex client solutions such as the sales-partner media library for EWE and osnatel.",
+        points: [
+          "As the sole developer, responsible for all custom software development – planning, architecture, implementation, operations and maintenance",
+          "Enterprise solutions for EWE and osnatel (sales-partner media library), digital signage (Disy-One) and live media control for Handball Bundesliga clubs",
+        ],
+        stack: [
+          "Java",
+          "Spring Boot",
+          "Vaadin",
+          "Python (Flask, FastAPI)",
+          "PostgreSQL",
+          "Docker",
+          "CI/CD",
+        ],
       },
     ],
-    techStack: ["Python", "Flask", "FastAPI", "Java", "Docker", "CI/CD"],
   },
   {
     slug: "freelance",
-    org: "Lasse Siemoneit",
-    orgUrl: "https://lsiem.de",
-    location: "Hatten, Remote",
+    org: "lsiem – Lasse Siemoneit",
+    location: "Self-employed · Remote",
     from: "2021-04",
     to: null,
     roles: [
@@ -106,17 +112,18 @@ export const career = [
         title: "Owner / Freelance Software Engineer",
         from: "2021-04",
         to: null,
-        description:
-          "Building tailored software solutions and advising on digital transformation. Strategic use of digital technology for process optimization and long-term competitiveness.",
+        points: [
+          "Building tailored software solutions (full-stack, cloud) and advising on digital transformation and process optimization",
+        ],
+        stack: ["Java", "Python", "TypeScript", "Azure", "Linux", "Azure DevOps"],
       },
     ],
-    techStack: ["Full-stack", "Java", "Python", "Cloud", "Consulting"],
   },
   {
     slug: "heinsohn",
     org: "Heinsohn IT Solutions GmbH",
     orgUrl: "https://www.heinsohn-it.com/",
-    location: "Westerstede, Remote",
+    location: "Westerstede · Remote",
     from: "2021-05",
     to: "2021-12",
     roles: [
@@ -124,10 +131,18 @@ export const career = [
         title: "Consultant / Software Engineer",
         from: "2021-05",
         to: "2021-12",
-        description:
-          "Advised clients on digitalization with Microsoft 365 as a Microsoft partner company. Delivered presentations on Teams and M365 products and built client-specific software with Azure interfaces.",
+        points: [
+          "Digitalization consulting and presentations on Microsoft 365 and Teams at a Microsoft partner",
+          "Building client-specific software with Azure interfaces",
+        ],
+        stack: [
+          "Java",
+          "Microsoft Azure",
+          "Microsoft 365",
+          "Azure DevOps",
+          "Windows Server",
+        ],
       },
     ],
-    techStack: ["Microsoft 365", "Azure", "Teams", "Consulting"],
   },
 ] satisfies CareerEntry[];

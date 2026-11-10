@@ -1,36 +1,92 @@
 {
+  "meta": {
+    "title": "Lasse Siemoneit – Product Owner & Software Engineer",
+    "skillsTitle": "Skill-Matrix",
+    "skillsDescription": "Alle bewerteten Technologien aus Softwareentwicklung und IT-Infrastruktur, durchsuchbar und nach Kenntnisgrad filterbar."
+  },
   "nav": {
     "home": "Start",
-    "sections": "Auf dieser Seite",
+    "label": "Hauptnavigation",
     "career": "Werdegang",
     "projects": "Projekte",
     "skills": "Fähigkeiten",
     "about": "Über mich",
-    "activity": "Aktivität",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "matrix": "Skill-Matrix"
   },
   "common": {
-    "languageSwitcher": "English",
-    "opensInNewTab": "öffnet in einem neuen Tab"
+    "switchLocale": "English",
+    "switchLocaleAria": "Switch to English",
+    "opensInNewTab": "öffnet in einem neuen Tab",
+    "present": "heute"
   },
-  "home": {
-    "eyebrow": "Portfolio",
-    "ctaLabel": "Weiterlesen",
-    "ctaCareer": "Werdegang",
-    "ctaContact": "Kontakt"
+  "theme": {
+    "toLight": "Helles Design aktivieren",
+    "toDark": "Dunkles Design aktivieren"
+  },
+  "hero": {
+    "ctaProjects": "Projekte ansehen",
+    "ctaCv": "Lebenslauf (PDF)",
+    "ctaContact": "Kontakt",
+    "terminalLabel": "Profil im Überblick",
+    "keyRole": "rolle",
+    "keyFocus": "fokus",
+    "keyLocation": "standort",
+    "keyExperience": "erfahrung",
+    "keyStatus": "status",
+    "focus": "KI-Agenten, Plattformbetrieb, Full-Stack",
+    "experience": "5+ Jahre",
+    "statYears": "Jahre Erfahrung",
+    "statProjects": "Projekte",
+    "statSkills": "bewertete Skills",
+    "statCerts": "Red-Hat-Zertifikate"
   },
   "career": {
     "title": "Werdegang",
-    "present": "Heute"
+    "stack": "Umfeld"
   },
   "projects": {
     "title": "Projekte",
+    "intro": "Vom Multi-Agenten-Assistenten bis zur Live-Mediensteuerung: Systeme, die im echten Betrieb laufen.",
     "visit": "Projekt besuchen",
-    "caseStudy": "Case Study lesen"
+    "caseStudy": "Case Study lesen",
+    "flagship": "Aktuelles Produkt"
   },
   "skills": {
     "title": "Fähigkeiten",
-    "years": "{years} Jahre"
+    "intro": "Kernfähigkeiten mit Erfahrung in Jahren. Die vollständige Matrix mit allen bewerteten Technologien gibt es separat.",
+    "years": "{years} J.",
+    "yearsAria": "{years, plural, one {# Jahr} other {# Jahre}} Erfahrung",
+    "matrixTitle": "Vollständige Skill-Matrix",
+    "matrixText": "{count} bewertete Einträge aus Softwareentwicklung und IT-Infrastruktur, durchsuchbar und nach Kenntnisgrad filterbar.",
+    "matrixCta": "Matrix öffnen"
+  },
+  "matrix": {
+    "eyebrow": "Skill-Matrix",
+    "title": "Alle Technologien, ehrlich bewertet",
+    "intro": "Grundlage sind zwei Selbsteinschätzungs-Matrizen für Softwareentwicklung und IT-Infrastruktur. Aufgeführt ist nur, was eine Bewertung hat.",
+    "search": "Technologie suchen",
+    "searchPlaceholder": "z. B. Spring, OpenShift, Python …",
+    "area": "Bereich",
+    "areaAll": "Alle",
+    "areaSoftware": "Softwareentwicklung",
+    "areaInfra": "Infrastruktur",
+    "minLevel": "Mindestens",
+    "result": "{count, plural, =0 {Keine Einträge} one {# Eintrag} other {# Einträge}}",
+    "empty": "Keine Treffer. Suchbegriff oder Filter anpassen.",
+    "reset": "Filter zurücksetzen",
+    "levelAria": "Kenntnisgrad {level} von 4",
+    "legendTitle": "Kenntnisgrade",
+    "level1": "Verständnis der grundlegenden Zusammenhänge, Unterstützung durch Dritte erforderlich.",
+    "level2": "Gute Fähigkeiten, selbstständiges Anwenden; Unterstützung bei schwierigen Fragestellungen. Mindestens 2 Jahre Praxis.",
+    "level3": "Mindestens 3 Jahre Praxiserfahrung.",
+    "level4": "Mindestens 5 Jahre Praxiserfahrung.",
+    "back": "Zurück zur Übersicht"
+  },
+  "credentials": {
+    "title": "Zertifikate & Methoden",
+    "certificates": "Zertifikate",
+    "methods": "Produkt & Methoden"
   },
   "about": {
     "title": "Über mich",
@@ -38,46 +94,34 @@
     "photoAlt": "Comic-Porträt von Lasse Siemoneit"
   },
   "activity": {
-    "title": "Aktivität",
-    "ariaSummary": "GitHub-Beiträge der letzten 12 Monate",
-    "unavailable": "GitHub-Aktivität derzeit nicht verfügbar."
-  },
-  "theme": {
-    "label": "Darstellung",
-    "system": "System",
-    "light": "Hell",
-    "dark": "Dunkel"
+    "title": "GitHub-Aktivität",
+    "summary": "{count} Beiträge in den letzten 12 Monaten"
   },
   "contact": {
     "title": "Kontakt",
-    "intro": "Lass uns zusammenarbeiten — ich freue mich über deine Nachricht.",
-    "email": "E-Mail",
-    "github": "GitHub",
-    "linkedin": "LinkedIn",
+    "headline": "Lass uns über dein Vorhaben sprechen.",
+    "intro": "Ob Produktverantwortung, Plattform oder Software: Ich freue mich über deine Nachricht.",
     "copyEmail": "E-Mail kopieren",
-    "copied": "Kopiert!",
+    "copied": "Kopiert",
     "downloadCv": "Lebenslauf herunterladen",
-    "downloadCvAria": "Lebenslauf herunterladen (PDF, Deutsch)"
+    "downloadCvNote": "PDF, Deutsch"
   },
   "footer": {
     "copyright": "© {year} Lasse Siemoneit",
-    "legal": {
-      "label": "Rechtliches",
-      "about": "Über mich",
-      "impressum": "Impressum",
-      "datenschutz": "Datenschutz"
-    }
+    "legalLabel": "Rechtliches",
+    "about": "Über mich",
+    "impressum": "Impressum",
+    "datenschutz": "Datenschutz"
   },
   "accessibility": {
     "skipToContent": "Zum Inhalt springen"
   },
   "caseStudy": {
-    "eyebrow": "Fallstudie",
+    "eyebrow": "Case Study",
     "role": "Rolle",
     "period": "Zeitraum",
     "stack": "Stack",
-    "backToProjects": "Zurück zu den Projekten",
-    "nextCaseStudy": "Nächste Case Study"
+    "backToProjects": "Zurück zu den Projekten"
   },
   "notFound": {
     "eyebrow": "Fehler 404",

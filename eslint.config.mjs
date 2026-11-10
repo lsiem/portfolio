@@ -17,8 +17,6 @@ const eslintConfig = defineConfig([
     // planning extracts, and the vendored Google Cloud SDK must be excluded
     // explicitly — otherwise `eslint` descends into them and lints files it
     // must not.
-    ".claude/**",
-    ".planning/**",
     "google-cloud-sdk/**",
     // content-collections build output — generated, regenerated each build.
     ".content-collections/**",
