@@ -5,8 +5,6 @@ node_modules
 .content-collections
 .git
 
-# Planning + internal material (never needed for the build)
-.planning
 .serena
 
 # Local tooling installs accidentally present in the working tree

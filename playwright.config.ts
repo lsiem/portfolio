@@ -1,63 +1,19 @@
-import { defineConfig, devices, type Project } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
-// D-14 launch verification (evals/launch/*.spec.ts) runs against a deployed
-// URL, never the local dev server. `pnpm test:launch` sets LAUNCH_ONLY=1 so
-// this config both (a) adds the `launch` project and (b) skips starting the
-// local webServer — the default `pnpm test` run never sees this project or
-// touches evals/launch at all.
-const isLaunchOnly = process.env.LAUNCH_ONLY === "1";
+const PORT = 3100;
 
-const projects: Project[] = [
-  {
-    name: "chromium",
-    use: { ...devices["Desktop Chrome"] },
-    // Never picked up by the default suite — launch specs hit a deployed URL.
-    testIgnore: ["**/launch/**"],
-  },
-];
-
-if (isLaunchOnly) {
-  projects.push({
-    name: "launch",
-    testDir: "./evals/launch",
-    use: {
-      ...devices["Desktop Chrome"],
-      baseURL: process.env.LAUNCH_URL ?? "https://lsiem.de",
-    },
-  });
-}
-
+// Smoke tests run against a production build (`pnpm build` first).
 export default defineConfig({
-  testDir: "./evals",
+  testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  // Launch runs (D-14) execute single-worker: the stopwatch metric models one
-  // external tester's real flow, and Lenis's rAF-driven scroll settle is
-  // starved under multi-worker CPU contention on the local runner (the same
-  // class of flake documented in 04-03/04-04 for evals/immersive.spec.ts).
-  workers: process.env.CI || isLaunchOnly ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",
-
-  use: {
-    baseURL: "http://localhost:3000",
-    trace: "on-first-retry",
+  use: { baseURL: `http://localhost:${PORT}` },
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  webServer: {
+    command: `node_modules/.bin/next start --port ${PORT}`,
+    url: `http://localhost:${PORT}/de`,
+    reuseExistingServer: !process.env.CI,
   },
-
-  projects,
-
-  webServer: isLaunchOnly
-    ? undefined
-    : {
-        // CI runs the evals against the PRODUCTION build, not the dev server:
-        // the workflow already ran `pnpm build` before the eval step, the
-        // 159/159-green evidence base in .planning/v1.0-MILESTONE-AUDIT.md was
-        // collected against `pnpm start`, and dev-mode on-demand compilation
-        // distorts the timing-sensitive specs. Locally `pnpm dev` stays the
-        // default so the suite is usable without a build first.
-        command: process.env.CI ? "pnpm start" : "pnpm dev",
-        url: "http://localhost:3000",
-        reuseExistingServer: !process.env.CI,
-        timeout: 120_000,
-      },
 });

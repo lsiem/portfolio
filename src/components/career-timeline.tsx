@@ -1,155 +1,76 @@
+import { getTranslations } from "next-intl/server";
+import { formatMonth } from "@/lib/content";
 import type { CareerEntry } from "../../content/shared/types";
-import { CareerSpine } from "@/components/motion/career-spine";
-import { Reveal } from "@/components/motion/reveal";
+import { ArrowUpRight } from "./icons";
 
-type CareerTimelineProps = {
-  entries: readonly CareerEntry[];
-  intro: string;
-  title: string;
-  presentLabel: string;
-  opensInNewTabLabel: string;
-};
+export async function CareerTimeline({ entries }: { entries: CareerEntry[] }) {
+  const t = await getTranslations("career");
+  const common = await getTranslations("common");
+  const period = (from: string, to: string | null) =>
+    `${formatMonth(from)} – ${to ? formatMonth(to) : common("present")}`;
 
-function formatMonth(value: string | null, present: string): string {
-  if (!value) return present;
-  const [year, month] = value.split("-");
-  if (!year || !month) return present;
-  return `${month}/${year}`;
-}
-
-export function CareerTimeline({
-  entries,
-  intro,
-  title,
-  presentLabel,
-  opensInNewTabLabel,
-}: CareerTimelineProps) {
   return (
-    <section
-      id="career"
-      aria-labelledby="career-heading"
-      className="mx-auto w-full max-w-[1440px] scroll-mt-24 px-6"
-    >
-      <div className="lg:grid lg:grid-cols-[5rem_minmax(0,46rem)] lg:gap-6">
-        <CareerSpine entries={entries} />
-        <div className="flex flex-col gap-6">
-          <h2
-            id="career-heading"
-            className="font-mono text-xs uppercase tracking-[0.25em] text-muted"
-          >
-            {title}
-          </h2>
-          <p className="max-w-2xl text-muted">{intro}</p>
-          <ol className="flex flex-col gap-8">
-            {entries.map((entry) => {
-              const isCenterpiece = entry.slug === "itsc";
-              const header = (
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-lg font-medium tracking-tight">
-                    {entry.orgUrl ? (
-                      <a
-                        href={entry.orgUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-accent"
-                      >
-                        {entry.org}
-                        <span className="sr-only">
-                          {" "}
-                          ({opensInNewTabLabel})
-                        </span>
-                      </a>
-                    ) : (
-                      entry.org
+    <ol className="relative space-y-6 before:absolute before:bottom-2 before:left-[7px] before:top-2 before:w-px before:bg-border md:before:left-[calc(11rem+7px)]">
+      {entries.map((entry) => (
+        <li key={entry.slug} className="reveal relative grid gap-3 pl-8 md:grid-cols-[11rem_1fr] md:gap-0 md:pl-0">
+          <span
+            aria-hidden="true"
+            className={`absolute left-0 top-1.5 size-[15px] rounded-full border-2 bg-bg md:left-[11rem] ${
+              entry.to === null ? "border-accent" : "border-border-strong"
+            }`}
+          />
+          <p className="font-mono text-xs text-muted md:pr-6 md:pt-1 md:text-right">
+            {period(entry.from, entry.to)}
+          </p>
+          <div className="panel p-5 sm:p-6 md:ml-10">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h3 className="text-lg font-semibold tracking-tight">
+                {entry.orgUrl ? (
+                  <a
+                    href={entry.orgUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 underline-offset-4 hover:text-accent hover:underline"
+                  >
+                    {entry.org}
+                    <ArrowUpRight className="text-faint" />
+                    <span className="sr-only">({common("opensInNewTab")})</span>
+                  </a>
+                ) : (
+                  entry.org
+                )}
+              </h3>
+              <p className="font-mono text-xs text-faint">{entry.location}</p>
+            </div>
+            <div className="mt-4 space-y-6">
+              {entry.roles.map((role) => (
+                <div key={role.title} className="border-l-2 border-accent/50 pl-4">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h4 className="font-medium text-accent">{role.title}</h4>
+                    {entry.roles.length > 1 && (
+                      <p className="font-mono text-xs text-muted">{period(role.from, role.to)}</p>
                     )}
-                  </h3>
-                  <p className="font-mono text-xs text-muted">
-                    {formatMonth(entry.from, presentLabel)} –{" "}
-                    {formatMonth(entry.to, presentLabel)}
-                    {entry.location ? ` · ${entry.location}` : ""}
-                  </p>
-                </div>
-              );
-              const techStack =
-                entry.techStack.length > 0 ? (
-                  <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted">
-                    {entry.techStack.map((tech) => (
-                      <li
-                        key={tech}
-                        className="chip rounded border border-border px-2 py-0.5"
-                      >
-                        {tech}
+                  </div>
+                  <ul className="mt-2 space-y-1.5 text-[15px] leading-relaxed text-muted">
+                    {role.points.map((point) => (
+                      <li key={point} className="relative pl-4 before:absolute before:left-0 before:top-[0.7em] before:h-px before:w-2 before:bg-faint">
+                        {point}
                       </li>
                     ))}
                   </ul>
-                ) : null;
-
-              if (isCenterpiece) {
-                return (
-                  <li key={entry.slug} className="flex flex-col gap-3">
-                    <Reveal className="flex flex-col gap-3">
-                      {header}
-                      {entry.intro ? (
-                        <p className="text-muted">{entry.intro}</p>
-                      ) : null}
-                    </Reveal>
-                    <ol className="flex flex-col gap-3 border-l border-border pl-4">
-                      {entry.roles.map((role, index) => (
-                        <li key={`${entry.slug}-${index}`}>
-                          <Reveal emphasis className="flex flex-col gap-1">
-                            <p className="font-medium">
-                              {role.title}
-                              <span className="ml-2 font-mono text-xs text-muted">
-                                {formatMonth(role.from, presentLabel)} –{" "}
-                                {formatMonth(role.to, presentLabel)}
-                              </span>
-                            </p>
-                            <p className="text-sm text-muted">
-                              {role.description}
-                            </p>
-                          </Reveal>
-                        </li>
-                      ))}
-                    </ol>
-                    {techStack ? <Reveal>{techStack}</Reveal> : null}
-                  </li>
-                );
-              }
-
-              return (
-                <li key={entry.slug} className="flex flex-col gap-3">
-                  <Reveal className="flex flex-col gap-3">
-                    {header}
-                    {entry.intro ? (
-                      <p className="text-muted">{entry.intro}</p>
-                    ) : null}
-                    <ol className="flex flex-col gap-3 border-l border-border pl-4">
-                      {entry.roles.map((role, index) => (
-                        <li
-                          key={`${entry.slug}-${index}`}
-                          className="flex flex-col gap-1"
-                        >
-                          <p className="font-medium">
-                            {role.title}
-                            <span className="ml-2 font-mono text-xs text-muted">
-                              {formatMonth(role.from, presentLabel)} –{" "}
-                              {formatMonth(role.to, presentLabel)}
-                            </span>
-                          </p>
-                          <p className="text-sm text-muted">
-                            {role.description}
-                          </p>
-                        </li>
-                      ))}
-                    </ol>
-                    {techStack}
-                  </Reveal>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </div>
-    </section>
+                  <ul aria-label={t("stack")} className="mt-3 flex flex-wrap gap-1.5">
+                    {role.stack.map((item) => (
+                      <li key={item} className="chip">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }

@@ -1,47 +1,22 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { getContact } from "@/lib/content";
 import { routing } from "@/i18n/routing";
+import { getContent } from "@/lib/content";
 
-// Image metadata — file convention auto-emits og:image/twitter:image tags.
-export const alt = "Lasse Siemoneit — Portfolio";
+export const alt = "Lasse Siemoneit – Product Owner & Software Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** Prerender both locales at build — no request-time API, no third-party fetch. */
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-// Card tokens mirror src/app/globals.css light theme (:root) — ImageResponse
-// (Satori) cannot read CSS custom properties, so the values are duplicated
-// here as static hex literals rather than through the design-token layer.
-const BACKGROUND = "#fafaf9";
-const FOREGROUND = "#1c1917";
-const MUTED = "#6b6560";
-const ACCENT = "#c2410c";
-
-type Props = { params: Promise<{ locale: string }> };
-
-export default async function Image({ params }: Props) {
+export default async function OpenGraphImage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
-  const contact = getContact(locale);
-
-  const [geistSemiBold, geistMono] = await Promise.all([
-    readFile(
-      join(
-        process.cwd(),
-        "node_modules/geist/dist/fonts/geist-sans/Geist-SemiBold.ttf",
-      ),
-    ),
-    readFile(
-      join(
-        process.cwd(),
-        "node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.ttf",
-      ),
-    ),
-  ]);
+  const { contact } = getContent(locale);
 
   return new ImageResponse(
     (
@@ -52,75 +27,27 @@ export default async function Image({ params }: Props) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: BACKGROUND,
-          padding: "80px",
+          padding: 72,
+          background: "#07090b",
+          backgroundImage:
+            "radial-gradient(ellipse at 80% 0%, rgba(53,214,198,0.22), transparent 60%)",
+          color: "#e7eef1",
         }}
       >
-        <p
-          style={{
-            fontFamily: "GeistMono",
-            fontSize: 24,
-            letterSpacing: 6,
-            textTransform: "uppercase",
-            color: MUTED,
-            margin: 0,
-          }}
-        >
-          Portfolio
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <p
-            style={{
-              fontFamily: "Geist",
-              fontWeight: 600,
-              fontSize: 96,
-              color: FOREGROUND,
-              margin: 0,
-              lineHeight: 1.05,
-            }}
-          >
+        <div style={{ display: "flex", fontSize: 28, color: "#35d6c6" }}>~/lsiem</div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", fontSize: 96, fontWeight: 700, letterSpacing: -4 }}>
             {contact.name}
-          </p>
-          <p
-            style={{
-              fontFamily: "GeistMono",
-              fontSize: 32,
-              color: MUTED,
-              margin: 0,
-            }}
-          >
+          </div>
+          <div style={{ display: "flex", marginTop: 16, fontSize: 36, color: "#35d6c6" }}>
             {contact.role}
-          </p>
+          </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-          }}
-        >
-          <div style={{ width: 64, height: 4, background: ACCENT }} />
-          <p
-            style={{
-              fontFamily: "GeistMono",
-              fontSize: 20,
-              textTransform: "uppercase",
-              letterSpacing: 4,
-              color: MUTED,
-              margin: 0,
-            }}
-          >
-            {locale}
-          </p>
+        <div style={{ display: "flex", fontSize: 26, color: "#8b9ba4" }}>
+          {contact.location} · lsiem.de
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        { name: "Geist", data: geistSemiBold, weight: 600, style: "normal" },
-        { name: "GeistMono", data: geistMono, weight: 400, style: "normal" },
-      ],
-    },
+    size,
   );
 }

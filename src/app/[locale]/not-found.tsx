@@ -8,21 +8,20 @@ export default async function NotFound() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-6 py-24 sm:py-32"
+      className="relative isolate flex flex-1 items-center outline-none"
     >
-      <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
-        {t("eyebrow")}
-      </p>
-      <h1 className="font-display text-[clamp(2.5rem,2rem+4vw,5rem)] leading-tight tracking-tight">
-        {t("title")}
-      </h1>
-      <p className="max-w-xl text-lg text-muted">{t("description")}</p>
-      <Link
-        href="/"
-        className="mt-2 w-fit rounded-full bg-foreground px-5 py-3 font-mono text-sm text-background transition-opacity hover:opacity-80"
-      >
-        ← {t("backHome")}
-      </Link>
+      <div aria-hidden="true" className="bg-grid absolute inset-0 -z-10" />
+      <div className="mx-auto w-full max-w-3xl px-4 py-24 sm:px-6">
+        <p className="eyebrow">{t("eyebrow")}</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">{t("title")}</h1>
+        <p className="mt-4 text-lg text-muted">{t("description")}</p>
+        <Link
+          href="/"
+          className="mt-8 inline-flex h-11 items-center rounded-md bg-accent px-5 text-sm font-medium text-accent-fg"
+        >
+          {t("backHome")}
+        </Link>
+      </div>
     </main>
   );
 }

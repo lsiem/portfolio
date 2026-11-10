@@ -25,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const caseStudyPaths = getCaseStudies(routing.defaultLocale).map(
     (caseStudy) => `/case-studies/${caseStudy.slug}`,
   );
-  const paths = ["/", ...pagePaths, ...caseStudyPaths];
+  const paths = ["/", "/skills", ...pagePaths, ...caseStudyPaths];
 
   return paths.flatMap((pathname) =>
     routing.locales.map((locale) => ({

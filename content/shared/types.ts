@@ -1,96 +1,95 @@
-import { z } from "zod";
-
 /**
- * Shared Zod schemas + inferred TS types for structured content.
- *
- * This is the interface contract plans 01-03/01-04 implement against:
- * per-locale TS modules under content/de/ and content/en/ import these types,
- * so the compiler itself enforces DE↔EN completeness for structured data
- * (I18N-02). Schemas are presentation-free (no colors, logos, sizes) —
- * presentation is a Phase 2 concern.
+ * Shared content contract. Per-locale modules under content/de and content/en
+ * use `satisfies` against these types, so the compiler enforces that both
+ * languages have the same shape.
  */
 
 /** "YYYY-MM" month string, e.g. "2021-12". */
-const yearMonth = z
-  .string()
-  .regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Expected YYYY-MM");
+export type YearMonth = `${number}-${number}`;
+
+export type CareerRole = {
+  title: string;
+  from: YearMonth;
+  /** `null` means "present". */
+  to: YearMonth | null;
+  points: string[];
+  stack: string[];
+};
+
+export type CareerEntry = {
+  slug: string;
+  org: string;
+  orgUrl?: string;
+  location: string;
+  from: YearMonth;
+  /** `null` means "present". */
+  to: YearMonth | null;
+  roles: CareerRole[];
+};
+
+export type Project = {
+  slug: string;
+  title: string;
+  /** Short line under the title, e.g. "Vidama GmbH · Alleinentwickler". */
+  context: string;
+  summary: string;
+  tags: string[];
+  url?: string;
+  /** flagship = full-width, feature = half-width, compact = third-width. */
+  size: "flagship" | "feature" | "compact";
+  /** Slug of a case study under content/<locale>/case-studies, if one exists. */
+  caseStudy?: string;
+};
+
+export type Skill = {
+  name: string;
+  years: number;
+};
+
+export type SkillDomain = {
+  domain: string;
+  skills: Skill[];
+};
+
+export type Certificate = {
+  title: string;
+  code: string;
+  issuer: string;
+  /** "YYYY-MM" */
+  date: YearMonth;
+};
 
 /**
- * A single role within a career entry. `from` is nullable to support
- * mid-progression phases whose exact start date is unconfirmed;
- * `to: null` means "present".
+ * Contact info: role-relevant facts only. Deliberately no phone, birthdate
+ * or street address (public repo, data minimization).
  */
-export const careerRoleSchema = z.object({
-  title: z.string().min(1),
-  from: yearMonth.nullable(),
-  to: yearMonth.nullable(),
-  description: z.string().min(1),
-});
+export type ContactInfo = {
+  name: string;
+  role: string;
+  valueProp: string;
+  location: string;
+  /** Current position, shown as the status line in the hero. */
+  status: string;
+  email: string;
+  github: string;
+  linkedin: string;
+};
 
-/**
- * One career station. `roles` (min 1) models role progressions within the
- * same organization (D-02: Systemadministrator → Software Engineering →
- * Product Owner). `to: null` means "present".
- */
-export const careerEntrySchema = z.object({
-  slug: z.string().min(1),
-  org: z.string().min(1),
-  orgUrl: z.url().optional(),
-  location: z.string().optional(),
-  from: yearMonth,
-  to: yearMonth.nullable(),
-  roles: z.array(careerRoleSchema).min(1),
-  intro: z.string().optional(),
-  techStack: z.array(z.string()),
-  highlights: z.array(z.string()).optional(),
-});
+export type SkillArea = "software" | "infra";
 
-/** Project metadata. `depth` carries the D-01 weighting. */
-export const projectSchema = z.object({
-  slug: z.string().min(1),
-  title: z.string().min(1),
-  summary: z.string().min(1),
-  tags: z.array(z.string()).min(1),
-  url: z.url().optional(),
-  period: z.string().optional(),
-  depth: z.enum(["flagship", "deep", "card"]),
-  order: z.number(),
-});
+/** 1 = "+", 4 = "++++" (see the legend in messages/*.json). */
+export type SkillLevel = 1 | 2 | 3 | 4;
 
-/** A single skill — deliberately NO percent/level fields (CONT-05). */
-export const skillSchema = z.object({
-  name: z.string().min(1),
-  years: z.number().optional(),
-  projectSlugs: z.array(z.string()).optional(),
-  note: z.string().optional(),
-});
+export type MatrixCategory = {
+  id: string;
+  area: SkillArea;
+  label: { de: string; en: string };
+};
 
-export const skillDomainSchema = z.object({
-  domain: z.string().min(1),
-  skills: z.array(skillSchema),
-});
-
-/**
- * Contact info — role-relevant facts only: deliberately NO phone,
- * birthdate, or address fields (public repo, data minimization).
- */
-export const contactInfoSchema = z.object({
-  name: z.string().min(1),
-  role: z.string().min(1),
-  /**
-   * One-sentence value proposition — the single source of truth for the
-   * hero (src/app/[locale]/page.tsx) AND the CV document (Plan 02
-   * CvDocument). Do not duplicate this copy in next-intl messages.
-   */
-  valueProp: z.string().min(1),
-  email: z.email(),
-  github: z.url(),
-  linkedin: z.url(),
-});
-
-export type CareerRole = z.infer<typeof careerRoleSchema>;
-export type CareerEntry = z.infer<typeof careerEntrySchema>;
-export type Project = z.infer<typeof projectSchema>;
-export type Skill = z.infer<typeof skillSchema>;
-export type SkillDomain = z.infer<typeof skillDomainSchema>;
-export type ContactInfo = z.infer<typeof contactInfoSchema>;
+export type MatrixSkill = {
+  name: string;
+  /** English name where it differs from the German one. */
+  nameEn?: string;
+  category: string;
+  level: SkillLevel;
+};

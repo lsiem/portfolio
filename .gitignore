@@ -66,3 +66,6 @@ google-cloud-sdk/
 google-cloud-cli-*.tar.gz
 .antigravity/
 .serena/
+
+# local agent/tooling state
+.claude/

@@ -1,83 +1,88 @@
 import type { Project } from "../shared/types";
 
-/**
- * Projekte (DE) — Metadaten gegen den geteilten Vertrag (content/shared/types.ts).
- *
- * D-01-Gewichtung: ELIA (Flaggschiff) → Vidama-Mediathek (tiefe Case Study) →
- * OpenShift-Plattform (Karte), plus ausgewählte ältere Projekte als Karten.
- * D-03: Der ELIA-Eintrag verwendet ausschließlich abstrahiertes Whitelist-
- * Vokabular — keine internen Systemnamen, Roadmap-Daten oder Modellnamen
- * (öffentliches Repo). Prosa/Case Studies folgen in Plan 01-04.
- */
+/** Projekte (DE), in Anzeigereihenfolge. Quelle: Lebenslauf, Stand 11/2026. */
 export const projects = [
   {
     slug: "elia",
-    title: "ELIA — Multi-Agenten-KI-Assistent",
+    title: "ELIA – Multi-Agenten-KI-Assistent",
+    context: "ITSC GmbH · Product Owner",
     summary:
-      "Interner KI-Assistent einer IT-Dienstleisterin für Krankenkassen: Multi-Agenten-Architektur mit MCP-basiertem Tool-Calling statt klassischem RAG (Live-Daten statt Vektor-Index) und einer feature-geflaggten Orchestrator-Migration auf ein aktuelles Agent-Framework. EU-Datenresidenz und DSGVO als bewusste Plattform-Entscheidung, angebunden an ITSM-System, Wiki und Teams.",
+      "Interner KI-Assistent einer IT-Dienstleisterin für Krankenkassen: Multi-Agenten-Architektur mit MCP-basiertem Tool-Calling statt klassischem RAG – Live-Daten statt Vektor-Index. Feature-geflaggte Orchestrator-Migration auf ein aktuelles Agent-Framework im Parallelbetrieb. EU-Datenresidenz und DSGVO als bewusste Plattform-Entscheidung; angebunden an ITSM-System, Wiki und Microsoft Teams.",
     tags: [
       "Multi-Agenten-Architektur",
       "MCP",
-      "Agent-Framework",
-      "EU-Datenresidenz",
+      "OpenShift / Kubernetes",
+      "MS Teams",
       "DSGVO",
-      "Teams-Integration",
     ],
-    depth: "flagship",
-    order: 1,
+    size: "flagship",
+    caseStudy: "elia",
   },
   {
     slug: "vidama-mediathek",
     title: "Vertriebspartner-Mediathek für EWE & osnatel",
+    context: "Vidama GmbH · Alleinentwickler",
     summary:
-      "Enterprise-Mediathek für Vertriebspartner: Kampagnenfilme verwalten, gezielt zuweisen und im Shop wiedergeben — mit Template-basierter Content-Erstellung und durchgängigem Rollenmodell.",
-    tags: ["Java", "Spring Boot", "Vaadin", "PostgreSQL", "Docker", "CI/CD"],
+      "Enterprise-Mediathek: Kampagnenfilme verwalten und gezielt zuweisen, im Shop wiedergeben und eigene Inhalte aus Templates erstellen – mit durchgängigem Rollenmodell.",
+    tags: ["Java", "Spring Boot", "Vaadin", "PostgreSQL", "Docker"],
     url: "https://bpp.ewe.de/login",
-    period: "12/2021 – 01/2024",
-    depth: "deep",
-    order: 2,
-  },
-  {
-    slug: "openshift-platform",
-    title: "OpenShift-Plattformbetrieb für öffentliche Krankenkassen",
-    summary:
-      "Betrieb und Optimierung einer Container-Plattform für öffentliche Krankenkassen: OpenShift-/Kubernetes-Cluster, Linux-Server und Microservices im Clusterbetrieb — die technische Grundlage, auf der die spätere Produktarbeit aufsetzt.",
-    tags: ["OpenShift", "Kubernetes", "Linux", "Docker", "Microservices"],
-    period: "seit 06/2024",
-    depth: "card",
-    order: 3,
+    size: "feature",
+    caseStudy: "vidama-mediathek",
   },
   {
     slug: "disy-one",
-    title: "Disy-One — Digital-Signage-Plattform",
+    title: "Disy-One – Digital-Signage-Plattform",
+    context: "Vidama GmbH",
     summary:
-      "Medienverwaltungsplattform für Unternehmen: konfigurierbares Abspielen auf Stelen, TVs und Banden für EWE, Olantis, Famila und Versicherungen. Skalierbare Python-Plattform mit Monitoring und containerisierter Bereitstellung.",
-    tags: ["Python", "Flask", "FastAPI", "Docker", "Grafana", "Prometheus"],
+      "Konfigurierbares Abspielen von Medien auf Stelen, TVs und Banden für EWE/osnatel, Olantis, Famila und Versicherungen. Skalierbare Python-Plattform mit Monitoring.",
+    tags: ["Python", "Flask", "FastAPI", "Docker", "Prometheus / Grafana"],
     url: "https://vidama.de",
-    period: "12/2021 – 01/2024",
-    depth: "card",
-    order: 4,
+    size: "feature",
   },
   {
     slug: "sport-event-controller",
     title: "Sport Event Controller",
+    context: "Für VfL Oldenburg Handball & Buxtehuder SV",
     summary:
-      "Echtzeit-Steuerung der Medienwiedergabe bei Sport-Events — Einlaufshow, Sponsoreninhalte und Live-Orchestrierung für Handball-Bundesliga-Vereine, gesteuert über WebSocket mit einem einfachen Bedieninterface.",
-    tags: ["Python", "Flask", "WebSocket", "Docker", "FastAPI"],
-    url: "https://www.handball-bundesliga-frauen.de/",
-    period: "12/2021 – 01/2024",
-    depth: "card",
-    order: 5,
+      "Echtzeit-Steuerung der Medienwiedergabe bei Sport-Events – Einlaufshow, Sponsoreninhalte und Live-Orchestrierung über WebSocket mit einfachem Bedieninterface.",
+    tags: ["Python", "Flask", "FastAPI", "WebSocket", "Docker"],
+    size: "feature",
   },
   {
     slug: "immobilienbaukasten",
     title: "Immobilienbaukasten",
+    context: "Für die Schlüssel Gruppe GmbH",
     summary:
-      "One-Page-Generator für Immobilienprojekte: Landingpages aus Vorlagen erstellen — ohne Programmierkenntnisse. Template-basierter Baukasten mit dynamischer Inhaltspflege.",
+      "Webanwendung zum Erstellen von One-Page-Webseiten für Immobilienprojekte aus Vorlagen – ohne Programmierkenntnisse.",
     tags: ["Java", "Spring Boot", "Thymeleaf", "PostgreSQL", "Docker"],
     url: "https://www.schluessel-gruppe.de/",
-    period: "12/2021 – 01/2024",
-    depth: "card",
-    order: 6,
+    size: "feature",
+  },
+  {
+    slug: "ferrero-foto-aktion",
+    title: "Ferrero Foto-Aktion",
+    context: "Marketingkampagne",
+    summary:
+      "Automatisierter Foto-Upload, Website-Erstellung und QR-Code-Druck – über 1.200 Teilnehmer in deutschen Großstädten.",
+    tags: [],
+    size: "compact",
+  },
+  {
+    slug: "kundenportal-imke-folkerts",
+    title: "Kundenportal Imke Folkerts",
+    context: "Fotografin · Webportal",
+    summary:
+      "Verwaltung von Kundendaten und digitale Registrierung für ein Fotostudio.",
+    tags: [],
+    size: "compact",
+  },
+  {
+    slug: "website-jr-purtec",
+    title: "Website JR PurTec",
+    context: "Webentwicklung",
+    summary:
+      "Moderne, benutzerfreundliche Unternehmenswebsite im Bereich Polyurethan-Technologie.",
+    tags: [],
+    size: "compact",
   },
 ] satisfies Project[];

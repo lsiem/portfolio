@@ -1,68 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Check, Copy } from "./icons";
 
-type CopyEmailButtonProps = {
-  email: string;
-  copyLabel: string;
-  copiedLabel: string;
-};
-
-export function CopyEmailButton({
-  email,
-  copyLabel,
-  copiedLabel,
-}: CopyEmailButtonProps) {
+export function CopyEmailButton({ email }: { email: string }) {
+  const t = useTranslations("contact");
   const [copied, setCopied] = useState(false);
-  const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
-  const mounted = useRef(true);
 
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-      if (resetTimer.current) clearTimeout(resetTimer.current);
-    };
-  }, []);
-
-  const fallbackCopy = (): boolean => {
-    const textarea = document.createElement("textarea");
-    textarea.value = email;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.select();
-    const copiedSuccessfully = document.execCommand("copy");
-    textarea.remove();
-    return copiedSuccessfully;
-  };
-
-  const copyEmail = async (): Promise<void> => {
-    let copiedSuccessfully = false;
+  async function copy() {
     try {
       await navigator.clipboard.writeText(email);
-      copiedSuccessfully = true;
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
-      copiedSuccessfully = fallbackCopy();
+      // Clipboard unavailable: the mailto link next to this button still works.
     }
-    if (!copiedSuccessfully || !mounted.current) return;
-
-    setCopied(true);
-    if (resetTimer.current) clearTimeout(resetTimer.current);
-    resetTimer.current = setTimeout(() => setCopied(false), 2_000);
-  };
+  }
 
   return (
     <button
       type="button"
-      onClick={() => void copyEmail()}
-      className="w-fit rounded-full border border-border px-3 py-1 font-mono text-xs text-muted transition-colors hover:border-foreground hover:text-foreground"
+      onClick={copy}
+      className="inline-flex h-11 items-center gap-2 rounded-md border border-border px-4 font-mono text-sm text-muted transition-colors hover:border-border-strong hover:text-fg"
     >
-      <span aria-hidden="true">{copied ? "✓" : "⧉"} </span>
-      <span aria-live="polite">{copied ? copiedLabel : copyLabel}</span>
+      {copied ? <Check className="text-ok" /> : <Copy />}
+      <span aria-live="polite">{copied ? t("copied") : t("copyEmail")}</span>
     </button>
   );
 }

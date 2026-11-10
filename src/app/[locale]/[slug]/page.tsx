@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXContent } from "@content-collections/mdx/react";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ArrowLeft } from "@/components/icons";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getPage, getPages } from "@/lib/content";
-import { SplitHeading } from "@/components/motion/split-heading";
-import { Link } from "@/i18n/navigation";
-import {
-  localeAlternates,
-  openGraphMetadata,
-  siteMetadataBase,
-} from "@/lib/seo";
+import { localeAlternates, openGraphMetadata, siteMetadataBase } from "@/lib/seo";
 
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
 
-// Only the prose-page slugs from generateStaticParams render — unknown slugs 404.
+// Only about, impressum and datenschutz render; anything else is a 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -26,62 +22,44 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const page = getPage(locale, slug);
-  if (!page) {
-    return {};
-  }
+  if (!page) return {};
   const description = page.description ?? page.title;
 
   return {
     metadataBase: siteMetadataBase,
-    title: page.title,
+    title: `${page.title} – Lasse Siemoneit`,
     description,
     alternates: localeAlternates(`/${slug}`),
-    ...openGraphMetadata({
-      title: page.title,
-      description,
-      locale,
-      pathname: `/${slug}`,
-    }),
+    ...openGraphMetadata({ title: page.title, description, locale, pathname: `/${slug}` }),
   };
 }
 
 export default async function ProsePage({ params }: Props) {
   const { locale, slug } = await params;
-  // REQUIRED for static rendering — every layout AND page under [locale]
   setRequestLocale(locale);
-
   const page = getPage(locale, slug);
-  if (!page) {
-    notFound();
-  }
+  if (!page) notFound();
   const nav = await getTranslations("nav");
 
   return (
-    <main
-      id="main-content"
-      tabIndex={-1}
-      className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-10 px-6 py-20 sm:py-28"
-    >
-      {/* Engineered reading-first (D-15): promote page.title to a single
-          top-level Bricolage display <h1> (the MDX body starts at <h2>, so the
-          page had no <h1> — WCAG single-h1 + display identity, finding #4). */}
-      <header className="flex flex-col gap-6 border-b border-border pb-10">
+    <main id="main-content" tabIndex={-1} className="relative isolate outline-none">
+      <div aria-hidden="true" className="bg-grid absolute inset-x-0 top-0 -z-10 h-96" />
+      <div className="mx-auto w-full max-w-3xl px-4 pb-24 pt-12 sm:px-6 sm:pt-16">
         <Link
           href="/"
-          className="w-fit font-mono text-sm text-muted transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-2 font-mono text-xs text-muted transition-colors hover:text-fg"
         >
-          ← {nav("home")}
+          <ArrowLeft />
+          {nav("home")}
         </Link>
-        <SplitHeading
-          as="h1"
-          className="font-display text-[clamp(2.25rem,1.6rem+3vw,4rem)] leading-[1.1] tracking-tight"
-        >
+        <h1 className="mt-8 border-b border-border pb-8 text-4xl font-semibold tracking-tight sm:text-5xl">
           {page.title}
-        </SplitHeading>
-      </header>
-      <article className="flex flex-col text-[15px] leading-relaxed [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:font-semibold [&_li]:mt-2 [&_p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5">
-        <MDXContent code={page.mdx} />
-      </article>
+        </h1>
+        {/* The MDX bodies repeat the title as their first h2; hide that one. */}
+        <article className="prose mt-10 [&>h2:first-child]:hidden [&>h2:first-child+*]:mt-0">
+          <MDXContent code={page.mdx} />
+        </article>
+      </div>
     </main>
   );
 }
