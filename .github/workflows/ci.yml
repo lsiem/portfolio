@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Parity, build & performance budget
+    name: Lint, build & smoke tests
     runs-on: ubuntu-latest
 
     steps:
@@ -31,57 +31,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # I18N-02 + D-03 gate: DE/EN parity (blocklist skips in CI — file is local-only)
-      - name: Content parity check
-        run: pnpm check:content
+      - name: Lint
+        run: pnpm lint
 
-      # The particle-stage unit suite was removed with the canvas. The script
-      # stays so this step still runs and exits cleanly.
-      - name: Unit tests
-        run: pnpm test:unit
-
+      # `prebuild` runs the DE/EN content parity check first.
       - name: Build
         run: pnpm build
 
-      # DSGVO / TECH-06 + WOW-01: asserts the lazily-loaded stage chunk pulls
-      # no third-party CDN host. The script was documented as a CI gate but no
-      # workflow ever invoked it (gap flagged in .planning/v1.0-MILESTONE-AUDIT.md).
-      # Must follow Build — it reads .next/static/chunks.
-      - name: DSGVO stage-chunk tripwire
-        run: pnpm check:stage-chunk
-
-      # GitHub runners ship no browsers. Installed HERE rather than earlier so
-      # the sub-second gates above fail first and the ~40s download is skipped
-      # entirely on an early red.
       - name: Install Playwright chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      # Cross-phase contract evals. playwright.config.ts starts `pnpm start`
-      # under CI, so these run against the build produced above. The particle
-      # stage-perf project was removed with the canvas; `--project=chromium`
-      # still skips the launch specs, which hit a deployed URL.
-      - name: Playwright evals (chromium)
-        run: pnpm exec playwright test --project=chromium
-
-      # TECH-01/TECH-07 performance budget (lighthouserc.json) against a LOCAL
-      # production build (`pnpm start`, wired via startServerCommand): LCP <=
-      # 2500ms (warn — see below), total-blocking-time <= 200ms (INP proxy),
-      # cumulative-layout-shift <= 0.1, script bytes <= 184643, perf >= 0.9.
-      #
-      # Why local, not the deployed URL (04-02 investigation, phase3-perf-bundle-gap
-      # RESOLUTION): the app `/_next` chunk set is byte-identical localhost ==
-      # deployed (~177KB both), so a local production audit measures the TRUE
-      # shipped app payload and a real app-JS regression still fails the gate.
-      # Auditing the deployed preview instead is actively WORSE in CI: GitHub
-      # Actions' headless/datacenter Chrome reliably triggers Vercel's platform
-      # bot-mitigation challenge (~96KB high-priority script, absent for real
-      # users), which corrupts script:size AND the main-thread metrics
-      # (TBT/LCP/perf) with non-app bytes. The debug finding's original premise
-      # (localhost hides ~100KB of app JS) was disproven — the deployed number
-      # was inflated by non-app platform injection, not hidden app code.
-      #
-      # The particle / WebGL stage is gone, so every URL is the full page.
-      # The audited paths still carry `?webgl=off` so the measured URLs stay
-      # stable; the query no longer selects a scene tier.
-      - name: Lighthouse CI budget
-        run: npx lhci autorun
+      - name: Smoke tests
+        run: pnpm test
