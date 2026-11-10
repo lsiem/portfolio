@@ -37,6 +37,34 @@ test("unknown pages return 404", async ({ page }) => {
   expect(response?.status()).toBe(404);
 });
 
+test("deep unknown URLs render the localized 404", async ({ page }) => {
+  const response = await page.goto("/en/does/not/exist");
+  expect(response?.status()).toBe(404);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.getByRole("banner")).toBeVisible();
+});
+
+test("sub-pages carry a share image", async ({ page }) => {
+  for (const route of ["/de", "/de/skills", "/en/case-studies/elia", "/de/impressum"]) {
+    await page.goto(route);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      "content",
+      /\/(de|en)\/opengraph-image$/,
+    );
+  }
+});
+
+test("theme toggle updates and restores the browser chrome colour", async ({ page }) => {
+  await page.goto("/de");
+  const themeColor = page.locator('meta[name="theme-color"]');
+  await expect(themeColor).toHaveAttribute("content", "#07090b");
+  await page.getByRole("button", { name: "Helles Design aktivieren" }).click();
+  await expect(themeColor).toHaveAttribute("content", "#f5f8f8");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(themeColor).toHaveAttribute("content", "#f5f8f8");
+});
+
 test("locale switcher keeps the current page", async ({ page }) => {
   await page.goto("/de/skills");
   await page.getByRole("link", { name: "Switch to English" }).click();

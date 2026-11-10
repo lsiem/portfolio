@@ -55,8 +55,8 @@ next-env.d.ts
 # committed (same gitignored-build-artifact convention as the CV PDFs)
 /public/benchmarks/
 
-# Internal reference material — never commit (public repo)
-.planning/phases/*/reference/
+# Confidential-term blocklist for `pnpm check:content` — never commit (public repo)
+.blocklist.txt
 
 # Lighthouse CI local artifacts
 .lighthouseci/

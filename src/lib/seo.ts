@@ -5,7 +5,7 @@ import type { ContactInfo } from "../../content/shared/types";
 
 /**
  * Absolute base URL for metadata. Production builds resolve to the real
- * domain https://lsiem.de (CTX-06); locally it falls back to localhost.
+ * domain https://lsiem.de; locally it falls back to localhost.
  */
 export const siteMetadataBase = new URL(
   process.env.NODE_ENV === "production" ? "https://lsiem.de" : "http://localhost:3000",
@@ -14,7 +14,7 @@ export const siteMetadataBase = new URL(
 /**
  * hreflang alternates for a pathname (unprefixed, e.g. "/" or
  * "/case-studies/foo"): self-referencing absolute URLs for de and en plus
- * x-default pointing at the German default variant (D-09).
+ * x-default pointing at the German default variant.
  */
 export function localeAlternates(pathname: string): Metadata["alternates"] {
   const absoluteUrl = (locale: (typeof routing.locales)[number]) =>
@@ -40,10 +40,10 @@ export type OpenGraphMetadataParams = {
 };
 
 /**
- * openGraph + twitter textual fields for a locale-scoped page (TECH-05).
- * Deliberately omits `images` — the `opengraph-image.tsx` file convention
- * auto-emits `og:image`/`twitter:image`, so hand-wiring an image URL here
- * would create a second, conflicting source of truth.
+ * openGraph + twitter fields for a locale-scoped page. The image is set
+ * explicitly: a page-level `openGraph` object replaces the one inherited from
+ * `[locale]/opengraph-image.tsx`, so sub-pages would otherwise ship without
+ * `og:image`. Every page shares the locale's generated image.
  */
 export function openGraphMetadata({
   title,
@@ -59,6 +59,12 @@ export function openGraphMetadata({
     }),
     siteMetadataBase,
   ).href;
+  const image = {
+    url: new URL(`/${locale}/opengraph-image`, siteMetadataBase).href,
+    width: 1200,
+    height: 630,
+    alt: "Lasse Siemoneit – Product Owner & Software Engineer",
+  };
 
   return {
     openGraph: {
@@ -68,11 +74,13 @@ export function openGraphMetadata({
       siteName: "Lasse Siemoneit",
       locale,
       type,
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [image],
     },
   };
 }
@@ -90,7 +98,7 @@ export type PersonJsonLd = {
 };
 
 /**
- * Person JSON-LD for the overview page (TECH-05). All facts come from the
+ * Person JSON-LD for the overview page. All facts come from the
  * typed content model via `contact` — never hardcoded — so DE/EN and future
  * contact updates stay in sync automatically.
  */

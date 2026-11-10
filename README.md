@@ -20,7 +20,7 @@ Next.js 16 site with a typed, Git-based content model.
 | `pnpm dev` | Local dev server |
 | `pnpm build` | Production build (runs `check:content` first) |
 | `pnpm start` | Serve the production build |
-| `pnpm check:content` | DE/EN parity check for `content/` and `messages/` |
+| `pnpm check:content` | DE/EN parity check for `content/` and `messages/`, plus the blocklist scan |
 | `pnpm lint` | ESLint |
 | `pnpm test` | Playwright smoke tests against the production build |
 
@@ -41,7 +41,15 @@ public/cv/                 # CV download (PDF, German)
 To update the site, edit the content files; both locales must keep the same
 shape or the build fails.
 
+## Blocklist
+
+`pnpm check:content` also scans `content/` and `messages/` for terms that must
+not appear in this public repo. Put them in `.blocklist.txt` in the repo root,
+one per line (`#` starts a comment). The file is gitignored; without it the
+scan is skipped, which is what happens in CI.
+
 ## Optional environment
 
 - `GITHUB_TOKEN` — enables the GitHub contribution calendar on the home page.
-  Without it the section is simply not rendered.
+  It is fetched once at build time, never at runtime. Without it the section
+  is simply not rendered.

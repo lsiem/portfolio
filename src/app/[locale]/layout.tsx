@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -7,21 +7,21 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { CopyrightNotice } from "@/components/copyright-notice";
 import { SiteHeader } from "@/components/site-header";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { siteMetadataBase } from "@/lib/seo";
+import { THEME_COLORS } from "@/lib/theme";
 import "../globals.css";
 
 export const metadata: Metadata = { metadataBase: siteMetadataBase };
 
-export const viewport: Viewport = {
-  themeColor: "#07090b",
-};
-
-// Applies a stored "light" choice before first paint. Static string, no
-// interpolation, no external request.
-const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
+// Applies a stored theme choice before first paint and sets the browser
+// chrome colour to match. The `theme-color` meta is created here instead of
+// via the `viewport` export: React would re-insert its own tag next to one
+// this script had changed. Static string, no user input, no external request.
+const THEME_SCRIPT = `(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}var m=document.createElement('meta');m.name='theme-color';m.content=t==='light'?'${THEME_COLORS.light}':'${THEME_COLORS.dark}';document.head.appendChild(m);})();`;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -62,7 +62,7 @@ export default async function LocaleLayout({
           <div className="flex flex-1 flex-col">{children}</div>
           <footer className="border-t border-border">
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 font-mono text-xs text-faint sm:flex-row sm:items-center sm:justify-between sm:px-6">
-              <span>{t("copyright", { year: new Date().getFullYear() })}</span>
+              <CopyrightNotice buildYear={new Date().getFullYear()} />
               <nav aria-label={t("legalLabel")}>
                 <ul className="flex flex-wrap gap-x-5 gap-y-2">
                   {(["about", "impressum", "datenschutz"] as const).map((slug) => (

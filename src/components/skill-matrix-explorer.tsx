@@ -70,7 +70,7 @@ export function SkillMatrixExplorer({ rows }: { rows: MatrixRow[] }) {
 
   return (
     <div>
-      <div className="panel sticky top-[4.5rem] z-30 flex flex-col gap-4 bg-surface/95 p-4 backdrop-blur-md lg:flex-row lg:items-end">
+      <div className="panel z-30 flex flex-col gap-4 bg-surface/95 p-4 backdrop-blur-md lg:sticky lg:top-[4.5rem] lg:flex-row lg:items-end">
         <label className="flex-1">
           <span className="mb-1.5 block font-mono text-xs text-muted">{t("search")}</span>
           <span className="relative block">

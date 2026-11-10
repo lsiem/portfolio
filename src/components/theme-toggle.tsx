@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { THEME_COLORS } from "@/lib/theme";
 import { Moon, Sun } from "./icons";
 
 /**
@@ -16,6 +17,9 @@ export function ThemeToggle() {
     const root = document.documentElement;
     const next = root.dataset.theme === "light" ? "dark" : "light";
     root.dataset.theme = next;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", THEME_COLORS[next]);
     try {
       localStorage.setItem("theme", next);
     } catch {

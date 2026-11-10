@@ -55,8 +55,7 @@ export default async function ProsePage({ params }: Props) {
         <h1 className="mt-8 border-b border-border pb-8 text-4xl font-semibold tracking-tight sm:text-5xl">
           {page.title}
         </h1>
-        {/* The MDX bodies repeat the title as their first h2; hide that one. */}
-        <article className="prose mt-10 [&>h2:first-child]:hidden [&>h2:first-child+*]:mt-0">
+        <article className="prose mt-10">
           <MDXContent code={page.mdx} />
         </article>
       </div>

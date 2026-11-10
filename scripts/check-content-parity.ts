@@ -1,21 +1,22 @@
 #!/usr/bin/env node
 /**
- * check-content-parity.ts — I18N-02 locale parity gate + D-03 confidentiality blocklist.
+ * check-content-parity.ts — locale parity gate + confidentiality blocklist.
  *
  * Runtime dependency-free: uses only Node built-ins (node:fs, node:path,
  * node:process). Execute it through the repository's existing tsx development
  * dependency so it works consistently across supported Node versions.
  *
- * Behavior A — locale parity (I18N-02):
+ * Behavior A — locale parity:
  *   Recursively compares the relative file trees under {root}/de and {root}/en.
  *   The two sorted path sets must be identical (covers MDX prose AND .ts modules).
  *   On any mismatch, prints one labeled line per missing counterpart and exits 1.
  *   It also compares the leaf-key paths in messages/de.json and messages/en.json.
  *
- * Behavior B — confidentiality blocklist (D-03):
- *   Resolves the first existing .planning/phases/*\/reference/blocklist.txt.
+ * Behavior B — confidentiality blocklist:
+ *   Reads forbidden terms from the file named by CONTENT_BLOCKLIST, or from
+ *   .blocklist.txt in the repo root (one term per line, # for comments).
  *   If absent (the CI case — the file is gitignored and local-only) prints a skip
- *   notice and continues (CI-safe, T-01-05). If present, scans every file under
+ *   notice and continues. If present, scans every file under
  *   content/ and messages/ case-insensitively; any forbidden-term hit prints the
  *   offending path + line number and exits 1.
  *
@@ -36,6 +37,7 @@ type MessageFailure = {
 
 const CONTENT_ROOT_DEFAULT = "content";
 const BLOCKLIST_SCAN_DIRS = ["content", "messages"];
+const BLOCKLIST_DEFAULT = ".blocklist.txt";
 
 /** Parse `--root <dir>`; default 'content'. */
 function parseRoot(argv: string[]): string {
@@ -118,22 +120,10 @@ function checkMessageParity(): MessageFailure[] {
   return failures.sort((a, b) => a.key.localeCompare(b.key));
 }
 
-/** Resolve the first existing .planning/phases/*\/reference/blocklist.txt, or null. */
+/** The blocklist file (CONTENT_BLOCKLIST or .blocklist.txt), or null if absent. */
 function findBlocklist(): string | null {
-  const phasesDir = join(".planning", "phases");
-  if (!existsSync(phasesDir)) {
-    return null;
-  }
-  for (const phase of readdirSync(phasesDir, { withFileTypes: true })) {
-    if (!phase.isDirectory()) {
-      continue;
-    }
-    const candidate = join(phasesDir, phase.name, "reference", "blocklist.txt");
-    if (existsSync(candidate)) {
-      return candidate;
-    }
-  }
-  return null;
+  const candidate = process.env.CONTENT_BLOCKLIST || BLOCKLIST_DEFAULT;
+  return existsSync(candidate) ? candidate : null;
 }
 
 /** Read forbidden terms: non-empty, non-comment (#) trimmed lines. */
@@ -212,7 +202,7 @@ function main(): void {
   const blocklistPath = findBlocklist();
   if (!blocklistPath) {
     console.log(
-      "[blocklist] Skipped — no .planning/phases/*/reference/blocklist.txt found " +
+      `[blocklist] Skipped — no ${BLOCKLIST_DEFAULT} found ` +
         "(gitignored, local-only; expected absent in CI).",
     );
   } else {
