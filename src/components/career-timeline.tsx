@@ -68,6 +68,21 @@ export async function CareerTimeline({ entries }: { entries: CareerEntry[] }) {
                 </div>
               ))}
             </div>
+            {entry.reference && (
+              <figure className="mt-6 border-t border-border pt-5">
+                <blockquote className="text-[15px] italic leading-relaxed text-fg">
+                  <p>{t("quote", { text: entry.reference.quote })}</p>
+                </blockquote>
+                <figcaption className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs text-muted">
+                  <span>
+                    {entry.reference.source}, {formatMonth(entry.reference.date)}
+                  </span>
+                  <a href="#contact" className="text-faint underline-offset-4 hover:text-accent hover:underline">
+                    {t("referenceOnRequest")}
+                  </a>
+                </figcaption>
+              </figure>
+            )}
           </div>
         </li>
       ))}

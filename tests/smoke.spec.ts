@@ -87,6 +87,14 @@ test("career dates follow the CV", async ({ page }) => {
   await expect(career).toContainText("01/2024 – 06/2024");
 });
 
+test("career shows the reference quote, not a reference PDF", async ({ page }) => {
+  await page.goto("/de");
+  const quote = page.locator("#career figure");
+  await expect(quote).toContainText("stets uneingeschränkt unsere volle Anerkennung");
+  await expect(quote.getByRole("link", { name: "Vollständiges Zeugnis auf Anfrage" })).toHaveAttribute("href", "#contact");
+  await expect(page.locator('a[href$=".pdf"]')).toHaveCount(1); // only the CV
+});
+
 test("skill matrix filters by search and level", async ({ page }) => {
   await page.goto("/de/skills");
   const search = page.getByRole("searchbox");

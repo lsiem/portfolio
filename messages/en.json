@@ -43,7 +43,9 @@
   },
   "career": {
     "title": "Career",
-    "stack": "Stack"
+    "stack": "Stack",
+    "referenceOnRequest": "Full reference available on request",
+    "quote": "“{text}”"
   },
   "projects": {
     "title": "Projects",
