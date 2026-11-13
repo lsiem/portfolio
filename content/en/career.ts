@@ -51,6 +51,12 @@ export const career = [
         ],
       },
     ],
+    reference: {
+      quote:
+        "Mr. Siemoneit’s performance has always met with our full and unreserved recognition.",
+      source: "Interim reference, VALUNY GmbH (translated from German)",
+      date: "2026-09",
+    },
   },
   {
     slug: "just-relate",

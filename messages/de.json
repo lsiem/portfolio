@@ -43,7 +43,9 @@
   },
   "career": {
     "title": "Werdegang",
-    "stack": "Umfeld"
+    "stack": "Umfeld",
+    "referenceOnRequest": "Vollständiges Zeugnis auf Anfrage",
+    "quote": "„{text}“"
   },
   "projects": {
     "title": "Projekte",

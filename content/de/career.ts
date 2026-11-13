@@ -51,6 +51,12 @@ export const career = [
         ],
       },
     ],
+    reference: {
+      quote:
+        "Die Leistungen von Herrn Siemoneit finden stets uneingeschränkt unsere volle Anerkennung.",
+      source: "Zwischenzeugnis, VALUNY GmbH",
+      date: "2026-09",
+    },
   },
   {
     slug: "just-relate",

@@ -25,6 +25,19 @@ export type CareerEntry = {
   /** `null` means "present". */
   to: YearMonth | null;
   roles: CareerRole[];
+  /**
+   * Short quote from an employment reference. Only the quote goes into the
+   * public repo — the reference itself is shared on request (signatures,
+   * birthdate and internal names stay out).
+   */
+  reference?: CareerReference;
+};
+
+export type CareerReference = {
+  quote: string;
+  /** e.g. "Zwischenzeugnis, VALUNY GmbH". */
+  source: string;
+  date: YearMonth;
 };
 
 export type Project = {
