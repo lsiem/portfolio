@@ -34,14 +34,14 @@ importers:
         version: 0.0.1
     devDependencies:
       '@content-collections/core':
-        specifier: ^0.15.2
-        version: 0.15.2(typescript@6.0.3)
+        specifier: ^0.15.3
+        version: 0.15.3(typescript@6.0.3)
       '@content-collections/mdx':
         specifier: ^0.2.2
-        version: 0.2.2(@content-collections/core@0.15.2(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 0.2.2(@content-collections/core@0.15.3(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@content-collections/next':
         specifier: ^0.2.11
-        version: 0.2.11(@content-collections/core@0.15.2(typescript@6.0.3))(next@16.4.5(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
+        version: 0.2.11(@content-collections/core@0.15.3(typescript@6.0.3))(next@16.4.5(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.63.0
@@ -77,6 +77,10 @@ importers:
         version: 4.4.3
 
 packages:
+
+  '@11ty/gray-matter@3.0.0':
+    resolution: {integrity: sha512-mi6KB36DZCpCfCb9XP3NtDDNXe1N0jKtuFj9mTCZNy5H7vTabODyMgFmmOiGIGJKt+i8mJqEb/REtK+JTEzlpQ==}
+    engines: {node: '>=11'}
 
   '@alloc/quick-lru@5.3.0':
     resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
@@ -153,8 +157,8 @@ packages:
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
-  '@content-collections/core@0.15.2':
-    resolution: {integrity: sha512-Oaz3J3lw/8NXxmV/YSsTl8tTmxscTiotNp1wUNDHvRqW0MtNU8a0h843XYCFWSrlW5q6dcVoM0rGb2UF8kX5Ig==}
+  '@content-collections/core@0.15.3':
+    resolution: {integrity: sha512-0tdMU9I6U1wQWh8/TcKbcSKWOzICujaWFpogltiZ7trDh8q7RSAEmO4QOs4+wrd2QtMgRmOcFgmT7P8iElH3jw==}
     peerDependencies:
       typescript: ^5.0.2 || ^6.0.0 || ^7.0.0
 
@@ -1460,6 +1464,9 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
+  argparse@3.0.4:
+    resolution: {integrity: sha512-fwWK3Zq22l4XJJjx5mcBHGikIk+hJqO+32dPm0Jur7+rtG5x1scOjSfdT9ZKeWHPpsya/l0HHK4tDImBkTrtvA==}
+
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
@@ -2277,6 +2284,10 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
+  js-yaml@5.5.0:
+    resolution: {integrity: sha512-paNr4LFIFPjeeSmwNYdrb8FafLLG/Cr2Af3GjbsHJ5CxIjH4r0c2emlmRdAtpPAieP1gRVzk6buBbVP5gBMGAg==}
+    hasBin: true
+
   jsesc@3.1.0:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
@@ -2712,10 +2723,6 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.4:
-    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
-    engines: {node: '>=12'}
-
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
@@ -2778,8 +2785,8 @@ packages:
     resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
     engines: {node: '>=0.10.0'}
 
-  readdirp@5.0.0:
-    resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
+  readdirp@5.1.1:
+    resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
 
   recma-build-jsx@1.0.0:
@@ -2878,8 +2885,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  serialize-javascript@7.0.7:
-    resolution: {integrity: sha512-YAy8Od6KV+uuwUuU50np8fGB/Aues6Y0nAhA9y/hId74PlKUcme4pXcBD46NWKr1Q4osN/iseZ17YqO1XfmI8g==}
+  serialize-javascript@7.1.4:
+    resolution: {integrity: sha512-FqlEuoTq/zRmA4Lg6aOqyH3lCHbUtCB0bmHCeFniX2GBdDqMJM3FwdvEhlE5Pim1dlt2FfBdVPmUNNiGhhKqpw==}
     engines: {node: '>=20.0.0'}
 
   server-only@0.0.1:
@@ -3181,8 +3188,8 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  yaml@2.9.0:
-    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+  yaml@2.9.1:
+    resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -3207,6 +3214,11 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@11ty/gray-matter@3.0.0':
+    dependencies:
+      js-yaml: 5.5.0
+      section-matter: 1.0.0
 
   '@alloc/quick-lru@5.3.0': {}
 
@@ -3312,28 +3324,28 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@content-collections/core@0.15.2(typescript@6.0.3)':
+  '@content-collections/core@0.15.3(typescript@6.0.3)':
     dependencies:
+      '@11ty/gray-matter': 3.0.0
       '@standard-schema/spec': 1.1.0
       camelcase: 8.0.0
       chokidar: 5.0.0
       esbuild: 0.25.12
-      gray-matter: 4.0.3
       p-limit: 6.2.0
-      picomatch: 4.0.4
+      picomatch: 4.0.7
       pluralize: 8.0.0
-      serialize-javascript: 7.0.7
+      serialize-javascript: 7.1.4
       tinyglobby: 0.2.17
       typescript: 6.0.3
-      yaml: 2.9.0
+      yaml: 2.9.1
 
-  '@content-collections/integrations@0.5.0(@content-collections/core@0.15.2(typescript@6.0.3))':
+  '@content-collections/integrations@0.5.0(@content-collections/core@0.15.3(typescript@6.0.3))':
     dependencies:
-      '@content-collections/core': 0.15.2(typescript@6.0.3)
+      '@content-collections/core': 0.15.3(typescript@6.0.3)
 
-  '@content-collections/mdx@0.2.2(@content-collections/core@0.15.2(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@content-collections/mdx@0.2.2(@content-collections/core@0.15.3(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@content-collections/core': 0.15.2(typescript@6.0.3)
+      '@content-collections/core': 0.15.3(typescript@6.0.3)
       esbuild: 0.25.12
       mdx-bundler: 10.1.1(esbuild@0.25.12)
       react: 19.3.1
@@ -3342,10 +3354,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@content-collections/next@0.2.11(@content-collections/core@0.15.2(typescript@6.0.3))(next@16.4.5(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))':
+  '@content-collections/next@0.2.11(@content-collections/core@0.15.3(typescript@6.0.3))(next@16.4.5(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))':
     dependencies:
-      '@content-collections/core': 0.15.2(typescript@6.0.3)
-      '@content-collections/integrations': 0.5.0(@content-collections/core@0.15.2(typescript@6.0.3))
+      '@content-collections/core': 0.15.3(typescript@6.0.3)
+      '@content-collections/integrations': 0.5.0(@content-collections/core@0.15.3(typescript@6.0.3))
       next: 16.4.5(@babel/core@7.29.7)(@playwright/test@1.63.0)(@types/node@26.1.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
 
   '@eloqnt/config@0.1.1': {}
@@ -4299,6 +4311,8 @@ snapshots:
 
   argparse@2.0.1: {}
 
+  argparse@3.0.4: {}
+
   aria-query@5.3.2: {}
 
   array-buffer-byte-length@1.0.2:
@@ -4451,7 +4465,7 @@ snapshots:
 
   chokidar@5.0.0:
     dependencies:
-      readdirp: 5.0.0
+      readdirp: 5.1.1
 
   client-only@0.0.1: {}
 
@@ -5013,9 +5027,9 @@ snapshots:
     dependencies:
       format: 0.2.2
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.7
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -5383,6 +5397,10 @@ snapshots:
   js-yaml@4.3.0:
     dependencies:
       argparse: 2.0.1
+
+  js-yaml@5.5.0:
+    dependencies:
+      argparse: 3.0.4
 
   jsesc@3.1.0: {}
 
@@ -6016,8 +6034,6 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  picomatch@4.0.4: {}
-
   picomatch@4.0.7: {}
 
   playwright-core@1.63.0: {}
@@ -6067,7 +6083,7 @@ snapshots:
 
   react@19.3.1: {}
 
-  readdirp@5.0.0: {}
+  readdirp@5.1.1: {}
 
   recma-build-jsx@1.0.0:
     dependencies:
@@ -6142,7 +6158,7 @@ snapshots:
       estree-util-value-to-estree: 3.5.0
       toml: 3.0.0
       unified: 11.0.5
-      yaml: 2.9.0
+      yaml: 2.9.1
 
   remark-mdx@3.1.1:
     dependencies:
@@ -6226,7 +6242,7 @@ snapshots:
 
   semver@7.8.6: {}
 
-  serialize-javascript@7.0.7: {}
+  serialize-javascript@7.1.4: {}
 
   server-only@0.0.1: {}
 
@@ -6426,8 +6442,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   to-regex-range@5.0.1:
     dependencies:
@@ -6662,7 +6678,7 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yaml@2.9.0: {}
+  yaml@2.9.1: {}
 
   yocto-queue@0.1.0: {}
 

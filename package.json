@@ -24,7 +24,7 @@
     "geist": "1.7.2"
   },
   "devDependencies": {
-    "@content-collections/core": "^0.15.2",
+    "@content-collections/core": "^0.15.3",
     "@content-collections/mdx": "^0.2.2",
     "@content-collections/next": "^0.2.11",
     "@playwright/test": "^1.62.1",
