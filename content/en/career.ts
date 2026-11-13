@@ -21,7 +21,6 @@ export const career = [
         points: [
           "End-to-end product ownership for the internal AI assistant ELIA and AI agents that relieve teams of ticket handling, knowledge research and routine tasks",
           "Roadmap, release planning and acceptance criteria; prioritizing requirements from support, operations and business units",
-          "Architecture guardrails: multi-agent architecture, MCP-based tool calling instead of classic RAG, EU data residency and GDPR compliance",
           "Enablement through roadshows, trainings and best practices; coordination of security and data protection",
         ],
         stack: [

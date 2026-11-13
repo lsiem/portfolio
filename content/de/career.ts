@@ -21,7 +21,6 @@ export const career = [
         points: [
           "End-to-End-Produktverantwortung für den internen KI-Assistenten ELIA und KI-Agenten, die Teams bei Ticketbearbeitung, Wissensrecherche und Routineaufgaben entlasten",
           "Roadmap, Release-Planung und Akzeptanzkriterien; Priorisierung der Anforderungen aus Support, Betrieb und Fachbereichen",
-          "Architektur-Leitplanken: Multi-Agenten-Architektur, MCP-basiertes Tool-Calling statt klassischem RAG, EU-Datenresidenz und DSGVO-Konformität",
           "Enablement über Roadshows, Trainings und Best Practices; Koordination von Security und Datenschutz",
         ],
         stack: [
