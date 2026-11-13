@@ -92,7 +92,8 @@ test("career shows the reference quote, not a reference PDF", async ({ page }) =
   const quote = page.locator("#career figure");
   await expect(quote).toContainText("stets uneingeschränkt unsere volle Anerkennung");
   await expect(quote.getByRole("link", { name: "Vollständiges Zeugnis auf Anfrage" })).toHaveAttribute("href", "#contact");
-  await expect(page.locator('a[href$=".pdf"]')).toHaveCount(1); // only the CV
+  // The CV is the only PDF the page may link to.
+  await expect(page.locator('a[href$=".pdf"]:not([href*="-CV-"])')).toHaveCount(0);
 });
 
 test("skill matrix filters by search and level", async ({ page }) => {
