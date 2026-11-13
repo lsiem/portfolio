@@ -4,19 +4,12 @@ import type { Project } from "../shared/types";
 export const projects = [
   {
     slug: "elia",
-    title: "ELIA – Multi-Agenten-KI-Assistent",
+    title: "ELIA – interner KI-Assistent",
     context: "ITSC GmbH · Product Owner",
     summary:
-      "Interner KI-Assistent einer IT-Dienstleisterin für Krankenkassen: Multi-Agenten-Architektur mit MCP-basiertem Tool-Calling statt klassischem RAG – Live-Daten statt Vektor-Index. Feature-geflaggte Orchestrator-Migration auf ein aktuelles Agent-Framework im Parallelbetrieb. EU-Datenresidenz und DSGVO als bewusste Plattform-Entscheidung; angebunden an ITSM-System, Wiki und Microsoft Teams.",
-    tags: [
-      "Multi-Agenten-Architektur",
-      "MCP",
-      "OpenShift / Kubernetes",
-      "MS Teams",
-      "DSGVO",
-    ],
+      "Produktverantwortung für den internen KI-Assistenten einer IT-Dienstleisterin für Krankenkassen: Anforderungen mit den Fachbereichen klären, Backlog und Prioritäten steuern und das Team von der Idee bis in den Betrieb begleiten.",
+    tags: ["Product Ownership", "KI-Agenten"],
     size: "flagship",
-    caseStudy: "elia",
   },
   {
     slug: "vidama-mediathek",

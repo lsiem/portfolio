@@ -5,7 +5,7 @@ const ROUTES = [
   "/en",
   "/de/skills",
   "/en/skills",
-  "/de/case-studies/elia",
+  "/de/case-studies/vidama-mediathek",
   "/en/case-studies/vidama-mediathek",
   "/de/about",
   "/de/impressum",
@@ -37,6 +37,13 @@ test("unknown pages return 404", async ({ page }) => {
   expect(response?.status()).toBe(404);
 });
 
+test("withdrawn case studies stay gone", async ({ page }) => {
+  for (const route of ["/de/case-studies/elia", "/en/case-studies/elia"]) {
+    const response = await page.goto(route);
+    expect(response?.status()).toBe(404);
+  }
+});
+
 test("deep unknown URLs render the localized 404", async ({ page }) => {
   const response = await page.goto("/en/does/not/exist");
   expect(response?.status()).toBe(404);
@@ -45,7 +52,7 @@ test("deep unknown URLs render the localized 404", async ({ page }) => {
 });
 
 test("sub-pages carry a share image", async ({ page }) => {
-  for (const route of ["/de", "/de/skills", "/en/case-studies/elia", "/de/impressum"]) {
+  for (const route of ["/de", "/de/skills", "/en/case-studies/vidama-mediathek", "/de/impressum"]) {
     await page.goto(route);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",

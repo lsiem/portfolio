@@ -4,19 +4,12 @@ import type { Project } from "../shared/types";
 export const projects = [
   {
     slug: "elia",
-    title: "ELIA – multi-agent AI assistant",
+    title: "ELIA – internal AI assistant",
     context: "ITSC GmbH · Product Owner",
     summary:
-      "Internal AI assistant of an IT service provider for health insurers: a multi-agent architecture with MCP-based tool calling instead of classic RAG – live data rather than a vector index. Feature-flagged orchestrator migration to a current agent framework, run in parallel. EU data residency and GDPR as a deliberate platform decision; connected to the ITSM system, wiki and Microsoft Teams.",
-    tags: [
-      "Multi-agent architecture",
-      "MCP",
-      "OpenShift / Kubernetes",
-      "MS Teams",
-      "GDPR",
-    ],
+      "Product ownership for the internal AI assistant of an IT service provider for health insurers: clarifying requirements with the business units, steering backlog and priorities, and taking the team from idea to production.",
+    tags: ["Product ownership", "AI agents"],
     size: "flagship",
-    caseStudy: "elia",
   },
   {
     slug: "vidama-mediathek",
