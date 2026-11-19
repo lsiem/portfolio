@@ -75,7 +75,7 @@ export const cvExtras: Record<Locale, CvExtras> = {
     ],
     languages: [
       { name: "Deutsch", level: "Muttersprache" },
-      { name: "Englisch", level: "Abitur-Niveau" },
+      { name: "Englisch", level: "verhandlungssicher" },
     ],
     extraPoints: {
       "itsc:2026-04": [
@@ -124,7 +124,7 @@ export const cvExtras: Record<Locale, CvExtras> = {
     ],
     languages: [
       { name: "German", level: "Native" },
-      { name: "English", level: "Abitur level (German secondary school)" },
+      { name: "English", level: "Business fluent" },
     ],
     extraPoints: {
       "itsc:2026-04": [
