@@ -26,7 +26,7 @@
   },
   "hero": {
     "ctaProjects": "View projects",
-    "ctaCv": "CV (PDF, German)",
+    "ctaCv": "CV (PDF)",
     "ctaContact": "Contact",
     "terminalLabel": "Profile at a glance",
     "keyRole": "role",
@@ -106,7 +106,7 @@
     "copyEmail": "Copy email",
     "copied": "Copied",
     "downloadCv": "Download CV",
-    "downloadCvNote": "PDF, German"
+    "downloadCvNote": "PDF, English"
   },
   "footer": {
     "copyright": "© {year} Lasse Siemoneit",
