@@ -35,7 +35,7 @@ content/
     case-studies/*.mdx
     pages/*.mdx            # about, impressum, datenschutz
 messages/{de,en}.json      # UI strings
-public/cv/                 # CV download (PDF, German)
+public/cv/                 # CV downloads (PDF, de + en) — regenerate with `pnpm build:cv`
 ```
 
 To update the site, edit the content files; both locales must keep the same

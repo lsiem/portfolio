@@ -8,6 +8,7 @@
     "check:content": "tsx scripts/check-content-parity.ts",
     "prebuild": "pnpm check:content",
     "build": "next build",
+    "build:cv": "tsx scripts/cv/build-cv.ts",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

@@ -1,8 +1,10 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { ContactInfo } from "../../content/shared/types";
 import { ArrowRight, Download } from "./icons";
 
-export const CV_PATH = "/cv/Lasse-Siemoneit-CV-de.pdf";
+/** CV PDF for the given locale (built by `pnpm build:cv`). */
+export const cvPath = (locale: string) =>
+  `/cv/Lasse-Siemoneit-CV-${locale === "en" ? "en" : "de"}.pdf`;
 
 type Stat = { value: string; label: string };
 
@@ -14,6 +16,7 @@ export async function Hero({
   stats: Stat[];
 }) {
   const t = await getTranslations("hero");
+  const locale = await getLocale();
   const [firstName, ...rest] = contact.name.split(" ");
 
   const profile = [
@@ -69,7 +72,7 @@ export async function Hero({
               <ArrowRight />
             </a>
             <a
-              href={CV_PATH}
+              href={cvPath(locale)}
               className="inline-flex h-11 items-center gap-2 rounded-md border border-border-strong bg-surface px-5 text-sm font-medium transition-colors hover:border-accent"
             >
               <Download />

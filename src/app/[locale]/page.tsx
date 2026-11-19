@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CareerTimeline } from "@/components/career-timeline";
 import { CopyEmailButton } from "@/components/copy-email-button";
 import { GithubHeatmap } from "@/components/github-heatmap";
-import { CV_PATH, Hero } from "@/components/hero";
+import { cvPath, Hero } from "@/components/hero";
 import { ArrowRight, Download, Github, Linkedin, Mail } from "@/components/icons";
 import { ProjectBento } from "@/components/project-bento";
 import { Section } from "@/components/section";
@@ -192,7 +192,7 @@ export default async function HomePage({ params }: Props) {
                 </a>
               </li>
               <li>
-                <a href={CV_PATH} className="inline-flex items-center gap-2 transition-colors hover:text-fg">
+                <a href={cvPath(locale)} className="inline-flex items-center gap-2 transition-colors hover:text-fg">
                   <Download />
                   {t("contact.downloadCv")}
                   <span className="text-faint">({t("contact.downloadCvNote")})</span>

@@ -109,8 +109,13 @@ test("skill matrix filters by search and level", async ({ page }) => {
   await expect(page.getByText("Spring Boot", { exact: true })).toBeVisible();
 });
 
-test("CV download is served", async ({ request }) => {
-  const response = await request.get("/cv/Lasse-Siemoneit-CV-de.pdf");
-  expect(response.status()).toBe(200);
-  expect(response.headers()["content-type"]).toContain("pdf");
-});
+for (const locale of ["de", "en"] as const) {
+  test(`CV download is served and linked (${locale})`, async ({ page, request }) => {
+    const path = `/cv/Lasse-Siemoneit-CV-${locale}.pdf`;
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("pdf");
+    await page.goto(`/${locale}`);
+    await expect(page.locator('a[href$=".pdf"]').first()).toHaveAttribute("href", path);
+  });
+}
