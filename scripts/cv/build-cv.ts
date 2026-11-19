@@ -218,6 +218,16 @@ function render(locale: Locale) {
   <div class="grid3">${compact.map((p) => projectHtml(p, x)).join("")}</div>
   <h2>${L.methods}</h2>
   <div class="tags methods">${c.methods.map((m) => `<span>${esc(m)}</span>`).join("")}</div>
+  <div class="grid2 facts">
+    <div>
+      <h2>${L.education}</h2>
+      ${x.education.map((e) => `<p><b>${esc(e.title)}</b> · ${esc(e.detail)}</p>`).join("")}
+    </div>
+    <div>
+      <h2>${L.languages}</h2>
+      ${x.languages.map((l) => `<p><b>${esc(l.name)}</b> · ${esc(l.level)}</p>`).join("")}
+    </div>
+  </div>
   ${footer(2, true)}
 </section>
 </body>
@@ -277,21 +287,23 @@ dl.personal dd { color: var(--fg); font-weight: 600; }
 
 /* Page 2 */
 .p2 { padding: 10mm 13mm 0; }
-.mini { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--accent); padding-bottom: 3mm; margin-bottom: 6mm; }
+.mini { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--accent); padding-bottom: 3mm; margin-bottom: 5mm; }
 .mini strong { font-size: 12pt; font-weight: 700; }
 .mini span { font-size: 7.6pt; color: var(--muted); }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm; margin-bottom: 3.5mm; }
-.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.5mm; margin-bottom: 5mm; }
-.jobs2 { gap: 8mm; margin-bottom: 5mm; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin-bottom: 3mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; margin-bottom: 4.5mm; }
+.jobs2 { gap: 8mm; margin-bottom: 4.5mm; }
 .jobs2 .job { margin: 0; }
 .jobs2 .loc { margin: .3mm 0 0; font-size: 7.4pt; color: var(--faint); }
-.card { border: 1px solid var(--card); border-radius: 2mm; padding: 3.5mm 4mm; }
-.card.flagship { background: var(--side); border-color: var(--side); margin-bottom: 3.5mm; }
+.card { border: 1px solid var(--card); border-radius: 2mm; padding: 3mm 4mm; }
+.card.flagship { background: var(--side); border-color: var(--side); margin-bottom: 3mm; }
 .card h4 { font-size: 9pt; font-weight: 700; }
 .card .ctx { color: var(--accent); font-size: 7pt; font-weight: 600; margin: .3mm 0 1.5mm; }
-.tags { display: flex; flex-wrap: wrap; gap: 1.3mm; margin-top: 2.5mm; }
+.tags { display: flex; flex-wrap: wrap; gap: 1.3mm; margin-top: 2mm; }
 .tags span { border: 1px solid var(--card); background: #fff; border-radius: 99px; padding: .5mm 2.2mm; font-size: 6.4pt; }
-.methods { margin-top: 0; }
+.methods { margin-top: 0; margin-bottom: 4.5mm; }
+.facts { gap: 8mm; }
+.facts b { font-weight: 600; }
 `;
 
 async function main() {

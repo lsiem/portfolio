@@ -20,12 +20,16 @@ export type CvExtras = {
     personal: string;
     projects: string;
     methods: string;
+    education: string;
+    languages: string;
     stack: string;
     present: string;
     page: string;
     asOf: string;
   };
   personal: { label: string; value: string }[];
+  education: { title: string; detail: string }[];
+  languages: { name: string; level: string }[];
   /** Extra bullet points per role, keyed by "<career slug>:<role from>". */
   extraPoints: Record<string, { at: number; text: string }[]>;
   projectOverrides: Record<
@@ -55,6 +59,8 @@ export const cvExtras: Record<Locale, CvExtras> = {
       personal: "Persönliches",
       projects: "Projekte",
       methods: "Produkt & Methoden",
+      education: "Schulbildung",
+      languages: "Sprachen",
       stack: "Umfeld",
       present: "heute",
       page: "Seite",
@@ -62,7 +68,14 @@ export const cvExtras: Record<Locale, CvExtras> = {
     },
     personal: [
       { label: "Geburtsdatum", value: "27.09.2001" },
-      { label: "Wohnort", value: "Raum Bremen" },
+      { label: "Staatsangehörigkeit", value: "Deutsch" },
+    ],
+    education: [
+      { title: "Abitur", detail: "Allgemeine Hochschulreife, u. a. mit Englisch" },
+    ],
+    languages: [
+      { name: "Deutsch", level: "Muttersprache" },
+      { name: "Englisch", level: "Abitur-Niveau" },
     ],
     extraPoints: {
       "itsc:2026-04": [
@@ -95,6 +108,8 @@ export const cvExtras: Record<Locale, CvExtras> = {
       personal: "Personal details",
       projects: "Projects",
       methods: "Product & methods",
+      education: "Education",
+      languages: "Languages",
       stack: "Stack",
       present: "present",
       page: "Page",
@@ -102,7 +117,14 @@ export const cvExtras: Record<Locale, CvExtras> = {
     },
     personal: [
       { label: "Date of birth", value: "27 September 2001" },
-      { label: "Based in", value: "Bremen area, Germany" },
+      { label: "Nationality", value: "German" },
+    ],
+    education: [
+      { title: "Abitur", detail: "German university entrance qualification, including English" },
+    ],
+    languages: [
+      { name: "German", level: "Native" },
+      { name: "English", level: "Abitur level (German secondary school)" },
     ],
     extraPoints: {
       "itsc:2026-04": [
